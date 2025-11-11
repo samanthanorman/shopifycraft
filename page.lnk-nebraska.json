@@ -1,0 +1,90 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "lnk-nebraska-landing",
+      "custom_css": [],
+      "settings": {
+        "hero_bg": "shopify://shop_images/The_Sower_tossing_seeds_under_a_crescent_moon_with_the_planet_Saturn_rising_stylized_rolling_fields_and_corn_rows_balanced_negative_space_limited_palette_corn_yellow_deep_green_scarle.jpg",
+        "hero_title": "A HIDDEN GEM",
+        "hero_text": "Explore the most underrated place in the USA.",
+        "cta_label": "click",
+        "cta_url": "shopify://blogs/news",
+        "cards_heading": "Curiosities & Legends",
+        "cards_sub": "Uncover the hidden stories and mythological connections that make Nebraska unique.",
+        "card_icon_1": "shopify://shop_images/LNK_State_Capitol.png",
+        "card_title_1": "The Vertical Symphony",
+        "card_desc_1": "Discover the blend of Art Deco and neo-Byzantine styles in the Nebraska State Capitol.",
+        "card_url_1": "",
+        "card_label_1": "Learn More",
+        "card_icon_2": "shopify://shop_images/Sower_and_the_Sun_Moon_Saturn.png",
+        "card_title_2": "The Sower & Saturn",
+        "card_desc_2": "How The Sower statue and Saturn reflect Nebraska’s agricultural roots.",
+        "card_url_2": "",
+        "card_label_2": "Learn More",
+        "card_icon_3": "shopify://shop_images/LNK.Nebraska1.png",
+        "card_title_3": "Hidden Mythology",
+        "card_desc_3": "Greek and Roman symbols embedded in Lincoln’s public buildings.",
+        "card_url_3": "",
+        "card_label_3": "Learn More",
+        "news_title": "",
+        "news_text": "",
+        "news_cta": "",
+        "final_title": "",
+        "final_text": "LNK Tiktok Shop Coming Soon 😍",
+        "final_label": "click to follow",
+        "final_url": "https://www.tiktok.com/@lnk.nebraska"
+      }
+    },
+    "1759988410a52eda26": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_5dbf1f4_YWqWQD": {
+          "type": "lnk-legend-landing",
+          "disabled": true,
+          "settings": {
+            "hero_image": "shopify://shop_images/The_Sower_tossing_seeds_under_a_crescent_moon_with_the_planet_Saturn_rising_stylized_rolling_fields_and_corn_rows_balanced_negative_space_limited_palette_corn_yellow_deep_green_scarle.jpg",
+            "hero_alt": "Nebraska landscape showcasing hidden secrets",
+            "headline": "Unlock Nebraska's Hidden Secrets",
+            "subtitle": "Explore the myths, architecture, and untold stories of the Cornhusker State",
+            "cta_text": "Sign Up for Free eBook",
+            "cta_link": "",
+            "section_title": "Curiosity & Legends",
+            "card1_icon_svg": "",
+            "card1_title": "The Vertical Symphony",
+            "card1_text": "Discover the unique blend of Art Deco and neo-Byzantine styles in Nebraska's State Capitol, symbolizing aspirations and agriculture.",
+            "card1_cta_text": "Learn More",
+            "card1_cta_link": "",
+            "card2_icon_svg": "",
+            "card2_title": "The Sower & Saturn",
+            "card2_text": "Learn how the iconic Sower statue and the Roman god Saturn encapsulate Nebraska's agricultural roots and mythological ties.",
+            "card2_cta_text": "Learn More",
+            "card2_cta_link": "",
+            "card3_icon_svg": "",
+            "card3_title": "Hidden Mythology",
+            "card3_text": "Explore the unexpected Greek and Roman mythological references embedded in Lincoln's public buildings.",
+            "card3_cta_text": "Learn More",
+            "card3_cta_link": ""
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_5dbf1f4_YWqWQD"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "1759988410a52eda26"
+  ]
+}
