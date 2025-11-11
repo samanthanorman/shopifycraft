@@ -1,0 +1,226 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "1758508989a2ec24e3": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_359b63f_tRLWhq": {
+          "type": "LNKunlockhiddensecrets",
+          "settings": {
+            "heading": "Unlock Nebraska's Hidden Secrets",
+            "subheading": "Uncover curiosities, legends, and the unexpected.",
+            "button_text": "Join the Good Life",
+            "button_link": "",
+            "background_color": "#f8f2e8",
+            "padding_top": 80,
+            "padding_bottom": 80,
+            "content_spacing": 25,
+            "heading_font": "dm_serif_display_n4",
+            "heading_size": 48,
+            "heading_color": "#0a506d",
+            "subheading_font": "poppins_n4",
+            "subheading_size": 18,
+            "subheading_color": "#0a506d",
+            "button_background_color": "#ff6b47",
+            "button_hover_background_color": "#c0392b",
+            "button_text_color": "#ffffff",
+            "button_hover_text_color": "#ffffff",
+            "button_font_size": 16,
+            "button_padding_vertical": 14,
+            "button_padding_horizontal": 28,
+            "button_border_radius": 24
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_359b63f_tRLWhq"
+      ],
+      "settings": {}
+    },
+    "1758509250e925865f": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_3b66162_PG7MtD": {
+          "type": "curiosityandlegends_block",
+          "settings": {
+            "section_title": "Curiosity & Legends",
+            "section_subtitle": "Uncover the hidden stories and mythological connections that make Nebraska unique.",
+            "button_text": "Learn More",
+            "card_1_title": "The Vertical Symphony",
+            "card_1_description": "Discover the architectural marvel that reaches toward the heavens, telling stories of ambition and dreams through its towering presence.",
+            "card_1_link": "shopify://collections/all",
+            "card_2_title": "The Sower & Saturn",
+            "card_2_description": "Explore the celestial connections between Nebraska's agricultural heritage and the cosmic forces that guide the seasons and harvests.",
+            "card_2_link": "shopify://collections/all",
+            "card_3_title": "Hidden Mythology",
+            "card_3_description": "Unearth the ancient legends and folklore that lie beneath the surface of the Great Plains, waiting to be rediscovered.",
+            "card_3_link": "shopify://collections/all",
+            "section_background_color": "#f8f2e8",
+            "title_color": "#0a506d",
+            "subtitle_color": "#0a506d",
+            "card_background_color": "#fff5e2",
+            "card_title_color": "#0a506d",
+            "card_text_color": "#0a506d",
+            "button_color": "#ff6b47",
+            "button_text_color": "#ffffff",
+            "button_hover_color": "#e55a3c",
+            "button_hover_text_color": "#ffffff",
+            "title_size": 36,
+            "subtitle_size": 18,
+            "card_border_radius": 12,
+            "button_border_radius": 20
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_3b66162_PG7MtD"
+      ],
+      "settings": {}
+    },
+    "175850944816b99388": {
+      "type": "_blocks",
+      "settings": {}
+    },
+    "175851044688d72693": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_36e2d98_i7xHaQ": {
+          "type": "lnktiktokhighlight",
+          "settings": {
+            "heading": "TikTok & Social Highlights",
+            "subtext": "Find more on TikTok @lnk.nebraska",
+            "username": "@lnk.nebraska",
+            "tiktok_label": "Visit TikTok",
+            "tiktok_link": "https://www.tiktok.com/@lnk.nebraska",
+            "follow_label": "Discover More",
+            "follow_link": "https://www.tiktok.com/@lnk.nebraska/video/7544756567267101982",
+            "social_image": "shopify://shop_images/okAAgpQgQIARdWa8ccWqReLVALhdfIAJMELjAf.jpg",
+            "background_color": "#1F5C46",
+            "heading_color": "#ffffff",
+            "subtext_color": "#ffffff",
+            "username_color": "#ffffff",
+            "tiktok_button_bg": "#0e5349",
+            "tiktok_button_text": "#ffffff",
+            "follow_button_bg": "#ff6b47",
+            "follow_button_text": "#ffffff",
+            "frame_bg_color": "#f8f2e8",
+            "heading_size": 36,
+            "subtext_size": 16,
+            "padding_top": 64,
+            "padding_bottom": 64,
+            "padding_horizontal": 32,
+            "column_gap": 40,
+            "frame_padding": 12,
+            "frame_border_radius": 16,
+            "image_border_radius": 16,
+            "button_border_radius": 24
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_36e2d98_i7xHaQ"
+      ],
+      "settings": {}
+    },
+    "1758509785bffbcc13": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_edf17ab_g6EzBz": {
+          "type": "lnkmysteries-shop",
+          "settings": {
+            "block_1_heading": "Unlock the mysteries of the ancient world",
+            "block_1_description": "<p>Discover hidden legends and forgotten tales that have shaped civilizations. Journey through time and explore the curiosities that connect us to our mysterious past.</p>",
+            "block_2_heading": "Shop the good life",
+            "block_2_description": "<p>Embrace Nebraska's authentic lifestyle with carefully curated souvenirs and treasures. Find unique pieces that celebrate the heartland spirit and bring good vibes to your everyday.</p>",
+            "background_color": "#f8f2e8",
+            "heading_color": "#002c60",
+            "body_color": "#002c60",
+            "heading_size": 32,
+            "body_size": 16,
+            "section_padding_top": 60,
+            "section_padding_bottom": 60,
+            "column_gap": 60,
+            "mobile_gap": 40,
+            "block_padding": 20,
+            "heading_margin_bottom": 16
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_edf17ab_g6EzBz"
+      ],
+      "settings": {}
+    },
+    "1758509890ebba97ae": {
+      "type": "_blocks",
+      "settings": {}
+    },
+    "1758510837248f5fdb": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_ff169c7_tmxcXa": {
+          "type": "lnkcopyrightfooter",
+          "settings": {
+            "logo": "shopify://shop_images/lnk-logo-bw-Vert.png",
+            "logo_size": 120,
+            "heading": "Join the Good Life",
+            "subheading": "Discover stories, legends, and inspirations from Nebraska.",
+            "button_text": "Follow Us",
+            "button_link": "https://www.tiktok.com/@lnk.nebraska",
+            "copyright_text": "© 2025 LNK.Nebraska. All Rights Reserved.",
+            "background_color": "#1F5C46",
+            "heading_color": "#ffffff",
+            "text_color": "#ffffff",
+            "button_color": "#FF6B47",
+            "button_text_color": "#ffffff",
+            "button_hover_color": "#E55A3C",
+            "button_hover_text_color": "#ffffff",
+            "copyright_bg_color": "#1A5240",
+            "copyright_text_color": "#F8F2E8",
+            "heading_size": 32,
+            "text_size": 16,
+            "copyright_text_size": 12,
+            "section_padding": 40,
+            "button_radius": 20,
+            "copyright_alignment": "center"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_ff169c7_tmxcXa"
+      ],
+      "settings": {}
+    },
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    }
+  },
+  "order": [
+    "1758508989a2ec24e3",
+    "1758509250e925865f",
+    "175850944816b99388",
+    "175851044688d72693",
+    "1758509785bffbcc13",
+    "1758509890ebba97ae",
+    "1758510837248f5fdb",
+    "main"
+  ]
+}

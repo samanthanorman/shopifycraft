@@ -1,0 +1,25 @@
+<ul class="crystal-list">
+  {% for crystal in collections.crystals.products %}
+    <li>
+      <a href="#" data-target="{{ crystal.handle }}" class="crystal-trigger">{{ crystal.title }}</a>
+    </li>
+  {% endfor %}
+</ul>
+{% for crystal in collections.crystals.products %}
+  <div id="{{ crystal.handle }}" class="crystal-detail" style="display:none;">
+    <img src="{{ crystal.featured_image | img_url: '800x800' }}" alt="{{ crystal.title }}">
+    <h2>{{ crystal.title }}</h2>
+    <p><strong>Properties:</strong> …</p>
+    <p><strong>Traditional Associations:</strong> …</p>
+    <p><strong>Modern Applications:</strong> …</p>
+    <p><strong>Care Instructions:</strong> …</p>
+  </div>
+{% endfor %}
+document.querySelectorAll('.crystal-trigger').forEach(link => {
+  link.addEventListener('click', event => {
+    event.preventDefault();
+    const target = event.target.getAttribute('data-target');
+    document.querySelectorAll('.crystal-detail').forEach(el => el.style.display = 'none');
+    document.getElementById(target).style.display = 'block';
+  });
+});
