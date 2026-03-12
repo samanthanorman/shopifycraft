@@ -1,0 +1,36 @@
+{% comment %} LNK.Nebraska – Capitol Series Grid (Art Deco) {% endcomment %}
+<section class="lnk-capitol container">
+  <div class="lnk-capitol__intro">
+    <h2>The Nebraska State Capitol: A Vertical Symphony</h2>
+    <p>Architecture, art, and mythology—bite-size stories from Lincoln.</p>
+  </div>
+
+  <div class="lnk-capitol__grid">
+    {% assign cards = 
+      "
+      /capitol/vertical-vision|The Vertical Vision|Why Nebraska’s Capitol stands tall (no dome).
+      /capitol/bertram-goodhue|Bertram Goodhue|The maverick behind the tower.
+      /capitol/hildreth-meiere|Hildreth Meière|Stories painted in stone (mosaics).
+      /capitol/lee-lawrie|Lee Lawrie|When bronze tells stories: The Sower.
+      /capitol/stone-journey|From Quarry to Capitol|Indiana limestone, built to last.
+      /capitol/saturn-symbolism|Saturn Over Lincoln|Agriculture & time, watching over us.
+      /capitol/carved-names|Names in Stone|Why “Napoleon” is on our walls.
+      /capitol/nickname-explainer|‘Penis of the Plains’|The nickname vs. the real intent.
+      /capitol/agricultural-symbols|Corn, Wheat & Wisdom|Allegories all over the building.
+      /capitol/construction|How It Was Built|Logistics of a 1920s mega-project.
+      /capitol/hidden-symbols|Hidden Layers|A scavenger hunt in stone.
+      /capitol/good-life|The Good Life|A building with a Nebraska soul.
+      " | strip | split: "\n" %}
+
+    {% for c in cards %}
+      {% assign parts = c | split: "|" %}
+      {% if parts.size > 1 %}
+      <article class="lnk-capitol__card">
+        <h3><a href="{{ parts[0] }}">{{ parts[1] }}</a></h3>
+        <p>{{ parts[2] }}</p>
+        <a class="lnk-capitol__link" href="{{ parts[0] }}">Read more →</a>
+      </article>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>

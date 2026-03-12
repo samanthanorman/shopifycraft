@@ -1,0 +1,55 @@
+{% comment %}
+  Mineral Metaobject Display Section
+  Theme: Craft
+{% endcomment %}
+
+<div class="mineral-details">
+  <h1 class="mineral-name">{{ metaobject.display_name }}</h1>
+  
+  {% if metaobject.summary %}
+    <div class="mineral-summary">{{ metaobject.summary }}</div>
+  {% endif %}
+
+  {% if metaobject.energy_properties %}
+    <h3>Energy Properties</h3>
+    <p>{{ metaobject.energy_properties }}</p>
+  {% endif %}
+
+  <ul class="mineral-facts">
+    {% if metaobject.element %}
+      <li><strong>Element:</strong> {{ metaobject.element }}</li>
+    {% endif %}
+    {% if metaobject.hardness_will_it_scratch %}
+      <li><strong>Hardness:</strong> {{ metaobject.hardness_will_it_scratch }}</li>
+    {% endif %}
+    {% if metaobject.planetary_association %}
+      <li><strong>Planetary Association:</strong> {{ metaobject.planetary_association }}</li>
+    {% endif %}
+    {% if metaobject.zodiac_sign %}
+      <li><strong>Zodiac Sign:</strong> {{ metaobject.zodiac_sign }}</li>
+    {% endif %}
+  </ul>
+
+  {% if metaobject.cleanse %}
+    <h3>Cleanse</h3>
+    <p>{{ metaobject.cleanse }}</p>
+  {% endif %}
+
+  {% if metaobject.recharge %}
+    <h3>Recharge</h3>
+    <p>{{ metaobject.recharge }}</p>
+  {% endif %}
+
+  {% if metaobject.safety_notes %}
+    <h3>Safety Notes</h3>
+    <p>{{ metaobject.safety_notes }}</p>
+  {% endif %}
+</div>
+
+<style>
+  .mineral-details { max-width: 800px; margin: 0 auto; padding: 1rem; }
+  .mineral-name { font-size: 2rem; margin-bottom: 1rem; }
+  .mineral-facts { list-style: none; padding: 0; margin: 1rem 0; }
+  .mineral-facts li { margin-bottom: 0.5rem; }
+  h3 { margin-top: 1.5rem; font-size: 1.25rem; }
+</style>

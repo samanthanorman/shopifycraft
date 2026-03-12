@@ -1,0 +1,597 @@
+{% doc %}
+  @prompt
+     Footer Section
+    
+    Prompt Spec:
+    	•	Layout:
+    	•	2-column main footer + bottom copyright stripe.
+    	•	Column 1 (left): Small logo holder + optional tagline.
+    	•	Column 2 (right): Newsletter signup (title, description, email input, CTA).
+    	•	Logo Holder:
+    	•	Placeholder box (100x40px) for Nebraska or custom brand logo.
+    	•	Optional tagline: “The Good Life” below logo in small serif font.
+    	•	Newsletter Column:
+    	•	Heading: “Stay in the Good Life”
+    	•	Subtext: “Sign up to uncover hidden stories, legends, and inspiration from Nebraska.”
+    	•	Input: Email field (rounded, full width on mobile).
+    	•	Button: “Subscribe” (rounded, coral-red).
+    	•	Copyright Stripe (bottom bar):
+    	•	Background: darker beige or muted green for separation.
+    	•	Left side: © 2025 Nebraska Tourism. All rights reserved.
+    	•	Right side: Small horizontal list of links (e.g., Privacy Policy, Terms, Contact).
+    	•	Font size: smaller (12–14px).
+    
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-footer-{{ ai_gen_id }} {
+    background-color: {{ block.settings.footer_background_color }};
+    color: {{ block.settings.footer_text_color }};
+    padding: {{ block.settings.footer_padding }}px 0;
+  }
+
+  .ai-footer-container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-footer-main-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+    margin-bottom: 40px;
+  }
+
+  .ai-footer-logo-column-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ai-footer-logo-holder-{{ ai_gen_id }} {
+    width: 100px;
+    height: 40px;
+    background-color: {{ block.settings.logo_placeholder_color }};
+    border: 2px solid {{ block.settings.logo_border_color }};
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .ai-footer-logo-holder-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .ai-footer-logo-placeholder-{{ ai_gen_id }} {
+    font-size: 12px;
+    color: {{ block.settings.logo_placeholder_text_color }};
+    text-align: center;
+  }
+
+  .ai-footer-tagline-{{ ai_gen_id }} {
+    font-family: {{ settings.type_header_font.family }}, serif;
+    font-size: 14px;
+    color: {{ block.settings.tagline_color }};
+    font-style: italic;
+    margin: 0;
+  }
+
+  .ai-footer-newsletter-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .ai-footer-newsletter-heading-{{ ai_gen_id }} {
+    font-family: {{ settings.type_header_font.family }}, serif;
+    font-size: {{ block.settings.newsletter_heading_size }}px;
+    color: {{ block.settings.newsletter_heading_color }};
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .ai-footer-newsletter-subtext-{{ ai_gen_id }} {
+    font-size: {{ block.settings.newsletter_text_size }}px;
+    color: {{ block.settings.newsletter_text_color }};
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .ai-footer-newsletter-form-{{ ai_gen_id }} {
+    display: flex;
+    gap: 8px;
+  }
+
+  .ai-footer-newsletter-input-{{ ai_gen_id }} {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid {{ block.settings.input_border_color }};
+    border-radius: {{ settings.inputs_radius }}px;
+    background-color: {{ block.settings.input_background_color }};
+    color: {{ block.settings.input_text_color }};
+    font-size: 14px;
+  }
+
+  .ai-footer-newsletter-input-{{ ai_gen_id }}::placeholder {
+    color: {{ block.settings.input_placeholder_color }};
+  }
+
+  .ai-footer-newsletter-button-{{ ai_gen_id }} {
+    padding: 12px 24px;
+    background-color: {{ block.settings.button_background_color }};
+    color: {{ block.settings.button_text_color }};
+    border: none;
+    border-radius: {{ settings.buttons_radius }}px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .ai-footer-newsletter-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_color }};
+  }
+
+  .ai-footer-copyright-stripe-{{ ai_gen_id }} {
+    background-color: {{ block.settings.copyright_background_color }};
+    padding: 16px 0;
+    border-top: 1px solid {{ block.settings.copyright_border_color }};
+  }
+
+  .ai-footer-copyright-content-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: {{ block.settings.copyright_font_size }}px;
+    color: {{ block.settings.copyright_text_color }};
+  }
+
+  .ai-footer-copyright-text-{{ ai_gen_id }} {
+    margin: 0;
+  }
+
+  .ai-footer-links-{{ ai_gen_id }} {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ai-footer-links-{{ ai_gen_id }} a {
+    color: {{ block.settings.copyright_link_color }};
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .ai-footer-links-{{ ai_gen_id }} a:hover {
+    color: {{ block.settings.copyright_link_hover_color }};
+    text-decoration: underline;
+  }
+
+  .ai-footer-form-success-{{ ai_gen_id }} {
+    color: {{ block.settings.success_color }};
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  .ai-footer-form-error-{{ ai_gen_id }} {
+    color: {{ block.settings.error_color }};
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-footer-main-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 30px;
+      text-align: center;
+    }
+
+    .ai-footer-logo-holder-{{ ai_gen_id }} {
+      margin: 0 auto;
+    }
+
+    .ai-footer-newsletter-form-{{ ai_gen_id }} {
+      flex-direction: column;
+    }
+
+    .ai-footer-newsletter-input-{{ ai_gen_id }} {
+      width: 100%;
+    }
+
+    .ai-footer-copyright-content-{{ ai_gen_id }} {
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+    }
+
+    .ai-footer-links-{{ ai_gen_id }} {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  }
+{% endstyle %}
+
+<footer class="ai-footer-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-footer-container-{{ ai_gen_id }}">
+    <div class="ai-footer-main-{{ ai_gen_id }}">
+      <div class="ai-footer-logo-column-{{ ai_gen_id }}">
+        <div class="ai-footer-logo-holder-{{ ai_gen_id }}">
+          {% if block.settings.logo %}
+            <img
+              src="{{ block.settings.logo | image_url: width: 200 }}"
+              alt="{{ block.settings.logo.alt | default: shop.name | escape }}"
+              width="100"
+              height="40"
+              loading="lazy"
+            >
+          {% else %}
+            <div class="ai-footer-logo-placeholder-{{ ai_gen_id }}">
+              Logo
+            </div>
+          {% endif %}
+        </div>
+        {% if block.settings.show_tagline and block.settings.tagline != blank %}
+          <p class="ai-footer-tagline-{{ ai_gen_id }}">{{ block.settings.tagline }}</p>
+        {% endif %}
+      </div>
+
+      <div class="ai-footer-newsletter-{{ ai_gen_id }}">
+        {% if block.settings.newsletter_heading != blank %}
+          <h3 class="ai-footer-newsletter-heading-{{ ai_gen_id }}">{{ block.settings.newsletter_heading }}</h3>
+        {% endif %}
+        {% if block.settings.newsletter_subtext != blank %}
+          <p class="ai-footer-newsletter-subtext-{{ ai_gen_id }}">{{ block.settings.newsletter_subtext }}</p>
+        {% endif %}
+
+        {%- form 'customer', class: 'ai-footer-newsletter-form-' | append: ai_gen_id -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <input
+            type="email"
+            name="contact[email]"
+            class="ai-footer-newsletter-input-{{ ai_gen_id }}"
+            value="{{ form.email }}"
+            placeholder="{{ block.settings.email_placeholder }}"
+            aria-label="Email address"
+            aria-required="true"
+            autocorrect="off"
+            autocapitalize="off"
+            autocomplete="email"
+            {% if form.errors %}
+              aria-invalid="true"
+              aria-describedby="ai-footer-form-error-{{ ai_gen_id }}"
+            {% endif %}
+            {% if form.posted_successfully? %}
+              aria-describedby="ai-footer-form-success-{{ ai_gen_id }}"
+            {% endif %}
+            required
+          >
+          <button
+            type="submit"
+            class="ai-footer-newsletter-button-{{ ai_gen_id }}"
+            aria-label="Subscribe to newsletter"
+          >
+            {{ block.settings.button_text }}
+          </button>
+        {%- endform -%}
+
+        {%- if form.errors -%}
+          <div id="ai-footer-form-error-{{ ai_gen_id }}" class="ai-footer-form-error-{{ ai_gen_id }}">
+            {{ form.errors.messages.email }}
+          </div>
+        {%- endif -%}
+
+        {%- if form.posted_successfully? -%}
+          <div id="ai-footer-form-success-{{ ai_gen_id }}" class="ai-footer-form-success-{{ ai_gen_id }}">
+            {{ block.settings.success_message }}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="ai-footer-copyright-stripe-{{ ai_gen_id }}">
+      <div class="ai-footer-copyright-content-{{ ai_gen_id }}">
+        <p class="ai-footer-copyright-text-{{ ai_gen_id }}">
+          {{ block.settings.copyright_text }}
+        </p>
+        <ul class="ai-footer-links-{{ ai_gen_id }}">
+          {% if block.settings.privacy_link != blank %}
+            <li><a href="{{ block.settings.privacy_link }}">Privacy Policy</a></li>
+          {% endif %}
+          {% if block.settings.terms_link != blank %}
+            <li><a href="{{ block.settings.terms_link }}">Terms</a></li>
+          {% endif %}
+          {% if block.settings.contact_link != blank %}
+            <li><a href="{{ block.settings.contact_link }}">Contact</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tagline",
+      "label": "Show tagline",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "The Good Life"
+    },
+    {
+      "type": "header",
+      "content": "Newsletter"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Newsletter heading",
+      "default": "Stay in the Good Life"
+    },
+    {
+      "type": "textarea",
+      "id": "newsletter_subtext",
+      "label": "Newsletter description",
+      "default": "Sign up to uncover hidden stories, legends, and inspiration from Nebraska."
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Email placeholder",
+      "default": "Enter your email"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Subscribe"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thanks for subscribing!"
+    },
+    {
+      "type": "header",
+      "content": "Copyright"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "default": "© 2025 Nebraska Tourism. All rights reserved."
+    },
+    {
+      "type": "url",
+      "id": "privacy_link",
+      "label": "Privacy policy link"
+    },
+    {
+      "type": "url",
+      "id": "terms_link",
+      "label": "Terms link"
+    },
+    {
+      "type": "url",
+      "id": "contact_link",
+      "label": "Contact link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "footer_background_color",
+      "label": "Footer background",
+      "default": "#f5f5dc"
+    },
+    {
+      "type": "color",
+      "id": "footer_text_color",
+      "label": "Footer text",
+      "default": "#2c332f"
+    },
+    {
+      "type": "color",
+      "id": "logo_placeholder_color",
+      "label": "Logo placeholder background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "logo_border_color",
+      "label": "Logo border",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "logo_placeholder_text_color",
+      "label": "Logo placeholder text",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "tagline_color",
+      "label": "Tagline",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "newsletter_heading_color",
+      "label": "Newsletter heading",
+      "default": "#2c332f"
+    },
+    {
+      "type": "color",
+      "id": "newsletter_text_color",
+      "label": "Newsletter text",
+      "default": "#555555"
+    },
+    {
+      "type": "color",
+      "id": "input_background_color",
+      "label": "Input background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "input_text_color",
+      "label": "Input text",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "input_border_color",
+      "label": "Input border",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "input_placeholder_color",
+      "label": "Input placeholder",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "button_background_color",
+      "label": "Button background",
+      "default": "#ff6347"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Button hover",
+      "default": "#e55347"
+    },
+    {
+      "type": "color",
+      "id": "copyright_background_color",
+      "label": "Copyright background",
+      "default": "#8fbc8f"
+    },
+    {
+      "type": "color",
+      "id": "copyright_text_color",
+      "label": "Copyright text",
+      "default": "#2c332f"
+    },
+    {
+      "type": "color",
+      "id": "copyright_border_color",
+      "label": "Copyright border",
+      "default": "#7a9a7a"
+    },
+    {
+      "type": "color",
+      "id": "copyright_link_color",
+      "label": "Copyright links",
+      "default": "#2c332f"
+    },
+    {
+      "type": "color",
+      "id": "copyright_link_hover_color",
+      "label": "Copyright links hover",
+      "default": "#1a1f1a"
+    },
+    {
+      "type": "color",
+      "id": "success_color",
+      "label": "Success message",
+      "default": "#008060"
+    },
+    {
+      "type": "color",
+      "id": "error_color",
+      "label": "Error message",
+      "default": "#D82C0D"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "newsletter_heading_size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Newsletter heading size",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "newsletter_text_size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Newsletter text size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "copyright_font_size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Copyright font size",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "footer_padding",
+      "min": 20,
+      "max": 80,
+      "step": 10,
+      "unit": "px",
+      "label": "Footer padding",
+      "default": 50
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer section"
+    }
+  ]
+}
+{% endschema %}

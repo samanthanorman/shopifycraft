@@ -1,0 +1,406 @@
+/* ============================================================
+   WAX | WANE — Premium Enhancement System
+   Gen Z · K-pop · Holographic · Cyber · Hermione Granger
+   ============================================================ */
+
+/* ─── CSS VARIABLES: Color System ─────────────────────────── */
+:root {
+  /* Wax | Wane Core Palette */
+  --ww-emerald:        #0e5349;
+  --ww-midnight-blue:  #1a4a6b;
+  --ww-cream:          #f5f2ed;
+  --ww-mauve:          #ab94a0;
+  --ww-lunar-mist:     #d1e9fc;
+  --ww-gold:           #c9a961;
+  --ww-gold-star:      #f0c040;
+  --ww-cosmic-navy:    #0d1b3e;
+
+  /* HARAMOON Brand Colors */
+  --hm-blue:           #3498ff;
+  --hm-blue-light:     #7ec8ff;
+  --hm-blue-navy:      #1a4a8a;
+  --hm-white:          #ffffff;
+  --hm-black:          #141615;
+  --hm-slate:          #53585a;
+
+  /* Accent / Effect Colors */
+  --neon-yellow:       #e8f542;
+  --neon-yellow-glow:  rgba(232, 245, 66, 0.5);
+  --cyber-purple:      #9b59b6;
+  --cyber-purple-glow: rgba(155, 89, 182, 0.4);
+  --holo-pink:         #ff6eb4;
+  --holo-teal:         #00e5cc;
+
+  /* Glassmorphism */
+  --glass-light:       rgba(255, 255, 255, 0.12);
+  --glass-dark:        rgba(13, 27, 62, 0.55);
+  --glass-haramoon:    rgba(52, 152, 255, 0.10);
+  --glass-blur:        12px;
+  --glass-border:      rgba(255, 255, 255, 0.18);
+
+  /* Transitions */
+  --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast:   all 0.2s ease;
+  --transition-slow:   all 0.7s ease;
+}
+
+/* ─── ANIMATIONS ───────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes holoRotate {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 8px var(--hm-blue), 0 0 16px rgba(52,152,255,0.3); }
+  50%       { box-shadow: 0 0 16px var(--hm-blue), 0 0 32px rgba(52,152,255,0.5); }
+}
+
+@keyframes pulseGoldGlow {
+  0%, 100% { box-shadow: 0 0 8px var(--ww-gold), 0 0 16px rgba(201,169,97,0.3); }
+  50%       { box-shadow: 0 0 16px var(--ww-gold), 0 0 32px rgba(201,169,97,0.5); }
+}
+
+/* ─── FADE-IN UTILITY CLASSES ──────────────────────────────── */
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out backwards;
+}
+.stagger-1 { animation-delay: 0.10s; }
+.stagger-2 { animation-delay: 0.20s; }
+.stagger-3 { animation-delay: 0.30s; }
+.stagger-4 { animation-delay: 0.40s; }
+.stagger-5 { animation-delay: 0.50s; }
+.stagger-6 { animation-delay: 0.60s; }
+
+/* ─── K-POP SPACING ────────────────────────────────────────── */
+.kpop-section {
+  padding: 60px 32px;
+}
+.kpop-grid {
+  display: grid;
+  gap: 28px;
+}
+.kpop-grid-tight {
+  display: grid;
+  gap: 16px;
+}
+.kpop-grid-wide {
+  display: grid;
+  gap: 36px;
+}
+@media (max-width: 768px) {
+  .kpop-section { padding: 36px 16px; }
+  .kpop-grid    { gap: 16px; }
+}
+
+/* ─── GLASSMORPHISM ────────────────────────────────────────── */
+.glass-card-light {
+  background: var(--glass-light);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+}
+
+.glass-card-dark {
+  background: var(--glass-dark);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 16px;
+  color: var(--ww-cream);
+}
+
+.glass-card-haramoon {
+  background: var(--glass-haramoon);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid rgba(52, 152, 255, 0.25);
+  border-radius: 16px;
+}
+
+/* ─── HOLOGRAPHIC BORDERS ──────────────────────────────────── */
+.holo-border {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: var(--transition-smooth);
+}
+.holo-border::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg,
+    var(--hm-blue), var(--ww-mauve), var(--ww-lunar-mist),
+    var(--ww-gold), var(--cyber-purple), var(--hm-blue));
+  background-size: 300% 300%;
+  border-radius: 18px;
+  opacity: 0;
+  z-index: -1;
+  animation: holoRotate 3s linear infinite;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.holo-border:hover::after { opacity: 0.65; }
+
+.holo-border-haramoon::after {
+  background: linear-gradient(45deg,
+    var(--hm-blue), var(--hm-blue-light), var(--ww-lunar-mist),
+    var(--hm-blue-navy), var(--hm-blue));
+  background-size: 300% 300%;
+}
+
+/* ─── CYBER GLOW ───────────────────────────────────────────── */
+.cyber-glow-blue:hover {
+  box-shadow:
+    0 0 12px rgba(52, 152, 255, 0.5),
+    0 0 28px rgba(52, 152, 255, 0.25),
+    0 4px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  transition: var(--transition-smooth);
+}
+.cyber-glow-yellow:hover {
+  box-shadow:
+    0 0 12px var(--neon-yellow-glow),
+    0 0 28px rgba(232, 245, 66, 0.2),
+    0 4px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  transition: var(--transition-smooth);
+}
+.cyber-glow-purple:hover {
+  box-shadow:
+    0 0 12px var(--cyber-purple-glow),
+    0 0 28px rgba(155, 89, 182, 0.2),
+    0 4px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  transition: var(--transition-smooth);
+}
+.cyber-glow-gold:hover {
+  box-shadow:
+    0 0 12px rgba(201, 169, 97, 0.5),
+    0 0 28px rgba(201, 169, 97, 0.25),
+    0 4px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  transition: var(--transition-smooth);
+}
+
+/* ─── PREMIUM PRODUCT CARDS ────────────────────────────────── */
+
+/* Base wrapper — applies to ALL product cards sitewide */
+.card-wrapper.product-card-wrapper {
+  transition: var(--transition-smooth);
+  border-radius: 16px;
+}
+
+/* The card itself */
+.card-wrapper.product-card-wrapper .card {
+  border-radius: 16px !important;
+  overflow: hidden;
+  transition: var(--transition-smooth);
+  position: relative;
+}
+
+/* Holographic border on hover for all product cards */
+.card-wrapper.product-card-wrapper {
+  position: relative;
+}
+.card-wrapper.product-card-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg,
+    var(--hm-blue), var(--ww-mauve), var(--ww-lunar-mist),
+    var(--ww-gold), var(--cyber-purple), var(--hm-blue));
+  background-size: 300% 300%;
+  border-radius: 18px;
+  opacity: 0;
+  z-index: -1;
+  animation: holoRotate 3s linear infinite;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.card-wrapper.product-card-wrapper:hover::after {
+  opacity: 0.55;
+}
+
+/* Lift + glow on hover */
+.card-wrapper.product-card-wrapper:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 0 16px rgba(52, 152, 255, 0.3),
+    0 0 32px rgba(171, 148, 160, 0.2),
+    0 12px 40px rgba(0, 0, 0, 0.18);
+}
+
+/* Image zoom on hover */
+.card-wrapper.product-card-wrapper .card__media img,
+.card-wrapper.product-card-wrapper .media img {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.card-wrapper.product-card-wrapper:hover .card__media img,
+.card-wrapper.product-card-wrapper:hover .media img {
+  transform: scale(1.07);
+}
+
+/* Card info area — subtle glassmorphism */
+.card-wrapper.product-card-wrapper .card__information {
+  padding: 16px 20px 20px;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Product title — sharper, more premium */
+.card-wrapper.product-card-wrapper .card__heading a {
+  letter-spacing: 0.02em;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+.card-wrapper.product-card-wrapper:hover .card__heading a {
+  color: var(--hm-blue);
+}
+
+/* Price — subtle gold accent on hover */
+.card-wrapper.product-card-wrapper:hover .price__regular,
+.card-wrapper.product-card-wrapper:hover .price-item {
+  color: var(--ww-gold);
+  transition: color 0.3s ease;
+}
+
+/* Vendor name — clean and subtle */
+.card-wrapper.product-card-wrapper .caption-with-letter-spacing {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.72em;
+  opacity: 0.7;
+}
+
+/* HARAMOON vendor — blue accent */
+.card-wrapper.product-card-wrapper .caption-with-letter-spacing:has-text("HARAMOON"),
+.card-wrapper.product-card-wrapper[data-vendor="HARAMOON"] .caption-with-letter-spacing {
+  color: var(--hm-blue);
+  opacity: 1;
+}
+
+/* Quick Add button — cyber yellow glow */
+.card-wrapper.product-card-wrapper .quick-add__submit,
+.card-wrapper.product-card-wrapper .product-form__submit {
+  transition: var(--transition-smooth);
+  letter-spacing: 0.05em;
+}
+.card-wrapper.product-card-wrapper .quick-add__submit:hover,
+.card-wrapper.product-card-wrapper .product-form__submit:hover {
+  box-shadow:
+    0 0 12px var(--neon-yellow-glow),
+    0 0 24px rgba(232, 245, 66, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Sale badge — premium styling */
+.card-wrapper.product-card-wrapper .badge {
+  border-radius: 6px;
+  letter-spacing: 0.06em;
+  font-size: 0.7em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Staggered fade-in for product grids */
+.product-grid .card-wrapper:nth-child(1)  { animation: fadeInUp 0.5s ease-out 0.05s backwards; }
+.product-grid .card-wrapper:nth-child(2)  { animation: fadeInUp 0.5s ease-out 0.10s backwards; }
+.product-grid .card-wrapper:nth-child(3)  { animation: fadeInUp 0.5s ease-out 0.15s backwards; }
+.product-grid .card-wrapper:nth-child(4)  { animation: fadeInUp 0.5s ease-out 0.20s backwards; }
+.product-grid .card-wrapper:nth-child(5)  { animation: fadeInUp 0.5s ease-out 0.25s backwards; }
+.product-grid .card-wrapper:nth-child(6)  { animation: fadeInUp 0.5s ease-out 0.30s backwards; }
+.product-grid .card-wrapper:nth-child(7)  { animation: fadeInUp 0.5s ease-out 0.35s backwards; }
+.product-grid .card-wrapper:nth-child(8)  { animation: fadeInUp 0.5s ease-out 0.40s backwards; }
+.product-grid .card-wrapper:nth-child(n+9){ animation: fadeInUp 0.5s ease-out 0.45s backwards; }
+
+/* ─── COLLECTION CARD ──────────────────────────────────────── */
+.card-wrapper .card--card {
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+
+/* ─── CTA BUTTONS (Neon Yellow) ────────────────────────────── */
+.btn-cta,
+.button--primary,
+.shopify-payment-button__button,
+[class*="button"][class*="primary"] {
+  transition: var(--transition-smooth) !important;
+  letter-spacing: 0.05em;
+}
+.btn-cta:hover,
+.button--primary:hover,
+.shopify-payment-button__button:hover {
+  box-shadow:
+    0 0 14px var(--neon-yellow-glow),
+    0 0 28px rgba(232, 245, 66, 0.15),
+    0 4px 20px rgba(0, 0, 0, 0.2) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* ─── INGREDIENT GLOSSARY (HARAMOON) ───────────────────────── */
+.ingredient-card {
+  transition: var(--transition-smooth);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.ingredient-card:hover {
+  transform: translateY(-5px);
+  box-shadow:
+    0 0 16px rgba(52, 152, 255, 0.35),
+    0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+/* ─── CRYSTAL / MINERAL CARDS ──────────────────────────────── */
+.crystal-card {
+  transition: var(--transition-smooth);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.crystal-card:hover {
+  transform: translateY(-5px);
+  box-shadow:
+    0 0 16px var(--cyber-purple-glow),
+    0 0 32px rgba(155, 89, 182, 0.15),
+    0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* ─── METAOBJECT GRIDS ─────────────────────────────────────── */
+.metaobject-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 28px;
+}
+@media (max-width: 768px) {
+  .metaobject-grid { grid-template-columns: 1fr; gap: 16px; }
+}
+
+/* ─── NAVIGATION GLASS ─────────────────────────────────────── */
+.glass-nav {
+  background: rgba(13, 27, 62, 0.75) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ─── MOBILE RESPONSIVE ────────────────────────────────────── */
+@media (max-width: 768px) {
+  .card-wrapper.product-card-wrapper:hover {
+    transform: translateY(-3px);
+  }
+  .card-wrapper.product-card-wrapper:hover .card__media img {
+    transform: scale(1.04);
+  }
+}

@@ -1,0 +1,394 @@
+{% doc %}
+  @prompt
+    A footer section with clickable icons to follow the brand on facebook instagram, spotify, apple music, and youtube
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-social-footer-{{ ai_gen_id }} {
+    padding: {{ block.settings.padding_top }}px 20px {{ block.settings.padding_bottom }}px;
+    background-color: {{ block.settings.background_color }};
+    text-align: {{ block.settings.alignment }};
+  }
+
+  .ai-social-footer__content-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ai-social-footer__heading-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.heading_size }}px;
+    margin: 0 0 {{ block.settings.spacing }}px;font-weight: 600;
+  }
+
+  .ai-social-footer__description-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.text_size }}px;
+    margin: 0 0 {{ block.settings.spacing }}px;
+    opacity: 0.8;
+  }
+
+  .ai-social-footer__icons-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.icon_spacing }}px;
+    {% if block.settings.alignment == 'center' %}
+      justify-content: center;
+    {% elsif block.settings.alignment == 'right' %}
+      justify-content: flex-end;
+    {% else %}
+      justify-content: flex-start;
+    {% endif %}flex-wrap: wrap;
+  }
+
+  .ai-social-footer__icon-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    background-color: {{ block.settings.icon_background }};
+    color: {{ block.settings.icon_color }};
+    border-radius: {{ block.settings.icon_border_radius }}px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: {{ block.settings.border_width }}px solid {{ block.settings.border_color }};
+  }
+
+  .ai-social-footer__icon-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.icon_hover_background }};
+    color: {{ block.settings.icon_hover_color }};
+    transform: translateY(-2px);
+  }
+
+  .ai-social-footer__icon-{{ ai_gen_id }} svg {
+    width: calc({{ block.settings.icon_size }}px * 0.5);
+    height: calc({{ block.settings.icon_size }}px * 0.5);
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-social-footer-{{ ai_gen_id }} {
+      padding: {{ block.settings.padding_top | times: 0.7 }}px 16px {{ block.settings.padding_bottom | times: 0.7 }}px;
+    }
+
+    .ai-social-footer__heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.8 }}px;
+    }
+
+    .ai-social-footer__icons-{{ ai_gen_id }} {
+      justify-content: center;
+    }
+  }
+{% endstyle %}
+
+<footer class="ai-social-footer-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-social-footer__content-{{ ai_gen_id }}">
+    {% if block.settings.heading != blank %}
+      <h2 class="ai-social-footer__heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+    {% endif %}
+
+    {% if block.settings.description != blank %}
+      <div class="ai-social-footer__description-{{ ai_gen_id }}">{{ block.settings.description }}</div>
+    {% endif %}
+
+    <div class="ai-social-footer__icons-{{ ai_gen_id }}">
+      {% if block.settings.facebook_url != blank %}
+        <a
+          href="{{ block.settings.facebook_url }}"
+          class="ai-social-footer__icon-{{ ai_gen_id }}"
+          aria-label="Follow us on Facebook"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+        </a>
+      {% endif %}
+
+      {% if block.settings.instagram_url != blank %}
+        <a
+          href="{{ block.settings.instagram_url }}"
+          class="ai-social-footer__icon-{{ ai_gen_id }}"
+          aria-label="Follow us on Instagram"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+          </svg>
+        </a>
+      {% endif %}
+
+      {% if block.settings.spotify_url != blank %}
+        <a
+          href="{{ block.settings.spotify_url }}"
+          class="ai-social-footer__icon-{{ ai_gen_id }}"
+          aria-label="Follow us on Spotify"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 1510.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
+          </svg>
+        </a>
+      {% endif %}
+
+      {% if block.settings.apple_music_url != blank %}
+        <a
+          href="{{ block.settings.apple_music_url }}"
+          class="ai-social-footer__icon-{{ ai_gen_id }}"
+          aria-label="Follow us on Apple Music"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M23.997 6.124c0-.738-.065-1.47-.24-2.19-.317-1.31-1.062-2.31-2.18-3.043C21.003.517 20.373.285 19.7.164c-.517-.093-1.038-.135-1.564-.15-.04-.003-.083-.01-.124-.013H5.988c-.152.01-.303.017-.455.034C4.786.07 4.043.15 3.34.428 2.004.958 1.04 1.88.475 3.208c-.192.448-.292.925-.363 1.408-.056.392-.088.785-.1 1.18-.006.234-.009.234-.009.468v12.262c.012.845.08 1.685.348 2.506.397 1.22 1.144 2.16 2.3 2.8.735.407 1.52.581 2.348.674.36.04.72.056 1.083.056h12.016c.725 0 1.45-.05 2.16-.25.96-.27 1.77-.77 2.38-1.58.22-.29.41-.62.56-.96.23-.5.35-1.03.42-1.58.05-.4.07-.81.08-1.22.01-.17.01-.17.01-.35V6.124zm-7.09 11.683c.57.17 1.12.37 1.62.69.5.32.94.72 1.26 1.24.32.52.51.12.5 1.76 0 .34-.06.67-.17.98-.11.31-.28.58-.5.81-.22.23-.49.4-.79.52-.3.12-.62.18-.95.18-.75 0-1.44-.32-1.93-.85-.49-.53-.76-1.24-.76-1.98 0-.4.07-.79.2-1.16.13-.37.32-.71.57-1.01.25-.3.55-.55.89-.74.34-.19.71-.32 1.1-.4zm-3.86-5.83c-.14-.28-.34-.52-.58-.71-.24-.19-.52-.33-.82-.41-.3-.08-.61-.1-.92-.06-.31.04-.6.14-.86.29-.26.15-.48.35-.65.59-.17.24-.29.51-.35.79-.06.28-.06.57.01.85.07.28.2.54.38.76.18.22.4.4.65.53.25.13.52.21.8.23.28.02.56-.02.83-.11.27-.09.51-.23.71-.41.2-.18.36-.4.47-.64.11-.24.17-.5.17-.76 0-.26-.06-.52-.17-.76-.11-.24-.27-.46-.47-.64z"/>
+          </svg>
+        </a>
+      {% endif %}
+
+      {% if block.settings.youtube_url != blank %}
+        <a
+          href="{{ block.settings.youtube_url }}"
+          class="ai-social-footer__icon-{{ ai_gen_id }}"
+          aria-label="Follow us on YouTube"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+          </svg>
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Social media footer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Follow us"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Stay connected with us on social media for the latest updates and content."
+    },
+    {
+      "type": "header",
+      "content": "Social media links"
+    },
+    {
+      "type": "url",
+      "id": "facebook_url",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "url",
+      "id": "spotify_url",
+      "label": "Spotify URL"
+    },
+    {
+      "type": "url",
+      "id": "apple_music_url",
+      "label": "Apple Music URL"
+    },
+    {
+      "type": "url",
+      "id": "youtube_url",
+      "label": "YouTube URL"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "spacing",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Element spacing",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "icon_spacing",
+      "min": 5,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "label": "Icon spacing",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "icon_background",
+      "label": "Icon background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "icon_hover_background",
+      "label": "Icon hover background",
+      "default": "#f0f0f0"
+    },
+    {
+      "type": "color",
+      "id": "icon_hover_color",
+      "label": "Icon hover color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Icon border color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Icon style"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 30,
+      "max": 70,
+      "step": 5,
+      "unit": "px",
+      "label": "Icon size",
+      "default": 45
+    },
+    {
+      "type": "range",
+      "id": "icon_border_radius",
+      "min": 0,
+      "max": 35,
+      "step": 5,
+      "unit": "px",
+      "label": "Icon border radius",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "label": "Icon border width",
+      "default": 1
+    }
+  ],
+  "presets": [
+    {
+      "name": "Social media footer"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}

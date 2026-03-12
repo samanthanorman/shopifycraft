@@ -1,0 +1,894 @@
+{% doc %}
+  @prompt
+    Create an educational Korean skincare ingredients guide section with clean, modern design featuring ingredient cards, benefits explanations, and interactive elements. Include sections for popular ingredients like hyaluronic acid, niacinamide, snail mucin, ginseng, and green tea. Design should be mobile-responsive with warm, natural color palette suitable for a skincare brand. Include ingredient descriptions, skin benefits, and usage tips in an easy-to-understand format for customers new to Korean skincare.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-skincare-guide-{{ ai_gen_id }} {
+    padding: {{ block.settings.section_padding }}px 20px;
+    background-color: {{ block.settings.background_color }};
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-skincare-guide__container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ai-skincare-guide__header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .ai-skincare-guide__title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    font-weight: 600;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 16px;
+    line-height: 1.2;
+  }
+
+  .ai-skincare-guide__subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.subtitle_color }};
+    margin: 0;
+    line-height: 1.5;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .ai-skincare-guide__grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .ai-skincare-guide__card-{{ ai_gen_id }} {
+    background-color: {{ block.settings.card_background }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border: 1px solid {{ block.settings.card_border_color }};
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-skincare-guide__card-{{ ai_gen_id }}:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .ai-skincare-guide__card-header-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .ai-skincare-guide__icon-{{ ai_gen_id }} {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, {{ block.settings.icon_gradient_start }}, {{ block.settings.icon_gradient_end }});
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .ai-skincare-guide__icon-{{ ai_gen_id }} svg {
+    width: 24px;
+    height: 24px;
+    color: white;
+  }
+
+  .ai-skincare-guide__ingredient-name-{{ ai_gen_id }} {
+    font-size: 20px;
+    font-weight: 600;
+    color: {{ block.settings.card_title_color }};
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .ai-skincare-guide__korean-name-{{ ai_gen_id }} {
+    font-size: 14px;
+    color: {{ block.settings.korean_text_color }};
+    font-style: italic;
+    margin-top: 4px;
+  }
+
+  .ai-skincare-guide__description-{{ ai_gen_id }} {
+    font-size: 14px;
+    line-height: 1.6;
+    color: {{ block.settings.description_color }};
+    margin-bottom: 16px;
+  }
+
+  .ai-skincare-guide__benefits-{{ ai_gen_id }} {
+    margin-bottom: 16px;
+  }
+
+  .ai-skincare-guide__benefits-title-{{ ai_gen_id }} {
+    font-size: 16px;
+    font-weight: 600;
+    color: {{ block.settings.benefits_title_color }};
+    margin: 0 0 8px;
+  }
+
+  .ai-skincare-guide__benefits-list-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ai-skincare-guide__benefit-item-{{ ai_gen_id }} {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: {{ block.settings.benefit_text_color }};
+  }
+
+  .ai-skincare-guide__benefit-icon-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+    color: {{ block.settings.benefit_icon_color }};
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .ai-skincare-guide__usage-{{ ai_gen_id }} {
+    background-color: {{ block.settings.usage_background }};
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 16px;
+  }
+
+  .ai-skincare-guide__usage-title-{{ ai_gen_id }} {
+    font-size: 14px;
+    font-weight: 600;
+    color: {{ block.settings.usage_title_color }};
+    margin: 0 0 6px;
+  }
+
+  .ai-skincare-guide__usage-text-{{ ai_gen_id }} {
+    font-size: 13px;
+    line-height: 1.5;
+    color: {{ block.settings.usage_text_color }};
+    margin: 0;
+  }
+
+  .ai-skincare-guide__expand-indicator-{{ ai_gen_id }} {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 24px;
+    height: 24px;
+    color: {{ block.settings.expand_icon_color }};
+    transition: transform 0.3s ease;
+  }
+
+  .ai-skincare-guide__card-{{ ai_gen_id }}.expanded .ai-skincare-guide__expand-indicator-{{ ai_gen_id }} {
+    transform: rotate(180deg);
+  }
+
+  .ai-skincare-guide__expandable-content-{{ ai_gen_id }} {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .ai-skincare-guide__card-{{ ai_gen_id }}.expanded .ai-skincare-guide__expandable-content-{{ ai_gen_id }} {
+    max-height: 500px;
+  }
+
+  .ai-skincare-guide__tips-{{ ai_gen_id }} {
+    background: linear-gradient(135deg, {{ block.settings.tips_gradient_start }}, {{ block.settings.tips_gradient_end }});
+    border-radius: {{ block.settings.card_border_radius }}px;
+    padding: 32px;
+    text-align: center;
+    color: white;
+  }
+
+  .ai-skincare-guide__tips-title-{{ ai_gen_id }} {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 16px;
+  }
+
+  .ai-skincare-guide__tips-list-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+  }
+
+  .ai-skincare-guide__tip-item-{{ ai_gen_id }} {
+    font-size: 16px;
+    line-height: 1.5;
+    opacity: 0.95;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-skincare-guide__grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .ai-skincare-guide__card-{{ ai_gen_id }} {
+      padding: 20px;
+    }
+
+    .ai-skincare-guide__title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.8 }}px;
+    }
+
+    .ai-skincare-guide__tips-{{ ai_gen_id }} {
+      padding: 24px;
+    }
+  }
+{% endstyle %}
+
+<skincare-guide-{{ ai_gen_id }}
+  class="ai-skincare-guide-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-skincare-guide__container-{{ ai_gen_id }}">
+    <div class="ai-skincare-guide__header-{{ ai_gen_id }}">
+      {% if block.settings.title != blank %}
+        <h2 class="ai-skincare-guide__title-{{ ai_gen_id }}">{{ block.settings.title }}</h2>
+      {% endif %}
+      {% if block.settings.subtitle != blank %}
+        <p class="ai-skincare-guide__subtitle-{{ ai_gen_id }}">{{ block.settings.subtitle }}</p>
+      {% endif %}
+    </div>
+
+    <div class="ai-skincare-guide__grid-{{ ai_gen_id }}">
+      {% comment %} Hyaluronic Acid {% endcomment %}
+      <div class="ai-skincare-guide__card-{{ ai_gen_id }}" data-ingredient="hyaluronic-acid">
+        <div class="ai-skincare-guide__card-header-{{ ai_gen_id }}">
+          <div class="ai-skincare-guide__icon-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="ai-skincare-guide__ingredient-name-{{ ai_gen_id }}">Hyaluronic Acid</h3>
+            <div class="ai-skincare-guide__korean-name-{{ ai_gen_id }}">히알루론산</div>
+          </div>
+        </div>
+        
+        <div class="ai-skincare-guide__expand-indicator-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6,9 12,15 18,9"></polyline>
+          </svg>
+        </div>
+
+        <p class="ai-skincare-guide__description-{{ ai_gen_id }}">
+          A powerful humectant that can hold up to 1,000 times its weight in water, providing intense hydration.
+        </p>
+
+        <div class="ai-skincare-guide__expandable-content-{{ ai_gen_id }}">
+          <div class="ai-skincare-guide__benefits-{{ ai_gen_id }}">
+            <h4 class="ai-skincare-guide__benefits-title-{{ ai_gen_id }}">Key Benefits</h4>
+            <ul class="ai-skincare-guide__benefits-list-{{ ai_gen_id }}">
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Deep hydration and moisture retention
+              </li>
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Plumps skin and reduces fine lines
+              </li>
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Suitable for all skin types
+              </li>
+            </ul>
+          </div>
+
+          <div class="ai-skincare-guide__usage-{{ ai_gen_id }}">
+            <h5 class="ai-skincare-guide__usage-title-{{ ai_gen_id }}">How to Use</h5>
+            <p class="ai-skincare-guide__usage-text-{{ ai_gen_id }}">
+              Apply to damp skin after cleansing. Follow with moisturizer to seal in hydration. Use morning and evening.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {% comment %} Niacinamide {% endcomment %}
+      <div class="ai-skincare-guide__card-{{ ai_gen_id }}" data-ingredient="niacinamide">
+        <div class="ai-skincare-guide__card-header-{{ ai_gen_id }}">
+          <div class="ai-skincare-guide__icon-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <circle cx="12" cy="12" r="6"/>
+              <circle cx="12" cy="12" r="2"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="ai-skincare-guide__ingredient-name-{{ ai_gen_id }}">Niacinamide</h3>
+            <div class="ai-skincare-guide__korean-name-{{ ai_gen_id }}">니아신아마이드</div>
+          </div>
+        </div>
+        
+        <div class="ai-skincare-guide__expand-indicator-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6,9 12,15 18,9"></polyline>
+          </svg>
+        </div>
+
+        <p class="ai-skincare-guide__description-{{ ai_gen_id }}">
+          Also known as Vitamin B3, this versatile ingredient helps regulate oil production and minimize pores.
+        </p>
+
+        <div class="ai-skincare-guide__expandable-content-{{ ai_gen_id }}">
+          <div class="ai-skincare-guide__benefits-{{ ai_gen_id }}">
+            <h4 class="ai-skincare-guide__benefits-title-{{ ai_gen_id }}">Key Benefits</h4>
+            <ul class="ai-skincare-guide__benefits-list-{{ ai_gen_id }}">
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Controls excess oil production
+              </li>
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Minimizes appearance of pores
+              </li>
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Evens skin tone and texture
+              </li>
+            </ul>
+          </div>
+
+          <div class="ai-skincare-guide__usage-{{ ai_gen_id }}">
+            <h5 class="ai-skincare-guide__usage-title-{{ ai_gen_id }}">How to Use</h5>
+            <p class="ai-skincare-guide__usage-text-{{ ai_gen_id }}">
+              Apply after cleansing and toning. Start with 2-3 times per week, gradually increasing to daily use.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {% comment %} Snail Mucin {% endcomment %}
+      <div class="ai-skincare-guide__card-{{ ai_gen_id }}" data-ingredient="snail-mucin">
+        <div class="ai-skincare-guide__card-header-{{ ai_gen_id }}">
+          <div class="ai-skincare-guide__icon-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              <circle cx="12" cy="12" r="4"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="ai-skincare-guide__ingredient-name-{{ ai_gen_id }}">Snail Mucin</h3>
+            <div class="ai-skincare-guide__korean-name-{{ ai_gen_id }}">달팽이 점액</div>
+          </div>
+        </div>
+        
+        <div class="ai-skincare-guide__expand-indicator-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6,9 12,15 18,9"></polyline>
+          </svg>
+        </div>
+
+        <p class="ai-skincare-guide__description-{{ ai_gen_id }}">
+          A unique Korean beauty ingredient rich in glycoproteins, hyaluronic acid, and glycolic acid for skin repair.
+        </p>
+
+        <div class="ai-skincare-guide__expandable-content-{{ ai_gen_id }}">
+          <div class="ai-skincare-guide__benefits-{{ ai_gen_id }}">
+            <h4 class="ai-skincare-guide__benefits-title-{{ ai_gen_id }}">Key Benefits</h4>
+            <ul class="ai-skincare-guide__benefits-list-{{ ai_gen_id }}">
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Accelerates skin healing and repair
+              </li>
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Provides deep hydration
+              </li>
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Reduces acne scars and blemishes
+              </li>
+            </ul>
+          </div>
+
+          <div class="ai-skincare-guide__usage-{{ ai_gen_id }}">
+            <h5 class="ai-skincare-guide__usage-title-{{ ai_gen_id }}">How to Use</h5>
+            <p class="ai-skincare-guide__usage-text-{{ ai_gen_id }}">
+              Apply as an essence or serum after cleansing. Pat gently into skin and follow with moisturizer.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {% comment %} Ginseng {% endcomment %}
+      <div class="ai-skincare-guide__card-{{ ai_gen_id }}" data-ingredient="ginseng">
+        <div class="ai-skincare-guide__card-header-{{ ai_gen_id }}">
+          <div class="ai-skincare-guide__icon-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="ai-skincare-guide__ingredient-name-{{ ai_gen_id }}">Ginseng</h3>
+            <div class="ai-skincare-guide__korean-name-{{ ai_gen_id }}">인삼</div>
+          </div>
+        </div>
+        
+        <div class="ai-skincare-guide__expand-indicator-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6,9 12,15 18,9"></polyline>
+          </svg>
+        </div>
+
+        <p class="ai-skincare-guide__description-{{ ai_gen_id }}">
+          A traditional Korean herb packed with antioxidants and ginsenosides that revitalize and energize the skin.
+        </p>
+
+        <div class="ai-skincare-guide__expandable-content-{{ ai_gen_id }}">
+          <div class="ai-skincare-guide__benefits-{{ ai_gen_id }}">
+            <h4 class="ai-skincare-guide__benefits-title-{{ ai_gen_id }}">Key Benefits</h4>
+            <ul class="ai-skincare-guide__benefits-list-{{ ai_gen_id }}">
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Boosts circulation and skin radiance
+              </li>
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Anti-aging and firming properties
+              </li>
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Protects against environmental damage
+              </li>
+            </ul>
+          </div>
+
+          <div class="ai-skincare-guide__usage-{{ ai_gen_id }}">
+            <h5 class="ai-skincare-guide__usage-title-{{ ai_gen_id }}">How to Use</h5>
+            <p class="ai-skincare-guide__usage-text-{{ ai_gen_id }}">
+              Use in serums or essences during your morning routine for an energizing boost. Can be used daily.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {% comment %} Green Tea {% endcomment %}
+      <div class="ai-skincare-guide__card-{{ ai_gen_id }}" data-ingredient="green-tea">
+        <div class="ai-skincare-guide__card-header-{{ ai_gen_id }}">
+          <div class="ai-skincare-guide__icon-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 8c0 8-7 4-7 4s-7 4-7-4a8 8 0 1 1 14 0z"/>
+              <path d="M12 1v6"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="ai-skincare-guide__ingredient-name-{{ ai_gen_id }}">Green Tea</h3>
+            <div class="ai-skincare-guide__korean-name-{{ ai_gen_id }}">녹차</div>
+          </div>
+        </div>
+        
+        <div class="ai-skincare-guide__expand-indicator-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6,9 12,15 18,9"></polyline>
+          </svg>
+        </div>
+
+        <p class="ai-skincare-guide__description-{{ ai_gen_id }}">
+          Rich in polyphenols and catechins, green tea provides powerful antioxidant protection and soothing benefits.
+        </p>
+
+        <div class="ai-skincare-guide__expandable-content-{{ ai_gen_id }}">
+          <div class="ai-skincare-guide__benefits-{{ ai_gen_id }}">
+            <h4 class="ai-skincare-guide__benefits-title-{{ ai_gen_id }}">Key Benefits</h4>
+            <ul class="ai-skincare-guide__benefits-list-{{ ai_gen_id }}">
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Calms inflammation and redness
+              </li>
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Provides antioxidant protection
+              </li>
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Controls oil and reduces shine
+              </li>
+            </ul>
+          </div>
+
+          <div class="ai-skincare-guide__usage-{{ ai_gen_id }}">
+            <h5 class="ai-skincare-guide__usage-title-{{ ai_gen_id }}">How to Use</h5>
+            <p class="ai-skincare-guide__usage-text-{{ ai_gen_id }}">
+              Perfect for toners, masks, and serums. Use morning and evening for sensitive or acne-prone skin.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {% comment %} Centella Asiatica {% endcomment %}
+      <div class="ai-skincare-guide__card-{{ ai_gen_id }}" data-ingredient="centella">
+        <div class="ai-skincare-guide__card-header-{{ ai_gen_id }}">
+          <div class="ai-skincare-guide__icon-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+              <path d="M12 15v7"/>
+              <path d="M8 18h8"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="ai-skincare-guide__ingredient-name-{{ ai_gen_id }}">Centella Asiatica</h3>
+            <div class="ai-skincare-guide__korean-name-{{ ai_gen_id }}">병풀</div>
+          </div>
+        </div>
+        
+        <div class="ai-skincare-guide__expand-indicator-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6,9 12,15 18,9"></polyline>
+          </svg>
+        </div>
+
+        <p class="ai-skincare-guide__description-{{ ai_gen_id }}">
+          Known as "tiger grass," this healing herb is renowned for its ability to calm irritated skin and promote healing.
+        </p>
+
+        <div class="ai-skincare-guide__expandable-content-{{ ai_gen_id }}">
+          <div class="ai-skincare-guide__benefits-{{ ai_gen_id }}">
+            <h4 class="ai-skincare-guide__benefits-title-{{ ai_gen_id }}">Key Benefits</h4>
+            <ul class="ai-skincare-guide__benefits-list-{{ ai_gen_id }}">
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Soothes sensitive and irritated skin
+              </li>
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Promotes wound healing
+              </li>
+              <li class="ai-skincare-guide__benefit-item-{{ ai_gen_id }}">
+                <svg class="ai-skincare-guide__benefit-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+                Strengthens skin barrier
+              </li>
+            </ul>
+          </div>
+
+          <div class="ai-skincare-guide__usage-{{ ai_gen_id }}">
+            <h5 class="ai-skincare-guide__usage-title-{{ ai_gen_id }}">How to Use</h5>
+            <p class="ai-skincare-guide__usage-text-{{ ai_gen_id }}">
+              Ideal for sensitive skin routines. Use in toners, serums, or spot treatments. Safe for daily use.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if block.settings.show_tips %}
+      <div class="ai-skincare-guide__tips-{{ ai_gen_id }}">
+        <h3 class="ai-skincare-guide__tips-title-{{ ai_gen_id }}">Korean Skincare Tips for Beginners</h3>
+        <ul class="ai-skincare-guide__tips-list-{{ ai_gen_id }}">
+          <li class="ai-skincare-guide__tip-item-{{ ai_gen_id }}">Start with one new ingredient at a time to test your skin's reaction</li>
+          <li class="ai-skincare-guide__tip-item-{{ ai_gen_id }}">Always patch test new products on a small area first</li>
+          <li class="ai-skincare-guide__tip-item-{{ ai_gen_id }}">Layer products from thinnest to thickest consistency</li>
+          <li class="ai-skincare-guide__tip-item-{{ ai_gen_id }}">Be patient - Korean skincare focuses on long-term skin health</li>
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+</skincare-guide-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class SkincareGuide{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.cards = this.querySelectorAll('.ai-skincare-guide__card-{{ ai_gen_id }}');
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        this.cards.forEach((card) => {
+          card.addEventListener('click', () => {
+            const isExpanded = card.classList.contains('expanded');
+            
+            this.cards.forEach((otherCard) => {
+              if (otherCard !== card) {
+                otherCard.classList.remove('expanded');
+              }
+            });
+
+            if (!isExpanded) {
+              card.classList.add('expanded');
+            } else {
+              card.classList.remove('expanded');
+            }
+          });
+
+          card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              card.click();
+            }
+          });
+
+          card.setAttribute('tabindex', '0');
+          card.setAttribute('role', 'button');
+          card.setAttribute('aria-expanded', 'false');
+        });
+      }
+    }
+
+    customElements.define('skincare-guide-{{ ai_gen_id }}', SkincareGuide{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "K-beauty ingredients",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Korean Skincare Ingredients Guide"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Discover the power of Korean beauty ingredients and learn how to incorporate them into your skincare routine for healthy, glowing skin."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tips",
+      "label": "Show beginner tips section",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "label": "Section padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#fffbf4"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "header",
+      "content": "Card colors"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border color",
+      "default": "#e8e8e8"
+    },
+    {
+      "type": "color",
+      "id": "card_title_color",
+      "label": "Card title color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "korean_text_color",
+      "label": "Korean text color",
+      "default": "#ab94a0"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "benefits_title_color",
+      "label": "Benefits title color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "benefit_text_color",
+      "label": "Benefit text color",
+      "default": "#555555"
+    },
+    {
+      "type": "color",
+      "id": "benefit_icon_color",
+      "label": "Benefit icon color",
+      "default": "#0e5349"
+    },
+    {
+      "type": "color",
+      "id": "expand_icon_color",
+      "label": "Expand icon color",
+      "default": "#ab94a0"
+    },
+    {
+      "type": "header",
+      "content": "Usage section colors"
+    },
+    {
+      "type": "color",
+      "id": "usage_background",
+      "label": "Usage background",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "color",
+      "id": "usage_title_color",
+      "label": "Usage title color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "usage_text_color",
+      "label": "Usage text color",
+      "default": "#555555"
+    },
+    {
+      "type": "header",
+      "content": "Icon gradients"
+    },
+    {
+      "type": "color",
+      "id": "icon_gradient_start",
+      "label": "Icon gradient start",
+      "default": "#0e5349"
+    },
+    {
+      "type": "color",
+      "id": "icon_gradient_end",
+      "label": "Icon gradient end",
+      "default": "#0a506d"
+    },
+    {
+      "type": "header",
+      "content": "Tips section"
+    },
+    {
+      "type": "color",
+      "id": "tips_gradient_start",
+      "label": "Tips gradient start",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "tips_gradient_end",
+      "label": "Tips gradient end",
+      "default": "#0e5349"
+    }
+  ],
+  "presets": [
+    {
+      "name": "K-beauty ingredients"
+    }
+  ]
+}
+{% endschema %}

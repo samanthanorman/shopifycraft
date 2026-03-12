@@ -1,0 +1,681 @@
+{% doc %}
+  @prompt
+    Create a premium liquid glass Korean skincare routine step indicator using Poppins font. Display 5 steps as frosted glass circles with these exact colors: primary blue #3498ff for active step with animated glow, white #ffffff for glass effect with 10% opacity backdrop blur, deep black #141615 for text, slate gray #53585a for inactive steps. The current step from product.metafields.custom.haramoon.routine_step_number should have a pulsing blue glow effect and rotating shimmer. Add smooth hover animations with subtle bounce. Include gradient connecting lines between steps using blue to gray gradient. Show progress with emojis: Step 1 Cleanser 💧, Step 2 Toner 🌸, Step 3 Ampoule ✨, Step 4 Serum 💫, Step 5 Cream 🔥. Add heading 'Your Glass Skin Journey - Step X of 5' in Poppins font. Include glassmorphism with backdrop-filter blur, neumorphism shadows, smooth transitions, mobile-responsive swipe gestures, and accessibility features. Use high contrast for readability., change to poppins font, allow for all text labels to be editable similar to the colors being editable - center step number circles , please change font style to poppins or century gothic or similar
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{% assign current_step = product.metafields.custom.routine_step_number | default: 1 %}
+
+{% style %}
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+  .ai-glass-routine-{{ ai_gen_id }} {
+    font-family: 'Poppins', 'Century Gothic', 'AppleGothic', sans-serif;
+    padding: {{ block.settings.section_padding }}px 20px;
+    background: {{ block.settings.background_color }};
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-glass-routine-container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ai-glass-routine-heading-{{ ai_gen_id }} {
+    font-family: 'Poppins', 'Century Gothic', 'AppleGothic', sans-serif;
+    font-size: {{ block.settings.heading_size }}px;
+    font-weight: 600;
+    color: {{ block.settings.heading_color }};
+    text-align: center;
+    margin: 0 0 {{ block.settings.step_spacing }}px;
+    letter-spacing: -0.5px;
+  }
+
+  .ai-glass-routine-steps-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .ai-glass-routine-steps-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: {{ block.settings.step_spacing }}px;
+    position: relative;
+    padding: 20px 0;
+  }
+
+  .ai-glass-routine-step-{{ ai_gen_id }} {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    z-index: 2;
+  }
+
+  .ai-glass-routine-circle-{{ ai_gen_id }} {
+    width: {{ block.settings.circle_size }}px;
+    height: {{ block.settings.circle_size }}px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    backdrop-filter: blur({{ block.settings.blur_amount }}px);
+    -webkit-backdrop-filter: blur({{ block.settings.blur_amount }}px);
+  }
+
+  .ai-glass-routine-circle-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.6;
+  }
+
+  .ai-glass-routine-circle-inactive-{{ ai_gen_id }} {
+    background: rgba({{ block.settings.inactive_color | color_extract: 'red' }}, {{ block.settings.inactive_color | color_extract: 'green' }}, {{ block.settings.inactive_color | color_extract: 'blue' }}, 0.15);
+    border: 2px solid rgba({{ block.settings.inactive_color | color_extract: 'red' }}, {{ block.settings.inactive_color | color_extract: 'green' }}, {{ block.settings.inactive_color | color_extract: 'blue' }}, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-glass-routine-circle-active-{{ ai_gen_id }} {
+    background: rgba({{ block.settings.active_color | color_extract: 'red' }}, {{ block.settings.active_color | color_extract: 'green' }}, {{ block.settings.active_color | color_extract: 'blue' }}, 0.2);
+    border: 3px solid {{ block.settings.active_color }};
+    box-shadow: 
+      0 0 30px rgba({{ block.settings.active_color | color_extract: 'red' }}, {{ block.settings.active_color | color_extract: 'green' }}, {{ block.settings.active_color | color_extract: 'blue' }}, 0.6),
+      0 0 60px rgba({{ block.settings.active_color | color_extract: 'red' }}, {{ block.settings.active_color | color_extract: 'green' }}, {{ block.settings.active_color | color_extract: 'blue' }}, 0.4),
+      0 8px 32px rgba(0, 0, 0, 0.2);
+    animation: ai-glass-routine-pulse-{{ ai_gen_id }} 2s ease-in-out infinite;
+  }
+
+  .ai-glass-routine-circle-active-{{ ai_gen_id }}::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      {{ block.settings.active_color }} 90deg,
+      transparent 180deg,
+      {{ block.settings.active_color }} 270deg,
+      transparent 360deg
+    );
+    opacity: 0.4;
+    animation: ai-glass-routine-rotate-{{ ai_gen_id }} 3s linear infinite;
+    z-index: -1;
+    filter: blur(8px);
+  }
+
+  @keyframes ai-glass-routine-pulse-{{ ai_gen_id }} {
+    0%, 100% {
+      box-shadow: 
+        0 0 30px rgba({{ block.settings.active_color | color_extract: 'red' }}, {{ block.settings.active_color | color_extract: 'green' }}, {{ block.settings.active_color | color_extract: 'blue' }}, 0.6),
+        0 0 60px rgba({{ block.settings.active_color | color_extract: 'red' }}, {{ block.settings.active_color | color_extract: 'green' }}, {{ block.settings.active_color | color_extract: 'blue' }}, 0.4),
+        0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+    50% {
+      box-shadow: 
+        0 0 40px rgba({{ block.settings.active_color | color_extract: 'red' }}, {{ block.settings.active_color | color_extract: 'green' }}, {{ block.settings.active_color | color_extract: 'blue' }}, 0.8),
+        0 0 80px rgba({{ block.settings.active_color | color_extract: 'red' }}, {{ block.settings.active_color | color_extract: 'green' }}, {{ block.settings.active_color | color_extract: 'blue' }}, 0.6),
+        0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  @keyframes ai-glass-routine-rotate-{{ ai_gen_id }} {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .ai-glass-routine-circle-{{ ai_gen_id }}:hover {
+    transform: translateY(-8px) scale(1.05);
+  }
+
+  .ai-glass-routine-step-number-{{ ai_gen_id }} {
+    font-family: 'Poppins', 'Century Gothic', 'AppleGothic', sans-serif;
+    font-size: {{ block.settings.step_number_size }}px;
+    font-weight: 700;
+    color: {{ block.settings.text_color }};
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .ai-glass-routine-emoji-{{ ai_gen_id }} {
+    font-size: {{ block.settings.emoji_size }}px;
+    line-height: 1;
+  }
+
+  .ai-glass-routine-label-{{ ai_gen_id }} {
+    font-family: 'Poppins', 'Century Gothic', 'AppleGothic', sans-serif;
+    font-size: {{ block.settings.label_size }}px;
+    font-weight: 500;
+    color: {{ block.settings.text_color }};
+    text-align: center;
+    max-width: 100px;
+    line-height: 1.3;
+  }
+
+  .ai-glass-routine-connector-{{ ai_gen_id }} {
+    position: absolute;
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      rgba({{ block.settings.active_color | color_extract: 'red' }}, {{ block.settings.active_color | color_extract: 'green' }}, {{ block.settings.active_color | color_extract: 'blue' }}, 0.6),
+      rgba({{ block.settings.inactive_color | color_extract: 'red' }}, {{ block.settings.inactive_color | color_extract: 'green' }}, {{ block.settings.inactive_color | color_extract: 'blue' }}, 0.3)
+    );
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-glass-routine-connector-1-{{ ai_gen_id }} {
+    left: calc({{ block.settings.circle_size }}px / 2);
+    width: calc({{ block.settings.step_spacing }}px);
+  }
+
+  .ai-glass-routine-connector-2-{{ ai_gen_id }} {
+    left: calc({{ block.settings.circle_size }}px + {{ block.settings.step_spacing }}px + {{ block.settings.circle_size }}px / 2);
+    width: calc({{ block.settings.step_spacing }}px);
+  }
+
+  .ai-glass-routine-connector-3-{{ ai_gen_id }} {
+    left: calc({{ block.settings.circle_size }}px * 2 + {{ block.settings.step_spacing }}px * 2 + {{ block.settings.circle_size }}px / 2);
+    width: calc({{ block.settings.step_spacing }}px);
+  }
+
+  .ai-glass-routine-connector-4-{{ ai_gen_id }} {
+    left: calc({{ block.settings.circle_size }}px * 3 + {{ block.settings.step_spacing }}px * 3 + {{ block.settings.circle_size }}px / 2);
+    width: calc({{ block.settings.step_spacing }}px);
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-glass-routine-heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.heading_size }}px * 0.8);
+    }
+
+    .ai-glass-routine-steps-{{ ai_gen_id }} {
+      gap: calc({{ block.settings.step_spacing }}px * 0.7);
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      padding: 20px 10px;
+      justify-content: flex-start;
+    }
+
+    .ai-glass-routine-step-{{ ai_gen_id }} {
+      scroll-snap-align: center;
+      flex-shrink: 0;
+    }
+
+    .ai-glass-routine-circle-{{ ai_gen_id }} {
+      width: calc({{ block.settings.circle_size }}px * 0.85);
+      height: calc({{ block.settings.circle_size }}px * 0.85);
+    }
+
+    .ai-glass-routine-step-number-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.step_number_size }}px * 0.85);
+    }
+
+    .ai-glass-routine-emoji-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.emoji_size }}px * 0.85);
+    }
+
+    .ai-glass-routine-label-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.label_size }}px * 0.85);
+    }
+
+    .ai-glass-routine-connector-{{ ai_gen_id }} {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-glass-routine-heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.heading_size }}px * 0.7);
+    }
+
+    .ai-glass-routine-circle-{{ ai_gen_id }} {
+      width: calc({{ block.settings.circle_size }}px * 0.75);
+      height: calc({{ block.settings.circle_size }}px * 0.75);
+    }
+
+    .ai-glass-routine-step-number-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.step_number_size }}px * 0.75);
+    }
+
+    .ai-glass-routine-emoji-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.emoji_size }}px * 0.75);
+    }
+
+    .ai-glass-routine-label-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.label_size }}px * 0.75);
+    }
+  }
+{% endstyle %}
+
+<glass-skin-routine-{{ ai_gen_id }} class="ai-glass-routine-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-glass-routine-container-{{ ai_gen_id }}">
+    <h2 class="ai-glass-routine-heading-{{ ai_gen_id }}">
+      {{ block.settings.heading_text }} - Step {{ current_step }} of 5
+    </h2>
+
+    <div class="ai-glass-routine-steps-wrapper-{{ ai_gen_id }}">
+      <div class="ai-glass-routine-steps-{{ ai_gen_id }}">
+        <div class="ai-glass-routine-connector-1-{{ ai_gen_id }} ai-glass-routine-connector-{{ ai_gen_id }}"></div>
+        <div class="ai-glass-routine-connector-2-{{ ai_gen_id }} ai-glass-routine-connector-{{ ai_gen_id }}"></div>
+        <div class="ai-glass-routine-connector-3-{{ ai_gen_id }} ai-glass-routine-connector-{{ ai_gen_id }}"></div>
+        <div class="ai-glass-routine-connector-4-{{ ai_gen_id }} ai-glass-routine-connector-{{ ai_gen_id }}"></div>
+
+        <div class="ai-glass-routine-step-{{ ai_gen_id }}">
+          <div class="ai-glass-routine-circle-{{ ai_gen_id }} {% if current_step == 1 %}ai-glass-routine-circle-active-{{ ai_gen_id }}{% else %}ai-glass-routine-circle-inactive-{{ ai_gen_id }}{% endif %}" 
+               data-step="1"
+               role="button"
+               tabindex="0"
+               aria-label="Step 1: {{ block.settings.step_1_label }}">
+            <div class="ai-glass-routine-step-number-{{ ai_gen_id }}">{{ block.settings.step_1_number }}</div>
+            <div class="ai-glass-routine-emoji-{{ ai_gen_id }}">{{ block.settings.step_1_emoji }}</div>
+          </div>
+          <div class="ai-glass-routine-label-{{ ai_gen_id }}">{{ block.settings.step_1_label }}</div>
+        </div>
+
+        <div class="ai-glass-routine-step-{{ ai_gen_id }}">
+          <div class="ai-glass-routine-circle-{{ ai_gen_id }} {% if current_step == 2 %}ai-glass-routine-circle-active-{{ ai_gen_id }}{% else %}ai-glass-routine-circle-inactive-{{ ai_gen_id }}{% endif %}" 
+               data-step="2"
+               role="button"
+               tabindex="0"
+               aria-label="Step 2: {{ block.settings.step_2_label }}">
+            <div class="ai-glass-routine-step-number-{{ ai_gen_id }}">{{ block.settings.step_2_number }}</div>
+            <div class="ai-glass-routine-emoji-{{ ai_gen_id }}">{{ block.settings.step_2_emoji }}</div>
+          </div>
+          <div class="ai-glass-routine-label-{{ ai_gen_id }}">{{ block.settings.step_2_label }}</div>
+        </div>
+
+        <div class="ai-glass-routine-step-{{ ai_gen_id }}">
+          <div class="ai-glass-routine-circle-{{ ai_gen_id }} {% if current_step == 3 %}ai-glass-routine-circle-active-{{ ai_gen_id }}{% else %}ai-glass-routine-circle-inactive-{{ ai_gen_id }}{% endif %}" 
+               data-step="3"
+               role="button"
+               tabindex="0"
+               aria-label="Step 3: {{ block.settings.step_3_label }}">
+            <div class="ai-glass-routine-step-number-{{ ai_gen_id }}">{{ block.settings.step_3_number }}</div>
+            <div class="ai-glass-routine-emoji-{{ ai_gen_id }}">{{ block.settings.step_3_emoji }}</div>
+          </div>
+          <div class="ai-glass-routine-label-{{ ai_gen_id }}">{{ block.settings.step_3_label }}</div>
+        </div>
+
+        <div class="ai-glass-routine-step-{{ ai_gen_id }}">
+          <div class="ai-glass-routine-circle-{{ ai_gen_id }} {% if current_step == 4 %}ai-glass-routine-circle-active-{{ ai_gen_id }}{% else %}ai-glass-routine-circle-inactive-{{ ai_gen_id }}{% endif %}" 
+               data-step="4"
+               role="button"
+               tabindex="0"
+               aria-label="Step 4: {{ block.settings.step_4_label }}">
+            <div class="ai-glass-routine-step-number-{{ ai_gen_id }}">{{ block.settings.step_4_number }}</div>
+            <div class="ai-glass-routine-emoji-{{ ai_gen_id }}">{{ block.settings.step_4_emoji }}</div>
+          </div>
+          <div class="ai-glass-routine-label-{{ ai_gen_id }}">{{ block.settings.step_4_label }}</div>
+        </div>
+
+        <div class="ai-glass-routine-step-{{ ai_gen_id }}">
+          <div class="ai-glass-routine-circle-{{ ai_gen_id }} {% if current_step == 5 %}ai-glass-routine-circle-active-{{ ai_gen_id }}{% else %}ai-glass-routine-circle-inactive-{{ ai_gen_id }}{% endif %}" 
+               data-step="5"
+               role="button"
+               tabindex="0"
+               aria-label="Step 5: {{ block.settings.step_5_label }}">
+            <div class="ai-glass-routine-step-number-{{ ai_gen_id }}">{{ block.settings.step_5_number }}</div>
+            <div class="ai-glass-routine-emoji-{{ ai_gen_id }}">{{ block.settings.step_5_emoji }}</div>
+          </div>
+          <div class="ai-glass-routine-label-{{ ai_gen_id }}">{{ block.settings.step_5_label }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</glass-skin-routine-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class GlassSkinRoutine{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.setupAccessibility();
+        this.setupTouchGestures();
+      }
+
+      setupAccessibility() {
+        const circles = this.querySelectorAll('.ai-glass-routine-circle-{{ ai_gen_id }}');
+        
+        circles.forEach((circle) => {
+          circle.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              const step = circle.getAttribute('data-step');
+              this.announceStep(step, circle.getAttribute('aria-label'));
+            }
+          });
+
+          circle.addEventListener('click', () => {
+            const step = circle.getAttribute('data-step');
+            this.announceStep(step, circle.getAttribute('aria-label'));
+          });
+        });
+      }
+
+      announceStep(step, label) {
+        const announcement = document.createElement('div');
+        announcement.setAttribute('role', 'status');
+        announcement.setAttribute('aria-live', 'polite');
+        announcement.style.position = 'absolute';
+        announcement.style.left = '-10000px';
+        announcement.textContent = label;
+        
+        this.appendChild(announcement);
+        setTimeout(() => announcement.remove(), 1000);
+      }
+
+      setupTouchGestures() {
+        const stepsContainer = this.querySelector('.ai-glass-routine-steps-{{ ai_gen_id }}');
+        let startX = 0;
+        let scrollLeft = 0;
+        let isDown = false;
+
+        stepsContainer.addEventListener('touchstart', (e) => {
+          isDown = true;
+          startX = e.touches[0].pageX - stepsContainer.offsetLeft;
+          scrollLeft = stepsContainer.scrollLeft;
+        });
+
+        stepsContainer.addEventListener('touchmove', (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.touches[0].pageX - stepsContainer.offsetLeft;
+          const walk = (x - startX) * 2;
+          stepsContainer.scrollLeft = scrollLeft - walk;
+        });
+
+        stepsContainer.addEventListener('touchend', () => {
+          isDown = false;
+        });
+      }
+    }
+
+    customElements.define('glass-skin-routine-{{ ai_gen_id }}', GlassSkinRoutine{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Glass skin routine",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading text",
+      "default": "Your Glass Skin Journey"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#141615"
+    },
+    {
+      "type": "header",
+      "content": "Step 1"
+    },
+    {
+      "type": "text",
+      "id": "step_1_number",
+      "label": "Number",
+      "default": "1"
+    },
+    {
+      "type": "text",
+      "id": "step_1_emoji",
+      "label": "Emoji",
+      "default": "💧"
+    },
+    {
+      "type": "text",
+      "id": "step_1_label",
+      "label": "Label",
+      "default": "Cleanser"
+    },
+    {
+      "type": "header",
+      "content": "Step 2"
+    },
+    {
+      "type": "text",
+      "id": "step_2_number",
+      "label": "Number",
+      "default": "2"
+    },
+    {
+      "type": "text",
+      "id": "step_2_emoji",
+      "label": "Emoji",
+      "default": "🌸"
+    },
+    {
+      "type": "text",
+      "id": "step_2_label",
+      "label": "Label",
+      "default": "Toner"
+    },
+    {
+      "type": "header",
+      "content": "Step 3"
+    },
+    {
+      "type": "text",
+      "id": "step_3_number",
+      "label": "Number",
+      "default": "3"
+    },
+    {
+      "type": "text",
+      "id": "step_3_emoji",
+      "label": "Emoji",
+      "default": "✨"
+    },
+    {
+      "type": "text",
+      "id": "step_3_label",
+      "label": "Label",
+      "default": "Ampoule"
+    },
+    {
+      "type": "header",
+      "content": "Step 4"
+    },
+    {
+      "type": "text",
+      "id": "step_4_number",
+      "label": "Number",
+      "default": "4"
+    },
+    {
+      "type": "text",
+      "id": "step_4_emoji",
+      "label": "Emoji",
+      "default": "💫"
+    },
+    {
+      "type": "text",
+      "id": "step_4_label",
+      "label": "Label",
+      "default": "Serum"
+    },
+    {
+      "type": "header",
+      "content": "Step 5"
+    },
+    {
+      "type": "text",
+      "id": "step_5_number",
+      "label": "Number",
+      "default": "5"
+    },
+    {
+      "type": "text",
+      "id": "step_5_emoji",
+      "label": "Emoji",
+      "default": "🔥"
+    },
+    {
+      "type": "text",
+      "id": "step_5_label",
+      "label": "Label",
+      "default": "Cream"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "circle_size",
+      "min": 80,
+      "max": 160,
+      "step": 10,
+      "unit": "px",
+      "label": "Circle size",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "step_spacing",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "label": "Step spacing",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "step_number_size",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Step number size",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "emoji_size",
+      "min": 20,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Emoji size",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Label size",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "active_color",
+      "label": "Active step color",
+      "default": "#3498ff"
+    },
+    {
+      "type": "color",
+      "id": "inactive_color",
+      "label": "Inactive step color",
+      "default": "#53585a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#141615"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Glass effect"
+    },
+    {
+      "type": "range",
+      "id": "blur_amount",
+      "min": 5,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "label": "Blur amount",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "label": "Section padding",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "Glass skin routine"
+    }
+  ]
+}
+{% endschema %}

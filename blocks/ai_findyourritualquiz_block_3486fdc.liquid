@@ -1,0 +1,1055 @@
+{% doc %}
+  @prompt
+    an interactive quiz 
+    
+    {% comment %}
+    Part 1 - Structure: Quiz wrapper and questions (split from haramoon-quiz.liquid)
+    {% endcomment %}
+    
+    <div class="haramoon-quiz" id="haramoonQuiz">
+      <!-- Quiz Header -->
+      <div class="quiz-header">
+        <img src="{{ 'Logo.jpg' | asset_url }}" alt="HARAMOON Logo" class="quiz-logo">
+        <h1 class="quiz-title">Find Your Perfect HARAMOON Ritual</h1>
+        <p class="quiz-intro">
+          Welcome, beautiful soul, to a journey of self-discovery for your skin...
+        </p>
+      </div>
+    
+      <!-- Progress Bar -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+      </div>
+    
+      <!-- Quiz Questions -->
+      <div id="quizQuestions">
+        {% comment %} Include your 15 question blocks here. {% endcomment %}
+      </div>
+    
+      <!-- Open-ended Question -->
+      <div class="open-ended-container hidden" id="openEndedQuestion">
+        <div class="question-number">Final Question</div>
+        <h2 class="question-text">Share your unique skincare story...</h2>
+        <textarea class="open-ended-textarea" id="openEndedAnswer" placeholder="Tell us about your skin journey..."></textarea>
+      </div>
+    
+      <!-- Navigation -->
+      <div class="navigation">
+        <button class="btn btn-secondary hidden" id="prevBtn" onclick="previousQuestion()">Previous</button>
+        <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next</button>
+      </div>
+    
+      <!-- Results -->
+      <div class="results-container hidden" id="resultsContainer">
+        <h2 class="result-title" id="resultTitle"></h2>
+        <p class="result-description" id="resultDescription"></p>
+        <img id="resultImage" class="product-image" src="" alt="">
+        <a href="#" class="btn btn-primary" id="resultLink">Shop Your Perfect Ritual</a>
+      </div>
+    </div>
+    
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-quiz-container-{{ ai_gen_id }} {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: {{ settings.type_body_font.family }}, sans-serif;
+    background-color: {{ block.settings.background_color }};
+    border-radius: {{ settings.card_corner_radius }}px;
+    box-shadow: 0 {{ settings.card_shadow_vertical_offset }}px {{ settings.card_shadow_blur }}px rgba(0, 0, 0, {{ settings.card_shadow_opacity | divided_by: 100.0 }});
+  }
+
+  .ai-quiz-header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .ai-quiz-logo-{{ ai_gen_id }} {
+    max-width: {{ block.settings.logo_width }}px;
+    height: auto;
+    margin-bottom: 20px;
+  }
+
+  .ai-quiz-logo-placeholder-{{ ai_gen_id }} {
+    width: {{ block.settings.logo_width }}px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background-color: #f4f4f4;
+    border-radius: {{ settings.media_radius }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-quiz-logo-placeholder-{{ ai_gen_id }} svg {
+    width: 60px;
+    height: 60px;
+    opacity: 0.5;
+  }
+
+  .ai-quiz-title-{{ ai_gen_id }} {
+    font-family: {{ settings.type_header_font.family }}, serif;
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 15px;
+    line-height: 1.2;
+  }
+
+  .ai-quiz-intro-{{ ai_gen_id }} {
+    font-size: {{ block.settings.intro_size }}px;
+    color: {{ block.settings.text_color }};
+    line-height: 1.5;
+    margin: 0;
+    opacity: 0.8;
+  }
+
+  .ai-quiz-progress-bar-{{ ai_gen_id }} {
+    width: 100%;
+    height: {{ block.settings.progress_height }}px;
+    background-color: {{ block.settings.progress_bg_color }};
+    border-radius: {{ block.settings.progress_height | divided_by: 2 }}px;
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+
+  .ai-quiz-progress-fill-{{ ai_gen_id }} {
+    height: 100%;
+    background-color: {{ block.settings.progress_color }};
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: {{ block.settings.progress_height | divided_by: 2 }}px;
+  }
+
+  .ai-quiz-question-container-{{ ai_gen_id }} {
+    margin-bottom: 40px;
+  }
+
+  .ai-quiz-question-number-{{ ai_gen_id }} {
+    font-size: 14px;
+    color: {{ block.settings.text_color }};
+    opacity: 0.6;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  .ai-quiz-question-text-{{ ai_gen_id }} {
+    font-family: {{ settings.type_header_font.family }}, serif;
+    font-size: {{ block.settings.question_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 25px;
+    line-height: 1.3;
+  }
+
+  .ai-quiz-options-{{ ai_gen_id }} {
+    display: grid;
+    gap: 15px;
+  }
+
+  .ai-quiz-option-{{ ai_gen_id }} {
+    padding: 20px;
+    background-color: {{ block.settings.option_bg_color }};
+    border: {{ settings.buttons_border_thickness }}px solid {{ block.settings.option_border_color }};
+    border-radius: {{ settings.buttons_radius }}px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    font-size: {{ block.settings.option_text_size }}px;
+    color: {{ block.settings.option_text_color }};
+    position: relative;
+  }
+
+  .ai-quiz-option-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.option_hover_bg_color }};
+    border-color: {{ block.settings.option_hover_border_color }};
+    transform: translateY(-2px);
+  }
+
+  .ai-quiz-option-{{ ai_gen_id }}.selected {
+    background-color: {{ block.settings.option_selected_bg_color }};
+    border-color: {{ block.settings.option_selected_border_color }};
+    color: {{ block.settings.option_selected_text_color }};
+  }
+
+  .ai-quiz-textarea-{{ ai_gen_id }} {
+    width: 100%;
+    min-height: 120px;
+    padding: 20px;
+    border: {{ settings.inputs_border_thickness }}px solid {{ block.settings.option_border_color }};
+    border-radius: {{ settings.inputs_radius }}px;
+    font-size: {{ block.settings.option_text_size }}px;
+    font-family: inherit;
+    resize: vertical;
+    background-color: {{ block.settings.option_bg_color }};
+    color: {{ block.settings.option_text_color }};
+  }
+
+  .ai-quiz-textarea-{{ ai_gen_id }}:focus {
+    outline: none;
+    border-color: {{ block.settings.option_selected_border_color }};
+  }
+
+  .ai-quiz-navigation-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+  }
+
+  .ai-quiz-btn-{{ ai_gen_id }} {
+    padding: 15px 30px;
+    border: none;
+    border-radius: {{ settings.buttons_radius }}px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+  }
+
+  .ai-quiz-btn-primary-{{ ai_gen_id }} {
+    background-color: {{ block.settings.primary_button_color }};
+    color: {{ block.settings.primary_button_text_color }};
+  }
+
+  .ai-quiz-btn-primary-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.primary_button_hover_color }};
+  }
+
+  .ai-quiz-btn-secondary-{{ ai_gen_id }} {
+    background-color: {{ block.settings.secondary_button_color }};
+    color: {{ block.settings.secondary_button_text_color }};
+  }
+
+  .ai-quiz-btn-secondary-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.secondary_button_hover_color }};
+  }
+
+  .ai-quiz-results-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .ai-quiz-result-title-{{ ai_gen_id }} {
+    font-family: {{ settings.type_header_font.family }}, serif;
+    font-size: {{ block.settings.result_title_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 20px;
+    line-height: 1.2;
+  }
+
+  .ai-quiz-result-description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.result_text_size }}px;
+    color: {{ block.settings.text_color }};
+    line-height: 1.6;
+    margin: 0 0 30px;
+    opacity: 0.9;
+  }
+
+  .ai-quiz-result-image-{{ ai_gen_id }} {
+    max-width: 300px;
+    width: 100%;
+    height: auto;
+    margin: 0 auto 30px;
+    border-radius: {{ settings.media_radius }}px;
+  }
+
+  .ai-quiz-result-image-placeholder-{{ ai_gen_id }} {
+    width: 300px;
+    height: 200px;
+    margin: 0 auto 30px;
+    background-color: #f4f4f4;
+    border-radius: {{ settings.media_radius }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-quiz-result-image-placeholder-{{ ai_gen_id }} svg {
+    width: 80px;
+    height: 80px;
+    opacity: 0.5;
+  }
+
+  .ai-quiz-hidden-{{ ai_gen_id }} {
+    display: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-quiz-container-{{ ai_gen_id }} {
+      padding: 30px 15px;
+    }
+
+    .ai-quiz-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.8 }}px;
+    }
+
+    .ai-quiz-question-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.question_size | times: 0.9 }}px;
+    }
+
+    .ai-quiz-navigation-{{ ai_gen_id }} {
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .ai-quiz-btn-{{ ai_gen_id }} {
+      width: 100%;
+    }
+  }
+{% endstyle %}
+
+<interactive-quiz-{{ ai_gen_id }}
+  class="ai-quiz-container-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-quiz-header-{{ ai_gen_id }}">
+    {% if block.settings.logo %}
+      <img
+        src="{{ block.settings.logo | image_url: width: 400 }}"
+        alt="{{ block.settings.logo.alt | escape }}"
+        class="ai-quiz-logo-{{ ai_gen_id }}"
+        loading="lazy"
+      >
+    {% else %}
+      <div class="ai-quiz-logo-placeholder-{{ ai_gen_id }}">
+        {{ 'image' | placeholder_svg_tag }}
+      </div>
+    {% endif %}
+
+    {% if block.settings.title != blank %}
+      <h1 class="ai-quiz-title-{{ ai_gen_id }}">{{ block.settings.title }}</h1>
+    {% endif %}
+
+    {% if block.settings.intro != blank %}
+      <div class="ai-quiz-intro-{{ ai_gen_id }}">{{ block.settings.intro }}</div>
+    {% endif %}
+  </div>
+
+  <div class="ai-quiz-progress-bar-{{ ai_gen_id }}">
+    <div class="ai-quiz-progress-fill-{{ ai_gen_id }}" data-progress="0"></div>
+  </div>
+
+  <div class="ai-quiz-questions-{{ ai_gen_id }}">
+    {% for i in (1..5) %}
+      {% liquid
+        assign question_key = 'question_' | append: i
+        assign option_1_key = 'question_' | append: i | append: '_option_1'
+        assign option_2_key = 'question_' | append: i | append: '_option_2'
+        assign option_3_key = 'question_' | append: i | append: '_option_3'
+        assign option_4_key = 'question_' | append: i | append: '_option_4'
+
+        assign question_text = block.settings[question_key]
+        assign option_1 = block.settings[option_1_key]
+        assign option_2 = block.settings[option_2_key]
+        assign option_3 = block.settings[option_3_key]
+        assign option_4 = block.settings[option_4_key]
+      %}
+
+      {% if question_text != blank %}
+        <div
+          class="ai-quiz-question-container-{{ ai_gen_id }} {% if i != 1 %}ai-quiz-hidden-{{ ai_gen_id }}{% endif %}"
+          data-question="{{ i }}"
+        >
+          <div class="ai-quiz-question-number-{{ ai_gen_id }}">Question {{ i }} of 5</div>
+          <h2 class="ai-quiz-question-text-{{ ai_gen_id }}">{{ question_text }}</h2>
+
+          <div class="ai-quiz-options-{{ ai_gen_id }}">
+            {% if option_1 != blank %}
+              <div
+                class="ai-quiz-option-{{ ai_gen_id }}"
+                data-value="1"
+                data-question="{{ i }}"
+              >
+                {{ option_1 }}
+              </div>
+            {% endif %}
+
+            {% if option_2 != blank %}
+              <div
+                class="ai-quiz-option-{{ ai_gen_id }}"
+                data-value="2"
+                data-question="{{ i }}"
+              >
+                {{ option_2 }}
+              </div>
+            {% endif %}
+
+            {% if option_3 != blank %}
+              <div
+                class="ai-quiz-option-{{ ai_gen_id }}"
+                data-value="3"
+                data-question="{{ i }}"
+              >
+                {{ option_3 }}
+              </div>
+            {% endif %}
+
+            {% if option_4 != blank %}
+              <div
+                class="ai-quiz-option-{{ ai_gen_id }}"
+                data-value="4"
+                data-question="{{ i }}"
+              >
+                {{ option_4 }}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    {% if block.settings.open_ended_question != blank %}
+      <div
+        class="ai-quiz-question-container-{{ ai_gen_id }} ai-quiz-hidden-{{ ai_gen_id }}"
+        data-question="open-ended"
+      >
+        <div class="ai-quiz-question-number-{{ ai_gen_id }}">Final Question</div>
+        <h2 class="ai-quiz-question-text-{{ ai_gen_id }}">{{ block.settings.open_ended_question }}</h2>
+        <textarea
+          class="ai-quiz-textarea-{{ ai_gen_id }}"
+          placeholder="{{ block.settings.open_ended_placeholder }}"
+          data-open-ended="true"
+        ></textarea>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="ai-quiz-navigation-{{ ai_gen_id }}">
+    <button
+      class="ai-quiz-btn-{{ ai_gen_id }} ai-quiz-btn-secondary-{{ ai_gen_id }} ai-quiz-hidden-{{ ai_gen_id }}"
+      data-action="previous"
+    >
+      Previous
+    </button>
+    <button
+      class="ai-quiz-btn-{{ ai_gen_id }} ai-quiz-btn-primary-{{ ai_gen_id }}"
+      data-action="next"
+    >
+      Next
+    </button>
+  </div>
+
+  <div class="ai-quiz-results-{{ ai_gen_id }} ai-quiz-hidden-{{ ai_gen_id }}" data-results="container">
+    <h2 class="ai-quiz-result-title-{{ ai_gen_id }}" data-result="title">{{ block.settings.result_title }}</h2>
+    <div class="ai-quiz-result-description-{{ ai_gen_id }}" data-result="description">{{ block.settings.result_description }}</div>
+
+    {% if block.settings.result_image %}
+      <img
+        src="{{ block.settings.result_image | image_url: width: 600 }}"
+        alt="{{ block.settings.result_image.alt | escape }}"
+        class="ai-quiz-result-image-{{ ai_gen_id }}"
+        loading="lazy"
+      >
+    {% else %}
+      <div class="ai-quiz-result-image-placeholder-{{ ai_gen_id }}">
+        {{ 'product-1' | placeholder_svg_tag }}
+      </div>
+    {% endif %}
+
+    {% if block.settings.result_link != blank %}
+      <a
+        href="{{ block.settings.result_link }}"
+        class="ai-quiz-btn-{{ ai_gen_id }} ai-quiz-btn-primary-{{ ai_gen_id }}"
+      >
+        {{ block.settings.result_button_text }}
+      </a>
+    {% endif %}
+  </div>
+</interactive-quiz-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class InteractiveQuiz{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.currentQuestion = 1;
+        this.totalQuestions = 5;
+        this.answers = {};
+        this.openEndedAnswer = '';
+      }
+
+      connectedCallback() {
+        this.setupEventListeners();
+        this.updateProgress();
+      }
+
+      setupEventListeners() {
+        const options = this.querySelectorAll('.ai-quiz-option-{{ ai_gen_id }}');
+        const navButtons = this.querySelectorAll('[data-action]');
+        const textarea = this.querySelector('.ai-quiz-textarea-{{ ai_gen_id }}');
+
+        options.forEach(option => {
+          option.addEventListener('click', () => this.selectOption(option));
+        });
+
+        navButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            if (button.dataset.action === 'next') {
+              this.nextQuestion();
+            } else {
+              this.previousQuestion();
+            }
+          });
+        });
+
+        if (textarea) {
+          textarea.addEventListener('input', (e) => {
+            this.openEndedAnswer = e.target.value;
+          });
+        }
+      }
+
+      selectOption(option) {
+        const questionNum = option.dataset.question;
+        const value = option.dataset.value;
+
+        const questionOptions = this.querySelectorAll(`[data-question="${questionNum}"].ai-quiz-option-{{ ai_gen_id }}`);
+        questionOptions.forEach(opt => opt.classList.remove('selected'));
+
+        option.classList.add('selected');
+        this.answers[questionNum] = value;
+      }
+
+      nextQuestion() {
+        const currentQuestionContainer = this.querySelector(`[data-question="${this.currentQuestion}"]`);
+        
+        if (this.currentQuestion <= this.totalQuestions) {
+          if (!this.answers[this.currentQuestion]) {
+            alert('Please select an answer before continuing.');
+            return;
+          }
+        }
+
+        if (this.currentQuestion === 'open-ended') {
+          this.showResults();
+          return;
+        }
+
+        currentQuestionContainer.classList.add('ai-quiz-hidden-{{ ai_gen_id }}');
+
+        if (this.currentQuestion < this.totalQuestions) {
+          this.currentQuestion++;
+          const nextQuestionContainer = this.querySelector(`[data-question="${this.currentQuestion}"]`);
+          if (nextQuestionContainer) {
+            nextQuestionContainer.classList.remove('ai-quiz-hidden-{{ ai_gen_id }}');
+          }
+        } else {
+          const openEndedContainer = this.querySelector('[data-question="open-ended"]');
+          if (openEndedContainer) {
+            this.currentQuestion = 'open-ended';
+            openEndedContainer.classList.remove('ai-quiz-hidden-{{ ai_gen_id }}');
+          } else {
+            this.showResults();
+            return;
+          }
+        }
+
+        this.updateNavigation();
+        this.updateProgress();
+      }
+
+      previousQuestion() {
+        const currentQuestionContainer = this.querySelector(`[data-question="${this.currentQuestion}"]`);
+        currentQuestionContainer.classList.add('ai-quiz-hidden-{{ ai_gen_id }}');
+
+        if (this.currentQuestion === 'open-ended') {
+          this.currentQuestion = this.totalQuestions;
+        } else {
+          this.currentQuestion--;
+        }
+
+        const prevQuestionContainer = this.querySelector(`[data-question="${this.currentQuestion}"]`);
+        if (prevQuestionContainer) {
+          prevQuestionContainer.classList.remove('ai-quiz-hidden-{{ ai_gen_id }}');
+        }
+
+        this.updateNavigation();
+        this.updateProgress();
+      }
+
+      updateNavigation() {
+        const prevBtn = this.querySelector('[data-action="previous"]');
+        const nextBtn = this.querySelector('[data-action="next"]');
+
+        if (this.currentQuestion === 1) {
+          prevBtn.classList.add('ai-quiz-hidden-{{ ai_gen_id }}');
+        } else {
+          prevBtn.classList.remove('ai-quiz-hidden-{{ ai_gen_id }}');
+        }
+
+        if (this.currentQuestion === 'open-ended') {
+          nextBtn.textContent = 'Get Results';
+        } else {
+          nextBtn.textContent = 'Next';
+        }
+      }
+
+      updateProgress() {
+        const progressFill = this.querySelector('.ai-quiz-progress-fill-{{ ai_gen_id }}');
+        let progress = 0;
+
+        if (this.currentQuestion === 'open-ended') {
+          progress = 100;
+        } else {
+          progress = (this.currentQuestion / this.totalQuestions) * 100;
+        }
+
+        progressFill.style.width = progress + '%';
+      }
+
+      showResults() {
+        const questionsContainer = this.querySelector('.ai-quiz-questions-{{ ai_gen_id }}');
+        const navigationContainer = this.querySelector('.ai-quiz-navigation-{{ ai_gen_id }}');
+        const resultsContainer = this.querySelector('[data-results="container"]');
+
+        questionsContainer.classList.add('ai-quiz-hidden-{{ ai_gen_id }}');
+        navigationContainer.classList.add('ai-quiz-hidden-{{ ai_gen_id }}');
+        resultsContainer.classList.remove('ai-quiz-hidden-{{ ai_gen_id }}');
+
+        this.updateProgress();
+      }
+    }
+
+    customElements.define('interactive-quiz-{{ ai_gen_id }}', InteractiveQuiz{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Interactive quiz",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Quiz header"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Logo width",
+      "default": 150
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Quiz title",
+      "default": "Find Your Perfect Ritual"
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Introduction text",
+      "default": "Welcome to a journey of self-discovery. Answer these questions to find your perfect match."
+    },
+    {
+      "type": "header",
+      "content": "Questions"
+    },
+    {
+      "type": "text",
+      "id": "question_1",
+      "label": "Question 1",
+      "default": "What is your primary skin concern?"
+    },
+    {
+      "type": "text",
+      "id": "question_1_option_1",
+      "label": "Question 1 - Option 1",
+      "default": "Dryness and dehydration"
+    },
+    {
+      "type": "text",
+      "id": "question_1_option_2",
+      "label": "Question 1 - Option 2",
+      "default": "Oily and acne-prone"
+    },
+    {
+      "type": "text",
+      "id": "question_1_option_3",
+      "label": "Question 1 - Option 3",
+      "default": "Sensitivity and redness"
+    },
+    {
+      "type": "text",
+      "id": "question_1_option_4",
+      "label": "Question 1 - Option 4",
+      "default": "Aging and fine lines"
+    },
+    {
+      "type": "text",
+      "id": "question_2",
+      "label": "Question 2",
+      "default": "What time of day do you prefer your skincare routine?"
+    },
+    {
+      "type": "text",
+      "id": "question_2_option_1",
+      "label": "Question 2 - Option 1",
+      "default": "Morning energizer"
+    },
+    {
+      "type": "text",
+      "id": "question_2_option_2",
+      "label": "Question 2 - Option 2",
+      "default": "Evening wind-down"
+    },
+    {
+      "type": "text",
+      "id": "question_2_option_3",
+      "label": "Question 2 - Option 3",
+      "default": "Both morning and night"
+    },
+    {
+      "type": "text",
+      "id": "question_2_option_4",
+      "label": "Question 2 - Option 4",
+      "default": "Whenever I remember"
+    },
+    {
+      "type": "text",
+      "id": "question_3",
+      "label": "Question 3",
+      "default": "How would you describe your lifestyle?"
+    },
+    {
+      "type": "text",
+      "id": "question_3_option_1",
+      "label": "Question 3 - Option 1",
+      "default": "Fast-paced and busy"
+    },
+    {
+      "type": "text",
+      "id": "question_3_option_2",
+      "label": "Question 3 - Option 2",
+      "default": "Balanced and mindful"
+    },
+    {
+      "type": "text",
+      "id": "question_3_option_3",
+      "label": "Question 3 - Option 3",
+      "default": "Relaxed and leisurely"
+    },
+    {
+      "type": "text",
+      "id": "question_3_option_4",
+      "label": "Question 3 - Option 4",
+      "default": "Active and outdoorsy"
+    },
+    {
+      "type": "text",
+      "id": "question_4",
+      "label": "Question 4",
+      "default": "What scent profile appeals to you most?"
+    },
+    {
+      "type": "text",
+      "id": "question_4_option_1",
+      "label": "Question 4 - Option 1",
+      "default": "Fresh and citrusy"
+    },
+    {
+      "type": "text",
+      "id": "question_4_option_2",
+      "label": "Question 4 - Option 2",
+      "default": "Floral and romantic"
+    },
+    {
+      "type": "text",
+      "id": "question_4_option_3",
+      "label": "Question 4 - Option 3",
+      "default": "Earthy and grounding"
+    },
+    {
+      "type": "text",
+      "id": "question_4_option_4",
+      "label": "Question 4 - Option 4",
+      "default": "Unscented or minimal"
+    },
+    {
+      "type": "text",
+      "id": "question_5",
+      "label": "Question 5",
+      "default": "What is your skincare experience level?"
+    },
+    {
+      "type": "text",
+      "id": "question_5_option_1",
+      "label": "Question 5 - Option 1",
+      "default": "Beginner - keep it simple"
+    },
+    {
+      "type": "text",
+      "id": "question_5_option_2",
+      "label": "Question 5 - Option 2",
+      "default": "Intermediate - ready to explore"
+    },
+    {
+      "type": "text",
+      "id": "question_5_option_3",
+      "label": "Question 5 - Option 3",
+      "default": "Advanced - bring on the complexity"
+    },
+    {
+      "type": "text",
+      "id": "question_5_option_4",
+      "label": "Question 5 - Option 4",
+      "default": "Expert - I know what I want"
+    },
+    {
+      "type": "text",
+      "id": "open_ended_question",
+      "label": "Open-ended question",
+      "default": "Share your unique skincare story or any specific concerns we should know about:"
+    },
+    {
+      "type": "text",
+      "id": "open_ended_placeholder",
+      "label": "Open-ended placeholder text",
+      "default": "Tell us about your skin journey, goals, or any specific needs..."
+    },
+    {
+      "type": "header",
+      "content": "Results"
+    },
+    {
+      "type": "text",
+      "id": "result_title",
+      "label": "Result title",
+      "default": "Your Perfect Ritual Awaits"
+    },
+    {
+      "type": "textarea",
+      "id": "result_description",
+      "label": "Result description",
+      "default": "Based on your answers, we've found the perfect skincare ritual for you. This personalized recommendation will help you achieve your skin goals."
+    },
+    {
+      "type": "image_picker",
+      "id": "result_image",
+      "label": "Result image"
+    },
+    {
+      "type": "url",
+      "id": "result_link",
+      "label": "Result link"
+    },
+    {
+      "type": "text",
+      "id": "result_button_text",
+      "label": "Result button text",
+      "default": "Shop Your Perfect Ritual"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "progress_color",
+      "label": "Progress bar color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "progress_bg_color",
+      "label": "Progress background color",
+      "default": "#f0f0f0"
+    },
+    {
+      "type": "color",
+      "id": "option_bg_color",
+      "label": "Option background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "option_border_color",
+      "label": "Option border color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "option_text_color",
+      "label": "Option text color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "option_hover_bg_color",
+      "label": "Option hover background color",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "color",
+      "id": "option_hover_border_color",
+      "label": "Option hover border color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "option_selected_bg_color",
+      "label": "Selected option background color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "option_selected_border_color",
+      "label": "Selected option border color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "option_selected_text_color",
+      "label": "Selected option text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "primary_button_color",
+      "label": "Primary button color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "primary_button_text_color",
+      "label": "Primary button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "primary_button_hover_color",
+      "label": "Primary button hover color",
+      "default": "#084455"
+    },
+    {
+      "type": "color",
+      "id": "secondary_button_color",
+      "label": "Secondary button color",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "color",
+      "id": "secondary_button_text_color",
+      "label": "Secondary button text color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "secondary_button_hover_color",
+      "label": "Secondary button hover color",
+      "default": "#e9ecef"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "intro_size",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Introduction text size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "question_size",
+      "min": 18,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Question text size",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "option_text_size",
+      "min": 14,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Option text size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "result_title_size",
+      "min": 24,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Result title size",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "result_text_size",
+      "min": 14,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Result text size",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "progress_height",
+      "min": 4,
+      "max": 12,
+      "step": 2,
+      "unit": "px",
+      "label": "Progress bar height",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Interactive quiz"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,176 @@
+<section class="lnk-landing" style="--lnk-green:#0a713d;--lnk-yellow:#f6c324;--lnk-red:#c7392a;--lnk-cream:#f5f0d6;--lnk-black:#1e1e1e;">
+  {% assign bg = section.settings.hero_bg | default: '' %}
+
+  <!-- MINI LNK HEADER (shows because we hide the global one on this template) -->
+  <div class="lnk-miniheader">
+    <a class="lnk-brand" href="/pages/lnk-nebraska">LNK.Nebraska</a>
+    <nav class="lnk-miniheader__nav">
+      <a href="#curiosity">Curiosity</a>
+      <a href="https://www.tiktok.com/@lnk.nebraska" target="_blank" rel="noopener">TikTok</a>
+      <a href="/pages/lnk-nebraska#signup">Sign Up</a>
+    </nav>
+  </div>
+
+  <!-- HERO -->
+  <div class="lnk-hero" style="background-image:url({{ bg | image_url: width: 2000 }});">
+    <div class="lnk-hero__overlay"></div>
+    <div class="lnk-container lnk-hero__content">
+      <h1 class="lnk-hero__title">{{ section.settings.hero_title }}</h1>
+      <p class="lnk-hero__text">{{ section.settings.hero_text }}</p>
+      {% if section.settings.cta_label and section.settings.cta_url %}
+        <a href="{{ section.settings.cta_url }}" class="lnk-btn lnk-btn--yellow">{{ section.settings.cta_label }}</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- CURIOSITY & LEGENDS -->
+  <div class="lnk-section lnk-section--light" id="curiosity">
+    <div class="lnk-container">
+      <h2 class="lnk-section__title">{{ section.settings.cards_heading }}</h2>
+      <p class="lnk-section__sub">{{ section.settings.cards_sub }}</p>
+
+      <div class="lnk-cardgrid">
+        <article class="lnk-card">
+          <div class="lnk-card__icon">{% if section.settings.card_icon_1 %}{{ section.settings.card_icon_1 | image_url: width: 160 | image_tag: alt: section.settings.card_title_1 }}{% endif %}</div>
+          <h3 class="lnk-card__title">{{ section.settings.card_title_1 }}</h3>
+          <p class="lnk-card__desc">{{ section.settings.card_desc_1 }}</p>
+          {% if section.settings.card_url_1 and section.settings.card_label_1 %}<a class="lnk-btn lnk-btn--link" href="{{ section.settings.card_url_1 }}">{{ section.settings.card_label_1 }} →</a>{% endif %}
+        </article>
+
+        <article class="lnk-card">
+          <div class="lnk-card__icon">{% if section.settings.card_icon_2 %}{{ section.settings.card_icon_2 | image_url: width: 160 | image_tag: alt: section.settings.card_title_2 }}{% endif %}</div>
+          <h3 class="lnk-card__title">{{ section.settings.card_title_2 }}</h3>
+          <p class="lnk-card__desc">{{ section.settings.card_desc_2 }}</p>
+          {% if section.settings.card_url_2 and section.settings.card_label_2 %}<a class="lnk-btn lnk-btn--link" href="{{ section.settings.card_url_2 }}">{{ section.settings.card_label_2 }} →</a>{% endif %}
+        </article>
+
+        <article class="lnk-card">
+          <div class="lnk-card__icon">{% if section.settings.card_icon_3 %}{{ section.settings.card_icon_3 | image_url: width: 160 | image_tag: alt: section.settings.card_title_3 }}{% endif %}</div>
+          <h3 class="lnk-card__title">{{ section.settings.card_title_3 }}</h3>
+          <p class="lnk-card__desc">{{ section.settings.card_desc_3 }}</p>
+          {% if section.settings.card_url_3 and section.settings.card_label_3 %}<a class="lnk-btn lnk-btn--link" href="{{ section.settings.card_url_3 }}">{{ section.settings.card_label_3 }} →</a>{% endif %}
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEWSLETTER -->
+  <div class="lnk-section" id="signup">
+    <div class="lnk-container">
+      <div class="lnk-news">
+        <div class="lnk-news__icon">✉️</div>
+        <div class="lnk-news__body">
+          <h3 class="lnk-news__title">{{ section.settings.news_title }}</h3>
+          <p class="lnk-news__text">{{ section.settings.news_text }}</p>
+          {% form 'customer', id: 'LNKNewsletter', class: 'lnk-news__form' %}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <input type="email" name="contact[email]" required placeholder="Enter your email" class="lnk-input">
+            <button class="lnk-btn lnk-btn--green" type="submit">{{ section.settings.news_cta }}</button>
+          {% endform %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <div class="lnk-section lnk-section--red">
+    <div class="lnk-container lnk-cta">
+      <h3 class="lnk-cta__title">{{ section.settings.final_title }}</h3>
+      <p class="lnk-cta__text">{{ section.settings.final_text }}</p>
+      {% if section.settings.final_label and section.settings.final_url %}
+        <a href="{{ section.settings.final_url }}" class="lnk-btn lnk-btn--yellow">{{ section.settings.final_label }}</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "LNK-Nebraska Landing",
+  "settings": [
+    { "type": "image_picker", "id": "hero_bg", "label": "Hero background" },
+    { "type": "text", "id": "hero_title", "label": "Hero title", "default": "Unlock Nebraska’s Hidden Secrets" },
+    { "type": "textarea", "id": "hero_text", "label": "Hero subheading", "default": "Explore the myths, architecture, and untold stories of the Cornhusker State." },
+    { "type": "text", "id": "cta_label", "label": "Primary CTA label", "default": "Sign Up for Free eBook" },
+    { "type": "url", "id": "cta_url", "label": "Primary CTA link" },
+
+    { "type": "text", "id": "cards_heading", "label": "Cards heading", "default": "Curiosity & Legends" },
+    { "type": "textarea", "id": "cards_sub", "label": "Cards subheading", "default": "Uncover the hidden stories and mythological connections that make Nebraska unique." },
+
+    { "type": "image_picker", "id": "card_icon_1", "label": "Card 1 icon" },
+    { "type": "text", "id": "card_title_1", "label": "Card 1 title", "default": "The Vertical Symphony" },
+    { "type": "textarea", "id": "card_desc_1", "label": "Card 1 text", "default": "Discover the blend of Art Deco and neo-Byzantine styles in the Nebraska State Capitol." },
+    { "type": "url", "id": "card_url_1", "label": "Card 1 link" },
+    { "type": "text", "id": "card_label_1", "label": "Card 1 link label", "default": "Learn More" },
+
+    { "type": "image_picker", "id": "card_icon_2", "label": "Card 2 icon" },
+    { "type": "text", "id": "card_title_2", "label": "Card 2 title", "default": "The Sower & Saturn" },
+    { "type": "textarea", "id": "card_desc_2", "label": "Card 2 text", "default": "How The Sower statue and Saturn reflect Nebraska’s agricultural roots." },
+    { "type": "url", "id": "card_url_2", "label": "Card 2 link" },
+    { "type": "text", "id": "card_label_2", "label": "Card 2 link label", "default": "Learn More" },
+
+    { "type": "image_picker", "id": "card_icon_3", "label": "Card 3 icon" },
+    { "type": "text", "id": "card_title_3", "label": "Card 3 title", "default": "Hidden Mythology" },
+    { "type": "textarea", "id": "card_desc_3", "label": "Card 3 text", "default": "Greek and Roman symbols embedded in Lincoln’s public buildings." },
+    { "type": "url", "id": "card_url_3", "label": "Card 3 link" },
+    { "type": "text", "id": "card_label_3", "label": "Card 3 link label", "default": "Learn More" },
+
+    { "type": "text", "id": "news_title", "label": "Newsletter title", "default": "Stay in the Loop" },
+    { "type": "textarea", "id": "news_text", "label": "Newsletter text", "default": "Get weekly updates on the best Nebraska experiences, hidden gems, and local events." },
+    { "type": "text", "id": "news_cta", "label": "Newsletter button label", "default": "Subscribe" },
+
+    { "type": "text", "id": "final_title", "label": "Final CTA title", "default": "Plan Your Good-Life Weekend" },
+    { "type": "textarea", "id": "final_text", "label": "Final CTA text", "default": "Build a simple itinerary with links to socials and pins." },
+    { "type": "text", "id": "final_label", "label": "Final CTA button label", "default": "Start Planning" },
+    { "type": "url", "id": "final_url", "label": "Final CTA link" }
+  ],
+  "presets": [{ "name": "LNK-Nebraska Landing" }]
+}
+{% endschema %}
+
+<style>
+/* Hide your store header & footer ONLY on this page */
+body:has(.lnk-landing) .section-header,
+body:has(.lnk-landing) .shopify-section-header,
+body:has(.lnk-landing) header { display:none !important; }
+body:has(.lnk-landing) .section-footer,
+body:has(.lnk-landing) .shopify-section-footer,
+body:has(.lnk-landing) footer { display:none !important; }
+
+/* Mini LNK header */
+.lnk-miniheader{position:sticky;top:0;z-index:3;background:#fff;border-bottom:1px solid #eee}
+.lnk-miniheader{display:flex;justify-content:space-between;align-items:center;padding:10px 4vw}
+.lnk-brand{font-weight:800;letter-spacing:.2px;color:var(--lnk-green);text-decoration:none}
+.lnk-miniheader__nav a{margin-left:12px;text-decoration:none;color:#333}
+.lnk-miniheader__nav a:hover{color:var(--lnk-red)}
+
+/* Core styles (same as before) */
+.lnk-container{width:min(1200px,92%);margin-inline:auto}
+.lnk-hero{position:relative;min-height:60vh;background-size:cover;background-position:center}
+.lnk-hero__overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5),rgba(0,0,0,.35) 50%,rgba(0,0,0,.4))}
+.lnk-hero__content{position:relative;z-index:1;color:#fff;text-align:center;padding:48px 0}
+.lnk-hero__title{font-size:clamp(28px,5vw,56px);font-weight:700;margin:0 0 12px}
+.lnk-hero__text{font-size:clamp(16px,2.2vw,22px);opacity:.95;margin:0 auto 20px;max-width:780px}
+.lnk-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.8rem 1.4rem;border-radius:999px;font-weight:600;text-decoration:none}
+.lnk-btn--yellow{background:var(--lnk-yellow);color:var(--lnk-black)}
+.lnk-btn--green{background:var(--lnk-green);color:#fff}
+.lnk-btn--link{color:var(--lnk-red);font-weight:600}
+.lnk-section{padding:48px 0}
+.lnk-section--light{background:var(--lnk-cream)}
+.lnk-section--red{background:var(--lnk-red);color:#fff;text-align:center}
+.lnk-section__title{text-align:center;font-size:clamp(24px,3.2vw,40px);margin-bottom:10px}
+.lnk-section__sub{max-width:880px;margin:0 auto 24px;text-align:center;color:#555}
+.lnk-cardgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:16px}
+.lnk-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 4px 10px rgba(0,0,0,.06)}
+.lnk-card__icon{margin-bottom:12px}
+.lnk-card__title{font-size:18px;margin:0 0 6px;color:var(--lnk-green)}
+.lnk-card__desc{color:#555;margin:0 0 10px}
+.lnk-news{display:grid;grid-template-columns:64px 1fr;gap:16px;align-items:center;background:#fff;border:1px solid #e5e5e5;border-radius:14px;padding:18px}
+.lnk-news__icon{font-size:32px;line-height:1;text-align:center}
+.lnk-news__title{margin:0 0 4px;font-size:20px}
+.lnk-news__text{margin:0 0 12px;color:#555}
+.lnk-news__form{display:flex;gap:10px;flex-wrap:wrap}
+.lnk-input{padding:.7rem 1rem;border:1px solid #d8d8d8;border-radius:8px;min-width:260px}
+.lnk-cta__title{margin:0 0 8px;font-size:clamp(22px,3vw,32px)}
+.lnk-cta__text{margin:0 0 14px}
+</style>

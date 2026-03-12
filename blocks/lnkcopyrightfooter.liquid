@@ -1,0 +1,412 @@
+{% doc %}
+  @prompt
+    Section Background: Deep green (#1F5C46, same as TikTok section for consistency)
+    	•	Layout:
+    	•	Top area:
+    	•	Left column: Logo placeholder (small square or brand logo, aligned left).
+    	•	Right column: Text block with:
+    	•	Heading: “Join the Good Life” (serif, white text)
+    	•	Subheading: “Discover stories, legends, and inspirations from Nebraska.”
+    	•	CTA Button: “Follow Us” (rounded, coral-red button).
+    	•	Columns: side by side (stack vertically on mobile).
+    	•	Bottom area: Copyright bar (slightly darker green stripe, ~50px tall).
+    	•	Content: “© 2025 LNK.Nebraska. All Rights Reserved.” (centered or left-aligned).
+    	•	Small font, lighter beige text (#F8F2E8).
+    
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-footer-{{ ai_gen_id }} {
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding }}px 20px 0;
+    width: 100%;
+  }
+
+  .ai-footer-container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ai-footer-main-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 40px;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+
+  .ai-footer-logo-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .ai-footer-logo-{{ ai_gen_id }} img {
+    width: {{ block.settings.logo_size }}px;
+    height: {{ block.settings.logo_size }}px;
+    object-fit: contain;
+  }
+
+  .ai-footer-logo-placeholder-{{ ai_gen_id }} {
+    width: {{ block.settings.logo_size }}px;
+    height: {{ block.settings.logo_size }}px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-footer-logo-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.5;
+  }
+
+  .ai-footer-content-{{ ai_gen_id }} {
+    text-align: left;
+  }
+
+  .ai-footer-heading-{{ ai_gen_id }} {
+    font-family: {{ settings.type_header_font.family }}, {{ settings.type_header_font.fallback_families }};
+    font-weight: {{ settings.type_header_font.weight }};
+    font-style: {{ settings.type_header_font.style }};
+    color: {{ block.settings.heading_color }};
+    font-size: {{ block.settings.heading_size }}px;
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+  }
+
+  .ai-footer-subheading-{{ ai_gen_id }} {
+    font-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    font-weight: {{ settings.type_body_font.weight }};
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.text_size }}px;
+    margin: 0 0 20px 0;
+    line-height: 1.4;
+  }
+
+  .ai-footer-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    background-color: {{ block.settings.button_color }};
+    color: {{ block.settings.button_text_color }};
+    text-decoration: none;
+    border-radius: {{ block.settings.button_radius }}px;
+    font-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    font-weight: 500;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+  }
+
+  .ai-footer-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_color }};
+    color: {{ block.settings.button_hover_text_color }};
+    transform: translateY(-1px);
+  }
+
+  .ai-footer-copyright-{{ ai_gen_id }} {
+    background-color: {{ block.settings.copyright_bg_color }};
+    padding: 15px 20px;
+    margin: 0 -20px;
+    text-align: {{ block.settings.copyright_alignment }};
+  }
+
+  .ai-footer-copyright-text-{{ ai_gen_id }} {
+    font-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    color: {{ block.settings.copyright_text_color }};
+    font-size: {{ block.settings.copyright_text_size }}px;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-footer-main-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 30px;
+      text-align: center;
+    }
+
+    .ai-footer-logo-{{ ai_gen_id }} {
+      justify-content: center;
+    }
+
+    .ai-footer-content-{{ ai_gen_id }} {
+      text-align: center;
+    }
+
+    .ai-footer-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.9 }}px;
+    }
+
+    .ai-footer-subheading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.text_size | times: 0.9 }}px;
+    }
+
+    .ai-footer-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding | times: 0.7 }}px 16px 0;
+    }
+
+    .ai-footer-copyright-{{ ai_gen_id }} {
+      margin: 0 -16px;
+      padding: 12px 16px;
+    }
+
+    .ai-footer-copyright-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.copyright_text_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<footer class="ai-footer-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-footer-container-{{ ai_gen_id }}">
+    <div class="ai-footer-main-{{ ai_gen_id }}">
+      <div class="ai-footer-logo-{{ ai_gen_id }}">
+        {% if block.settings.logo %}
+          <img
+            src="{{ block.settings.logo | image_url: width: 200 }}"
+            alt="{{ shop.name }}"
+            width="{{ block.settings.logo_size }}"
+            height="{{ block.settings.logo_size }}"
+            loading="lazy"
+          >
+        {% else %}
+          <div class="ai-footer-logo-placeholder-{{ ai_gen_id }}">
+            {{ 'image' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="ai-footer-content-{{ ai_gen_id }}">
+        {% if block.settings.heading != blank %}
+          <h2 class="ai-footer-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+        {% endif %}
+
+        {% if block.settings.subheading != blank %}
+          <p class="ai-footer-subheading-{{ ai_gen_id }}">{{ block.settings.subheading }}</p>
+        {% endif %}
+
+        {% if block.settings.button_text != blank %}
+          <a
+            href="{{ block.settings.button_link | default: '#' }}"
+            class="ai-footer-button-{{ ai_gen_id }}"
+          >
+            {{ block.settings.button_text }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="ai-footer-copyright-{{ ai_gen_id }}">
+      <p class="ai-footer-copyright-text-{{ ai_gen_id }}">
+        {{ block.settings.copyright_text }}
+      </p>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Nebraska footer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "range",
+      "id": "logo_size",
+      "min": 40,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Logo size",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Join the Good Life"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Discover stories, legends, and inspirations from Nebraska."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Follow Us"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "default": "© 2025 Nebraska Tourism. All Rights Reserved."
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#1F5C46"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button color",
+      "default": "#FF6B47"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Button hover color",
+      "default": "#E55A3C"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Button hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "copyright_bg_color",
+      "label": "Copyright background color",
+      "default": "#1A5240"
+    },
+    {
+      "type": "color",
+      "id": "copyright_text_color",
+      "label": "Copyright text color",
+      "default": "#F8F2E8"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "copyright_text_size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Copyright text size",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Section padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "copyright_alignment",
+      "label": "Copyright alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Nebraska footer"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,661 @@
+{% doc %}
+  @prompt
+    Create a custom Liquid section for my Craft theme called **"Ingredient Glossary Visualizer"** that renders an interactive, hierarchical tree for skincare ingredients.  Follow these guidelines:
+    
+    1. **Data Loading**
+       * Add a text-area setting called **"Ingredient Data (JSON)"**.  This setting will contain raw JSON for the ingredient taxonomy.  Within the JavaScript, read the value from a `<script type="application/json" id="ingredient-data">` element and `JSON.parse` it to produce the data object for D3.
+    
+    2. **Visualization**
+       * Use **D3.js v7** to draw a collapsible tree (horizontal orientation).  Each node should render as a colored circle with a label.  Clicking nodes should expand/collapse children.  The tree should initially start collapsed beneath the root.
+       * Implement hover tooltips for leaf nodes that display the ingredient’s **Name**, **Origin**, **Function**, and **Description** (these fields are part of each node’s `.data` property).
+       * Include three control buttons labelled **Expand All**, **Collapse All** and **Reset View** with a gradient background.  Buttons should call global functions to expand or collapse every branch or reset to the initial state.  
+    
+    3. **Styling & Brand Controls**
+       * Match the Haramoon brand aesthetic by using gradients and pastel colours, but make colours editable.  Add section settings for:
+         - **Background Gradient Start/End**
+         - **Root Node Colour**, **Category Node Colour**, **Class Node Colour**, **Ingredient Node Colour**
+         - **Button Gradient Start/End**
+       * Use these settings in your CSS (for backgrounds, node fill/stroke, links and buttons).  Provide sensible defaults (e.g., `#f5f7fa`, `#c3cfe2`, `#ff9a9e`, `#a8edea`, `#ffecd2`, `#d299c2`, `#667eea`, `#764ba2`) but allow the merchant to change them to match their Canva brand kit.
+       * Use an accessible font (like **Inter** or the theme’s default) and ensure responsive sizing (700 px tall on mobile, 900 px on desktop).  Include a legend explaining nod
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-ingredient-glossary-{{ ai_gen_id }} {
+    background: linear-gradient(135deg, {{ block.settings.bg_gradient_start }}, {{ block.settings.bg_gradient_end }});
+    padding: 40px 20px;
+    border-radius: 12px;
+    font-family: {{ settings.type_body_font.family }}, sans-serif;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-ingredient-glossary-header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .ai-ingredient-glossary-title-{{ ai_gen_id }} {
+    font-family: {{ settings.type_header_font.family }}, serif;
+    font-size: 2.5rem;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 10px;
+    font-weight: 600;
+  }
+
+  .ai-ingredient-glossary-subtitle-{{ ai_gen_id }} {
+    font-size: 1.1rem;
+    color: {{ block.settings.text_color }};
+    opacity: 0.8;
+    margin: 0;
+  }
+
+  .ai-ingredient-controls-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
+
+  .ai-ingredient-control-btn-{{ ai_gen_id }} {
+    background: linear-gradient(135deg, {{ block.settings.button_gradient_start }}, {{ block.settings.button_gradient_end }});
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-ingredient-control-btn-{{ ai_gen_id }}:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .ai-ingredient-visualization-{{ ai_gen_id }} {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-ingredient-tree-container-{{ ai_gen_id }} {
+    width: 100%;
+    height: 700px;
+    position: relative;
+  }
+
+  .ai-ingredient-legend-{{ ai_gen_id }} {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+  }
+
+  .ai-ingredient-legend-item-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .ai-ingredient-legend-color-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 8px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-ingredient-tooltip-{{ ai_gen_id }} {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    max-width: 250px;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .ai-ingredient-tooltip-title-{{ ai_gen_id }} {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #fff;
+  }
+
+  .ai-ingredient-tooltip-field-{{ ai_gen_id }} {
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+
+  .ai-ingredient-tooltip-label-{{ ai_gen_id }} {
+    font-weight: 500;
+    color: #ccc;
+  }
+
+  .ai-ingredient-empty-state-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 60px 20px;
+    color: {{ block.settings.text_color }};
+    opacity: 0.7;
+  }
+
+  .ai-ingredient-empty-icon-{{ ai_gen_id }} {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-ingredient-glossary-{{ ai_gen_id }} {
+      padding: 20px 15px;
+    }
+
+    .ai-ingredient-glossary-title-{{ ai_gen_id }} {
+      font-size: 2rem;
+    }
+
+    .ai-ingredient-tree-container-{{ ai_gen_id }} {
+      height: 700px;
+    }
+
+    .ai-ingredient-legend-{{ ai_gen_id }} {
+      position: relative;
+      top: auto;
+      right: auto;
+      margin-bottom: 20px;
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .ai-ingredient-controls-{{ ai_gen_id }} {
+      gap: 10px;
+    }
+
+    .ai-ingredient-control-btn-{{ ai_gen_id }} {
+      padding: 10px 18px;
+      font-size: 13px;
+    }
+  }
+
+  @media screen and (max-width: 900px) {
+    .ai-ingredient-tree-container-{{ ai_gen_id }} {
+      height: 700px;
+    }
+  }
+{% endstyle %}
+
+<ingredient-glossary-{{ ai_gen_id }}
+  class="ai-ingredient-glossary-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-ingredient-glossary-header-{{ ai_gen_id }}">
+    <h2 class="ai-ingredient-glossary-title-{{ ai_gen_id }}">{{ block.settings.title }}</h2>
+    <p class="ai-ingredient-glossary-subtitle-{{ ai_gen_id }}">{{ block.settings.subtitle }}</p>
+  </div>
+
+  <div class="ai-ingredient-controls-{{ ai_gen_id }}">
+    <button class="ai-ingredient-control-btn-{{ ai_gen_id }}" onclick="expandAllNodes{{ ai_gen_id }}()">
+      Expand All
+    </button>
+    <button class="ai-ingredient-control-btn-{{ ai_gen_id }}" onclick="collapseAllNodes{{ ai_gen_id }}()">
+      Collapse All
+    </button>
+    <button class="ai-ingredient-control-btn-{{ ai_gen_id }}" onclick="resetView{{ ai_gen_id }}()">
+      Reset View
+    </button>
+  </div>
+
+  <div class="ai-ingredient-visualization-{{ ai_gen_id }}">
+    {% if block.settings.ingredient_data != blank %}
+      <div class="ai-ingredient-legend-{{ ai_gen_id }}">
+        <div class="ai-ingredient-legend-item-{{ ai_gen_id }}">
+          <div class="ai-ingredient-legend-color-{{ ai_gen_id }}" style="background-color: {{ block.settings.root_node_color }};"></div>
+          <span>Root</span>
+        </div>
+        <div class="ai-ingredient-legend-item-{{ ai_gen_id }}">
+          <div class="ai-ingredient-legend-color-{{ ai_gen_id }}" style="background-color: {{ block.settings.category_node_color }};"></div>
+          <span>Category</span>
+        </div>
+        <div class="ai-ingredient-legend-item-{{ ai_gen_id }}">
+          <div class="ai-ingredient-legend-color-{{ ai_gen_id }}" style="background-color: {{ block.settings.class_node_color }};"></div>
+          <span>Class</span>
+        </div>
+        <div class="ai-ingredient-legend-item-{{ ai_gen_id }}">
+          <div class="ai-ingredient-legend-color-{{ ai_gen_id }}" style="background-color: {{ block.settings.ingredient_node_color }};"></div>
+          <span>Ingredient</span>
+        </div>
+      </div>
+      <div class="ai-ingredient-tree-container-{{ ai_gen_id }}" id="tree-container-{{ ai_gen_id }}"></div>
+      <div class="ai-ingredient-tooltip-{{ ai_gen_id }}" id="tooltip-{{ ai_gen_id }}"></div>
+    {% else %}
+      <div class="ai-ingredient-empty-state-{{ ai_gen_id }}">
+        <div class="ai-ingredient-empty-icon-{{ ai_gen_id }}">🌿</div>
+        <h3>Add ingredient data to get started</h3>
+        <p>Configure the "Ingredient Data (JSON)" setting to display your interactive ingredient tree.</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <script type="application/json" id="ingredient-data-{{ ai_gen_id }}">{{ block.settings.ingredient_data }}</script>
+</ingredient-glossary-{{ ai_gen_id }}>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<script>
+  (function() {
+    class IngredientGlossary{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.svg = null;
+        this.root = null;
+        this.treeLayout = null;
+        this.data = null;
+        this.width = 0;
+        this.height = 0;
+        this.margin = { top: 20, right: 120, bottom: 20, left: 120 };
+      }
+
+      connectedCallback() {
+        this.loadData();
+        if (this.data) {
+          this.initializeVisualization();
+          this.setupGlobalFunctions();
+          window.addEventListener('resize', () => this.handleResize());
+        }
+      }
+
+      loadData() {
+        const dataElement = this.querySelector('#ingredient-data-{{ ai_gen_id }}');
+        if (dataElement && dataElement.textContent.trim()) {
+          try {
+            this.data = JSON.parse(dataElement.textContent);
+          } catch (error) {
+            console.error('Error parsing ingredient data:', error);
+          }
+        }
+      }
+
+      initializeVisualization() {
+        const container = this.querySelector('#tree-container-{{ ai_gen_id }}');
+        if (!container) return;
+
+        const containerRect = container.getBoundingClientRect();
+        this.width = containerRect.width - this.margin.left - this.margin.right;
+        this.height = containerRect.height - this.margin.top - this.margin.bottom;
+
+        this.svg = d3.select(container)
+          .append('svg')
+          .attr('width', containerRect.width)
+          .attr('height', containerRect.height);
+
+        const g = this.svg.append('g')
+          .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
+
+        this.treeLayout = d3.tree().size([this.height, this.width]);
+
+        this.root = d3.hierarchy(this.data);
+        this.root.x0 = this.height / 2;
+        this.root.y0 = 0;
+
+        this.root.children.forEach(this.collapse.bind(this));
+
+        this.update(this.root);
+      }
+
+      collapse(d) {
+        if (d.children) {
+          d._children = d.children;
+          d._children.forEach(this.collapse.bind(this));
+          d.children = null;
+        }
+      }
+
+      expand(d) {
+        if (d._children) {
+          d.children = d._children;
+          d._children = null;
+          d.children.forEach(this.expand.bind(this));
+        }
+      }
+
+      update(source) {
+        const treeData = this.treeLayout(this.root);
+        const nodes = treeData.descendants();
+        const links = treeData.descendants().slice(1);
+
+        nodes.forEach(d => { d.y = d.depth * 180; });
+
+        const g = this.svg.select('g');
+        
+        const node = g.selectAll('g.node')
+          .data(nodes, d => d.id || (d.id = ++this.nodeId));
+
+        const nodeEnter = node.enter().append('g')
+          .attr('class', 'node')
+          .attr('transform', d => `translate(${source.y0},${source.x0})`)
+          .on('click', (event, d) => this.click(event, d));
+
+        nodeEnter.append('circle')
+          .attr('r', 1e-6)
+          .style('fill', d => this.getNodeColor(d))
+          .style('stroke', '#333')
+          .style('stroke-width', '2px')
+          .style('cursor', 'pointer');
+
+        nodeEnter.append('text')
+          .attr('dy', '.35em')
+          .attr('x', d => d.children || d._children ? -13 : 13)
+          .attr('text-anchor', d => d.children || d._children ? 'end' : 'start')
+          .text(d => d.data.name)
+          .style('fill-opacity', 1e-6)
+          .style('font-size', '12px')
+          .style('font-weight', '500')
+          .style('fill', '{{ block.settings.text_color }}');
+
+        nodeEnter.filter(d => this.isLeafNode(d))
+          .on('mouseover', (event, d) => this.showTooltip(event, d))
+          .on('mouseout', () => this.hideTooltip());
+
+        const nodeUpdate = nodeEnter.merge(node);
+
+        nodeUpdate.transition()
+          .duration(750)
+          .attr('transform', d => `translate(${d.y},${d.x})`);
+
+        nodeUpdate.select('circle')
+          .transition()
+          .duration(750)
+          .attr('r', 8)
+          .style('fill', d => this.getNodeColor(d));
+
+        nodeUpdate.select('text')
+          .transition()
+          .duration(750)
+          .style('fill-opacity', 1);
+
+        const nodeExit = node.exit().transition()
+          .duration(750)
+          .attr('transform', d => `translate(${source.y},${source.x})`)
+          .remove();
+
+        nodeExit.select('circle')
+          .attr('r', 1e-6);
+
+        nodeExit.select('text')
+          .style('fill-opacity', 1e-6);
+
+        const link = g.selectAll('path.link')
+          .data(links, d => d.id);
+
+        const linkEnter = link.enter().insert('path', 'g')
+          .attr('class', 'link')
+          .attr('d', d => {
+            const o = { x: source.x0, y: source.y0 };
+            return this.diagonal(o, o);
+          })
+          .style('fill', 'none')
+          .style('stroke', '{{ block.settings.text_color }}')
+          .style('stroke-width', '2px')
+          .style('opacity', 0.6);
+
+        const linkUpdate = linkEnter.merge(link);
+
+        linkUpdate.transition()
+          .duration(750)
+          .attr('d', d => this.diagonal(d, d.parent));
+
+        const linkExit = link.exit().transition()
+          .duration(750)
+          .attr('d', d => {
+            const o = { x: source.x, y: source.y };
+            return this.diagonal(o, o);
+          })
+          .remove();
+
+        nodes.forEach(d => {
+          d.x0 = d.x;
+          d.y0 = d.y;
+        });
+      }
+
+      diagonal(s, d) {
+        return `M ${s.y} ${s.x}
+                C ${(s.y + d.y) / 2} ${s.x},
+                  ${(s.y + d.y) / 2} ${d.x},
+                  ${d.y} ${d.x}`;
+      }
+
+      click(event, d) {
+        if (d.children) {
+          d._children = d.children;
+          d.children = null;
+        } else {
+          d.children = d._children;
+          d._children = null;
+        }
+        this.update(d);
+      }
+
+      getNodeColor(d) {
+        const depth = d.depth;
+        if (depth === 0) return '{{ block.settings.root_node_color }}';
+        if (depth === 1) return '{{ block.settings.category_node_color }}';
+        if (depth === 2) return '{{ block.settings.class_node_color }}';
+        return '{{ block.settings.ingredient_node_color }}';
+      }
+
+      isLeafNode(d) {
+        return !d.children && !d._children;
+      }
+
+      showTooltip(event, d) {
+        const tooltip = this.querySelector('#tooltip-{{ ai_gen_id }}');
+        if (!tooltip || !this.isLeafNode(d) || !d.data.name) return;
+
+        const data = d.data;
+        let content = `<div class="ai-ingredient-tooltip-title-{{ ai_gen_id }}">${data.name}</div>`;
+        
+        if (data.origin) {
+          content += `<div class="ai-ingredient-tooltip-field-{{ ai_gen_id }}"><span class="ai-ingredient-tooltip-label-{{ ai_gen_id }}">Origin:</span> ${data.origin}</div>`;
+        }
+        if (data.function) {
+          content += `<div class="ai-ingredient-tooltip-field-{{ ai_gen_id }}"><span class="ai-ingredient-tooltip-label-{{ ai_gen_id }}">Function:</span> ${data.function}</div>`;
+        }
+        if (data.description) {
+          content += `<div class="ai-ingredient-tooltip-field-{{ ai_gen_id }}"><span class="ai-ingredient-tooltip-label-{{ ai_gen_id }}">Description:</span> ${data.description}</div>`;
+        }
+
+        tooltip.innerHTML = content;
+        tooltip.style.left = (event.pageX + 10) + 'px';
+        tooltip.style.top = (event.pageY - 10) + 'px';
+        tooltip.style.opacity = '1';
+      }
+
+      hideTooltip() {
+        const tooltip = this.querySelector('#tooltip-{{ ai_gen_id }}');
+        if (tooltip) {
+          tooltip.style.opacity = '0';
+        }
+      }
+
+      expandAll() {
+        this.root.descendants().forEach(d => {
+          if (d._children) {
+            d.children = d._children;
+            d._children = null;
+          }
+        });
+        this.update(this.root);
+      }
+
+      collapseAll() {
+        this.root.descendants().forEach(d => {
+          if (d.children) {
+            d._children = d.children;
+            d.children = null;
+          }
+        });
+        this.root.children = this.root._children;
+        this.root._children = null;
+        this.update(this.root);
+      }
+
+      resetView() {
+        this.root.descendants().forEach(d => {
+          if (d.children) {
+            d._children = d.children;
+            d.children = null;
+          }
+        });
+        this.root.children = this.root._children;
+        this.root._children = null;
+        this.root.children.forEach(this.collapse.bind(this));
+        this.update(this.root);
+      }
+
+      handleResize() {
+        if (!this.svg) return;
+        
+        const container = this.querySelector('#tree-container-{{ ai_gen_id }}');
+        const containerRect = container.getBoundingClientRect();
+        
+        this.width = containerRect.width - this.margin.left - this.margin.right;
+        this.height = containerRect.height - this.margin.top - this.margin.bottom;
+        
+        this.svg
+          .attr('width', containerRect.width)
+          .attr('height', containerRect.height);
+          
+        this.treeLayout.size([this.height, this.width]);
+        this.update(this.root);
+      }
+
+      setupGlobalFunctions() {
+        window[`expandAllNodes{{ ai_gen_id }}`] = () => this.expandAll();
+        window[`collapseAllNodes{{ ai_gen_id }}`] = () => this.collapseAll();
+        window[`resetView{{ ai_gen_id }}`] = () => this.resetView();
+      }
+    }
+
+    IngredientGlossary{{ ai_gen_id }}.prototype.nodeId = 0;
+
+    customElements.define('ingredient-glossary-{{ ai_gen_id }}', IngredientGlossary{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Ingredient glossary",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Ingredient Glossary"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Explore our skincare ingredient taxonomy"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_data",
+      "label": "Ingredient Data (JSON)",
+      "info": "Enter JSON data for the ingredient taxonomy. Example: {\"name\": \"Skincare\", \"children\": [{\"name\": \"Moisturizers\", \"children\": [{\"name\": \"Humectants\", \"children\": [{\"name\": \"Hyaluronic Acid\", \"origin\": \"Synthetic/Fermentation\", \"function\": \"Hydration\", \"description\": \"Powerful humectant that can hold up to 1000x its weight in water\"}]}]}]}"
+    },
+    {
+      "type": "header",
+      "content": "Background colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_gradient_start",
+      "label": "Background gradient start",
+      "default": "#f5f7fa"
+    },
+    {
+      "type": "color",
+      "id": "bg_gradient_end",
+      "label": "Background gradient end",
+      "default": "#c3cfe2"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#2c3e50"
+    },
+    {
+      "type": "header",
+      "content": "Node colors"
+    },
+    {
+      "type": "color",
+      "id": "root_node_color",
+      "label": "Root node color",
+      "default": "#ff9a9e"
+    },
+    {
+      "type": "color",
+      "id": "category_node_color",
+      "label": "Category node color",
+      "default": "#a8edea"
+    },
+    {
+      "type": "color",
+      "id": "class_node_color",
+      "label": "Class node color",
+      "default": "#ffecd2"
+    },
+    {
+      "type": "color",
+      "id": "ingredient_node_color",
+      "label": "Ingredient node color",
+      "default": "#d299c2"
+    },
+    {
+      "type": "header",
+      "content": "Button colors"
+    },
+    {
+      "type": "color",
+      "id": "button_gradient_start",
+      "label": "Button gradient start",
+      "default": "#667eea"
+    },
+    {
+      "type": "color",
+      "id": "button_gradient_end",
+      "label": "Button gradient end",
+      "default": "#764ba2"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredient glossary"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,22 @@
+{% comment %} Simple A–Z index of published Mineral metaobjects {% endcomment %}
+{% assign entries = shop.metaobjects['mineral'].values | sort: 'name' %}
+<section class="mineral-index">
+  <h1>Crystal Glossary</h1>
+  <ul class="mineral-index__list">
+    {% for e in entries %}
+      <li>
+        <a href="{{ e.system.url }}">
+          {% if e.hero_image %}{{ e.hero_image | image_url: width: 120 | image_tag: alt: e.name, class: 'thumb' }}{% endif %}
+          <span>{{ e.name }}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+
+<style>
+.mineral-index__list{ list-style:none; padding:0; display:grid; gap:.75rem; grid-template-columns:repeat(2,1fr); }
+.mineral-index__list a{ display:flex; gap:.6rem; align-items:center; text-decoration:none; color:inherit; border:1px solid #eee; padding:.5rem; border-radius:12px; background:#fff; }
+.thumb{ width:48px; height:48px; object-fit:cover; border-radius:8px; }
+@media (min-width: 900px){ .mineral-index__list{ grid-template-columns:repeat(4,1fr);} }
+</style>

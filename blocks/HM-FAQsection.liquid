@@ -1,0 +1,1020 @@
+{% doc %}
+  @prompt
+    Create a FAQ accordion section that can be added below the skincare ingredient tree. The accordion should explain each ingredient's benefits and include:
+    
+    STYLING:
+    - Match the Haramoona brand styling with primary blue #3498ff, white #ffffff backgrounds, dark shade #141615, and grey #53585a
+    - Use Raleway font for consistency
+    - Clean, modern accordion design
+    
+    FUNCTIONALITY:
+    - Expandable/collapsible FAQ items
+    - Smooth animations when opening/closing
+    - Multiple items can be open at once
+    - Mobile-responsive design
+    - Easy to add/edit FAQ items through section settings
+    
+    CONTENT STRUCTURE:
+    - FAQ items organized by ingredient categories
+    - Each FAQ should cover ingredient benefits, usage, and compatibility
+    - Schema settings to easily add/edit FAQ questions and answers
+    - Option to link FAQ items to specific ingredient pages
+    
+    TECHNICAL REQUIREMENTS:
+    - Pure CSS and JavaScript (no external libraries needed)
+    - Accessible design with proper ARIA labels
+    - Schema settings for easy content management
+    - Responsive design for mobile and desktop
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-faq-accordion-{{ ai_gen_id }} {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: {{ block.settings.section_padding_top }}px 0 {{ block.settings.section_padding_bottom }}px;
+    background-color: {{ block.settings.background_color }};
+    font-family: 'Raleway', sans-serif;
+  }
+
+  .ai-faq-accordion-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-faq-accordion-header-{{ ai_gen_id }} {
+    text-align: {{ block.settings.text_alignment }};
+    margin-bottom: {{ block.settings.header_spacing }}px;
+  }
+
+  .ai-faq-accordion-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 {{ block.settings.subtitle_spacing }}px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .ai-faq-accordion-subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.subtitle_color }};
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .ai-faq-accordion-list-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.item_spacing }}px;
+  }
+
+  .ai-faq-accordion-item-{{ ai_gen_id }} {
+    background-color: {{ block.settings.item_background_color }};
+    border: {{ block.settings.item_border_width }}px solid {{ block.settings.item_border_color }};
+    border-radius: {{ block.settings.item_border_radius }}px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .ai-faq-accordion-item-{{ ai_gen_id }}:hover {
+    border-color: {{ block.settings.item_hover_border_color }};
+    box-shadow: 0 2px 8px rgba(52, 152, 255, 0.1);
+  }
+
+  .ai-faq-accordion-question-{{ ai_gen_id }} {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: {{ block.settings.question_padding }}px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: {{ block.settings.question_size }}px;
+    color: {{ block.settings.question_color }};
+    font-weight: 500;
+    line-height: 1.4;
+    transition: color 0.3s ease;
+    font-family: 'Raleway', sans-serif;
+  }
+
+  .ai-faq-accordion-question-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.question_hover_color }};
+  }
+
+  .ai-faq-accordion-question-{{ ai_gen_id }}:focus {
+    outline: 2px solid {{ block.settings.focus_color }};
+    outline-offset: 2px;
+  }
+
+  .ai-faq-accordion-icon-{{ ai_gen_id }} {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    margin-left: 16px;
+    transition: transform 0.3s ease;
+    color: {{ block.settings.icon_color }};
+  }
+
+  .ai-faq-accordion-item-{{ ai_gen_id }}.active .ai-faq-accordion-icon-{{ ai_gen_id }} {
+    transform: rotate(180deg);
+    color: {{ block.settings.icon_active_color }};
+  }
+
+  .ai-faq-accordion-answer-{{ ai_gen_id }} {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    background-color: {{ block.settings.answer_background_color }};
+  }
+
+  .ai-faq-accordion-answer-content-{{ ai_gen_id }} {
+    padding: 0 {{ block.settings.question_padding }}px {{ block.settings.answer_padding }}px;
+    font-size: {{ block.settings.answer_size }}px;
+    color: {{ block.settings.answer_color }};
+    line-height: 1.6;
+  }
+
+  .ai-faq-accordion-item-{{ ai_gen_id }}.active .ai-faq-accordion-answer-{{ ai_gen_id }} {
+    max-height: 1000px;
+    padding-top: {{ block.settings.answer_padding }}px;
+  }
+
+  .ai-faq-accordion-answer-content-{{ ai_gen_id }} p {
+    margin: 0 0 16px;
+  }
+
+  .ai-faq-accordion-answer-content-{{ ai_gen_id }} p:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-faq-accordion-answer-content-{{ ai_gen_id }} a {
+    color: {{ block.settings.link_color }};
+    text-decoration: underline;
+    transition: color 0.3s ease;
+  }
+
+  .ai-faq-accordion-answer-content-{{ ai_gen_id }} a:hover {
+    color: {{ block.settings.link_hover_color }};
+  }
+
+  .ai-faq-accordion-category-{{ ai_gen_id }} {
+    font-size: {{ block.settings.category_size }}px;
+    color: {{ block.settings.category_color }};
+    font-weight: 600;
+    margin: {{ block.settings.category_spacing }}px 0 {{ block.settings.item_spacing }}px;
+    padding: {{ block.settings.category_padding }}px;
+    background-color: {{ block.settings.category_background_color }};
+    border-radius: {{ block.settings.category_border_radius }}px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .ai-faq-accordion-category-{{ ai_gen_id }}:first-child {
+    margin-top: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-faq-accordion-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.8 }}px;
+    }
+
+    .ai-faq-accordion-subtitle-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subtitle_size | times: 0.9 }}px;
+    }
+
+    .ai-faq-accordion-question-{{ ai_gen_id }} {
+      font-size: {{ block.settings.question_size | times: 0.9 }}px;
+      padding: {{ block.settings.question_padding | times: 0.8 }}px;
+    }
+
+    .ai-faq-accordion-answer-content-{{ ai_gen_id }} {
+      padding: 0 {{ block.settings.question_padding | times: 0.8 }}px {{ block.settings.answer_padding | times: 0.8 }}px;
+      font-size: {{ block.settings.answer_size | times: 0.9 }}px;
+    }
+
+    .ai-faq-accordion-item-{{ ai_gen_id }}.active .ai-faq-accordion-answer-{{ ai_gen_id }} {
+      padding-top: {{ block.settings.answer_padding | times: 0.8 }}px;
+    }
+
+    .ai-faq-accordion-category-{{ ai_gen_id }} {
+      font-size: {{ block.settings.category_size | times: 0.9 }}px;
+      padding: {{ block.settings.category_padding | times: 0.8 }}px;
+    }
+  }
+{% endstyle %}
+
+<faq-accordion-{{ ai_gen_id }}
+  class="ai-faq-accordion-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-faq-accordion-container-{{ ai_gen_id }}">
+    {% if block.settings.title != blank or block.settings.subtitle != blank %}
+      <div class="ai-faq-accordion-header-{{ ai_gen_id }}">
+        {% if block.settings.title != blank %}
+          <h2 class="ai-faq-accordion-title-{{ ai_gen_id }}">{{ block.settings.title }}</h2>
+        {% endif %}
+        {% if block.settings.subtitle != blank %}
+          <div class="ai-faq-accordion-subtitle-{{ ai_gen_id }}">{{ block.settings.subtitle }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="ai-faq-accordion-list-{{ ai_gen_id }}">
+      {% assign current_category = '' %}
+      {% for i in (1..10) %}
+        {% liquid
+          assign question_key = 'faq_' | append: i | append: '_question'
+          assign answer_key = 'faq_' | append: i | append: '_answer'
+          assign category_key = 'faq_' | append: i | append: '_category'
+          assign link_key = 'faq_' | append: i | append: '_link'
+
+          assign question = block.settings[question_key]
+          assign answer = block.settings[answer_key]
+          assign category = block.settings[category_key]
+          assign link = block.settings[link_key]
+        %}
+
+        {% if question != blank and answer != blank %}
+          {% if category != blank and category != current_category %}
+            <div class="ai-faq-accordion-category-{{ ai_gen_id }}">{{ category }}</div>
+            {% assign current_category = category %}
+          {% endif %}
+
+          <div class="ai-faq-accordion-item-{{ ai_gen_id }}" data-faq-item="{{ i }}">
+            <button
+              class="ai-faq-accordion-question-{{ ai_gen_id }}"
+              aria-expanded="false"
+              aria-controls="ai-faq-answer-{{ ai_gen_id }}-{{ i }}"
+              data-faq-button="{{ i }}"
+            >
+              <span>{{ question }}</span>
+              <svg
+                class="ai-faq-accordion-icon-{{ ai_gen_id }}"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <polyline points="6,9 12,15 18,9"></polyline>
+              </svg>
+            </button>
+            <div
+              class="ai-faq-accordion-answer-{{ ai_gen_id }}"
+              id="ai-faq-answer-{{ ai_gen_id }}-{{ i }}"
+              data-faq-answer="{{ i }}"
+            >
+              <div class="ai-faq-accordion-answer-content-{{ ai_gen_id }}">
+                {{ answer }}
+                {% if link != blank %}
+                  <p><a href="{{ link }}" target="_blank" rel="noopener">Learn more about this ingredient</a></p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</faq-accordion-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class FaqAccordion{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.allowMultiple = {{ block.settings.allow_multiple_open }};
+      }
+
+      connectedCallback() {
+        this.items = this.querySelectorAll('.ai-faq-accordion-item-{{ ai_gen_id }}');
+        this.buttons = this.querySelectorAll('.ai-faq-accordion-question-{{ ai_gen_id }}');
+        this.answers = this.querySelectorAll('.ai-faq-accordion-answer-{{ ai_gen_id }}');
+
+        this.setupEventListeners();
+        this.setupInitialState();
+      }
+
+      setupEventListeners() {
+        this.buttons.forEach((button, index) => {
+          button.addEventListener('click', () => {
+            this.toggleItem(index);
+          });
+
+          button.addEventListener('keydown', (e) => {
+            this.handleKeydown(e, index);
+          });
+        });
+      }
+
+      setupInitialState() {
+        {% if block.settings.first_item_open %}
+          if (this.items.length > 0) {
+            this.openItem(0);
+          }
+        {% endif %}
+      }
+
+      toggleItem(index) {
+        const item = this.items[index];
+        const button = this.buttons[index];
+        const answer = this.answers[index];
+        const isOpen = item.classList.contains('active');
+
+        if (!this.allowMultiple && !isOpen) {
+          this.closeAllItems();
+        }
+
+        if (isOpen) {
+          this.closeItem(index);
+        } else {
+          this.openItem(index);
+        }
+      }
+
+      openItem(index) {
+        const item = this.items[index];
+        const button = this.buttons[index];
+        const answer = this.answers[index];
+
+        item.classList.add('active');
+        button.setAttribute('aria-expanded', 'true');
+        
+        const content = answer.querySelector('.ai-faq-accordion-answer-content-{{ ai_gen_id }}');
+        const contentHeight = content.scrollHeight;
+        answer.style.maxHeight = contentHeight + 'px';
+      }
+
+      closeItem(index) {
+        const item = this.items[index];
+        const button = this.buttons[index];
+        const answer = this.answers[index];
+
+        item.classList.remove('active');
+        button.setAttribute('aria-expanded', 'false');
+        answer.style.maxHeight = '0px';
+      }
+
+      closeAllItems() {
+        this.items.forEach((item, index) => {
+          if (item.classList.contains('active')) {
+            this.closeItem(index);
+          }
+        });
+      }
+
+      handleKeydown(e, index) {
+        switch (e.key) {
+          case 'ArrowDown':
+            e.preventDefault();
+            this.focusNextButton(index);
+            break;
+          case 'ArrowUp':
+            e.preventDefault();
+            this.focusPreviousButton(index);
+            break;
+          case 'Home':
+            e.preventDefault();
+            this.focusFirstButton();
+            break;
+          case 'End':
+            e.preventDefault();
+            this.focusLastButton();
+            break;
+        }
+      }
+
+      focusNextButton(currentIndex) {
+        const nextIndex = (currentIndex + 1) % this.buttons.length;
+        this.buttons[nextIndex].focus();
+      }
+
+      focusPreviousButton(currentIndex) {
+        const prevIndex = currentIndex === 0 ? this.buttons.length - 1 : currentIndex - 1;
+        this.buttons[prevIndex].focus();
+      }
+
+      focusFirstButton() {
+        this.buttons[0].focus();
+      }
+
+      focusLastButton() {
+        this.buttons[this.buttons.length - 1].focus();
+      }
+    }
+
+    customElements.define('faq-accordion-{{ ai_gen_id }}', FaqAccordion{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "FAQ accordion",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "richtext",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "<p>Find answers to common questions about our skincare ingredients and their benefits.</p>"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Behavior"
+    },
+    {
+      "type": "checkbox",
+      "id": "allow_multiple_open",
+      "label": "Allow multiple items open",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "first_item_open",
+      "label": "Open first item by default",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "FAQ 1"
+    },
+    {
+      "type": "text",
+      "id": "faq_1_category",
+      "label": "Category"
+    },
+    {
+      "type": "text",
+      "id": "faq_1_question",
+      "label": "Question",
+      "default": "What are the benefits of Hyaluronic Acid?"
+    },
+    {
+      "type": "richtext",
+      "id": "faq_1_answer",
+      "label": "Answer",
+      "default": "<p>Hyaluronic Acid is a powerful humectant that can hold up to 1000 times its weight in water. It helps to deeply hydrate the skin, plump fine lines, and maintain skin elasticity. This ingredient is suitable for all skin types and works well with other active ingredients.</p>"
+    },
+    {
+      "type": "url",
+      "id": "faq_1_link",
+      "label": "Ingredient page link"
+    },
+    {
+      "type": "header",
+      "content": "FAQ 2"
+    },
+    {
+      "type": "text",
+      "id": "faq_2_category",
+      "label": "Category"
+    },
+    {
+      "type": "text",
+      "id": "faq_2_question",
+      "label": "Question",
+      "default": "How does Niacinamide help with skin concerns?"
+    },
+    {
+      "type": "richtext",
+      "id": "faq_2_answer",
+      "label": "Answer",
+      "default": "<p>Niacinamide (Vitamin B3) is a versatile ingredient that helps regulate oil production, minimize the appearance of pores, improve skin texture, and reduce redness. It's gentle enough for sensitive skin and can be used morning and evening. Niacinamide also helps strengthen the skin barrier and provides antioxidant protection.</p>"
+    },
+    {
+      "type": "url",
+      "id": "faq_2_link",
+      "label": "Ingredient page link"
+    },
+    {
+      "type": "header",
+      "content": "FAQ 3"
+    },
+    {
+      "type": "text",
+      "id": "faq_3_category",
+      "label": "Category"
+    },
+    {
+      "type": "text",
+      "id": "faq_3_question",
+      "label": "Question",
+      "default": "What should I know about Retinol usage?"
+    },
+    {
+      "type": "richtext",
+      "id": "faq_3_answer",
+      "label": "Answer",
+      "default": "<p>Retinol is a powerful anti-aging ingredient that promotes cell turnover and collagen production. Start with a low concentration and use only at night. Always apply sunscreen during the day when using retinol products. Begin with 2-3 times per week and gradually increase frequency as your skin builds tolerance.</p>"
+    },
+    {
+      "type": "url",
+      "id": "faq_3_link",
+      "label": "Ingredient page link"
+    },
+    {
+      "type": "header",
+      "content": "FAQ 4"
+    },
+    {
+      "type": "text",
+      "id": "faq_4_category",
+      "label": "Category"
+    },
+    {
+      "type": "text",
+      "id": "faq_4_question",
+      "label": "Question"
+    },
+    {
+      "type": "richtext",
+      "id": "faq_4_answer",
+      "label": "Answer"
+    },
+    {
+      "type": "url",
+      "id": "faq_4_link",
+      "label": "Ingredient page link"
+    },
+    {
+      "type": "header",
+      "content": "FAQ 5"
+    },
+    {
+      "type": "text",
+      "id": "faq_5_category",
+      "label": "Category"
+    },
+    {
+      "type": "text",
+      "id": "faq_5_question",
+      "label": "Question"
+    },
+    {
+      "type": "richtext",
+      "id": "faq_5_answer",
+      "label": "Answer"
+    },
+    {
+      "type": "url",
+      "id": "faq_5_link",
+      "label": "Ingredient page link"
+    },
+    {
+      "type": "header",
+      "content": "FAQ 6"
+    },
+    {
+      "type": "text",
+      "id": "faq_6_category",
+      "label": "Category"
+    },
+    {
+      "type": "text",
+      "id": "faq_6_question",
+      "label": "Question"
+    },
+    {
+      "type": "richtext",
+      "id": "faq_6_answer",
+      "label": "Answer"
+    },
+    {
+      "type": "url",
+      "id": "faq_6_link",
+      "label": "Ingredient page link"
+    },
+    {
+      "type": "header",
+      "content": "FAQ 7"
+    },
+    {
+      "type": "text",
+      "id": "faq_7_category",
+      "label": "Category"
+    },
+    {
+      "type": "text",
+      "id": "faq_7_question",
+      "label": "Question"
+    },
+    {
+      "type": "richtext",
+      "id": "faq_7_answer",
+      "label": "Answer"
+    },
+    {
+      "type": "url",
+      "id": "faq_7_link",
+      "label": "Ingredient page link"
+    },
+    {
+      "type": "header",
+      "content": "FAQ 8"
+    },
+    {
+      "type": "text",
+      "id": "faq_8_category",
+      "label": "Category"
+    },
+    {
+      "type": "text",
+      "id": "faq_8_question",
+      "label": "Question"
+    },
+    {
+      "type": "richtext",
+      "id": "faq_8_answer",
+      "label": "Answer"
+    },
+    {
+      "type": "url",
+      "id": "faq_8_link",
+      "label": "Ingredient page link"
+    },
+    {
+      "type": "header",
+      "content": "FAQ 9"
+    },
+    {
+      "type": "text",
+      "id": "faq_9_category",
+      "label": "Category"
+    },
+    {
+      "type": "text",
+      "id": "faq_9_question",
+      "label": "Question"
+    },
+    {
+      "type": "richtext",
+      "id": "faq_9_answer",
+      "label": "Answer"
+    },
+    {
+      "type": "url",
+      "id": "faq_9_link",
+      "label": "Ingredient page link"
+    },
+    {
+      "type": "header",
+      "content": "FAQ 10"
+    },
+    {
+      "type": "text",
+      "id": "faq_10_category",
+      "label": "Category"
+    },
+    {
+      "type": "text",
+      "id": "faq_10_question",
+      "label": "Question"
+    },
+    {
+      "type": "richtext",
+      "id": "faq_10_answer",
+      "label": "Answer"
+    },
+    {
+      "type": "url",
+      "id": "faq_10_link",
+      "label": "Ingredient page link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#141615"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#53585a"
+    },
+    {
+      "type": "color",
+      "id": "item_background_color",
+      "label": "Item background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "item_border_color",
+      "label": "Item border color",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "color",
+      "id": "item_hover_border_color",
+      "label": "Item hover border color",
+      "default": "#3498ff"
+    },
+    {
+      "type": "color",
+      "id": "question_color",
+      "label": "Question color",
+      "default": "#141615"
+    },
+    {
+      "type": "color",
+      "id": "question_hover_color",
+      "label": "Question hover color",
+      "default": "#3498ff"
+    },
+    {
+      "type": "color",
+      "id": "answer_background_color",
+      "label": "Answer background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "answer_color",
+      "label": "Answer color",
+      "default": "#53585a"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#53585a"
+    },
+    {
+      "type": "color",
+      "id": "icon_active_color",
+      "label": "Icon active color",
+      "default": "#3498ff"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#3498ff"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_color",
+      "label": "Link hover color",
+      "default": "#141615"
+    },
+    {
+      "type": "color",
+      "id": "focus_color",
+      "label": "Focus color",
+      "default": "#3498ff"
+    },
+    {
+      "type": "color",
+      "id": "category_background_color",
+      "label": "Category background color",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "color",
+      "id": "category_color",
+      "label": "Category color",
+      "default": "#3498ff"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "question_size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Question size",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "answer_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Answer size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "category_size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Category size",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 600,
+      "max": 1200,
+      "step": 50,
+      "unit": "px",
+      "label": "Container width",
+      "default": 800
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Section padding top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Section padding bottom",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Header spacing",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "subtitle_spacing",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Subtitle spacing",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "item_spacing",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Item spacing",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "question_padding",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Question padding",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "answer_padding",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Answer padding",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "category_spacing",
+      "min": 20,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Category spacing",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "category_padding",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Category padding",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "item_border_width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Item border width",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "item_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Item border radius",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "category_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Category border radius",
+      "default": 6
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ accordion"
+    }
+  ]
+}
+{% endschema %}

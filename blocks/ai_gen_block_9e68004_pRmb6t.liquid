@@ -1,0 +1,2233 @@
+{% doc %}
+  @prompt
+    Create a custom Liquid section for a Craft theme that displays an interactive skincare ingredient taxonomy tree built with D3.js. The section should include:
+    
+    BRAND STYLING:
+    - Primary blue #3498ff as main highlight color
+    - White #ffffff backgrounds where needed
+    - Dark shade #141615 and grey #53585a for secondary elements
+    - Raleway font for headings and content
+    - Haramoona logo at the top of the section
+    
+    TREE STRUCTURE (4 levels):
+    - Root: "Skincare Ingredients"
+    - Level 1: Ingredient types (Hydrators/Humectants, Emollients/Occlusives, Actives/Treatments, Solvents/Carriers, Emulsifiers/Surfactants, Preservatives/Stabilizers, Botanical Extracts, Peptides, Vitamins)
+    - Level 2: Sub-categories (like Hyaluronic Acid Derivatives, Root Extracts)
+    - Level 3: Individual ingredient names
+    
+    FUNCTIONALITY:
+    - Interactive D3.js tree visualization
+    - Tooltips on hover showing description, function, origin, and derivatives
+    - Three control buttons: Expand All, Collapse All, Reset
+    - Node color coding: Root (blue), Level-1 (dark grey), Level-2 (black with white text), Level-3 (white with dark text)
+    - Color legend
+    - Clickable ingredient nodes linking to /pages/ingredients/[ingredient-name-lowercase-with-hyphens]
+    - Responsive design with pan and zoom support
+    - Mobile and desktop compatibility
+    
+    TECHNICAL REQUIREMENTS:
+    - Include D3.js library via CDN
+    - Schema settings for editing section heading and colors
+    - Complete Liquid HTML, CSS, and JavaScript code
+    - Sample JSON data structure for the ingredient taxonomy
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-ingredient-taxonomy-{{ ai_gen_id }} {
+    padding: 40px 20px;
+    background-color: {{ block.settings.background_color }};
+    font-family: 'Raleway', sans-serif;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-ingredient-taxonomy__header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .ai-ingredient-taxonomy__logo-{{ ai_gen_id }} {
+    margin-bottom: 20px;
+  }
+
+  .ai-ingredient-taxonomy__logo-{{ ai_gen_id }} img {
+    max-height: 60px;
+    width: auto;
+  }
+
+  .ai-ingredient-taxonomy__title-{{ ai_gen_id }} {
+    font-family: 'Raleway', sans-serif;
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 10px;
+    font-weight: 600;
+  }
+
+  .ai-ingredient-taxonomy__subtitle-{{ ai_gen_id }} {
+    font-size: 16px;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+  }
+
+  .ai-ingredient-taxonomy__controls-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
+
+  .ai-ingredient-taxonomy__control-btn-{{ ai_gen_id }} {
+    padding: 10px 20px;
+    background-color: {{ block.settings.primary_color }};
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .ai-ingredient-taxonomy__control-btn-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.dark_color }};
+  }
+
+  .ai-ingredient-taxonomy__legend-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .ai-ingredient-taxonomy__legend-item-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-ingredient-taxonomy__legend-color-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+  }
+
+  .ai-ingredient-taxonomy__tree-container-{{ ai_gen_id }} {
+    width: 100%;
+    height: 600px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #ffffff;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-ingredient-taxonomy__tooltip-{{ ai_gen_id }} {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: #ffffff;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    max-width: 250px;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .ai-ingredient-taxonomy__tooltip-title-{{ ai_gen_id }} {
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  .ai-ingredient-taxonomy__tooltip-content-{{ ai_gen_id }} {
+    line-height: 1.4;
+  }
+
+  .ai-ingredient-taxonomy__tree-{{ ai_gen_id }} .node circle {
+    cursor: pointer;
+    stroke-width: 2;
+  }
+
+  .ai-ingredient-taxonomy__tree-{{ ai_gen_id }} .node text {
+    font-family: 'Raleway', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .ai-ingredient-taxonomy__tree-{{ ai_gen_id }} .link {
+    fill: none;
+    stroke: {{ block.settings.grey_color }};
+    stroke-width: 1.5;
+  }
+
+  .ai-ingredient-taxonomy__tree-{{ ai_gen_id }} .node.clickable text {
+    text-decoration: underline;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-ingredient-taxonomy-{{ ai_gen_id }} {
+      padding: 20px 10px;
+    }
+
+    .ai-ingredient-taxonomy__title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.8 }}px;
+    }
+
+    .ai-ingredient-taxonomy__tree-container-{{ ai_gen_id }} {
+      height: 500px;
+    }
+
+    .ai-ingredient-taxonomy__controls-{{ ai_gen_id }} {
+      gap: 10px;
+    }
+
+    .ai-ingredient-taxonomy__control-btn-{{ ai_gen_id }} {
+      padding: 8px 16px;
+      font-size: 12px;
+    }
+
+    .ai-ingredient-taxonomy__legend-{{ ai_gen_id }} {
+      gap: 15px;
+    }
+  }
+{% endstyle %}
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<div class="ai-ingredient-taxonomy-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-ingredient-taxonomy__header-{{ ai_gen_id }}">
+    {% if block.settings.logo %}
+      <div class="ai-ingredient-taxonomy__logo-{{ ai_gen_id }}">
+        <img src="{{ block.settings.logo | image_url: width: 200 }}" alt="Haramoona Logo" loading="lazy">
+      </div>
+    {% endif %}
+    
+    <h2 class="ai-ingredient-taxonomy__title-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+    <p class="ai-ingredient-taxonomy__subtitle-{{ ai_gen_id }}">{{ block.settings.subtitle }}</p>
+  </div>
+
+  <div class="ai-ingredient-taxonomy__controls-{{ ai_gen_id }}">
+    <button class="ai-ingredient-taxonomy__control-btn-{{ ai_gen_id }}" id="expand-all-{{ ai_gen_id }}">Expand All</button>
+    <button class="ai-ingredient-taxonomy__control-btn-{{ ai_gen_id }}" id="collapse-all-{{ ai_gen_id }}">Collapse All</button>
+    <button class="ai-ingredient-taxonomy__control-btn-{{ ai_gen_id }}" id="reset-{{ ai_gen_id }}">Reset</button>
+  </div>
+
+  <div class="ai-ingredient-taxonomy__legend-{{ ai_gen_id }}">
+    <div class="ai-ingredient-taxonomy__legend-item-{{ ai_gen_id }}">
+      <div class="ai-ingredient-taxonomy__legend-color-{{ ai_gen_id }}" style="background-color: {{ block.settings.primary_color }};"></div>
+      <span>Root</span>
+    </div>
+    <div class="ai-ingredient-taxonomy__legend-item-{{ ai_gen_id }}">
+      <div class="ai-ingredient-taxonomy__legend-color-{{ ai_gen_id }}" style="background-color: {{ block.settings.dark_color }};"></div>
+      <span>Categories</span>
+    </div>
+    <div class="ai-ingredient-taxonomy__legend-item-{{ ai_gen_id }}">
+      <div class="ai-ingredient-taxonomy__legend-color-{{ ai_gen_id }}" style="background-color: #000000;"></div>
+      <span>Sub-categories</span>
+    </div>
+    <div class="ai-ingredient-taxonomy__legend-item-{{ ai_gen_id }}">
+      <div class="ai-ingredient-taxonomy__legend-color-{{ ai_gen_id }}" style="background-color: #ffffff; border: 1px solid #ccc;"></div>
+      <span>Ingredients</span>
+    </div>
+  </div>
+
+  <div class="ai-ingredient-taxonomy__tree-container-{{ ai_gen_id }}" id="tree-container-{{ ai_gen_id }}">
+    <svg class="ai-ingredient-taxonomy__tree-{{ ai_gen_id }}" id="tree-svg-{{ ai_gen_id }}"></svg>
+  </div>
+
+  <div class="ai-ingredient-taxonomy__tooltip-{{ ai_gen_id }}" id="tooltip-{{ ai_gen_id }}">
+    <div class="ai-ingredient-taxonomy__tooltip-title-{{ ai_gen_id }}"></div>
+    <div class="ai-ingredient-taxonomy__tooltip-content-{{ ai_gen_id }}"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const taxonomyData = {
+    {
+    "name": "Skincare Ingredients",
+    "children": [
+        {
+            "name": "Solvents/Carriers",
+            "children": [
+                {
+                    "name": "Alcohols",
+                    "children": [
+                        {
+                            "name": "1,2-Hexanediol",
+                            "data": {
+                                "name": "1,2-Hexanediol",
+                                "Level1": "Solvents/Carriers",
+                                "Level2": "Alcohols",
+                                "Origin": "Synthetic",
+                                "Function": "Humectant, emollient, preservative booster",
+                                "Description": "A synthetic alcohol that helps to hydrate the skin, soften it, and enhance the preservation of cosmetic formulations.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Chlorphenesin",
+                            "data": {
+                                "name": "Chlorphenesin",
+                                "Level1": "Preservatives/Stabilizers",
+                                "Level2": "Alcohols",
+                                "Origin": "Synthetic",
+                                "Function": "Preservative, antimicrobial",
+                                "Description": "A synthetic alcohol used as a preservative and antimicrobial agent to prevent the growth of microorganisms in cosmetic products.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Natural Waters",
+                    "children": [
+                        {
+                            "name": "Sea Water",
+                            "data": {
+                                "name": "Sea Water",
+                                "Level1": "Solvents/Carriers",
+                                "Level2": "Natural Waters",
+                                "Origin": "Natural",
+                                "Function": "Hydrating, mineral-rich",
+                                "Description": "Water sourced from the sea, rich in minerals that can provide hydrating and skin-conditioning benefits.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Inorganic Compounds",
+                    "children": [
+                        {
+                            "name": "Water",
+                            "data": {
+                                "name": "Water",
+                                "Level1": "Solvents/Carriers",
+                                "Level2": "Inorganic Compounds",
+                                "Origin": "Natural",
+                                "Function": "Solvent, hydrating base",
+                                "Description": "The most common ingredient in skincare, serving as a solvent for other ingredients and providing hydration.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Actives/Treatments",
+            "children": [
+                {
+                    "name": "Nucleosides",
+                    "children": [
+                        {
+                            "name": "Adenosine",
+                            "data": {
+                                "name": "Adenosine",
+                                "Level1": "Actives/Treatments",
+                                "Level2": "Nucleosides",
+                                "Origin": "Natural (yeast-derived), also synthetic",
+                                "Function": "Anti-aging, soothing, skin-restoring",
+                                "Description": "A yeast-derived ingredient with proven anti-wrinkle benefits, it helps to soothe and restore the skin.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Urea Derivatives",
+                    "children": [
+                        {
+                            "name": "Allantoin",
+                            "data": {
+                                "name": "Allantoin",
+                                "Level1": "Actives/Treatments",
+                                "Level2": "Urea Derivatives",
+                                "Origin": "Natural (comfrey plant), also synthetic",
+                                "Function": "Soothing, healing, moisturizing",
+                                "Description": "A compound found naturally in the comfrey plant, it's widely used for its skin-soothing, healing, and moisturizing properties.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Amino Acids",
+                    "children": [
+                        {
+                            "name": "Arginine",
+                            "data": {
+                                "name": "Arginine",
+                                "Level1": "Actives/Treatments",
+                                "Level2": "Amino Acids",
+                                "Origin": "Natural, also synthetic",
+                                "Function": "Skin-restoring, antioxidant, hydrating",
+                                "Description": "An amino acid that helps to restore the skin, acts as an antioxidant, and contributes to skin hydration.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Ceramides",
+                    "children": [
+                        {
+                            "name": "Ceramide NP",
+                            "data": {
+                                "name": "Ceramide NP",
+                                "Level1": "Actives/Treatments",
+                                "Level2": "Ceramides",
+                                "Origin": "Synthetic",
+                                "Function": "Skin-replenishing, barrier repair",
+                                "Description": "A type of ceramide naturally found in the skin, crucial for maintaining a healthy skin barrier and preventing moisture loss.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Alpha Hydroxy Acids (AHAs)",
+                    "children": [
+                        {
+                            "name": "Citric Acid",
+                            "data": {
+                                "name": "Citric Acid",
+                                "Level1": "Actives/Treatments",
+                                "Level2": "Alpha Hydroxy Acids (AHAs)",
+                                "Origin": "Natural (citrus fruits), also synthetic",
+                                "Function": "pH adjuster, exfoliant, antioxidant",
+                                "Description": "An AHA derived from citrus fruits, used to adjust pH, provide mild exfoliation, and act as an antioxidant.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Licorice Derivatives",
+                    "children": [
+                        {
+                            "name": "Dipotassium Glycyrrhizate",
+                            "data": {
+                                "name": "Dipotassium Glycyrrhizate",
+                                "Level1": "Actives/Treatments",
+                                "Level2": "Licorice Derivatives",
+                                "Origin": "Natural (licorice root), also synthetic",
+                                "Function": "Soothing, anti-inflammatory, brightening",
+                                "Description": "A salt derived from licorice root, known for its powerful soothing, anti-inflammatory, and skin-brightening properties.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Centella Asiatica Derivatives",
+                    "children": []
+                },
+                {
+                    "name": "Amino Acid Derivatives",
+                    "children": [
+                        {
+                            "name": "PCA Ethyl Cocoyl Arginate",
+                            "data": {
+                                "name": "PCA Ethyl Cocoyl Arginate",
+                                "Level1": "Actives/Treatments",
+                                "Level2": "Amino Acid Derivatives",
+                                "Origin": "Synthetic",
+                                "Function": "Skin-conditioning, antimicrobial",
+                                "Description": "A synthetic amino acid derivative that functions as a skin-conditioning agent and has antimicrobial properties.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Nucleic Acid Derivatives",
+                    "children": [
+                        {
+                            "name": "Sodium DNA",
+                            "data": {
+                                "name": "Sodium DNA",
+                                "Level1": "Actives/Treatments",
+                                "Level2": "Nucleic Acid Derivatives",
+                                "Origin": "Natural (animal/plant), also synthetic",
+                                "Function": "Skin-repairing, regenerating",
+                                "Description": "A salt form of DNA, used for its potential to support skin repair and regeneration.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Emulsifiers/Surfactants",
+            "children": [
+                {
+                    "name": "Polymers",
+                    "children": [
+                        {
+                            "name": "Ammonium Acryloyldimethyltaurate/VP Copolymer",
+                            "data": {
+                                "name": "Ammonium Acryloyldimethyltaurate/VP Copolymer",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Polymers",
+                                "Origin": "Synthetic",
+                                "Function": "Thickener, stabilizer, emulsifier",
+                                "Description": "A synthetic polymer used to thicken and stabilize cosmetic formulations, and to help emulsify ingredients.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Carbomer",
+                            "data": {
+                                "name": "Carbomer",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Polymers",
+                                "Origin": "Synthetic",
+                                "Function": "Thickener, gelling agent, stabilizer",
+                                "Description": "A synthetic polymer used as a thickening agent, gelling agent, and stabilizer to create various textures in cosmetic products.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Glyceryl Acrylate/Acrylic Acid Copolymer",
+                            "data": {
+                                "name": "Glyceryl Acrylate/Acrylic Acid Copolymer",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Polymers",
+                                "Origin": "Synthetic",
+                                "Function": "Film-former, emulsifier, thickener",
+                                "Description": "A synthetic polymer that forms a film on the skin, acts as an emulsifier, and helps to thicken cosmetic formulations.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Hydroxyethyl Acrylate/Sodium Acryloyldimethyl Taurate Copolymer",
+                            "data": {
+                                "name": "Hydroxyethyl Acrylate/Sodium Acryloyldimethyl Taurate Copolymer",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Polymers",
+                                "Origin": "Synthetic",
+                                "Function": "Thickener, stabilizer, emulsifier",
+                                "Description": "A synthetic polymer used as a thickening agent, stabilizer, and emulsifier to create desirable textures in formulations.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Sodium Polyacrylate",
+                            "data": {
+                                "name": "Sodium Polyacrylate",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Polymers",
+                                "Origin": "Synthetic",
+                                "Function": "Thickener, emulsifier, film-former",
+                                "Description": "A synthetic polymer used as a thickening agent, emulsifier to stabilize formulations, and a film-former on the skin.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Ethoxylated Alcohols",
+                    "children": [
+                        {
+                            "name": "C12-13 Pareth-9",
+                            "data": {
+                                "name": "C12-13 Pareth-9",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Ethoxylated Alcohols",
+                                "Origin": "Synthetic",
+                                "Function": "Emulsifier, surfactant",
+                                "Description": "A synthetic ethoxylated alcohol used as an emulsifier to mix oil and water, and as a surfactant for cleansing.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Glycosides",
+                    "children": [
+                        {
+                            "name": "Cetearyl Glucoside",
+                            "data": {
+                                "name": "Cetearyl Glucoside",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Glycosides",
+                                "Origin": "Natural (plant-derived), also synthetic",
+                                "Function": "Emulsifier, skin-conditioning",
+                                "Description": "A plant-derived emulsifier that helps to create stable emulsions and also provides skin-conditioning benefits.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Esters",
+                    "children": [
+                        {
+                            "name": "Cetearyl Olivate",
+                            "data": {
+                                "name": "Cetearyl Olivate",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Esters",
+                                "Origin": "Natural (olive-derived), also synthetic",
+                                "Function": "Emulsifier, emollient",
+                                "Description": "An ester derived from olive oil fatty acids and cetearyl alcohol, used as a natural emulsifier and emollient.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Glycereth-25 PCA Isostearate",
+                            "data": {
+                                "name": "Glycereth-25 PCA Isostearate",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Esters",
+                                "Origin": "Synthetic",
+                                "Function": "Emulsifier, solubilizer",
+                                "Description": "A synthetic ester used as an emulsifier to blend oil and water, and a solubilizer to help dissolve difficult-to-mix ingredients.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Glyceryl Stearate",
+                            "data": {
+                                "name": "Glyceryl Stearate",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Esters",
+                                "Origin": "Natural (plant-derived), also synthetic",
+                                "Function": "Emulsifier, emollient, thickener",
+                                "Description": "An ester of glycerin and stearic acid, used as an emulsifier, emollient, and thickening agent in cosmetic formulations.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Methyl Glucose Sesquistearate",
+                            "data": {
+                                "name": "Methyl Glucose Sesquistearate",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Esters",
+                                "Origin": "Synthetic",
+                                "Function": "Emulsifier, emollient",
+                                "Description": "A synthetic ester used as an emulsifier to help blend oil and water, and as an emollient to soften the skin.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Polyglyceryl-10 Stearate",
+                            "data": {
+                                "name": "Polyglyceryl-10 Stearate",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Esters",
+                                "Origin": "Synthetic",
+                                "Function": "Emulsifier, skin-conditioning",
+                                "Description": "A synthetic ester used as an emulsifier to blend oil and water, and as a skin-conditioning agent.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Sorbitan Isostearate",
+                            "data": {
+                                "name": "Sorbitan Isostearate",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Esters",
+                                "Origin": "Synthetic",
+                                "Function": "Emulsifier",
+                                "Description": "A synthetic ester used as an emulsifier to help blend oil and water in cosmetic products.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Sorbitan Olivate",
+                            "data": {
+                                "name": "Sorbitan Olivate",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Esters",
+                                "Origin": "Natural (olive-derived), also synthetic",
+                                "Function": "Emulsifier, emollient",
+                                "Description": "An ester derived from olive oil fatty acids and sorbitol, used as a natural emulsifier and emollient.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Amphoteric Surfactants",
+                    "children": [
+                        {
+                            "name": "Coco-Betaine",
+                            "data": {
+                                "name": "Coco-Betaine",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Amphoteric Surfactants",
+                                "Origin": "Natural (coconut-derived), also synthetic",
+                                "Function": "Surfactant, cleansing agent, foam booster",
+                                "Description": "A mild, coconut-derived surfactant used for cleansing, foam boosting, and conditioning in skincare products.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Phospholipids",
+                    "children": [
+                        {
+                            "name": "Hydrogenated Lecithin",
+                            "data": {
+                                "name": "Hydrogenated Lecithin",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Phospholipids",
+                                "Origin": "Natural (soy/sunflower), also synthetic",
+                                "Function": "Emulsifier, emollient, skin-restoring",
+                                "Description": "A modified form of lecithin, used as an emulsifier, emollient, and for its skin-restoring properties.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Ethoxylated Esters",
+                    "children": [
+                        {
+                            "name": "Polysorbate 60",
+                            "data": {
+                                "name": "Polysorbate 60",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Ethoxylated Esters",
+                                "Origin": "Synthetic",
+                                "Function": "Emulsifier, surfactant",
+                                "Description": "A synthetic emulsifier and surfactant used to blend oil and water and to create stable emulsions.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Anionic Surfactants",
+                    "children": [
+                        {
+                            "name": "Sodium Cocoyl Isethionate",
+                            "data": {
+                                "name": "Sodium Cocoyl Isethionate",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Anionic Surfactants",
+                                "Origin": "Synthetic (coconut-derived)",
+                                "Function": "Surfactant, cleansing agent",
+                                "Description": "A mild, sulfate-free surfactant derived from coconut fatty acids, used for gentle cleansing and lathering.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Sodium Isethionate",
+                            "data": {
+                                "name": "Sodium Isethionate",
+                                "Level1": "Emulsifiers/Surfactants",
+                                "Level2": "Anionic Surfactants",
+                                "Origin": "Synthetic",
+                                "Function": "Surfactant, cleansing agent",
+                                "Description": "A synthetic surfactant used as a cleansing agent, often found in mild cleansing formulations.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Botanical Extracts",
+            "children": [
+                {
+                    "name": "Essential Oils",
+                    "children": [
+                        {
+                            "name": "Artemisia Vulgaris Oil",
+                            "data": {
+                                "name": "Artemisia Vulgaris Oil",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Essential Oils",
+                                "Origin": "Natural",
+                                "Function": "Skin-conditioning, fragrance",
+                                "Description": "Mugwort oil, used for its skin-conditioning properties and natural fragrance.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Eucalyptus Globulus Leaf Oil",
+                            "data": {
+                                "name": "Eucalyptus Globulus Leaf Oil",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Essential Oils",
+                                "Origin": "Natural",
+                                "Function": "Fragrance, soothing, antimicrobial",
+                                "Description": "Essential oil from eucalyptus leaves, known for its refreshing scent, soothing properties, and mild antimicrobial activity.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Leaf Extracts",
+                    "children": [
+                        {
+                            "name": "Camellia Sinensis Leaf Extract",
+                            "data": {
+                                "name": "Camellia Sinensis Leaf Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Leaf Extracts",
+                                "Origin": "Natural",
+                                "Function": "Antioxidant, anti-inflammatory, soothing",
+                                "Description": "Green tea leaf extract, a powerful antioxidant that helps protect the skin from damage and reduce inflammation.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Rosmarinus Officinalis (Rosemary) Leaf Extract",
+                            "data": {
+                                "name": "Rosmarinus Officinalis (Rosemary) Leaf Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Leaf Extracts",
+                                "Origin": "Natural",
+                                "Function": "Antioxidant, antimicrobial, soothing",
+                                "Description": "Rosemary leaf extract, a potent antioxidant with antimicrobial properties, also known for its soothing effects on the skin.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Herbal Extracts",
+                    "children": [
+                        {
+                            "name": "Centella Asiatica Extract",
+                            "data": {
+                                "name": "Centella Asiatica Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Herbal Extracts",
+                                "Origin": "Natural",
+                                "Function": "Soothing, healing, antioxidant",
+                                "Description": "An extract from the Centella Asiatica plant, widely recognized for its soothing, healing, and antioxidant properties.",
+                                "Derivatives": [
+                                    "Madecassoside"
+                                ]
+                            },
+                            "children": [
+                                {
+                                    "name": "Madecassoside",
+                                    "data": {
+                                        "name": "Madecassoside",
+                                        "Level1": "Actives/Treatments",
+                                        "Level2": "Centella Asiatica Derivatives",
+                                        "Origin": "Natural (Centella Asiatica)",
+                                        "Function": "Soothing, anti-inflammatory, wound healing",
+                                        "Description": "A compound isolated from Centella Asiatica, known for its powerful soothing, anti-inflammatory, and wound-healing properties.",
+                                        "Derivatives": []
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Prunella Vulgaris Extract",
+                            "data": {
+                                "name": "Prunella Vulgaris Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Herbal Extracts",
+                                "Origin": "Natural",
+                                "Function": "Antioxidant, anti-inflammatory, soothing",
+                                "Description": "An extract from self-heal plant, known for its antioxidant, anti-inflammatory, and soothing properties, often used in traditional medicine.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Plant Waters",
+                    "children": [
+                        {
+                            "name": "Centella Asiatica Leaf Water",
+                            "data": {
+                                "name": "Centella Asiatica Leaf Water",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Plant Waters",
+                                "Origin": "Natural",
+                                "Function": "Soothing, hydrating, antioxidant",
+                                "Description": "A water extract from Centella Asiatica leaves, known for its soothing, hydrating, and antioxidant benefits.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Flower Extracts",
+                    "children": [
+                        {
+                            "name": "Chamomilla Recutita (Matricaria) Flower Extract",
+                            "data": {
+                                "name": "Chamomilla Recutita (Matricaria) Flower Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Flower Extracts",
+                                "Origin": "Natural",
+                                "Function": "Soothing, anti-inflammatory, antioxidant",
+                                "Description": "Chamomile flower extract, widely used for its calming, anti-inflammatory, and antioxidant benefits on the skin.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Root Extracts",
+                    "children": [
+                        {
+                            "name": "Daucus Carota Sativa (Carrot) Root Extract",
+                            "data": {
+                                "name": "Daucus Carota Sativa (Carrot) Root Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Root Extracts",
+                                "Origin": "Natural",
+                                "Function": "Antioxidant, skin-conditioning",
+                                "Description": "An extract from carrot roots, rich in antioxidants and vitamins, used for its skin-conditioning properties.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Glycyrrhiza Glabra (Licorice) Root Extract",
+                            "data": {
+                                "name": "Glycyrrhiza Glabra (Licorice) Root Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Root Extracts",
+                                "Origin": "Natural",
+                                "Function": "Brightening, anti-inflammatory, soothing",
+                                "Description": "Licorice root extract, known for its skin-brightening properties, ability to reduce redness, and soothing effects.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Polygonum Cuspidatum Root Extract",
+                            "data": {
+                                "name": "Polygonum Cuspidatum Root Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Root Extracts",
+                                "Origin": "Natural",
+                                "Function": "Antioxidant, soothing",
+                                "Description": "An extract from the root of Japanese knotweed, a potent antioxidant that also provides soothing benefits to the skin.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Scutellaria Baicalensis Root Extract",
+                            "data": {
+                                "name": "Scutellaria Baicalensis Root Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Root Extracts",
+                                "Origin": "Natural",
+                                "Function": "Antioxidant, anti-inflammatory, brightening",
+                                "Description": "An extract from the root of Baikal skullcap, known for its strong antioxidant, anti-inflammatory, and skin-brightening effects.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Algae Extracts",
+                    "children": [
+                        {
+                            "name": "Fucus Vesiculosus Extract",
+                            "data": {
+                                "name": "Fucus Vesiculosus Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Algae Extracts",
+                                "Origin": "Natural",
+                                "Function": "Antioxidant, skin-conditioning, soothing",
+                                "Description": "An extract from bladderwrack seaweed, rich in antioxidants and minerals, used for its skin-conditioning, soothing, and protective benefits.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Laminaria Japonica Extract",
+                            "data": {
+                                "name": "Laminaria Japonica Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Algae Extracts",
+                                "Origin": "Natural",
+                                "Function": "Skin-conditioning, antioxidant",
+                                "Description": "An extract from Japanese kelp, rich in minerals and antioxidants, used for its skin-conditioning benefits.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Fruit Extracts",
+                    "children": [
+                        {
+                            "name": "Hippophae Rhamnoides Extract",
+                            "data": {
+                                "name": "Hippophae Rhamnoides Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Fruit Extracts",
+                                "Origin": "Natural",
+                                "Function": "Antioxidant, skin-regenerating, nourishing",
+                                "Description": "Sea buckthorn extract, rich in vitamins, antioxidants, and fatty acids, promoting skin regeneration and nourishment.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Lycium Chinense Fruit Extract",
+                            "data": {
+                                "name": "Lycium Chinense Fruit Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Fruit Extracts",
+                                "Origin": "Natural",
+                                "Function": "Antioxidant, skin-conditioning",
+                                "Description": "Goji berry extract, rich in antioxidants and vitamins, used for its skin-conditioning and protective benefits.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Morus Alba Fruit Extract",
+                            "data": {
+                                "name": "Morus Alba Fruit Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Fruit Extracts",
+                                "Origin": "Natural",
+                                "Function": "Brightening, antioxidant",
+                                "Description": "White mulberry fruit extract, known for its skin-brightening properties and antioxidant content.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Phoenix Dactylifera (Date) Fruit Extract",
+                            "data": {
+                                "name": "Phoenix Dactylifera (Date) Fruit Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Fruit Extracts",
+                                "Origin": "Natural",
+                                "Function": "Antioxidant, skin-conditioning",
+                                "Description": "Date fruit extract, rich in antioxidants and nutrients, used for its skin-conditioning and protective benefits.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Prunus Mume Fruit Extract",
+                            "data": {
+                                "name": "Prunus Mume Fruit Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Fruit Extracts",
+                                "Origin": "Natural",
+                                "Function": "Antioxidant, brightening",
+                                "Description": "An extract from Japanese apricot fruit, rich in antioxidants, used for its brightening and anti-aging benefits.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Punica Granatum Fruit Extract",
+                            "data": {
+                                "name": "Punica Granatum Fruit Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Fruit Extracts",
+                                "Origin": "Natural",
+                                "Function": "Antioxidant, anti-inflammatory",
+                                "Description": "Pomegranate fruit extract, a powerful antioxidant that helps protect the skin from environmental damage and reduce inflammation.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Rubus Chingii Fruit Extract",
+                            "data": {
+                                "name": "Rubus Chingii Fruit Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Fruit Extracts",
+                                "Origin": "Natural",
+                                "Function": "Antioxidant, skin-conditioning",
+                                "Description": "An extract from a type of raspberry, known for its antioxidant properties and skin-conditioning benefits.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Schisandra Chinensis Fruit Extract",
+                            "data": {
+                                "name": "Schisandra Chinensis Fruit Extract",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Fruit Extracts",
+                                "Origin": "Natural",
+                                "Function": "Antioxidant, adaptogenic",
+                                "Description": "An extract from Schisandra berries, known for its adaptogenic and antioxidant properties, helping the skin adapt to stress.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Fruit Oils",
+                    "children": [
+                        {
+                            "name": "Hippophae Rhamnoides Oil",
+                            "data": {
+                                "name": "Hippophae Rhamnoides Oil",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Fruit Oils",
+                                "Origin": "Natural",
+                                "Function": "Emollient, antioxidant, skin-regenerating",
+                                "Description": "Sea buckthorn oil, known for its rich content of vitamins, antioxidants, and fatty acids, promoting skin regeneration and healing.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Fermented Ingredients",
+                    "children": [
+                        {
+                            "name": "Lactobacillus Ferment",
+                            "data": {
+                                "name": "Lactobacillus Ferment",
+                                "Level1": "Botanical Extracts",
+                                "Level2": "Fermented Ingredients",
+                                "Origin": "Natural (probiotic-derived)",
+                                "Function": "Skin-conditioning, soothing, antimicrobial",
+                                "Description": "A probiotic ingredient derived from the fermentation of Lactobacillus, known for its soothing, skin-conditioning, and mild antimicrobial properties.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Preservatives/Stabilizers",
+            "children": [
+                {
+                    "name": "Glycol Ethers",
+                    "children": [
+                        {
+                            "name": "Benzyl Glycol",
+                            "data": {
+                                "name": "Benzyl Glycol",
+                                "Level1": "Preservatives/Stabilizers",
+                                "Level2": "Glycol Ethers",
+                                "Origin": "Synthetic",
+                                "Function": "Preservative booster, solvent",
+                                "Description": "A synthetic glycol ether used as a preservative booster and solvent in cosmetic formulations.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Ethylhexylglycerin",
+                            "data": {
+                                "name": "Ethylhexylglycerin",
+                                "Level1": "Preservatives/Stabilizers",
+                                "Level2": "Glycol Ethers",
+                                "Origin": "Synthetic",
+                                "Function": "Preservative booster, skin-conditioning",
+                                "Description": "A synthetic compound used as a preservative booster and skin-conditioning agent, often found in natural cosmetic formulations.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Chelating Agents",
+                    "children": [
+                        {
+                            "name": "Disodium EDTA",
+                            "data": {
+                                "name": "Disodium EDTA",
+                                "Level1": "Preservatives/Stabilizers",
+                                "Level2": "Chelating Agents",
+                                "Origin": "Synthetic",
+                                "Function": "Chelating agent, stabilizer",
+                                "Description": "A synthetic chelating agent that binds to metal ions, preventing them from affecting the stability and appearance of cosmetic products.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Antioxidants",
+                    "children": [
+                        {
+                            "name": "Hydroxyacetophenone",
+                            "data": {
+                                "name": "Hydroxyacetophenone",
+                                "Level1": "Preservatives/Stabilizers",
+                                "Level2": "Antioxidants",
+                                "Origin": "Synthetic",
+                                "Function": "Antioxidant, preservative booster",
+                                "Description": "A synthetic antioxidant that also functions as a preservative booster, helping to protect formulations from degradation.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Quaternary Ammonium Compounds",
+                    "children": [
+                        {
+                            "name": "Laurylpyridinium Chloride",
+                            "data": {
+                                "name": "Laurylpyridinium Chloride",
+                                "Level1": "Preservatives/Stabilizers",
+                                "Level2": "Quaternary Ammonium Compounds",
+                                "Origin": "Synthetic",
+                                "Function": "Antimicrobial, preservative",
+                                "Description": "A synthetic quaternary ammonium compound used for its antimicrobial properties, functioning as a preservative.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Inorganic Salts",
+                    "children": [
+                        {
+                            "name": "Sodium Phosphate",
+                            "data": {
+                                "name": "Sodium Phosphate",
+                                "Level1": "Preservatives/Stabilizers",
+                                "Level2": "Inorganic Salts",
+                                "Origin": "Synthetic",
+                                "Function": "Buffering agent, pH adjuster",
+                                "Description": "An inorganic salt used as a buffering agent to maintain the pH of cosmetic formulations.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Hydrators/Humectants",
+            "children": [
+                {
+                    "name": "Polysaccharides",
+                    "children": [
+                        {
+                            "name": "Beta-Glucan",
+                            "data": {
+                                "name": "Beta-Glucan",
+                                "Level1": "Hydrators/Humectants",
+                                "Level2": "Polysaccharides",
+                                "Origin": "Natural (oats, mushrooms, yeast)",
+                                "Function": "Hydrating, soothing, skin-repairing",
+                                "Description": "A polysaccharide derived from oats, mushrooms, or yeast, known for its powerful hydrating, soothing, and skin-repairing abilities.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Hyaluronic Acid",
+                            "data": {
+                                "name": "Hyaluronic Acid",
+                                "Level1": "Hydrators/Humectants",
+                                "Level2": "Polysaccharides",
+                                "Origin": "Natural (fermentation), also synthetic",
+                                "Function": "Humectant, skin-replenishing",
+                                "Description": "A powerful humectant naturally found in the skin, capable of holding vast amounts of water to keep skin hydrated and plump.",
+                                "Derivatives": [
+                                    "Sodium Hyaluronate",
+                                    "Hydrolyzed Hyaluronic Acid",
+                                    "Sodium Hyaluronate Crosspolymer",
+                                    "Hydroxypropyltrimonium Hyaluronate",
+                                    "Sodium Acetylated Hyaluronate",
+                                    "Potassium Hyaluronate"
+                                ]
+                            },
+                            "children": [
+                                {
+                                    "name": "Sodium Hyaluronate",
+                                    "data": {
+                                        "name": "Sodium Hyaluronate",
+                                        "Level1": "Hydrators/Humectants",
+                                        "Level2": "Hyaluronic Acid Derivatives",
+                                        "Origin": "Natural (fermentation), also synthetic",
+                                        "Function": "Humectant, skin-replenishing",
+                                        "Description": "A salt form of hyaluronic acid, known for its ability to hold up to 1,000 times its weight in water, providing intense hydration.",
+                                        "Derivatives": []
+                                    }
+                                },
+                                {
+                                    "name": "Hydrolyzed Hyaluronic Acid",
+                                    "data": {
+                                        "name": "Hydrolyzed Hyaluronic Acid",
+                                        "Level1": "Hydrators/Humectants",
+                                        "Level2": "Hyaluronic Acid Derivatives",
+                                        "Origin": "Natural (fermentation), also synthetic",
+                                        "Function": "Deep hydration, skin-penetrating",
+                                        "Description": "A low molecular weight form of hyaluronic acid that can penetrate deeper into the skin for more intense hydration.",
+                                        "Derivatives": []
+                                    }
+                                },
+                                {
+                                    "name": "Sodium Hyaluronate Crosspolymer",
+                                    "data": {
+                                        "name": "Sodium Hyaluronate Crosspolymer",
+                                        "Level1": "Hydrators/Humectants",
+                                        "Level2": "Hyaluronic Acid Derivatives",
+                                        "Origin": "Synthetic",
+                                        "Function": "Long-lasting hydration, film-forming",
+                                        "Description": "A cross-linked form of sodium hyaluronate that creates a protective film on the skin, providing extended hydration.",
+                                        "Derivatives": []
+                                    }
+                                },
+                                {
+                                    "name": "Hydroxypropyltrimonium Hyaluronate",
+                                    "data": {
+                                        "name": "Hydroxypropyltrimonium Hyaluronate",
+                                        "Level1": "Hydrators/Humectants",
+                                        "Level2": "Hyaluronic Acid Derivatives",
+                                        "Origin": "Synthetic",
+                                        "Function": "Humectant, film-forming, conditioning",
+                                        "Description": "A chemically modified hyaluronic acid that provides hydration and forms a conditioning film on the skin.",
+                                        "Derivatives": []
+                                    }
+                                },
+                                {
+                                    "name": "Sodium Acetylated Hyaluronate",
+                                    "data": {
+                                        "name": "Sodium Acetylated Hyaluronate",
+                                        "Level1": "Hydrators/Humectants",
+                                        "Level2": "Hyaluronic Acid Derivatives",
+                                        "Origin": "Synthetic",
+                                        "Function": "Super hydration, skin affinity",
+                                        "Description": "A modified form of hyaluronic acid with both hydrophilic and hydrophobic properties, offering enhanced and longer-lasting hydration.",
+                                        "Derivatives": []
+                                    }
+                                },
+                                {
+                                    "name": "Potassium Hyaluronate",
+                                    "data": {
+                                        "name": "Potassium Hyaluronate",
+                                        "Level1": "Hydrators/Humectants",
+                                        "Level2": "Hyaluronic Acid Derivatives",
+                                        "Origin": "Synthetic",
+                                        "Function": "Humectant, hydrating",
+                                        "Description": "A salt form of hyaluronic acid that attracts and holds moisture, providing hydration to the skin.",
+                                        "Derivatives": []
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Hydrolyzed Glycosaminoglycans",
+                            "data": {
+                                "name": "Hydrolyzed Glycosaminoglycans",
+                                "Level1": "Hydrators/Humectants",
+                                "Level2": "Polysaccharides",
+                                "Origin": "Natural (animal/plant), also synthetic",
+                                "Function": "Humectant, skin-replenishing",
+                                "Description": "A mix of natural polysaccharides that help to hydrate the skin and maintain its structural integrity.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Glycols",
+                    "children": [
+                        {
+                            "name": "Butylene Glycol",
+                            "data": {
+                                "name": "Butylene Glycol",
+                                "Level1": "Hydrators/Humectants",
+                                "Level2": "Glycols",
+                                "Origin": "Synthetic",
+                                "Function": "Humectant, solvent, penetration enhancer",
+                                "Description": "A type of alcohol that attracts water to the skin, acts as a solvent for other ingredients, and helps them penetrate the skin.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Caprylyl Glycol",
+                            "data": {
+                                "name": "Caprylyl Glycol",
+                                "Level1": "Preservatives/Stabilizers",
+                                "Level2": "Glycols",
+                                "Origin": "Synthetic",
+                                "Function": "Humectant, emollient, preservative booster",
+                                "Description": "A synthetic glycol that provides hydration, acts as an emollient, and boosts the efficacy of preservatives.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Decylene Glycol",
+                            "data": {
+                                "name": "Decylene Glycol",
+                                "Level1": "Preservatives/Stabilizers",
+                                "Level2": "Glycols",
+                                "Origin": "Synthetic",
+                                "Function": "Humectant, skin-conditioning, antimicrobial",
+                                "Description": "A synthetic glycol with humectant, skin-conditioning, and mild antimicrobial properties, often used as a preservative booster.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Dipropylene Glycol",
+                            "data": {
+                                "name": "Dipropylene Glycol",
+                                "Level1": "Solvents/Carriers",
+                                "Level2": "Glycols",
+                                "Origin": "Synthetic",
+                                "Function": "Solvent, humectant, viscosity controller",
+                                "Description": "A synthetic glycol used as a solvent to dissolve other ingredients, a humectant to attract moisture, and a viscosity controller.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Isopentyldiol",
+                            "data": {
+                                "name": "Isopentyldiol",
+                                "Level1": "Solvents/Carriers",
+                                "Level2": "Glycols",
+                                "Origin": "Synthetic",
+                                "Function": "Solvent, humectant, emollient",
+                                "Description": "A synthetic glycol that functions as a solvent, humectant, and emollient, helping to improve product texture and skin hydration.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Pentylene Glycol",
+                            "data": {
+                                "name": "Pentylene Glycol",
+                                "Level1": "Hydrators/Humectants",
+                                "Level2": "Glycols",
+                                "Origin": "Synthetic",
+                                "Function": "Humectant, solvent, preservative booster",
+                                "Description": "A synthetic glycol that attracts and holds moisture, acts as a solvent, and enhances the antimicrobial activity of other ingredients.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Propanediol",
+                            "data": {
+                                "name": "Propanediol",
+                                "Level1": "Solvents/Carriers",
+                                "Level2": "Glycols",
+                                "Origin": "Natural (corn-derived), also synthetic",
+                                "Function": "Solvent, humectant, penetration enhancer",
+                                "Description": "A glycol that can be naturally derived from corn, used as a solvent, humectant, and to enhance the penetration of other ingredients.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Ethoxylated Glycerin",
+                    "children": [
+                        {
+                            "name": "Glycereth-26",
+                            "data": {
+                                "name": "Glycereth-26",
+                                "Level1": "Hydrators/Humectants",
+                                "Level2": "Ethoxylated Glycerin",
+                                "Origin": "Synthetic",
+                                "Function": "Humectant, emollient, solvent",
+                                "Description": "An ethoxylated glycerin derivative that functions as a humectant to attract moisture, an emollient to soften skin, and a solvent.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Polyols",
+                    "children": [
+                        {
+                            "name": "Glycerin",
+                            "data": {
+                                "name": "Glycerin",
+                                "Level1": "Hydrators/Humectants",
+                                "Level2": "Polyols",
+                                "Origin": "Natural (plant/animal fats), also synthetic",
+                                "Function": "Humectant, skin-identical ingredient",
+                                "Description": "A powerful humectant that draws moisture from the air into the skin, keeping it hydrated and soft.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Sugars/Polysaccharides",
+                    "children": [
+                        {
+                            "name": "Glycosyl Trehalose",
+                            "data": {
+                                "name": "Glycosyl Trehalose",
+                                "Level1": "Hydrators/Humectants",
+                                "Level2": "Sugars/Polysaccharides",
+                                "Origin": "Natural (plant-derived), also synthetic",
+                                "Function": "Humectant, skin-protecting",
+                                "Description": "A sugar molecule found in plants, known for its ability to hydrate the skin and protect it from environmental stress.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Hydrogenated Starch Hydrolysate",
+                            "data": {
+                                "name": "Hydrogenated Starch Hydrolysate",
+                                "Level1": "Hydrators/Humectants",
+                                "Level2": "Sugars/Polysaccharides",
+                                "Origin": "Natural (plant-derived), also synthetic",
+                                "Function": "Humectant, skin-conditioning",
+                                "Description": "A mixture of hydrogenated saccharides used as a humectant to hydrate the skin and a skin-conditioning agent.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Hyaluronic Acid Derivatives",
+                    "children": []
+                }
+            ]
+        },
+        {
+            "name": "Unknown",
+            "children": [
+                {
+                    "name": "Unknown",
+                    "children": [
+                        {
+                            "name": "Betaine",
+                            "data": {
+                                "name": "Betaine",
+                                "Level1": "Unknown",
+                                "Level2": "Unknown",
+                                "Origin": "Unknown",
+                                "Function": "Unknown",
+                                "Description": "No information found.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Vitamins",
+            "children": [
+                {
+                    "name": "Vitamin B Derivatives",
+                    "children": [
+                        {
+                            "name": "Biotin",
+                            "data": {
+                                "name": "Biotin",
+                                "Level1": "Vitamins",
+                                "Level2": "Vitamin B Derivatives",
+                                "Origin": "Natural, also synthetic",
+                                "Function": "Skin-conditioning",
+                                "Description": "A form of Vitamin B7, known for its role in maintaining healthy skin, hair, and nails.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Cyanocobalamin",
+                            "data": {
+                                "name": "Cyanocobalamin",
+                                "Level1": "Vitamins",
+                                "Level2": "Vitamin B Derivatives",
+                                "Origin": "Synthetic",
+                                "Function": "Skin-conditioning",
+                                "Description": "A synthetic form of Vitamin B12, used for its skin-conditioning properties.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Folic Acid",
+                            "data": {
+                                "name": "Folic Acid",
+                                "Level1": "Vitamins",
+                                "Level2": "Vitamin B Derivatives",
+                                "Origin": "Synthetic",
+                                "Function": "Antioxidant, skin-conditioning",
+                                "Description": "A form of Vitamin B9, an antioxidant that helps protect the skin and supports cell regeneration.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Niacinamide",
+                            "data": {
+                                "name": "Niacinamide",
+                                "Level1": "Vitamins",
+                                "Level2": "Vitamin B Derivatives",
+                                "Origin": "Synthetic (often), also natural",
+                                "Function": "Skin-restoring, anti-inflammatory, brightening, pore-minimizing",
+                                "Description": "A form of Vitamin B3 that helps improve skin barrier function, reduce redness, and minimize the appearance of pores.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Panthenol",
+                            "data": {
+                                "name": "Panthenol",
+                                "Level1": "Vitamins",
+                                "Level2": "Vitamin B Derivatives",
+                                "Origin": "Synthetic",
+                                "Function": "Humectant, soothing, healing",
+                                "Description": "A form of Vitamin B5 (Pro-Vitamin B5) that acts as a humectant, attracting and holding moisture, and has soothing and healing properties.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Pyridoxine",
+                            "data": {
+                                "name": "Pyridoxine",
+                                "Level1": "Vitamins",
+                                "Level2": "Vitamin B Derivatives",
+                                "Origin": "Synthetic",
+                                "Function": "Skin-conditioning",
+                                "Description": "A form of Vitamin B6, used for its skin-conditioning properties.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Thiamine HCl",
+                            "data": {
+                                "name": "Thiamine HCl",
+                                "Level1": "Vitamins",
+                                "Level2": "Vitamin B Derivatives",
+                                "Origin": "Synthetic",
+                                "Function": "Skin-conditioning",
+                                "Description": "A salt form of Vitamin B1, used for its skin-conditioning benefits.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Vitamin A Derivatives (Retinoids)",
+                    "children": [
+                        {
+                            "name": "Retinyl Palmitate",
+                            "data": {
+                                "name": "Retinyl Palmitate",
+                                "Level1": "Vitamins",
+                                "Level2": "Vitamin A Derivatives (Retinoids)",
+                                "Origin": "Synthetic",
+                                "Function": "Anti-aging, antioxidant",
+                                "Description": "A mild retinoid (Vitamin A derivative) that functions as an antioxidant and helps improve the appearance of aging skin.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Vitamin C Derivatives",
+                    "children": [
+                        {
+                            "name": "Sodium Ascorbyl Phosphate",
+                            "data": {
+                                "name": "Sodium Ascorbyl Phosphate",
+                                "Level1": "Vitamins",
+                                "Level2": "Vitamin C Derivatives",
+                                "Origin": "Synthetic",
+                                "Function": "Antioxidant, brightening, anti-acne",
+                                "Description": "A stable, water-soluble derivative of Vitamin C with antioxidant, brightening, and anti-acne properties.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Vitamin E Derivatives",
+                    "children": [
+                        {
+                            "name": "Tocopheryl Acetate",
+                            "data": {
+                                "name": "Tocopheryl Acetate",
+                                "Level1": "Vitamins",
+                                "Level2": "Vitamin E Derivatives",
+                                "Origin": "Synthetic",
+                                "Function": "Antioxidant, skin-conditioning",
+                                "Description": "A stable form of Vitamin E, a powerful antioxidant that helps protect the skin from free radical damage.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Emollients/Occlusives",
+            "children": [
+                {
+                    "name": "Plant Butters",
+                    "children": [
+                        {
+                            "name": "Butyrospermum Parkii (Shea) Butter",
+                            "data": {
+                                "name": "Butyrospermum Parkii (Shea) Butter",
+                                "Level1": "Emollients/Occlusives",
+                                "Level2": "Plant Butters",
+                                "Origin": "Natural",
+                                "Function": "Emollient, skin-conditioning, antioxidant",
+                                "Description": "A natural fat extracted from the shea tree nut, widely used for its emollient, skin-conditioning, and antioxidant properties.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Triglycerides",
+                    "children": [
+                        {
+                            "name": "Caprylic/Capric Triglyceride",
+                            "data": {
+                                "name": "Caprylic/Capric Triglyceride",
+                                "Level1": "Emollients/Occlusives",
+                                "Level2": "Triglycerides",
+                                "Origin": "Natural (coconut/palm oil), also synthetic",
+                                "Function": "Emollient, skin-replenishing, solvent",
+                                "Description": "A mix of fatty acids from coconut and palm oils, used as an emollient to soften skin, a skin-replenishing ingredient, and a solvent.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Fatty Alcohols",
+                    "children": [
+                        {
+                            "name": "Cetearyl Alcohol",
+                            "data": {
+                                "name": "Cetearyl Alcohol",
+                                "Level1": "Emollients/Occlusives",
+                                "Level2": "Fatty Alcohols",
+                                "Origin": "Natural (plant-derived), also synthetic",
+                                "Function": "Emollient, emulsifier, thickener",
+                                "Description": "A fatty alcohol that acts as an emollient to soften skin, an emulsifier to stabilize formulations, and a thickening agent.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Fatty Acids",
+                    "children": [
+                        {
+                            "name": "Coconut acid",
+                            "data": {
+                                "name": "Coconut acid",
+                                "Level1": "Emollients/Occlusives",
+                                "Level2": "Fatty Acids",
+                                "Origin": "Natural (coconut-derived)",
+                                "Function": "Emollient, cleansing agent",
+                                "Description": "A mixture of fatty acids derived from coconut oil, used for its emollient and cleansing properties.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Fatty Acids/Esters",
+                    "children": [
+                        {
+                            "name": "Glyceryl Arachidonate",
+                            "data": {
+                                "name": "Glyceryl Arachidonate",
+                                "Level1": "Emollients/Occlusives",
+                                "Level2": "Fatty Acids/Esters",
+                                "Origin": "Natural (animal/plant), also synthetic",
+                                "Function": "Emollient, skin-conditioning",
+                                "Description": "An ester of arachidonic acid and glycerin, used as an emollient to soften and smooth the skin.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Glyceryl Linolenate",
+                            "data": {
+                                "name": "Glyceryl Linolenate",
+                                "Level1": "Emollients/Occlusives",
+                                "Level2": "Fatty Acids/Esters",
+                                "Origin": "Natural (plant), also synthetic",
+                                "Function": "Emollient, skin-conditioning",
+                                "Description": "An ester of linolenic acid and glycerin, used as an emollient to soften and smooth the skin.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Plant Oils",
+                    "children": [
+                        {
+                            "name": "Limnanthes Alba (Meadowfoam) Seed Oil",
+                            "data": {
+                                "name": "Limnanthes Alba (Meadowfoam) Seed Oil",
+                                "Level1": "Emollients/Occlusives",
+                                "Level2": "Plant Oils",
+                                "Origin": "Natural",
+                                "Function": "Emollient, antioxidant, skin-conditioning",
+                                "Description": "A stable plant oil extracted from meadowfoam seeds, known for its moisturizing, antioxidant, and skin-conditioning benefits.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Simmondsia Chinensis (Jojoba) Seed Oil",
+                            "data": {
+                                "name": "Simmondsia Chinensis (Jojoba) Seed Oil",
+                                "Level1": "Emollients/Occlusives",
+                                "Level2": "Plant Oils",
+                                "Origin": "Natural",
+                                "Function": "Emollient, skin-conditioning, non-comedogenic",
+                                "Description": "A liquid wax ester that closely resembles the skin's natural sebum, providing excellent moisturizing and conditioning without clogging pores.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Silicones",
+                    "children": [
+                        {
+                            "name": "Phenyl Trimethicone",
+                            "data": {
+                                "name": "Phenyl Trimethicone",
+                                "Level1": "Emollients/Occlusives",
+                                "Level2": "Silicones",
+                                "Origin": "Synthetic",
+                                "Function": "Emollient, film-former, texture enhancer",
+                                "Description": "A silicone-based emollient that provides a silky feel, forms a non-greasy film, and enhances the spreadability of products.",
+                                "Derivatives": []
+                            }
+                        },
+                        {
+                            "name": "Vinyl Dimethicone",
+                            "data": {
+                                "name": "Vinyl Dimethicone",
+                                "Level1": "Emollients/Occlusives",
+                                "Level2": "Silicones",
+                                "Origin": "Synthetic",
+                                "Function": "Film-former, emollient, texture enhancer",
+                                "Description": "A silicone polymer that forms a breathable film on the skin, provides emollience, and enhances the texture of products.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Peptides",
+            "children": [
+                {
+                    "name": "Signaling Peptides",
+                    "children": [
+                        {
+                            "name": "Palmitoyl Tripeptide-5",
+                            "data": {
+                                "name": "Palmitoyl Tripeptide-5",
+                                "Level1": "Peptides",
+                                "Level2": "Signaling Peptides",
+                                "Origin": "Synthetic",
+                                "Function": "Anti-aging, collagen-boosting",
+                                "Description": "A synthetic peptide that mimics the body's own mechanisms to boost collagen production, reducing the appearance of wrinkles.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Growth Factors",
+                    "children": [
+                        {
+                            "name": "sh-Oligopeptide-1",
+                            "data": {
+                                "name": "sh-Oligopeptide-1",
+                                "Level1": "Peptides",
+                                "Level2": "Growth Factors",
+                                "Origin": "Synthetic",
+                                "Function": "Anti-aging, skin-regenerating",
+                                "Description": "A synthetic peptide that mimics epidermal growth factor (EGF), promoting cell growth and regeneration for anti-aging benefits.",
+                                "Derivatives": []
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+};
+
+  class IngredientTaxonomy {
+    constructor(containerId, data) {
+      this.containerId = containerId;
+      this.data = data;
+      this.width = 0;
+      this.height = 0;
+      this.svg = null;
+      this.g = null;
+      this.tree = null;
+      this.root = null;
+      this.tooltip = d3.select(`#tooltip-${containerId.split('-')[2]}`);
+      
+      this.init();
+    }
+
+    init() {
+      this.setupDimensions();
+      this.setupSVG();
+      this.setupTree();
+      this.setupControls();
+      this.render();
+      this.setupResize();
+    }
+
+    setupDimensions() {
+      const container = document.getElementById(this.containerId);
+      this.width = container.clientWidth;
+      this.height = container.clientHeight;
+    }
+
+    setupSVG() {
+      const svgId = this.containerId.replace('container', 'svg');
+      this.svg = d3.select(`#${svgId}`)
+        .attr('width', this.width)
+        .attr('height', this.height);
+
+      this.g = this.svg.append('g')
+        .attr('transform', `translate(${this.width / 2}, 50)`);
+
+      const zoom = d3.zoom()
+        .scaleExtent([0.1, 3])
+        .on('zoom', (event) => {
+          this.g.attr('transform', event.transform);
+        });
+
+      this.svg.call(zoom);
+    }
+
+    setupTree() {
+      this.tree = d3.tree().size([this.width - 100, this.height - 100]);
+      this.root = d3.hierarchy(this.data);
+      this.root.x0 = 0;
+      this.root.y0 = 0;
+
+      if (this.root.children) {
+        this.root.children.forEach(this.collapse.bind(this));
+      }
+    }
+
+    setupControls() {
+      const idSuffix = this.containerId.split('-')[2];
+      
+      d3.select(`#expand-all-${idSuffix}`)
+        .on('click', () => this.expandAll());
+      
+      d3.select(`#collapse-all-${idSuffix}`)
+        .on('click', () => this.collapseAll());
+      
+      d3.select(`#reset-${idSuffix}`)
+        .on('click', () => this.reset());
+    }
+
+    getNodeColor(d) {
+      const colors = {
+        0: '{{ block.settings.primary_color }}',
+        1: '{{ block.settings.dark_color }}',
+        2: '#000000',
+        3: '#ffffff'
+      };
+      return colors[d.data.level] || '#cccccc';
+    }
+
+    getTextColor(d) {
+      return d.data.level === 3 ? '#000000' : '#ffffff';
+    }
+
+    collapse(d) {
+      if (d.children) {
+        d._children = d.children;
+        d._children.forEach(this.collapse.bind(this));
+        d.children = null;
+      }
+    }
+
+    expand(d) {
+      if (d._children) {
+        d.children = d._children;
+        d._children = null;
+      }
+    }
+
+    expandAll() {
+      this.root.descendants().forEach(this.expand.bind(this));
+      this.update(this.root);
+    }
+
+    collapseAll() {
+      this.root.descendants().forEach(this.collapse.bind(this));
+      this.update(this.root);
+    }
+
+    reset() {
+      this.root.descendants().forEach(this.collapse.bind(this));
+      if (this.root.children) {
+        this.root.children.forEach(d => {
+          if (d._children) {
+            d.children = d._children;
+            d._children = null;
+          }
+        });
+      }
+      this.update(this.root);
+    }
+
+    click(event, d) {
+      if (d.children) {
+        d._children = d.children;
+        d.children = null;
+      } else {
+        d.children = d._children;
+        d._children = null;
+      }
+      this.update(d);
+    }
+
+    showTooltip(event, d) {
+      const tooltipTitle = this.tooltip.select('.ai-ingredient-taxonomy__tooltip-title-{{ ai_gen_id }}');
+      const tooltipContent = this.tooltip.select('.ai-ingredient-taxonomy__tooltip-content-{{ ai_gen_id }}');
+      
+      tooltipTitle.text(d.data.name);
+      tooltipContent.html(`
+        <strong>Function:</strong> ${d.data.function}<br>
+        <strong>Origin:</strong> ${d.data.origin}<br>
+        <strong>Description:</strong> ${d.data.description}<br>
+        <strong>Derivatives:</strong> ${d.data.derivatives}
+      `);
+
+      this.tooltip
+        .style('opacity', 1)
+        .style('left', (event.pageX + 10) + 'px')
+        .style('top', (event.pageY - 10) + 'px');
+    }
+
+    hideTooltip() {
+      this.tooltip.style('opacity', 0);
+    }
+
+    handleIngredientClick(event, d) {
+      if (d.data.level === 3) {
+        const ingredientName = d.data.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        const url = `/pages/ingredients/${ingredientName}`;
+        window.open(url, '_blank');
+      }
+    }
+
+    update(source) {
+      const treeData = this.tree(this.root);
+      const nodes = treeData.descendants();
+      const links = treeData.descendants().slice(1);
+
+      let i = 0;
+      nodes.forEach(d => {
+        d.y = d.depth * 180;
+        d.id = d.id || ++i;
+      });
+
+      const node = this.g.selectAll('g.node')
+        .data(nodes, d => d.id);
+
+      const nodeEnter = node.enter().append('g')
+        .attr('class', 'node')
+        .attr('transform', d => `translate(${source.x0},${source.y0})`)
+        .on('click', (event, d) => this.click(event, d))
+        .on('mouseover', (event, d) => this.showTooltip(event, d))
+        .on('mouseout', () => this.hideTooltip());
+
+      nodeEnter.append('circle')
+        .attr('r', 1e-6)
+        .style('fill', d => d._children ? this.getNodeColor(d) : '#fff')
+        .style('stroke', d => this.getNodeColor(d));
+
+      nodeEnter.append('text')
+        .attr('dy', '.35em')
+        .attr('x', d => d.children || d._children ? -13 : 13)
+        .attr('text-anchor', d => d.children || d._children ? 'end' : 'start')
+        .text(d => d.data.name)
+        .style('fill', d => this.getTextColor(d))
+        .style('fill-opacity', 1e-6)
+        .classed('clickable', d => d.data.level === 3)
+        .on('click', (event, d) => {
+          event.stopPropagation();
+          if (d.data.level === 3) {
+            this.handleIngredientClick(event, d);
+          } else {
+            this.click(event, d);
+          }
+        });
+
+      const nodeUpdate = nodeEnter.merge(node);
+
+      nodeUpdate.transition()
+        .duration(750)
+        .attr('transform', d => `translate(${d.x},${d.y})`);
+
+      nodeUpdate.select('circle')
+        .transition()
+        .duration(750)
+        .attr('r', 8)
+        .style('fill', d => d._children ? this.getNodeColor(d) : '#fff')
+        .style('stroke', d => this.getNodeColor(d));
+
+      nodeUpdate.select('text')
+        .transition()
+        .duration(750)
+        .style('fill-opacity', 1)
+        .style('fill', d => d._children ? '#fff' : this.getTextColor(d));
+
+      const nodeExit = node.exit().transition()
+        .duration(750)
+        .attr('transform', d => `translate(${source.x},${source.y})`)
+        .remove();
+
+      nodeExit.select('circle')
+        .attr('r', 1e-6);
+
+      nodeExit.select('text')
+        .style('fill-opacity', 1e-6);
+
+      const link = this.g.selectAll('path.link')
+        .data(links, d => d.id);
+
+      const linkEnter = link.enter().insert('path', 'g')
+        .attr('class', 'link')
+        .attr('d', d => {
+          const o = {x: source.x0, y: source.y0};
+          return this.diagonal(o, o);
+        });
+
+      const linkUpdate = linkEnter.merge(link);
+
+      linkUpdate.transition()
+        .duration(750)
+        .attr('d', d => this.diagonal(d, d.parent));
+
+      link.exit().transition()
+        .duration(750)
+        .attr('d', d => {
+          const o = {x: source.x, y: source.y};
+          return this.diagonal(o, o);
+        })
+        .remove();
+
+      nodes.forEach(d => {
+        d.x0 = d.x;
+        d.y0 = d.y;
+      });
+    }
+
+    diagonal(s, d) {
+      return `M ${s.x} ${s.y}
+              C ${(s.x + d.x) / 2} ${s.y},
+                ${(s.x + d.x) / 2} ${d.y},
+                ${d.x} ${d.y}`;
+    }
+
+    render() {
+      this.update(this.root);
+    }
+
+    setupResize() {
+      window.addEventListener('resize', () => {
+        this.setupDimensions();
+        this.svg.attr('width', this.width).attr('height', this.height);
+        this.tree.size([this.width - 100, this.height - 100]);
+        this.update(this.root);
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    new IngredientTaxonomy('tree-container-{{ ai_gen_id }}', taxonomyData);
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Ingredient taxonomy",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading",
+      "default": "Skincare Ingredient Taxonomy"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Section subtitle",
+      "default": "Explore our comprehensive database of skincare ingredients"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "primary_color",
+      "label": "Primary blue color",
+      "default": "#3498ff"
+    },
+    {
+      "type": "color",
+      "id": "dark_color",
+      "label": "Dark shade color",
+      "default": "#141615"
+    },
+    {
+      "type": "color",
+      "id": "grey_color",
+      "label": "Grey color",
+      "default": "#53585a"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 32
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredient taxonomy"
+    }
+  ]
+}
+{% endschema %}

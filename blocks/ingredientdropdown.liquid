@@ -1,0 +1,673 @@
+{% doc %}
+  @prompt
+    Create an interactive K-beauty skincare ingredients page section with collapsible dropdowns for ingredient groups. Use primary blue #3498ff for highlights, white #ffffff backgrounds, dark shade #141615 with grey #53585a for secondary elements. Apply Raleway font throughout. Display HARAMOON logo at the top. Include mobile-friendly dropdown functionality for ingredient categories. Add navigation links to gallery and glossary pages (skincare ingredient taxonomy tree visualizer). Make the interface clean and user-friendly with smooth animations for dropdown interactions., Create an interactive K-beauty skincare ingredients page section with collapsible dropdowns for ingredient groups. Use primary blue #3498ff for highlights, white #ffffff backgrounds, dark shade #141615 with grey #53585a for secondary elements. Apply Raleway font throughout. Display HARAMOON logo at the top. Include mobile-friendly dropdown functionality for ingredient categories. Add navigation links to gallery and glossary pages (skincare ingredient taxonomy tree visualizer). Make the interface clean and user-friendly with smooth animations for dropdown interactions., i want to be able to change the font color of the label text to white or be able to switch it myself within this additonally please
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap');
+
+  .ai-kbeauty-ingredients-{{ ai_gen_id }} {
+    font-family: 'Raleway', sans-serif;
+    background-color: {{ block.settings.background_color }};
+    color: {{ block.settings.text_color }};
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ai-kbeauty-header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .ai-kbeauty-logo-{{ ai_gen_id }} {
+    margin-bottom: 20px;
+  }
+
+  .ai-kbeauty-logo-{{ ai_gen_id }} img {
+    max-height: 80px;
+    width: auto;
+  }
+
+  .ai-kbeauty-logo-placeholder-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 20px 40px;
+    background-color: #f8f9fa;
+    border: 2px dashed #53585a;
+    border-radius: 8px;
+    color: #53585a;
+    font-weight: 500;
+    font-size: 18px;
+  }
+
+  .ai-kbeauty-title-{{ ai_gen_id }} {
+    font-size: 36px;
+    font-weight: 700;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 10px;
+  }
+
+  .ai-kbeauty-subtitle-{{ ai_gen_id }} {
+    font-size: 18px;
+    color: {{ block.settings.subtitle_color }};
+    margin: 0 0 30px;
+    font-weight: 400;
+  }
+
+  .ai-kbeauty-navigation-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  .ai-kbeauty-nav-link-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background-color: {{ block.settings.nav_bg_color }};
+    color: {{ block.settings.nav_text_color }};
+    text-decoration: none;
+    border: 2px solid {{ block.settings.nav_border_color }};
+    border-radius: 25px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .ai-kbeauty-nav-link-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.nav_hover_bg_color }};
+    color: {{ block.settings.nav_hover_text_color }};
+    transform: translateY(-2px);
+  }
+
+  .ai-kbeauty-nav-icon-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+  }
+
+  .ai-kbeauty-ingredients-grid-{{ ai_gen_id }} {
+    display: grid;
+    gap: 20px;
+  }
+
+  .ai-kbeauty-category-{{ ai_gen_id }} {
+    background-color: {{ block.settings.category_bg_color }};
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(20, 22, 21, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .ai-kbeauty-category-{{ ai_gen_id }}:hover {
+    box-shadow: 0 4px 16px rgba(20, 22, 21, 0.15);
+  }
+
+  .ai-kbeauty-category-header-{{ ai_gen_id }} {
+    padding: 20px;
+    background: linear-gradient(135deg, {{ block.settings.category_header_bg_color }} 0%, {{ block.settings.category_header_bg_color | color_darken: 10 }} 100%);
+    color: {{ block.settings.category_header_text_color }};
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+
+  .ai-kbeauty-category-header-{{ ai_gen_id }}:hover {
+    background: linear-gradient(135deg, {{ block.settings.category_header_bg_color | color_darken: 10 }} 0%, {{ block.settings.category_header_bg_color | color_darken: 20 }} 100%);
+  }
+
+  .ai-kbeauty-category-title-{{ ai_gen_id }} {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    color: {{ block.settings.category_header_text_color }};
+  }
+
+  .ai-kbeauty-category-count-{{ ai_gen_id }} {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-left: 10px;
+    color: {{ block.settings.category_header_text_color }};
+  }
+
+  .ai-kbeauty-dropdown-icon-{{ ai_gen_id }} {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-kbeauty-category-{{ ai_gen_id }}.active .ai-kbeauty-dropdown-icon-{{ ai_gen_id }} {
+    transform: rotate(180deg);
+  }
+
+  .ai-kbeauty-category-content-{{ ai_gen_id }} {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    background-color: {{ block.settings.category_content_bg_color }};
+  }
+
+  .ai-kbeauty-category-{{ ai_gen_id }}.active .ai-kbeauty-category-content-{{ ai_gen_id }} {
+    max-height: 1000px;
+    padding: 20px;
+  }
+
+  .ai-kbeauty-ingredients-list-{{ ai_gen_id }} {
+    display: grid;
+    gap: 15px;
+  }
+
+  .ai-kbeauty-ingredient-{{ ai_gen_id }} {
+    padding: 15px;
+    background-color: {{ block.settings.ingredient_bg_color }};
+    border-radius: 8px;
+    border-left: 4px solid {{ block.settings.ingredient_accent_color }};
+    transition: all 0.3s ease;
+  }
+
+  .ai-kbeauty-ingredient-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.ingredient_hover_bg_color }};
+    transform: translateX(5px);
+  }
+
+  .ai-kbeauty-ingredient-name-{{ ai_gen_id }} {
+    font-size: 16px;
+    font-weight: 600;
+    color: {{ block.settings.ingredient_name_color }};
+    margin: 0 0 5px;
+  }
+
+  .ai-kbeauty-ingredient-description-{{ ai_gen_id }} {
+    font-size: 14px;
+    color: {{ block.settings.ingredient_description_color }};
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .ai-kbeauty-empty-state-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 60px 20px;
+    color: {{ block.settings.empty_state_color }};
+  }
+
+  .ai-kbeauty-empty-icon-{{ ai_gen_id }} {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    opacity: 0.5;
+  }
+
+  .ai-kbeauty-empty-text-{{ ai_gen_id }} {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0 0 10px;
+    color: {{ block.settings.empty_state_color }};
+  }
+
+  .ai-kbeauty-empty-subtext-{{ ai_gen_id }} {
+    font-size: 14px;
+    margin: 0;
+    color: {{ block.settings.empty_state_color }};
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-kbeauty-ingredients-{{ ai_gen_id }} {
+      padding: 20px 15px;
+    }
+
+    .ai-kbeauty-title-{{ ai_gen_id }} {
+      font-size: 28px;
+    }
+
+    .ai-kbeauty-subtitle-{{ ai_gen_id }} {
+      font-size: 16px;
+    }
+
+    .ai-kbeauty-navigation-{{ ai_gen_id }} {
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .ai-kbeauty-nav-link-{{ ai_gen_id }} {
+      width: 100%;
+      max-width: 280px;
+      justify-content: center;
+    }
+
+    .ai-kbeauty-category-header-{{ ai_gen_id }} {
+      padding: 15px;
+    }
+
+    .ai-kbeauty-category-title-{{ ai_gen_id }} {
+      font-size: 18px;
+    }
+
+    .ai-kbeauty-category-{{ ai_gen_id }}.active .ai-kbeauty-category-content-{{ ai_gen_id }} {
+      padding: 15px;
+    }
+  }
+{% endstyle %}
+
+<k-beauty-ingredients-{{ ai_gen_id }} class="ai-kbeauty-ingredients-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-kbeauty-header-{{ ai_gen_id }}">
+    <div class="ai-kbeauty-logo-{{ ai_gen_id }}">
+      {% if block.settings.logo %}
+        <img src="{{ block.settings.logo | image_url: width: 200 }}" alt="HARAMOON" loading="lazy">
+      {% else %}
+        <div class="ai-kbeauty-logo-placeholder-{{ ai_gen_id }}">
+          HARAMOON
+        </div>
+      {% endif %}
+    </div>
+    
+    <h1 class="ai-kbeauty-title-{{ ai_gen_id }}">{{ block.settings.page_title }}</h1>
+    <p class="ai-kbeauty-subtitle-{{ ai_gen_id }}">{{ block.settings.page_subtitle }}</p>
+    
+    <nav class="ai-kbeauty-navigation-{{ ai_gen_id }}">
+      {% if block.settings.gallery_url != blank %}
+        <a href="{{ block.settings.gallery_url }}" class="ai-kbeauty-nav-link-{{ ai_gen_id }}">
+          <svg class="ai-kbeauty-nav-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21,15 16,10 5,21"/>
+          </svg>
+          Gallery
+        </a>
+      {% endif %}
+      
+      {% if block.settings.glossary_url != blank %}
+        <a href="{{ block.settings.glossary_url }}" class="ai-kbeauty-nav-link-{{ ai_gen_id }}">
+          <svg class="ai-kbeauty-nav-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+          Glossary
+        </a>
+      {% endif %}
+    </nav>
+  </div>
+
+  <div class="ai-kbeauty-ingredients-grid-{{ ai_gen_id }}">
+    {% assign has_categories = false %}
+    
+    {% for i in (1..5) %}
+      {% liquid
+        assign category_key = 'category_' | append: i | append: '_name'
+        assign ingredients_key = 'category_' | append: i | append: '_ingredients'
+        assign category_name = block.settings[category_key]
+        assign ingredients_text = block.settings[ingredients_key]
+      %}
+      
+      {% if category_name != blank and ingredients_text != blank %}
+        {% assign has_categories = true %}
+        {% assign ingredients = ingredients_text | split: '|' %}
+        
+        <div class="ai-kbeauty-category-{{ ai_gen_id }}" data-category="{{ i }}">
+          <div class="ai-kbeauty-category-header-{{ ai_gen_id }}" role="button" tabindex="0" aria-expanded="false">
+            <div>
+              <h2 class="ai-kbeauty-category-title-{{ ai_gen_id }}">
+                {{ category_name }}
+                <span class="ai-kbeauty-category-count-{{ ai_gen_id }}">({{ ingredients.size }} ingredients)</span>
+              </h2>
+            </div>
+            <svg class="ai-kbeauty-dropdown-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6,9 12,15 18,9"/>
+            </svg>
+          </div>
+          
+          <div class="ai-kbeauty-category-content-{{ ai_gen_id }}">
+            <div class="ai-kbeauty-ingredients-list-{{ ai_gen_id }}">
+              {% for ingredient_info in ingredients %}
+                {% liquid
+                  assign ingredient_parts = ingredient_info | split: ':'
+                  if ingredient_parts.size >= 2
+                    assign ingredient_name = ingredient_parts[0] | strip
+                    assign ingredient_desc = ingredient_parts[1] | strip
+                  else
+                    assign ingredient_name = ingredient_info | strip
+                    assign ingredient_desc = ''
+                  endif
+                %}
+                
+                {% if ingredient_name != blank %}
+                  <div class="ai-kbeauty-ingredient-{{ ai_gen_id }}">
+                    <h3 class="ai-kbeauty-ingredient-name-{{ ai_gen_id }}">{{ ingredient_name }}</h3>
+                    {% if ingredient_desc != blank %}
+                      <p class="ai-kbeauty-ingredient-description-{{ ai_gen_id }}">{{ ingredient_desc }}</p>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    {% unless has_categories %}
+      <div class="ai-kbeauty-empty-state-{{ ai_gen_id }}">
+        <svg class="ai-kbeauty-empty-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <p class="ai-kbeauty-empty-text-{{ ai_gen_id }}">No ingredients configured yet</p>
+        <p class="ai-kbeauty-empty-subtext-{{ ai_gen_id }}">Add ingredient categories to get started</p>
+      </div>
+    {% endunless %}
+  </div>
+</k-beauty-ingredients-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class KBeautyIngredients{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.setupDropdowns();
+      }
+
+      setupDropdowns() {
+        const categoryHeaders = this.querySelectorAll('.ai-kbeauty-category-header-{{ ai_gen_id }}');
+        
+        categoryHeaders.forEach(header => {
+          header.addEventListener('click', () => this.toggleCategory(header));
+          header.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              this.toggleCategory(header);
+            }
+          });
+        });
+      }
+
+      toggleCategory(header) {
+        const category = header.closest('.ai-kbeauty-category-{{ ai_gen_id }}');
+        const isActive = category.classList.contains('active');
+        
+        category.classList.toggle('active');
+        header.setAttribute('aria-expanded', !isActive);
+        
+        if (!isActive) {
+          this.closeOtherCategories(category);
+        }
+      }
+
+      closeOtherCategories(activeCategory) {
+        const allCategories = this.querySelectorAll('.ai-kbeauty-category-{{ ai_gen_id }}');
+        
+        allCategories.forEach(category => {
+          if (category !== activeCategory && category.classList.contains('active')) {
+            category.classList.remove('active');
+            const header = category.querySelector('.ai-kbeauty-category-header-{{ ai_gen_id }}');
+            header.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+    }
+
+    customElements.define('k-beauty-ingredients-{{ ai_gen_id }}', KBeautyIngredients{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "K-Beauty ingredients page",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Brand"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "text",
+      "id": "page_title",
+      "label": "Page title",
+      "default": "K-Beauty Skincare Ingredients"
+    },
+    {
+      "type": "text",
+      "id": "page_subtitle",
+      "label": "Page subtitle",
+      "default": "Discover the power of Korean skincare ingredients"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#141615"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#141615"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#53585a"
+    },
+    {
+      "type": "header",
+      "content": "Navigation colors"
+    },
+    {
+      "type": "color",
+      "id": "nav_bg_color",
+      "label": "Navigation background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "nav_text_color",
+      "label": "Navigation text",
+      "default": "#3498ff"
+    },
+    {
+      "type": "color",
+      "id": "nav_border_color",
+      "label": "Navigation border",
+      "default": "#3498ff"
+    },
+    {
+      "type": "color",
+      "id": "nav_hover_bg_color",
+      "label": "Navigation hover background",
+      "default": "#3498ff"
+    },
+    {
+      "type": "color",
+      "id": "nav_hover_text_color",
+      "label": "Navigation hover text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Category colors"
+    },
+    {
+      "type": "color",
+      "id": "category_bg_color",
+      "label": "Category background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "category_header_bg_color",
+      "label": "Category header background",
+      "default": "#3498ff"
+    },
+    {
+      "type": "color",
+      "id": "category_header_text_color",
+      "label": "Category header text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "category_content_bg_color",
+      "label": "Category content background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Ingredient colors"
+    },
+    {
+      "type": "color",
+      "id": "ingredient_bg_color",
+      "label": "Ingredient background",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "color",
+      "id": "ingredient_hover_bg_color",
+      "label": "Ingredient hover background",
+      "default": "#e3f2fd"
+    },
+    {
+      "type": "color",
+      "id": "ingredient_accent_color",
+      "label": "Ingredient accent border",
+      "default": "#3498ff"
+    },
+    {
+      "type": "color",
+      "id": "ingredient_name_color",
+      "label": "Ingredient name text",
+      "default": "#141615"
+    },
+    {
+      "type": "color",
+      "id": "ingredient_description_color",
+      "label": "Ingredient description text",
+      "default": "#53585a"
+    },
+    {
+      "type": "color",
+      "id": "empty_state_color",
+      "label": "Empty state text",
+      "default": "#53585a"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "url",
+      "id": "gallery_url",
+      "label": "Gallery page URL"
+    },
+    {
+      "type": "url",
+      "id": "glossary_url",
+      "label": "Glossary page URL"
+    },
+    {
+      "type": "header",
+      "content": "Category 1"
+    },
+    {
+      "type": "text",
+      "id": "category_1_name",
+      "label": "Category name",
+      "default": "Hydrating Ingredients"
+    },
+    {
+      "type": "textarea",
+      "id": "category_1_ingredients",
+      "label": "Ingredients",
+      "default": "Hyaluronic Acid: Powerful humectant that holds up to 1000x its weight in water | Ceramides: Essential lipids that restore and maintain skin barrier | Snail Secretion Filtrate: Repairs and hydrates damaged skin"
+    },
+    {
+      "type": "header",
+      "content": "Category 2"
+    },
+    {
+      "type": "text",
+      "id": "category_2_name",
+      "label": "Category name",
+      "default": "Anti-Aging Actives"
+    },
+    {
+      "type": "textarea",
+      "id": "category_2_ingredients",
+      "label": "Ingredients",
+      "default": "Retinol: Vitamin A derivative that promotes cell turnover | Niacinamide: Vitamin B3 that minimizes pores and evens skin tone | Peptides: Amino acid chains that stimulate collagen production"
+    },
+    {
+      "type": "header",
+      "content": "Category 3"
+    },
+    {
+      "type": "text",
+      "id": "category_3_name",
+      "label": "Category name",
+      "default": "Brightening Compounds"
+    },
+    {
+      "type": "textarea",
+      "id": "category_3_ingredients",
+      "label": "Ingredients",
+      "default": "Vitamin C: Antioxidant that brightens and protects from free radicals | Arbutin: Natural skin lightener derived from bearberry | Kojic Acid: Gentle brightening agent from fermented rice"
+    },
+    {
+      "type": "header",
+      "content": "Category 4"
+    },
+    {
+      "type": "text",
+      "id": "category_4_name",
+      "label": "Category name",
+      "default": "Soothing Botanicals"
+    },
+    {
+      "type": "textarea",
+      "id": "category_4_ingredients",
+      "label": "Ingredients",
+      "default": "Centella Asiatica: Anti-inflammatory herb that calms irritated skin | Green Tea Extract: Antioxidant-rich extract that soothes and protects | Aloe Vera: Cooling gel that hydrates and reduces redness"
+    },
+    {
+      "type": "header",
+      "content": "Category 5"
+    },
+    {
+      "type": "text",
+      "id": "category_5_name",
+      "label": "Category name"
+    },
+    {
+      "type": "textarea",
+      "id": "category_5_ingredients",
+      "label": "Ingredients"
+    }
+  ],
+  "presets": [
+    {
+      "name": "K-Beauty ingredients page"
+    }
+  ]
+}
+{% endschema %}

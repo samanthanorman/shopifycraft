@@ -1,0 +1,350 @@
+{% doc %}
+  @prompt
+    Create a full-width responsive hero banner section in Shopify Liquid for Harry Norman Music. The hero banner should use one complete image file that already includes all text and graphic design elements. Do not split the banner into image and text containers. The image should fill the width of the viewport with a fixed or cover background and maintain a 16:9 or cinematic aspect ratio. The image should remain responsive and scale cleanly on mobile devices without cropping important content. Use a single image upload setting named hero_image or similar.
+    
+    Add a dark transparent overlay that subtly enhances contrast and ensures any built-in text on the image remains readable. Suggested overlay color is rgba(0,0,0,0.25). The image should use object-fit cover and occupy 90vh height on desktop, 70vh on tablet, and auto height on mobile. Center the image horizontally and vertically.
+    
+    Below or overlaid in the lower-right corner of the banner (depending on viewport), insert a small row of three circular social icons for YouTube, Spotify, and Apple Music. Each icon should be clickable and link to the respective artist pages. Use the following placeholder URLs for now and make them editable in schema:
+    YouTube: https://www.youtube.com/@harrynormanmusic
+    
+    Spotify: https://open.spotify.com/artist/7siG4IFihXuKXMYMm7LLO7
+    
+    Apple Music: https://music.apple.com/us/artist/harry-norman/123456789
+    
+    Use inline SVG icons or Font Awesome if available. Each icon should be white (#ffffff) at 28px size with slight opacity 0.9, spacing of 12px between them, and hover effect that changes color to gold (#d4af37). The icons should remain centered horizontally on mobile screens and aligned bottom right on larger screens.
+    
+    Style rules should be minimal and embedded directly in the section for fast rendering. Use this baseline CSS:
+    
+    <style> .hero-harry{position:relative;width:100%;overflow:hidden} .hero-harry img{width:100%;height:90vh;object-fit:cover;display:block} .hero-harry::after{content:"";positi
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-hero-banner-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    height: 90vh;
+  }
+
+  .ai-hero-banner-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ai-hero-banner-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .ai-hero-banner-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 500px;
+    max-height: 500px;
+  }
+
+  .ai-hero-banner-empty-state-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .ai-hero-banner-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: {{ block.settings.overlay_color }};
+    opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }};
+    pointer-events: none;
+  }
+
+  .ai-hero-banner-social-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    gap: {{ block.settings.social_spacing }}px;
+    z-index: 3;
+  }
+
+  .ai-hero-banner-social-link-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: {{ block.settings.social_icon_size }}px;
+    height: {{ block.settings.social_icon_size }}px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: {{ block.settings.social_icon_color }};
+    opacity: {{ block.settings.social_icon_opacity | divided_by: 100.0 }};
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+  .ai-hero-banner-social-link-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.social_icon_hover_color }};
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+  }
+
+  .ai-hero-banner-social-link-{{ ai_gen_id }} svg {
+    width: calc({{ block.settings.social_icon_size }}px * 0.6);
+    height: calc({{ block.settings.social_icon_size }}px * 0.6);
+    fill: currentColor;
+  }
+
+  @media screen and (max-width: 990px) {
+    .ai-hero-banner-{{ ai_gen_id }} {
+      height: 70vh;
+    }
+
+    .ai-hero-banner-social-{{ ai_gen_id }} {
+      bottom: 20px;
+      right: 20px;
+      gap: {{ block.settings.social_spacing | times: 0.8 }}px;
+    }
+
+    .ai-hero-banner-social-link-{{ ai_gen_id }} {
+      width: {{ block.settings.social_icon_size | times: 0.9 }}px;
+      height: {{ block.settings.social_icon_size | times: 0.9 }}px;
+    }
+
+    .ai-hero-banner-social-link-{{ ai_gen_id }} svg {
+      width: calc({{ block.settings.social_icon_size | times: 0.9 }}px * 0.6);
+      height: calc({{ block.settings.social_icon_size | times: 0.9 }}px * 0.6);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-hero-banner-{{ ai_gen_id }} {
+      height: auto;
+      min-height: 60vh;
+    }
+
+    .ai-hero-banner-social-{{ ai_gen_id }} {
+      position: relative;
+      bottom: auto;
+      right: auto;
+      justify-content: center;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .ai-hero-banner-social-link-{{ ai_gen_id }} {
+      width: {{ block.settings.social_icon_size | times: 0.8 }}px;
+      height: {{ block.settings.social_icon_size | times: 0.8 }}px;
+    }
+
+    .ai-hero-banner-social-link-{{ ai_gen_id }} svg {
+      width: calc({{ block.settings.social_icon_size | times: 0.8 }}px * 0.6);
+      height: calc({{ block.settings.social_icon_size | times: 0.8 }}px * 0.6);
+    }
+  }
+{% endstyle %}
+
+<div class="ai-hero-banner-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if block.settings.hero_image %}
+    <img
+      src="{{ block.settings.hero_image | image_url: width: 2000 }}"
+      alt="{{ block.settings.hero_image.alt | escape }}"
+      loading="lazy"
+      width="{{ block.settings.hero_image.width }}"
+      height="{{ block.settings.hero_image.height }}"
+      class="ai-hero-banner-image-{{ ai_gen_id }}"
+    >
+  {% else %}
+    <div class="ai-hero-banner-placeholder-{{ ai_gen_id }}">
+      {{ 'hero-apparel-1' | placeholder_svg_tag }}
+      <div class="ai-hero-banner-empty-state-{{ ai_gen_id }}">
+        Add your hero banner image
+      </div>
+    </div>
+  {% endif %}
+
+  {% if block.settings.show_overlay %}
+    <div class="ai-hero-banner-overlay-{{ ai_gen_id }}"></div>
+  {% endif %}
+
+  {% if block.settings.show_social_icons %}
+    <div class="ai-hero-banner-social-{{ ai_gen_id }}">
+      {% if block.settings.youtube_url != blank %}
+        <a
+          href="{{ block.settings.youtube_url }}"
+          class="ai-hero-banner-social-link-{{ ai_gen_id }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Visit YouTube channel"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+          </svg>
+        </a>
+      {% endif %}
+
+      {% if block.settings.spotify_url != blank %}
+        <a
+          href="{{ block.settings.spotify_url }}"
+          class="ai-hero-banner-social-link-{{ ai_gen_id }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Listen on Spotify"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
+          </svg>
+        </a>
+      {% endif %}
+
+      {% if block.settings.apple_music_url != blank %}
+        <a
+          href="{{ block.settings.apple_music_url }}"
+          class="ai-hero-banner-social-link-{{ ai_gen_id }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Listen on Apple Music"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M23.997 6.124c0-.738-.065-1.47-.24-2.19-.317-1.31-1.062-2.31-2.18-3.043C21.003.517 20.373.285 19.7.164c-.517-.093-1.038-.135-1.564-.15-.04-.001-.08-.004-.12-.004L4.786 0C4.746 0 4.706.003 4.666.004c-.526.015-1.047.057-1.564.15-.673.12-1.303.353-1.877.727C.107 1.614-.638 2.614-.955 3.934c-.175.72-.24 1.452-.24 2.19C-.394 6.884-.394 24 4.786 24h14.428C24 24 24 6.884 23.997 6.124zM12.68 17.954c-1.647.886-3.592.886-5.239 0-.886-.477-1.431-1.364-1.431-2.318 0-.954.545-1.841 1.431-2.318.886-.477 1.97-.477 2.856 0l.477.257V9.477c0-.318.159-.614.424-.79.265-.176.596-.22.901-.12l4.787 1.592c.477.159.795.604.795 1.113v4.787c0 .954-.545 1.841-1.431 2.318-.886.477-1.97.477-2.856 0l-.477-.257v3.183c0 .318-.159.614-.424.79-.265.176-.596.22-.901.12l-4.787-1.592c-.477-.159-.795-.604-.795-1.113V17.954z"/>
+          </svg>
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Hero banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image"
+    },
+    {
+      "type": "header",
+      "content": "Overlay"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "Show overlay",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 25
+    },
+    {
+      "type": "header",
+      "content": "Social icons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social_icons",
+      "label": "Show social icons",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "youtube_url",
+      "label": "YouTube URL"
+    },
+    {
+      "type": "url",
+      "id": "spotify_url",
+      "label": "Spotify URL"
+    },
+    {
+      "type": "url",
+      "id": "apple_music_url",
+      "label": "Apple Music URL"
+    },
+    {
+      "type": "range",
+      "id": "social_icon_size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Icon size",
+      "default": 44
+    },
+    {
+      "type": "range",
+      "id": "social_spacing",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Icon spacing",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "social_icon_color",
+      "label": "Icon color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "social_icon_hover_color",
+      "label": "Icon hover color",
+      "default": "#d4af37"
+    },
+    {
+      "type": "range",
+      "id": "social_icon_opacity",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Icon opacity",
+      "default": 90
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero banner",
+      "settings": {
+        "youtube_url": "https://www.youtube.com/@harrynormanmusic",
+        "spotify_url": "https://open.spotify.com/artist/7siG4IFihXuKXMYMm7LLO7",
+        "apple_music_url": "https://music.apple.com/us/artist/harry-norman/123456789"
+      }
+    }
+  ]
+}
+{% endschema %}

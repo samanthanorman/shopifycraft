@@ -1,0 +1,999 @@
+{% doc %}
+  @prompt
+    Create a structured ingredient database section that displays K-beauty skincare ingredients with their categories, origins, functions, and descriptions. Each ingredient should be clearly organized with the ingredient name as a heading, followed by category classification (Level1 and Level2), origin type, primary functions, and detailed description. The layout should be clean, scannable, and mobile-friendly with proper spacing and typography hierarchy.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-ingredient-database-{{ ai_gen_id }} {
+    padding: {{ block.settings.section_padding }}px 0;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .ai-ingredient-database-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-ingredient-database-header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: {{ block.settings.header_spacing }}px;
+  }
+
+  .ai-ingredient-database-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 16px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .ai-ingredient-database-subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.subtitle_color }};
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .ai-ingredient-database-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax({{ block.settings.card_min_width }}px, 1fr));
+    gap: {{ block.settings.card_spacing }}px;
+    margin-top: {{ block.settings.grid_spacing }}px;
+  }
+
+  .ai-ingredient-card-{{ ai_gen_id }} {
+    background-color: {{ block.settings.card_background }};
+    border: {{ block.settings.card_border_width }}px solid {{ block.settings.card_border_color }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    padding: {{ block.settings.card_padding }}px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .ai-ingredient-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-ingredient-name-{{ ai_gen_id }} {
+    font-size: {{ block.settings.ingredient_name_size }}px;
+    color: {{ block.settings.ingredient_name_color }};
+    margin: 0 0 16px;
+    font-weight: 600;
+    line-height: 1.3;
+    border-bottom: 2px solid {{ block.settings.accent_color }};
+    padding-bottom: 8px;
+  }
+
+  .ai-ingredient-meta-{{ ai_gen_id }} {
+    margin-bottom: 20px;
+  }
+
+  .ai-ingredient-category-{{ ai_gen_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .ai-category-tag-{{ ai_gen_id }} {
+    background-color: {{ block.settings.tag_background }};
+    color: {{ block.settings.tag_text_color }};
+    padding: 4px 12px;
+    border-radius: {{ block.settings.tag_border_radius }}px;
+    font-size: {{ block.settings.tag_font_size }}px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .ai-category-tag-level1-{{ ai_gen_id }} {
+    background-color: {{ block.settings.level1_color }};
+  }
+
+  .ai-category-tag-level2-{{ ai_gen_id }} {
+    background-color: {{ block.settings.level2_color }};
+  }
+
+  .ai-ingredient-origin-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .ai-origin-label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.label_font_size }}px;
+    color: {{ block.settings.label_color }};
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .ai-origin-value-{{ ai_gen_id }} {
+    font-size: {{ block.settings.value_font_size }}px;
+    color: {{ block.settings.value_color }};
+    background-color: {{ block.settings.origin_background }};
+    padding: 4px 10px;
+    border-radius: {{ block.settings.value_border_radius }}px;
+  }
+
+  .ai-ingredient-functions-{{ ai_gen_id }} {
+    margin-bottom: 16px;
+  }
+
+  .ai-functions-label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.label_font_size }}px;
+    color: {{ block.settings.label_color }};
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .ai-functions-list-{{ ai_gen_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .ai-function-item-{{ ai_gen_id }} {
+    background-color: {{ block.settings.function_background }};
+    color: {{ block.settings.function_text_color }};
+    padding: 3px 8px;
+    border-radius: {{ block.settings.function_border_radius }}px;
+    font-size: {{ block.settings.function_font_size }}px;
+    font-weight: 400;
+  }
+
+  .ai-ingredient-description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.description_font_size }}px;
+    color: {{ block.settings.description_color }};
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .ai-ingredient-empty-state-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 60px 20px;
+    color: {{ block.settings.subtitle_color }};
+    font-style: italic;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-ingredient-database-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: {{ block.settings.card_spacing | times: 0.75 }}px;
+    }
+
+    .ai-ingredient-database-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.85 }}px;
+    }
+
+    .ai-ingredient-card-{{ ai_gen_id }} {
+      padding: {{ block.settings.card_padding | times: 0.8 }}px;
+    }
+
+    .ai-ingredient-category-{{ ai_gen_id }} {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .ai-ingredient-database-container-{{ ai_gen_id }} {
+      padding: 0 16px;
+    }
+
+    .ai-ingredient-name-{{ ai_gen_id }} {
+      font-size: {{ block.settings.ingredient_name_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-ingredient-database-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-ingredient-database-container-{{ ai_gen_id }}">
+    {% if block.settings.show_header %}
+      <div class="ai-ingredient-database-header-{{ ai_gen_id }}">
+        {% if block.settings.title != blank %}
+          <h2 class="ai-ingredient-database-title-{{ ai_gen_id }}">{{ block.settings.title }}</h2>
+        {% endif %}
+        {% if block.settings.subtitle != blank %}
+          <div class="ai-ingredient-database-subtitle-{{ ai_gen_id }}">{{ block.settings.subtitle }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="ai-ingredient-database-grid-{{ ai_gen_id }}">
+      {% assign has_ingredients = false %}
+      
+      {% for i in (1..10) %}
+        {% liquid
+          assign ingredient_name_key = 'ingredient_' | append: i | append: '_name'
+          assign level1_key = 'ingredient_' | append: i | append: '_level1'
+          assign level2_key = 'ingredient_' | append: i | append: '_level2'
+          assign origin_key = 'ingredient_' | append: i | append: '_origin'
+          assign functions_key = 'ingredient_' | append: i | append: '_functions'
+          assign description_key = 'ingredient_' | append: i | append: '_description'
+
+          assign ingredient_name = block.settings[ingredient_name_key]
+          assign level1 = block.settings[level1_key]
+          assign level2 = block.settings[level2_key]
+          assign origin = block.settings[origin_key]
+          assign functions = block.settings[functions_key]
+          assign description = block.settings[description_key]
+        %}
+
+        {% if ingredient_name != blank %}
+          {% assign has_ingredients = true %}
+          <div class="ai-ingredient-card-{{ ai_gen_id }}">
+            <h3 class="ai-ingredient-name-{{ ai_gen_id }}">{{ ingredient_name }}</h3>
+            
+            <div class="ai-ingredient-meta-{{ ai_gen_id }}">
+              {% if level1 != blank or level2 != blank %}
+                <div class="ai-ingredient-category-{{ ai_gen_id }}">
+                  {% if level1 != blank %}
+                    <span class="ai-category-tag-{{ ai_gen_id }} ai-category-tag-level1-{{ ai_gen_id }}">{{ level1 }}</span>
+                  {% endif %}
+                  {% if level2 != blank %}
+                    <span class="ai-category-tag-{{ ai_gen_id }} ai-category-tag-level2-{{ ai_gen_id }}">{{ level2 }}</span>
+                  {% endif %}
+                </div>
+              {% endif %}
+
+              {% if origin != blank %}
+                <div class="ai-ingredient-origin-{{ ai_gen_id }}">
+                  <span class="ai-origin-label-{{ ai_gen_id }}">Origin:</span>
+                  <span class="ai-origin-value-{{ ai_gen_id }}">{{ origin }}</span>
+                </div>
+              {% endif %}
+
+              {% if functions != blank %}
+                <div class="ai-ingredient-functions-{{ ai_gen_id }}">
+                  <span class="ai-functions-label-{{ ai_gen_id }}">Functions:</span>
+                  <div class="ai-functions-list-{{ ai_gen_id }}">
+                    {% assign function_list = functions | split: ',' %}
+                    {% for function in function_list %}
+                      <span class="ai-function-item-{{ ai_gen_id }}">{{ function | strip }}</span>
+                    {% endfor %}
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+
+            {% if description != blank %}
+              <div class="ai-ingredient-description-{{ ai_gen_id }}">{{ description }}</div>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      {% unless has_ingredients %}
+        <div class="ai-ingredient-empty-state-{{ ai_gen_id }}">
+          Add your first K-beauty ingredient to get started
+        </div>
+      {% endunless %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Ingredient database",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Show header",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "K-Beauty Ingredient Database"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Discover the power of Korean skincare ingredients and their unique benefits for your skin"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "label": "Maximum width",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Section padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Header spacing",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "grid_spacing",
+      "min": 20,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Grid top spacing",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "card_min_width",
+      "min": 250,
+      "max": 400,
+      "step": 25,
+      "unit": "px",
+      "label": "Card minimum width",
+      "default": 300
+    },
+    {
+      "type": "range",
+      "id": "card_spacing",
+      "min": 15,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "label": "Card spacing",
+      "default": 25
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border color",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "range",
+      "id": "card_border_width",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "unit": "px",
+      "label": "Card border width",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "min": 15,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "label": "Card padding",
+      "default": 25
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "ingredient_name_size",
+      "min": 18,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Ingredient name size",
+      "default": 22
+    },
+    {
+      "type": "color",
+      "id": "ingredient_name_color",
+      "label": "Ingredient name color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "range",
+      "id": "label_font_size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Label font size",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label color",
+      "default": "#888888"
+    },
+    {
+      "type": "range",
+      "id": "value_font_size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Value font size",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "value_color",
+      "label": "Value color",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "description_font_size",
+      "min": 13,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Description font size",
+      "default": 15
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#555555"
+    },
+    {
+      "type": "header",
+      "content": "Category tags"
+    },
+    {
+      "type": "color",
+      "id": "tag_background",
+      "label": "Tag background",
+      "default": "#f0f0f0"
+    },
+    {
+      "type": "color",
+      "id": "tag_text_color",
+      "label": "Tag text color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "level1_color",
+      "label": "Level 1 category color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "level2_color",
+      "label": "Level 2 category color",
+      "default": "#ab94a0"
+    },
+    {
+      "type": "range",
+      "id": "tag_font_size",
+      "min": 10,
+      "max": 14,
+      "step": 1,
+      "unit": "px",
+      "label": "Tag font size",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "tag_border_radius",
+      "min": 0,
+      "max": 15,
+      "step": 1,
+      "unit": "px",
+      "label": "Tag border radius",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Origin and functions"
+    },
+    {
+      "type": "color",
+      "id": "origin_background",
+      "label": "Origin background",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "range",
+      "id": "value_border_radius",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Value border radius",
+      "default": 4
+    },
+    {
+      "type": "color",
+      "id": "function_background",
+      "label": "Function background",
+      "default": "#e8f4f8"
+    },
+    {
+      "type": "color",
+      "id": "function_text_color",
+      "label": "Function text color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "range",
+      "id": "function_font_size",
+      "min": 11,
+      "max": 15,
+      "step": 1,
+      "unit": "px",
+      "label": "Function font size",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "function_border_radius",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Function border radius",
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 1"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_1_name",
+      "label": "Ingredient name",
+      "default": "Snail Secretion Filtrate"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_1_level1",
+      "label": "Level 1 category",
+      "default": "Active"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_1_level2",
+      "label": "Level 2 category",
+      "default": "Healing"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_1_origin",
+      "label": "Origin",
+      "default": "Natural"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_1_functions",
+      "label": "Functions (comma separated)",
+      "default": "Hydrating, Healing, Anti-aging"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_1_description",
+      "label": "Description",
+      "default": "A powerful healing ingredient that promotes skin repair and regeneration. Rich in glycoproteins, hyaluronic acid, and glycolic acid, it helps improve skin texture and reduce signs of aging."
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 2"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_2_name",
+      "label": "Ingredient name",
+      "default": "Centella Asiatica"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_2_level1",
+      "label": "Level 1 category",
+      "default": "Botanical"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_2_level2",
+      "label": "Level 2 category",
+      "default": "Soothing"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_2_origin",
+      "label": "Origin",
+      "default": "Plant-based"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_2_functions",
+      "label": "Functions (comma separated)",
+      "default": "Anti-inflammatory, Calming, Healing"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_2_description",
+      "label": "Description",
+      "default": "Also known as Tiger Grass, this herb has been used in traditional medicine for centuries. It contains active compounds like asiaticoside and madecassoside that help calm irritated skin and promote healing."
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 3"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_3_name",
+      "label": "Ingredient name",
+      "default": "Niacinamide"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_3_level1",
+      "label": "Level 1 category",
+      "default": "Vitamin"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_3_level2",
+      "label": "Level 2 category",
+      "default": "Brightening"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_3_origin",
+      "label": "Origin",
+      "default": "Synthetic"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_3_functions",
+      "label": "Functions (comma separated)",
+      "default": "Brightening, Pore-minimizing, Oil control"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_3_description",
+      "label": "Description",
+      "default": "A form of Vitamin B3 that helps regulate sebum production, minimize the appearance of pores, and even out skin tone. It's gentle enough for sensitive skin and works well with other active ingredients."
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 4"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_4_name",
+      "label": "Ingredient name"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_4_level1",
+      "label": "Level 1 category"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_4_level2",
+      "label": "Level 2 category"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_4_origin",
+      "label": "Origin"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_4_functions",
+      "label": "Functions (comma separated)"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_4_description",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 5"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_5_name",
+      "label": "Ingredient name"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_5_level1",
+      "label": "Level 1 category"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_5_level2",
+      "label": "Level 2 category"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_5_origin",
+      "label": "Origin"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_5_functions",
+      "label": "Functions (comma separated)"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_5_description",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 6"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_6_name",
+      "label": "Ingredient name"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_6_level1",
+      "label": "Level 1 category"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_6_level2",
+      "label": "Level 2 category"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_6_origin",
+      "label": "Origin"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_6_functions",
+      "label": "Functions (comma separated)"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_6_description",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 7"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_7_name",
+      "label": "Ingredient name"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_7_level1",
+      "label": "Level 1 category"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_7_level2",
+      "label": "Level 2 category"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_7_origin",
+      "label": "Origin"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_7_functions",
+      "label": "Functions (comma separated)"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_7_description",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 8"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_8_name",
+      "label": "Ingredient name"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_8_level1",
+      "label": "Level 1 category"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_8_level2",
+      "label": "Level 2 category"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_8_origin",
+      "label": "Origin"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_8_functions",
+      "label": "Functions (comma separated)"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_8_description",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 9"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_9_name",
+      "label": "Ingredient name"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_9_level1",
+      "label": "Level 1 category"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_9_level2",
+      "label": "Level 2 category"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_9_origin",
+      "label": "Origin"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_9_functions",
+      "label": "Functions (comma separated)"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_9_description",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 10"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_10_name",
+      "label": "Ingredient name"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_10_level1",
+      "label": "Level 1 category"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_10_level2",
+      "label": "Level 2 category"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_10_origin",
+      "label": "Origin"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_10_functions",
+      "label": "Functions (comma separated)"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_10_description",
+      "label": "Description"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredient database"
+    }
+  ]
+}
+{% endschema %}

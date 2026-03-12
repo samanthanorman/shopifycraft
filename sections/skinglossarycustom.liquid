@@ -1,0 +1,25 @@
+<h1>Skincare Ingredient Glossary</h1>
+{% assign ingredients = shop.metaobjects.ingredient.values | sort: 'title' %}
+<h1>Skincare Ingredient Glossary</h1>
+<p>Quick definitions and research-backed notes on our most-used ingredients.</p>
+
+<nav class="a2z">
+  {% for letter in (65..90) %}
+    <a href="#{{ letter | chr }}">{{ letter | chr }}</a>
+  {% endfor %}
+</nav>
+
+{% assign current_letter = '' %}
+{% for ing in ingredients %}
+  {% assign first = ing.title | slice: 0 | upcase %}
+  {% if first != current_letter %}
+    {% assign current_letter = first %}
+    <h2 id="{{ current_letter }}">{{ current_letter }}</h2>
+  {% endif %}
+  <article class="ing-card">
+    <h3><a href="{{ ing.system.url }}">{{ ing.title }}</a></h3>
+    {% if ing.short_benefits %}<ul>
+      {% for b in ing.short_benefits %}<li>{{ b }}</li>{% endfor %}
+    </ul>{% endif %}
+  </article>
+{% endfor %}

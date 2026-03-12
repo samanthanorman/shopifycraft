@@ -1,0 +1,802 @@
+{% doc %}
+  @prompt
+    Create a page template for individual ingredient glossary pages that
+    displays detailed information from skincare_ingredient metaobjects:
+    
+    1. Create a new page template called &quot;ingredient-detail.liquid&quot; that:
+    - Accepts an ingredient handle as a URL parameter
+    - Queries the corresponding skincare_ingredient metaobject
+    - Displays comprehensive ingredient information
+    2. Page layout should include:
+    - Ingredient name as main heading
+    - Category breadcrumb (Category &gt; Chemical Class &gt; Ingredient Name)
+    - Origin badge with appropriate styling and icons
+    - Function/benefits section with formatted list
+    - Full description with rich text formatting
+    - Related ingredients section (if metaobject has related_ingredients
+    field)
+    - Products containing this ingredient (linked to product pages)
+    - &quot;Back to Ingredient Explorer&quot; link
+    3. SEO optimization:
+    - Dynamic page title: &quot;[Ingredient Name] - Skincare Ingredient Guide&quot;
+    - Meta description using description_short field
+    - Structured data markup for ingredient information
+    - Open Graph tags for social sharing
+    4. Visual design elements:
+    - Consistent with the visualizer&#39;s modern aesthetic
+    - Responsive layout for all device sizes
+    - High-quality typography and spacing
+    - Call-to-action buttons for related products
+    - Image display if metaobject has ingredient image
+    5. Navigation enhancements:
+    - Previous/Next ingredient navigation
+    - Jump back to visualizer with ingredient pre-selected
+    - Related ingredients as clickable tags
+    - Search functionality for finding other ingredients
+    
+    Include proper error handling for missing metaobjects and 404 scenarios., Please redo the prompt with the accurate name of the Meta object. Use the meta object called korean_skincare_ingredient_glossary to create a page template for individual ingredients that will display detail information from the meta object. Apply HARAMOON brand styling to the skincare-ingredient-visualizer
+    section using their signature color palette and design elements:
+    
+    1. Primary Brand Colors:
+    - HARAMOON Teal: #4A9B9B (main brand color from logo)
+    - Clean White: #FFFFFF (primary background)
+    - Soft Gray: #F8F9FA (secondary background)
+    - Light Blue Accent: #E3F2FD (subtle highlights)
+    - Dark Charcoal: #2C2C2C (text and borders)
+    2. Update the gradient color scheme for tree nodes:
+    - Root nodes: Linear gradient from #4A9B9B to #6BB6B6
+    - Category nodes: Linear gradient from #E3F2FD to #B3E5FC
+    - Class nodes: Linear gradient from #F1F8E9 to #DCEDC8
+    - Ingredient nodes: Linear gradient from #FFF3E0 to #FFE0B2
+    3. Typography matching HARAMOON&#39;s clean aesthetic:
+    - Primary font: &#39;Segoe UI&#39;, &#39;Roboto&#39;, sans-serif (clean, modern)
+    - Heading font weight: 300 (light, elegant)
+    - Body font weight: 400 (regular, readable)
+    - Letter spacing: 0.5px for headings (spacious feel)
+    4. Layout and spacing following minimalist K-beauty design:
+    - Increased white space between elements
+    - Clean borders with subtle shadows
+    - Rounded corners (8px border-radius)
+    - Minimal, elegant button styling
+    
+    Apply these colors consistently throughout the section while maintaining
+    accessibility and readability standards.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{% assign ingredient_handle = block.settings.ingredient_handle %}
+{% assign ingredient = shop.metaobjects.korean_skincare_ingredient_glossary[ingredient_handle] %}
+
+{% style %}
+  .ai-haramoon-ingredient-{{ ai_gen_id }} {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 60px 24px;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+    color: #2C2C2C;
+    background-color: #FFFFFF;
+  }
+
+  .ai-haramoon-breadcrumb-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 48px;
+    font-size: 14px;
+    color: #6B7280;
+    flex-wrap: wrap;
+    letter-spacing: 0.3px;
+  }
+
+  .ai-haramoon-breadcrumb-{{ ai_gen_id }} a {
+    color: #4A9B9B;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-weight: 400;
+  }
+
+  .ai-haramoon-breadcrumb-{{ ai_gen_id }} a:hover {
+    color: #6BB6B6;
+  }
+
+  .ai-haramoon-breadcrumb-{{ ai_gen_id }} svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    opacity: 0.5;
+  }
+
+  .ai-haramoon-header-{{ ai_gen_id }} {
+    margin-bottom: 56px;
+    text-align: center;
+  }
+
+  .ai-haramoon-title-{{ ai_gen_id }} {
+    font-size: 56px;
+    font-weight: 300;
+    margin: 0 0 24px;
+    color: #2C2C2C;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
+  }
+
+  .ai-haramoon-meta-{{ ai_gen_id }} {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin-top: 32px;
+  }
+
+  .ai-haramoon-badge-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .ai-haramoon-badge-{{ ai_gen_id }}:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  .ai-haramoon-badge-{{ ai_gen_id }}--natural {
+    background: linear-gradient(135deg, #4A9B9B 0%, #6BB6B6 100%);
+    color: #FFFFFF;
+  }
+
+  .ai-haramoon-badge-{{ ai_gen_id }}--synthetic {
+    background: linear-gradient(135deg, #FFE0B2 0%, #FFCC80 100%);
+    color: #2C2C2C;
+  }
+
+  .ai-haramoon-badge-{{ ai_gen_id }}--biotechnology {
+    background: linear-gradient(135deg, #E3F2FD 0%, #B3E5FC 100%);
+    color: #2C2C2C;
+  }
+
+  .ai-haramoon-badge-{{ ai_gen_id }}--category {
+    background: linear-gradient(135deg, #F1F8E9 0%, #DCEDC8 100%);
+    color: #2C2C2C;
+  }
+
+  .ai-haramoon-badge-{{ ai_gen_id }} svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .ai-haramoon-content-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .ai-haramoon-section-{{ ai_gen_id }} {
+    background-color: #F8F9FA;
+    padding: 48px;
+    border-radius: 8px;
+    border: 1px solid rgba(74, 155, 155, 0.1);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  .ai-haramoon-section-title-{{ ai_gen_id }} {
+    font-size: 32px;
+    font-weight: 300;
+    margin: 0 0 32px;
+    color: #4A9B9B;
+    letter-spacing: 0.5px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #E3F2FD;
+  }
+
+  .ai-haramoon-image-wrapper-{{ ai_gen_id }} {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto 48px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .ai-haramoon-image-wrapper-{{ ai_gen_id }} img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .ai-haramoon-benefits-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 20px;
+  }
+
+  .ai-haramoon-benefits-{{ ai_gen_id }} li {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    border: 1px solid rgba(74, 155, 155, 0.15);
+    transition: all 0.3s ease;
+  }
+
+  .ai-haramoon-benefits-{{ ai_gen_id }} li:hover {
+    border-color: #4A9B9B;
+    box-shadow: 0 4px 12px rgba(74, 155, 155, 0.1);
+    transform: translateX(4px);
+  }
+
+  .ai-haramoon-benefits-{{ ai_gen_id }} li svg {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #4A9B9B;
+  }
+
+  .ai-haramoon-benefits-{{ ai_gen_id }} li span {
+    font-size: 16px;
+    line-height: 1.7;
+    color: #2C2C2C;
+    font-weight: 400;
+  }
+
+  .ai-haramoon-description-{{ ai_gen_id }} {
+    line-height: 1.8;
+    font-size: 16px;
+    color: #2C2C2C;
+    font-weight: 400;
+  }
+
+  .ai-haramoon-description-{{ ai_gen_id }} p {
+    margin: 0 0 24px;
+  }
+
+  .ai-haramoon-description-{{ ai_gen_id }} p:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-haramoon-related-{{ ai_gen_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .ai-haramoon-tag-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
+    color: #4A9B9B;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(74, 155, 155, 0.2);
+  }
+
+  .ai-haramoon-tag-{{ ai_gen_id }}:hover {
+    background: linear-gradient(135deg, #4A9B9B 0%, #6BB6B6 100%);
+    color: #FFFFFF;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 155, 155, 0.2);
+  }
+
+  .ai-haramoon-products-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 32px;
+  }
+
+  .ai-haramoon-product-card-{{ ai_gen_id }} {
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(74, 155, 155, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .ai-haramoon-product-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 24px rgba(74, 155, 155, 0.15);
+    border-color: #4A9B9B;
+  }
+
+  .ai-haramoon-product-image-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background-color: #F8F9FA;
+  }
+
+  .ai-haramoon-product-image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-haramoon-product-card-{{ ai_gen_id }}:hover .ai-haramoon-product-image-{{ ai_gen_id }} img {
+    transform: scale(1.05);
+  }
+
+  .ai-haramoon-product-info-{{ ai_gen_id }} {
+    padding: 24px;
+  }
+
+  .ai-haramoon-product-title-{{ ai_gen_id }} {
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0 0 12px;
+    color: #2C2C2C;
+    line-height: 1.4;
+  }
+
+  .ai-haramoon-product-price-{{ ai_gen_id }} {
+    font-size: 18px;
+    color: #4A9B9B;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+  }
+
+  .ai-haramoon-navigation-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 64px;
+    padding-top: 48px;
+    border-top: 1px solid #E3F2FD;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .ai-haramoon-nav-link-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #4A9B9B 0%, #6BB6B6 100%);
+    color: #FFFFFF;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(74, 155, 155, 0.2);
+  }
+
+  .ai-haramoon-nav-link-{{ ai_gen_id }}:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(74, 155, 155, 0.3);
+  }
+
+  .ai-haramoon-nav-link-{{ ai_gen_id }}--secondary {
+    background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
+    color: #4A9B9B;
+    border: 1px solid rgba(74, 155, 155, 0.3);
+  }
+
+  .ai-haramoon-nav-link-{{ ai_gen_id }}--secondary:hover {
+    background: linear-gradient(135deg, #E3F2FD 0%, #B3E5FC 100%);
+  }
+
+  .ai-haramoon-nav-link-{{ ai_gen_id }} svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .ai-haramoon-empty-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 80px 24px;
+    background: linear-gradient(135deg, #F8F9FA 0%, #FFFFFF 100%);
+    border-radius: 8px;
+    border: 1px solid #E3F2FD;
+  }
+
+  .ai-haramoon-empty-{{ ai_gen_id }} h2 {
+    font-size: 40px;
+    font-weight: 300;
+    margin: 0 0 20px;
+    color: #2C2C2C;
+    letter-spacing: 0.5px;
+  }
+
+  .ai-haramoon-empty-{{ ai_gen_id }} p {
+    font-size: 16px;
+    color: #6B7280;
+    margin: 0 0 32px;
+    line-height: 1.6;
+  }
+
+  .ai-haramoon-info-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .ai-haramoon-info-item-{{ ai_gen_id }} {
+    background-color: #FFFFFF;
+    padding: 24px;
+    border-radius: 8px;
+    border: 1px solid rgba(74, 155, 155, 0.15);
+  }
+
+  .ai-haramoon-info-label-{{ ai_gen_id }} {
+    font-size: 12px;
+    font-weight: 400;
+    color: #6B7280;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .ai-haramoon-info-value-{{ ai_gen_id }} {
+    font-size: 16px;
+    font-weight: 400;
+    color: #2C2C2C;
+    line-height: 1.5;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-haramoon-ingredient-{{ ai_gen_id }} {
+      padding: 40px 16px;
+    }
+
+    .ai-haramoon-title-{{ ai_gen_id }} {
+      font-size: 36px;
+    }
+
+    .ai-haramoon-section-{{ ai_gen_id }} {
+      padding: 32px 24px;
+    }
+
+    .ai-haramoon-section-title-{{ ai_gen_id }} {
+      font-size: 24px;
+    }
+
+    .ai-haramoon-products-{{ ai_gen_id }} {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 20px;
+    }
+
+    .ai-haramoon-navigation-{{ ai_gen_id }} {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .ai-haramoon-nav-link-{{ ai_gen_id }} {
+      justify-content: center;
+    }
+
+    .ai-haramoon-info-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-haramoon-ingredient-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if ingredient %}
+    <nav class="ai-haramoon-breadcrumb-{{ ai_gen_id }}">
+      <a href="{{ block.settings.explorer_link }}">{{ block.settings.explorer_text }}</a>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+      </svg>
+      {% if ingredient.category %}
+        <span>{{ ingredient.category.value }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      {% endif %}
+      {% if ingredient.chemical_class %}
+        <span>{{ ingredient.chemical_class.value }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      {% endif %}
+      <span>{{ ingredient.name.value }}</span>
+    </nav>
+
+    <header class="ai-haramoon-header-{{ ai_gen_id }}">
+      <h1 class="ai-haramoon-title-{{ ai_gen_id }}">{{ ingredient.name.value }}</h1>
+      
+      <div class="ai-haramoon-meta-{{ ai_gen_id }}">
+        {% if ingredient.origin %}
+          {% assign origin = ingredient.origin.value %}
+          <span class="ai-haramoon-badge-{{ ai_gen_id }} ai-haramoon-badge-{{ ai_gen_id }}--{{ origin | downcase | replace: ' ', '-' }}">
+            {% if origin == 'Natural' %}
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+              </svg>
+            {% elsif origin == 'Synthetic' %}
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+              </svg>
+            {% else %}
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+              </svg>
+            {% endif %}
+            {{ origin }}
+          </span>
+        {% endif %}
+
+        {% if ingredient.category %}
+          <span class="ai-haramoon-badge-{{ ai_gen_id }} ai-haramoon-badge-{{ ai_gen_id }}--category">
+            {{ ingredient.category.value }}
+          </span>
+        {% endif %}
+      </div>
+    </header>
+
+    <div class="ai-haramoon-content-{{ ai_gen_id }}">
+      {% if ingredient.image %}
+        <div class="ai-haramoon-image-wrapper-{{ ai_gen_id }}">
+          <img
+            src="{{ ingredient.image.value | image_url: width: 1600 }}"
+            alt="{{ ingredient.name.value }}"
+            loading="lazy"
+            width="1600"
+            height="auto"
+          >
+        </div>
+      {% endif %}
+
+      {% if ingredient.chemical_class or ingredient.inci_name or ingredient.common_names %}
+        <div class="ai-haramoon-section-{{ ai_gen_id }}">
+          <h2 class="ai-haramoon-section-title-{{ ai_gen_id }}">Ingredient Information</h2>
+          <div class="ai-haramoon-info-grid-{{ ai_gen_id }}">
+            {% if ingredient.inci_name %}
+              <div class="ai-haramoon-info-item-{{ ai_gen_id }}">
+                <div class="ai-haramoon-info-label-{{ ai_gen_id }}">INCI Name</div>
+                <div class="ai-haramoon-info-value-{{ ai_gen_id }}">{{ ingredient.inci_name.value }}</div>
+              </div>
+            {% endif %}
+            {% if ingredient.chemical_class %}
+              <div class="ai-haramoon-info-item-{{ ai_gen_id }}">
+                <div class="ai-haramoon-info-label-{{ ai_gen_id }}">Chemical Class</div>
+                <div class="ai-haramoon-info-value-{{ ai_gen_id }}">{{ ingredient.chemical_class.value }}</div>
+              </div>
+            {% endif %}
+            {% if ingredient.common_names %}
+              <div class="ai-haramoon-info-item-{{ ai_gen_id }}">
+                <div class="ai-haramoon-info-label-{{ ai_gen_id }}">Common Names</div>
+                <div class="ai-haramoon-info-value-{{ ai_gen_id }}">{{ ingredient.common_names.value }}</div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if ingredient.description_short %}
+        <div class="ai-haramoon-section-{{ ai_gen_id }}">
+          <h2 class="ai-haramoon-section-title-{{ ai_gen_id }}">Overview</h2>
+          <div class="ai-haramoon-description-{{ ai_gen_id }}">
+            {{ ingredient.description_short.value }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if ingredient.functions %}
+        <div class="ai-haramoon-section-{{ ai_gen_id }}">
+          <h2 class="ai-haramoon-section-title-{{ ai_gen_id }}">Functions & Benefits</h2>
+          <ul class="ai-haramoon-benefits-{{ ai_gen_id }}">
+            {% assign functions_array = ingredient.functions.value | split: ',' %}
+            {% for function in functions_array %}
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>{{ function | strip }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      {% if ingredient.description %}
+        <div class="ai-haramoon-section-{{ ai_gen_id }}">
+          <h2 class="ai-haramoon-section-title-{{ ai_gen_id }}">Detailed Information</h2>
+          <div class="ai-haramoon-description-{{ ai_gen_id }}">
+            {{ ingredient.description.value }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if ingredient.skin_benefits %}
+        <div class="ai-haramoon-section-{{ ai_gen_id }}">
+          <h2 class="ai-haramoon-section-title-{{ ai_gen_id }}">Skin Benefits</h2>
+          <div class="ai-haramoon-description-{{ ai_gen_id }}">
+            {{ ingredient.skin_benefits.value }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if ingredient.usage_notes %}
+        <div class="ai-haramoon-section-{{ ai_gen_id }}">
+          <h2 class="ai-haramoon-section-title-{{ ai_gen_id }}">Usage Notes</h2>
+          <div class="ai-haramoon-description-{{ ai_gen_id }}">
+            {{ ingredient.usage_notes.value }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if ingredient.related_ingredients %}
+        <div class="ai-haramoon-section-{{ ai_gen_id }}">
+          <h2 class="ai-haramoon-section-title-{{ ai_gen_id }}">Related Ingredients</h2>
+          <div class="ai-haramoon-related-{{ ai_gen_id }}">
+            {% for related in ingredient.related_ingredients.value %}
+              <a href="{{ block.settings.ingredient_base_url }}{{ related.handle }}" class="ai-haramoon-tag-{{ ai_gen_id }}">
+                {{ related.name.value }}
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_products %}
+        {% assign products_with_ingredient = collections.all.products %}
+        {% assign matching_products = '' | split: '' %}
+        
+        {% for product in products_with_ingredient %}
+          {% if product.metafields.custom.ingredients contains ingredient.name.value %}
+            {% assign matching_products = matching_products | concat: product %}
+          {% endif %}
+        {% endfor %}
+
+        {% if matching_products.size > 0 %}
+          <div class="ai-haramoon-section-{{ ai_gen_id }}">
+            <h2 class="ai-haramoon-section-title-{{ ai_gen_id }}">Products Containing {{ ingredient.name.value }}</h2>
+            <div class="ai-haramoon-products-{{ ai_gen_id }}">
+              {% for product in matching_products limit: block.settings.products_limit %}
+                <a href="{{ product.url }}" class="ai-haramoon-product-card-{{ ai_gen_id }}">
+                  <div class="ai-haramoon-product-image-{{ ai_gen_id }}">
+                    {% if product.featured_image %}
+                      <img
+                        src="{{ product.featured_image | image_url: width: 500 }}"
+                        alt="{{ product.featured_image.alt | escape }}"
+                        loading="lazy"
+                        width="500"
+                        height="500"
+                      >
+                    {% else %}
+                      {{ 'product-1' | placeholder_svg_tag }}
+                    {% endif %}
+                  </div>
+                  <div class="ai-haramoon-product-info-{{ ai_gen_id }}">
+                    <h3 class="ai-haramoon-product-title-{{ ai_gen_id }}">{{ product.title }}</h3>
+                    <div class="ai-haramoon-product-price-{{ ai_gen_id }}">{{ product.price | money }}</div>
+                  </div>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+
+    <nav class="ai-haramoon-navigation-{{ ai_gen_id }}">
+      <a href="{{ block.settings.explorer_link }}" class="ai-haramoon-nav-link-{{ ai_gen_id }}">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        {{ block.settings.back_button_text }}
+      </a>
+      
+      {% if block.settings.show_search %}
+        <a href="{{ block.settings.search_link }}" class="ai-haramoon-nav-link-{{ ai_gen_id }} ai-haramoon-nav-link-{{ ai_gen_id }}--secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          {{ block.settings.search_button_text }}
+        </a>
+      {% endif %}
+    </nav>
+
+  {% else %}
+    <div class="ai-haramoon-empty-{{ ai_gen_id }}">
+      <h2>Ingredient Not Found</h2>
+      <p>The ingredient you're looking for doesn't exist or has been removed from our glossary.</p>
+      <a href="{{ block.settings.explorer_link }}" class="ai-haramoon-nav-link-{{ ai_gen_id }}">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        {{ block.settings.back_button_text }}
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Korean ingredient detail",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Ingredient settings"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_handle",
+      "label": "Ingredient handle",
+      "info": "Enter the metaobject handle from korean_skincare_ingredient_glossary"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_products",
+      "label": "Show products containing ingredient",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "label": "Maximum products to show",
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "url",
+      "id": "explorer_link",
+      "label": "Ingredient explorer link"
+    },
+    {
+      "type": "text",
+      "id": "explorer_text",
+      "label": "Explorer link text",
+      "default": "Ingredient Explorer"
+    },
+    {
+      "type": "text",
+      "id": "back_button_text",
+      "label": "Back button text",
+      "default": "Back to Ingredient Explorer"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search button",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "search_link",
+      "label": "Search link"
+    },
+    {
+      "type": "text",
+      "id": "search_button_text",
+      "label": "Search button text",
+      "default": "Search Ingredients"
+    },
+    {
+      "type": "url",
+      "id": "ingredient_base_url",
+      "label": "Ingredient base URL",
+      "info": "Base URL for ingredient pages (e.g., /pages/ingredient-)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Korean ingredient detail"
+    }
+  ]
+}
+{% endschema %}
