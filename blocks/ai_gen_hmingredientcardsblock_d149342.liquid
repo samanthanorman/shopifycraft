@@ -1257,6 +1257,106 @@
     }
   }
 {% endstyle %}
+{%- comment -%} PREMIUM HARAMOON CSS OVERRIDE - Wax | Wane × HARAMOON {%- endcomment -%}
+<style>
+skincare-explorer-{{ ai_gen_id }},
+.ai-skincare-explorer-{{ ai_gen_id }} {
+  background: rgba(13, 27, 62, 0.6) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(52, 152, 255, 0.2) !important;
+  border-radius: 20px !important;
+  padding: 48px 32px !important;
+}
+.ai-skincare-explorer__title-{{ ai_gen_id }} {
+  color: #d1e9fc !important;
+  font-size: clamp(1.6rem, 3vw, 2.2rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+}
+.ai-skincare-explorer__subtitle-{{ ai_gen_id }} {
+  color: rgba(209, 233, 252, 0.75) !important;
+  max-width: 680px !important;
+  margin: 0 auto !important;
+  line-height: 1.7 !important;
+}
+.ai-skincare-explorer__filter-btn-{{ ai_gen_id }} {
+  background: rgba(52, 152, 255, 0.08) !important;
+  color: #7ec8ff !important;
+  border: 1px solid rgba(52, 152, 255, 0.25) !important;
+  border-radius: 999px !important;
+  padding: 8px 20px !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.05em !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.ai-skincare-explorer__filter-btn-{{ ai_gen_id }}:hover,
+.ai-skincare-explorer__filter-btn-{{ ai_gen_id }}.active {
+  background: rgba(52, 152, 255, 0.25) !important;
+  color: #ffffff !important;
+  border-color: rgba(52, 152, 255, 0.6) !important;
+  box-shadow: 0 0 12px rgba(52, 152, 255, 0.4) !important;
+  transform: translateY(-1px) !important;
+}
+.ai-skincare-explorer__card-{{ ai_gen_id }} {
+  background: rgba(27, 58, 82, 0.35) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(52, 152, 255, 0.15) !important;
+  border-radius: 16px !important;
+  padding: 24px !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.ai-skincare-explorer__card-{{ ai_gen_id }}:hover {
+  transform: translateY(-6px) !important;
+  border-color: rgba(52, 152, 255, 0.4) !important;
+  box-shadow: 0 0 20px rgba(52, 152, 255, 0.25), 0 8px 32px rgba(0,0,0,0.2) !important;
+}
+.ai-skincare-explorer__ingredient-name-{{ ai_gen_id }} {
+  color: #d1e9fc !important;
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+}
+.ai-skincare-explorer__category-{{ ai_gen_id }} {
+  color: rgba(209, 233, 252, 0.55) !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+}
+.ai-skincare-explorer__function-{{ ai_gen_id }} {
+  color: #7ec8ff !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+}
+.ai-skincare-explorer__description-{{ ai_gen_id }} {
+  color: rgba(209, 233, 252, 0.75) !important;
+  font-size: 0.875rem !important;
+  line-height: 1.7 !important;
+}
+.ai-skincare-explorer__origin-badge-{{ ai_gen_id }}.natural {
+  background: rgba(14, 83, 73, 0.5) !important;
+  color: #a8e6cf !important;
+  border: 1px solid rgba(14, 83, 73, 0.6) !important;
+  border-radius: 999px !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  padding: 4px 10px !important;
+}
+.ai-skincare-explorer__origin-badge-{{ ai_gen_id }}.synthetic {
+  background: rgba(171, 148, 160, 0.25) !important;
+  color: #d4b8c8 !important;
+  border: 1px solid rgba(171, 148, 160, 0.4) !important;
+  border-radius: 999px !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  padding: 4px 10px !important;
+}
+</style>
 
 <skincare-explorer-{{ ai_gen_id }}
   class="ai-skincare-explorer-{{ ai_gen_id }}"

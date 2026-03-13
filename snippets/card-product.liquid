@@ -40,7 +40,7 @@
       assign ratio = 1
     endif
   -%}
-  <div class="card-wrapper product-card-wrapper underline-links-hover">
+  <div class="card-wrapper product-card-wrapper underline-links-hover premium-product-card">
     <div
       class="
         card card--{{ settings.card_style }}
@@ -580,7 +580,7 @@
       assign ratio = 0.8
     endif
   -%}
-  <div class="card-wrapper product-card-wrapper underline-links-hover">
+  <div class="card-wrapper product-card-wrapper underline-links-hover premium-product-card">
     <div
       class="
         card card--{{ settings.card_style }}
@@ -631,3 +631,78 @@
 ></amazon-delivery-message>
   </div>
 {%- endif -%}
+
+{%- comment -%} PREMIUM PRODUCT CARD CSS - Wax | Wane × Gen Z Holographic Cyber {%- endcomment -%}
+<style>
+.premium-product-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border-radius: 16px !important;
+  position: relative !important;
+}
+.premium-product-card:hover {
+  transform: translateY(-6px) !important;
+}
+.premium-product-card .card__inner {
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  transition: all 0.4s ease !important;
+}
+.premium-product-card:hover .card__inner {
+  box-shadow:
+    0 0 0 1px rgba(201, 169, 97, 0.3),
+    0 0 20px rgba(201, 169, 97, 0.15),
+    0 12px 40px rgba(0, 0, 0, 0.2) !important;
+}
+.premium-product-card .card__media img,
+.premium-product-card .card__media .motion-reduce {
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.premium-product-card:hover .card__media img,
+.premium-product-card:hover .card__media .motion-reduce {
+  transform: scale(1.06) !important;
+}
+.premium-product-card .card__content,
+.premium-product-card .card__information {
+  padding: 14px 16px !important;
+}
+.premium-product-card .card__heading a {
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  transition: color 0.2s ease !important;
+}
+.premium-product-card:hover .card__heading a {
+  color: var(--ww-gold, #c9a961) !important;
+}
+.premium-product-card .price__regular .price-item,
+.premium-product-card .price__sale .price-item--sale {
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+}
+.premium-product-card .quick-add__submit,
+.premium-product-card .product-form__submit {
+  border-radius: 999px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  transition: all 0.3s ease !important;
+}
+.premium-product-card .quick-add__submit:hover,
+.premium-product-card .product-form__submit:hover {
+  box-shadow: 0 0 16px rgba(201, 169, 97, 0.5) !important;
+  transform: translateY(-1px) !important;
+}
+.premium-product-card .caption-with-letter-spacing {
+  font-size: 0.65rem !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+  opacity: 0.6 !important;
+}
+.premium-product-card .badge {
+  border-radius: 999px !important;
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  padding: 4px 10px !important;
+}
+</style>
