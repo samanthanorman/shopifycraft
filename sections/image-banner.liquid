@@ -166,6 +166,62 @@
   </div>
 </div>
 
+{%- comment -%} PREMIUM BANNER & CTA CSS - Wax | Wane Holographic Cyber {%- endcomment -%}
+<style>
+.banner {
+  position: relative !important;
+  overflow: hidden !important;
+}
+.banner__box {
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+.banner__heading {
+  font-weight: 900 !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1.1 !important;
+}
+.banner__buttons .button--primary,
+.button--primary {
+  border-radius: 999px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  font-size: 0.8rem !important;
+  padding: 14px 32px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.banner__buttons .button--primary:hover,
+.button--primary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 0 20px rgba(255, 240, 80, 0.5), 0 0 40px rgba(255, 240, 80, 0.2), 0 6px 20px rgba(0,0,0,0.2) !important;
+}
+.banner__buttons .button--secondary,
+.button--secondary {
+  border-radius: 999px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  font-size: 0.8rem !important;
+  padding: 13px 30px !important;
+  transition: all 0.3s ease !important;
+  border: 2px solid currentColor !important;
+}
+.banner__buttons .button--secondary:hover,
+.button--secondary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 0 16px rgba(201, 169, 97, 0.4) !important;
+}
+.announcement-bar__message {
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+}
+</style>
+
 {% schema %}
 {
   "name": "t:sections.image-banner.name",
