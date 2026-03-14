@@ -1,0 +1,63 @@
+{
+  "name": "HARAMOON Footer",
+  "type": "footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "disabled": false,
+      "blocks": {
+        "link_list_haramoon_nav": {
+          "type": "link_list",
+          "settings": {
+            "heading": "HARAMOON",
+            "menu": "haramoon-nav"
+          }
+        },
+        "link_list_policies": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Policies",
+            "menu": "footer"
+          }
+        },
+        "link_list_learn_more": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Learn More",
+            "menu": "follow-us"
+          }
+        },
+        "text_haramoon_about": {
+          "type": "text",
+          "settings": {
+            "heading": "About HARAMOON",
+            "subtext": "<p>HARAMOON is a Korean skincare brand formulated for sensitive, melanin-rich skin. Discover science-backed ingredients, glass skin rituals, and the full HARAMOON product line — exclusively curated at Wax | Wane. Explore our Ingredient Glossary to understand exactly what goes on your skin.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "link_list_haramoon_nav",
+        "link_list_policies",
+        "link_list_learn_more",
+        "text_haramoon_about"
+      ],
+      "settings": {
+        "color_scheme": "scheme-2",
+        "newsletter_enable": true,
+        "newsletter_heading": "Subscribe to our emails",
+        "enable_follow_on_shop": true,
+        "show_social": true,
+        "enable_country_selector": false,
+        "enable_language_selector": false,
+        "payment_enable": true,
+        "show_policy": true,
+        "margin_top": 0,
+        "padding_top": 28,
+        "padding_bottom": 12
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

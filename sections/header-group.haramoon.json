@@ -1,0 +1,34 @@
+{
+  "name": "HARAMOON Header",
+  "type": "header",
+  "sections": {
+    "announcement_bar": {
+      "type": "announcement-bar",
+      "disabled": true,
+      "blocks": {},
+      "block_order": [],
+      "settings": {}
+    },
+    "header": {
+      "type": "header",
+      "disabled": false,
+      "blocks": {},
+      "block_order": [],
+      "settings": {
+        "logo_position": "middle-left",
+        "logo_width": 120,
+        "menu": "haramoon-nav",
+        "menu_type_desktop": "dropdown",
+        "show_line_separator": true,
+        "sticky_header_type": "on-scroll-up",
+        "color_scheme": "scheme-1",
+        "mobile_logo_position": "center",
+        "margin_bottom": 0
+      }
+    }
+  },
+  "order": [
+    "announcement_bar",
+    "header"
+  ]
+}
