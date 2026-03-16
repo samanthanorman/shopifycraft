@@ -1,0 +1,351 @@
+{% doc %}
+  Brand Pillars section for Wax | Wane homepage
+  3 columns: HARAMOON (blue), Crystals (warm gold/orange), EMF (emerald)
+  Tagline: "Bridging Aesthetic, Form and Function"
+{% enddoc %}
+
+{% style %}
+  .brand-pillars-section {
+    padding: 80px 20px;
+    background: var(--ww-bg-deep, #0a0e1a);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .brand-pillars-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(52, 152, 255, 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(13, 78, 55, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .brand-pillars-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .brand-pillars-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .brand-pillars-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ww-gold, #c9a961);
+    margin: 0 0 16px;
+    opacity: 0.8;
+  }
+
+  .brand-pillars-title {
+    font-family: var(--font-heading-family);
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 700;
+    color: var(--ww-cream, #f5f0e8);
+    margin: 0 0 16px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .brand-pillars-subtitle {
+    font-size: 16px;
+    color: rgba(245, 240, 232, 0.55);
+    margin: 0;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+  }
+
+  .brand-pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .brand-pillar-card {
+    position: relative;
+    border-radius: 20px;
+    padding: 40px 32px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s ease;
+    text-decoration: none;
+    display: block;
+  }
+
+  .brand-pillar-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 1.5px;
+    background: linear-gradient(135deg, var(--pillar-color-1), transparent 50%, var(--pillar-color-2));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.4;
+    transition: opacity 0.4s ease;
+  }
+
+  .brand-pillar-card:hover {
+    transform: translateY(-8px);
+  }
+
+  .brand-pillar-card:hover::before {
+    opacity: 1;
+  }
+
+  /* HARAMOON - Blue */
+  .brand-pillar-card.haramoon {
+    --pillar-color-1: #3498ff;
+    --pillar-color-2: #a8d4ff;
+    background: linear-gradient(145deg,
+      rgba(52, 152, 255, 0.12) 0%,
+      rgba(10, 14, 26, 0.95) 60%);
+    box-shadow: 0 4px 24px rgba(52, 152, 255, 0.08);
+  }
+
+  .brand-pillar-card.haramoon:hover {
+    box-shadow: 0 16px 48px rgba(52, 152, 255, 0.25),
+                0 0 0 1px rgba(52, 152, 255, 0.3);
+  }
+
+  /* Crystals - Warm Gold/Orange pastel */
+  .brand-pillar-card.crystals {
+    --pillar-color-1: #e8a44a;
+    --pillar-color-2: #f5c87a;
+    background: linear-gradient(145deg,
+      rgba(232, 164, 74, 0.12) 0%,
+      rgba(10, 14, 26, 0.95) 60%);
+    box-shadow: 0 4px 24px rgba(232, 164, 74, 0.08);
+  }
+
+  .brand-pillar-card.crystals:hover {
+    box-shadow: 0 16px 48px rgba(232, 164, 74, 0.25),
+                0 0 0 1px rgba(232, 164, 74, 0.3);
+  }
+
+  /* EMF - Emerald */
+  .brand-pillar-card.emf {
+    --pillar-color-1: #0d4e37;
+    --pillar-color-2: #1a7a56;
+    background: linear-gradient(145deg,
+      rgba(13, 78, 55, 0.18) 0%,
+      rgba(10, 14, 26, 0.95) 60%);
+    box-shadow: 0 4px 24px rgba(13, 78, 55, 0.12);
+  }
+
+  .brand-pillar-card.emf:hover {
+    box-shadow: 0 16px 48px rgba(26, 122, 86, 0.3),
+                0 0 0 1px rgba(26, 122, 86, 0.4);
+  }
+
+  .pillar-icon {
+    font-size: 40px;
+    margin-bottom: 20px;
+    display: block;
+    line-height: 1;
+  }
+
+  .pillar-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+  }
+
+  .haramoon .pillar-tag {
+    background: rgba(52, 152, 255, 0.15);
+    color: #3498ff;
+    border: 1px solid rgba(52, 152, 255, 0.3);
+  }
+
+  .crystals .pillar-tag {
+    background: rgba(232, 164, 74, 0.15);
+    color: #e8a44a;
+    border: 1px solid rgba(232, 164, 74, 0.3);
+  }
+
+  .emf .pillar-tag {
+    background: rgba(26, 122, 86, 0.15);
+    color: #1a7a56;
+    border: 1px solid rgba(26, 122, 86, 0.3);
+  }
+
+  .pillar-title {
+    font-family: var(--font-heading-family);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ww-cream, #f5f0e8);
+    margin: 0 0 12px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .pillar-description {
+    font-size: 14px;
+    color: rgba(245, 240, 232, 0.6);
+    line-height: 1.65;
+    margin: 0 0 28px;
+  }
+
+  .pillar-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: gap 0.3s ease;
+  }
+
+  .haramoon .pillar-cta { color: #3498ff; }
+  .crystals .pillar-cta { color: #e8a44a; }
+  .emf .pillar-cta { color: #1a7a56; }
+
+  .brand-pillar-card:hover .pillar-cta {
+    gap: 14px;
+  }
+
+  .pillar-cta-arrow {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+  }
+
+  .brand-pillar-card:hover .pillar-cta-arrow {
+    transform: translateX(4px);
+  }
+
+  /* Glow orb decoration */
+  .pillar-glow-orb {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    top: -30px;
+    right: -30px;
+    opacity: 0.08;
+    filter: blur(40px);
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+
+  .haramoon .pillar-glow-orb { background: #3498ff; }
+  .crystals .pillar-glow-orb { background: #e8a44a; }
+  .emf .pillar-glow-orb { background: #1a7a56; }
+
+  .brand-pillar-card:hover .pillar-glow-orb {
+    opacity: 0.2;
+  }
+
+  @media (max-width: 768px) {
+    .brand-pillars-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .brand-pillar-card {
+      padding: 32px 24px;
+    }
+    .brand-pillars-section {
+      padding: 60px 16px;
+    }
+  }
+{% endstyle %}
+
+<section class="brand-pillars-section">
+  <div class="brand-pillars-container">
+    <div class="brand-pillars-header">
+      <p class="brand-pillars-eyebrow">{{ section.settings.eyebrow | default: 'Three Worlds. One Store.' }}</p>
+      <h2 class="brand-pillars-title">{{ section.settings.title | default: 'Bridging Aesthetic, Form and Function' }}</h2>
+      <p class="brand-pillars-subtitle">{{ section.settings.subtitle | default: 'Curated with intention — from Seoul-science skincare to earth-energy crystals and EMF protection for the modern world.' }}</p>
+    </div>
+
+    <div class="brand-pillars-grid">
+
+      <!-- HARAMOON Pillar -->
+      <a href="{{ section.settings.haramoon_link | default: '/collections/haramoon-korean-skincare' }}" class="brand-pillar-card haramoon">
+        <div class="pillar-glow-orb"></div>
+        <span class="pillar-icon">🌸</span>
+        <span class="pillar-tag">Korean Skincare</span>
+        <h3 class="pillar-title">{{ section.settings.haramoon_title | default: 'HARAMOON' }}</h3>
+        <p class="pillar-description">{{ section.settings.haramoon_desc | default: 'Science-backed K-beauty formulated for visible glass skin results. Clean ingredients, clinical precision, Seoul-gentle care.' }}</p>
+        <span class="pillar-cta">
+          {{ section.settings.haramoon_cta | default: 'Shop HARAMOON' }}
+          <span class="pillar-cta-arrow">→</span>
+        </span>
+      </a>
+
+      <!-- Crystals Pillar -->
+      <a href="{{ section.settings.crystals_link | default: '/collections/natural-crystals-gemstones' }}" class="brand-pillar-card crystals">
+        <div class="pillar-glow-orb"></div>
+        <span class="pillar-icon">✨</span>
+        <span class="pillar-tag">Crystals & Gemstones</span>
+        <h3 class="pillar-title">{{ section.settings.crystals_title | default: 'Earth Energy' }}</h3>
+        <p class="pillar-description">{{ section.settings.crystals_desc | default: 'Ethically sourced crystals and gemstones with rich metaphysical histories. Every stone tells a story — find yours.' }}</p>
+        <span class="pillar-cta">
+          {{ section.settings.crystals_cta | default: 'Explore Crystals' }}
+          <span class="pillar-cta-arrow">→</span>
+        </span>
+      </a>
+
+      <!-- EMF Pillar -->
+      <a href="{{ section.settings.emf_link | default: '/collections/emf-shielding-faraday-protection' }}" class="brand-pillar-card emf">
+        <div class="pillar-glow-orb"></div>
+        <span class="pillar-icon">🛡️</span>
+        <span class="pillar-tag">EMF Protection</span>
+        <h3 class="pillar-title">{{ section.settings.emf_title | default: 'EMF Shielding' }}</h3>
+        <p class="pillar-description">{{ section.settings.emf_desc | default: 'Engineered Faraday protection for the modern world. Reduce exposure from phones, laptops, and 5G — without sacrificing your lifestyle.' }}</p>
+        <span class="pillar-cta">
+          {{ section.settings.emf_cta | default: 'Shop EMF' }}
+          <span class="pillar-cta-arrow">→</span>
+        </span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Brand Pillars",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow text", "default": "Three Worlds. One Store." },
+    { "type": "text", "id": "title", "label": "Section title", "default": "Bridging Aesthetic, Form and Function" },
+    { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "Curated with intention — from Seoul-science skincare to earth-energy crystals and EMF protection for the modern world." },
+    { "type": "header", "content": "HARAMOON Pillar" },
+    { "type": "text", "id": "haramoon_title", "label": "Title", "default": "HARAMOON" },
+    { "type": "textarea", "id": "haramoon_desc", "label": "Description", "default": "Science-backed K-beauty formulated for visible glass skin results. Clean ingredients, clinical precision, Seoul-gentle care." },
+    { "type": "text", "id": "haramoon_cta", "label": "CTA text", "default": "Shop HARAMOON" },
+    { "type": "url", "id": "haramoon_link", "label": "CTA link" },
+    { "type": "header", "content": "Crystals Pillar" },
+    { "type": "text", "id": "crystals_title", "label": "Title", "default": "Earth Energy" },
+    { "type": "textarea", "id": "crystals_desc", "label": "Description", "default": "Ethically sourced crystals and gemstones with rich metaphysical histories. Every stone tells a story — find yours." },
+    { "type": "text", "id": "crystals_cta", "label": "CTA text", "default": "Explore Crystals" },
+    { "type": "url", "id": "crystals_link", "label": "CTA link" },
+    { "type": "header", "content": "EMF Pillar" },
+    { "type": "text", "id": "emf_title", "label": "Title", "default": "EMF Shielding" },
+    { "type": "textarea", "id": "emf_desc", "label": "Description", "default": "Engineered Faraday protection for the modern world. Reduce exposure from phones, laptops, and 5G — without sacrificing your lifestyle." },
+    { "type": "text", "id": "emf_cta", "label": "CTA text", "default": "Shop EMF" },
+    { "type": "url", "id": "emf_link", "label": "CTA link" }
+  ],
+  "presets": [
+    { "name": "Brand Pillars" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,468 @@
+{% doc %}
+  About HARAMOON page section
+  Brand story, philosophy, T.A.I.I.U. principles, interlinks to Korean website
+{% enddoc %}
+
+{% style %}
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+  .about-haramoon-section {
+    font-family: 'Poppins', sans-serif;
+    background: #ffffff;
+    color: #141615;
+  }
+
+  /* Hero */
+  .hm-about-hero {
+    background: linear-gradient(135deg, #141615 0%, #1a2744 50%, #0d2a4a 100%);
+    padding: 100px 20px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hm-about-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(52, 152, 255, 0.15) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .hm-about-hero-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hm-about-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: #3498ff;
+    margin: 0 0 20px;
+  }
+
+  .hm-about-hero-title {
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 20px;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  .hm-about-hero-title span {
+    background: linear-gradient(90deg, #3498ff, #a8d4ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hm-about-hero-sub {
+    font-size: 18px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.65;
+    margin: 0 0 36px;
+    font-weight: 300;
+  }
+
+  .hm-about-hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    background: rgba(52, 152, 255, 0.15);
+    border: 1px solid rgba(52, 152, 255, 0.4);
+    color: #3498ff;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 100px;
+    transition: all 0.35s ease;
+  }
+
+  .hm-about-hero-cta:hover {
+    background: rgba(52, 152, 255, 0.25);
+    border-color: #3498ff;
+    transform: translateY(-2px);
+  }
+
+  /* Brand story section */
+  .hm-about-story {
+    padding: 80px 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .hm-about-story-text h2 {
+    font-size: clamp(24px, 3vw, 36px);
+    font-weight: 700;
+    color: #141615;
+    margin: 0 0 20px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .hm-about-story-text p {
+    font-size: 15px;
+    color: #53585a;
+    line-height: 1.75;
+    margin: 0 0 16px;
+  }
+
+  .hm-about-story-text a {
+    color: #3498ff;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(52, 152, 255, 0.3);
+    transition: border-color 0.3s ease;
+  }
+
+  .hm-about-story-text a:hover {
+    border-color: #3498ff;
+  }
+
+  .hm-about-story-image {
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 4/5;
+    background: linear-gradient(135deg, #e8f4ff 0%, #d1e9fc 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .hm-about-story-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hm-about-story-image-placeholder {
+    font-size: 80px;
+    opacity: 0.3;
+  }
+
+  /* Philosophy pills */
+  .hm-about-philosophy {
+    background: linear-gradient(135deg, #f8fbff 0%, #eef6ff 100%);
+    padding: 80px 20px;
+  }
+
+  .hm-about-philosophy-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .hm-about-philosophy-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+
+  .hm-about-philosophy-header h2 {
+    font-size: clamp(24px, 3vw, 38px);
+    font-weight: 700;
+    color: #141615;
+    margin: 0 0 12px;
+    letter-spacing: -0.02em;
+  }
+
+  .hm-about-philosophy-header p {
+    font-size: 16px;
+    color: #53585a;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .hm-about-principles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .hm-about-principle {
+    background: #ffffff;
+    border: 1px solid rgba(52, 152, 255, 0.12);
+    border-radius: 16px;
+    padding: 28px 24px;
+    text-align: center;
+    transition: all 0.35s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hm-about-principle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3498ff, #a8d4ff);
+    transform: scaleX(0);
+    transition: transform 0.35s ease;
+  }
+
+  .hm-about-principle:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(52, 152, 255, 0.12);
+    border-color: rgba(52, 152, 255, 0.25);
+  }
+
+  .hm-about-principle:hover::before {
+    transform: scaleX(1);
+  }
+
+  .hm-about-principle-letter {
+    font-size: 32px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #3498ff, #2980d9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .hm-about-principle-word {
+    font-size: 14px;
+    font-weight: 700;
+    color: #141615;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .hm-about-principle-desc {
+    font-size: 12px;
+    color: #53585a;
+    line-height: 1.5;
+  }
+
+  /* Products CTA */
+  .hm-about-products {
+    padding: 80px 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .hm-about-products h2 {
+    font-size: clamp(24px, 3vw, 38px);
+    font-weight: 700;
+    color: #141615;
+    margin: 0 0 16px;
+    letter-spacing: -0.02em;
+  }
+
+  .hm-about-products p {
+    font-size: 16px;
+    color: #53585a;
+    max-width: 520px;
+    margin: 0 auto 36px;
+    line-height: 1.65;
+  }
+
+  .hm-about-cta-group {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .hm-about-cta-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #3498ff, #2980d9);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 100px;
+    box-shadow: 0 4px 20px rgba(52, 152, 255, 0.35);
+    transition: all 0.35s ease;
+  }
+
+  .hm-about-cta-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(52, 152, 255, 0.5);
+  }
+
+  .hm-about-cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 32px;
+    background: transparent;
+    border: 1.5px solid #3498ff;
+    color: #3498ff;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 100px;
+    transition: all 0.35s ease;
+  }
+
+  .hm-about-cta-secondary:hover {
+    background: rgba(52, 152, 255, 0.08);
+    transform: translateY(-3px);
+  }
+
+  .hm-about-korean-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 32px;
+    background: transparent;
+    border: 1.5px solid rgba(52, 152, 255, 0.3);
+    color: #53585a;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 100px;
+    transition: all 0.35s ease;
+  }
+
+  .hm-about-korean-link:hover {
+    border-color: #3498ff;
+    color: #3498ff;
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    .hm-about-story {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .hm-about-story-image {
+      aspect-ratio: 16/9;
+    }
+    .hm-about-hero {
+      padding: 80px 20px 60px;
+    }
+    .hm-about-cta-group {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+{% endstyle %}
+
+<div class="about-haramoon-section">
+
+  <!-- Hero -->
+  <div class="hm-about-hero">
+    <div class="hm-about-hero-inner">
+      <p class="hm-about-eyebrow">Korean Skincare · Est. Seoul</p>
+      <h1 class="hm-about-hero-title">Meet <span>HARAMOON</span></h1>
+      <p class="hm-about-hero-sub">A Korean skincare brand built on the belief that beautiful skin starts with the right foundation — not the most products.</p>
+      <a href="https://store.haramoon.co.kr/aboutus" target="_blank" rel="noopener" class="hm-about-hero-cta">
+        Visit HARAMOON Korea →
+      </a>
+    </div>
+  </div>
+
+  <!-- Brand Story -->
+  <div class="hm-about-story">
+    <div class="hm-about-story-text">
+      <h2>The Science of Glass Skin, Simplified</h2>
+      <p>HARAMOON was born from a simple frustration: why does good skincare have to be complicated? The Korean beauty industry has spent decades perfecting formulas that work — not by overwhelming your skin with actives, but by building a strong, hydrated, balanced foundation.</p>
+      <p>Every HARAMOON product is formulated with that philosophy in mind. Gentle enough for sensitive skin. Effective enough to see real results. Designed to work together as a complete system — not as individual products competing for your skin's attention.</p>
+      <p>We're proud to be an exclusive global reseller of HARAMOON Cosmetics. <a href="https://store.haramoon.co.kr" target="_blank" rel="noopener">Visit the official HARAMOON Korea store →</a></p>
+    </div>
+    <div class="hm-about-story-image">
+      {% if section.settings.brand_image %}
+        <img src="{{ section.settings.brand_image | img_url: '800x' }}" alt="HARAMOON Cosmetics" loading="lazy">
+      {% else %}
+        <span class="hm-about-story-image-placeholder">🌸</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Philosophy -->
+  <div class="hm-about-philosophy">
+    <div class="hm-about-philosophy-inner">
+      <div class="hm-about-philosophy-header">
+        <h2>The HARAMOON Philosophy</h2>
+        <p>Five principles that guide every formula, every ingredient, every step of the routine.</p>
+      </div>
+      <div class="hm-about-principles">
+        <div class="hm-about-principle">
+          <span class="hm-about-principle-letter">T</span>
+          <div class="hm-about-principle-word">Transparency</div>
+          <div class="hm-about-principle-desc">Full ingredient disclosure. No hidden actives, no misleading claims.</div>
+        </div>
+        <div class="hm-about-principle">
+          <span class="hm-about-principle-letter">A</span>
+          <div class="hm-about-principle-word">Accessibility</div>
+          <div class="hm-about-principle-desc">Premium Korean skincare that doesn't require a premium budget.</div>
+        </div>
+        <div class="hm-about-principle">
+          <span class="hm-about-principle-letter">I</span>
+          <div class="hm-about-principle-word">Integrity</div>
+          <div class="hm-about-principle-desc">Vegan-friendly formulas. Cruelty-free. Tested for sensitive skin.</div>
+        </div>
+        <div class="hm-about-principle">
+          <span class="hm-about-principle-letter">I</span>
+          <div class="hm-about-principle-word">Innovation</div>
+          <div class="hm-about-principle-desc">Rooted in Seoul's cosmeceutical tradition, refined for modern skin needs.</div>
+        </div>
+        <div class="hm-about-principle">
+          <span class="hm-about-principle-letter">U</span>
+          <div class="hm-about-principle-word">Unity</div>
+          <div class="hm-about-principle-desc">Products designed to work as a complete system — not in isolation.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Products CTA -->
+  <div class="hm-about-products">
+    <h2>Ready to Start Your Routine?</h2>
+    <p>Begin with the 4-step glass skin system — or explore individual products to find your perfect match.</p>
+    <div class="hm-about-cta-group">
+      <a href="{{ section.settings.routine_link | default: '/pages/the-complete-routine' }}" class="hm-about-cta-primary">
+        Shop The 4-Step Routine →
+      </a>
+      <a href="{{ section.settings.collection_link | default: '/collections/haramoon-korean-skincare' }}" class="hm-about-cta-secondary">
+        Browse All HARAMOON
+      </a>
+      <a href="{{ section.settings.glossary_link | default: '/pages/ingredient-glossary' }}" class="hm-about-korean-link">
+        🔬 Explore Ingredient Glossary
+      </a>
+    </div>
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "About HARAMOON",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "image_picker", "id": "brand_image", "label": "Brand image" },
+    { "type": "url", "id": "routine_link", "label": "4-Step Routine page link" },
+    { "type": "url", "id": "collection_link", "label": "HARAMOON collection link" },
+    { "type": "url", "id": "glossary_link", "label": "Ingredient Glossary link" }
+  ],
+  "presets": [
+    { "name": "About HARAMOON" }
+  ]
+}
+{% endschema %}

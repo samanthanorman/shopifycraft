@@ -1,15 +1,16 @@
 {
   "sections": {
-    "main": {
-      "type": "main-page",
+    "about_haramoon_main": {
+      "type": "about-haramoon",
       "settings": {
-        "padding_top": 36,
-        "padding_bottom": 36
+        "routine_link": "/pages/the-complete-routine",
+        "collection_link": "/collections/haramoon-korean-skincare",
+        "glossary_link": "/pages/ingredient-glossary"
       }
     }
   },
   "order": [
-    "main"
+    "about_haramoon_main"
   ],
   "header": "header-group.haramoon",
   "footer": "footer-group.haramoon"

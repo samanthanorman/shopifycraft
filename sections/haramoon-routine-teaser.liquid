@@ -1,0 +1,352 @@
+{% doc %}
+  HARAMOON 4-Step Routine Teaser for homepage
+  Inspired by the ai_gen_block_5611c6b routine indicator on product pages
+  Links to the full routine page and the bundle product
+{% enddoc %}
+
+{% style %}
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+  .hm-routine-teaser {
+    padding: 80px 20px;
+    background: {{ section.settings.bg_color | default: '#ffffff' }};
+    position: relative;
+    overflow: hidden;
+    font-family: 'Poppins', 'Century Gothic', sans-serif;
+  }
+
+  .hm-routine-teaser::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 300px;
+    background: radial-gradient(ellipse, rgba(52, 152, 255, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hm-routine-teaser-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hm-routine-teaser-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+
+  .hm-routine-teaser-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #3498ff;
+    margin: 0 0 12px;
+  }
+
+  .hm-routine-teaser-title {
+    font-size: clamp(26px, 3.5vw, 42px);
+    font-weight: 700;
+    color: {{ section.settings.title_color | default: '#141615' }};
+    margin: 0 0 14px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .hm-routine-teaser-subtitle {
+    font-size: 16px;
+    color: #53585a;
+    margin: 0;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.65;
+  }
+
+  /* Steps row */
+  .hm-routine-steps {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0;
+    margin-bottom: 56px;
+    position: relative;
+  }
+
+  .hm-routine-step-wrapper {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    max-width: 220px;
+  }
+
+  .hm-routine-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hm-routine-circle {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.35s ease;
+    cursor: default;
+  }
+
+  .hm-routine-circle.active {
+    background: linear-gradient(135deg, #3498ff 0%, #2980d9 100%);
+    box-shadow: 0 0 0 4px rgba(52, 152, 255, 0.15),
+                0 8px 32px rgba(52, 152, 255, 0.35);
+    animation: hm-pulse 2.5s ease-in-out infinite;
+  }
+
+  .hm-routine-circle.inactive {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px solid #dee2e6;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .hm-routine-circle:hover {
+    transform: translateY(-4px) scale(1.05);
+  }
+
+  .hm-routine-circle.active:hover {
+    box-shadow: 0 0 0 6px rgba(52, 152, 255, 0.2),
+                0 12px 40px rgba(52, 152, 255, 0.45);
+  }
+
+  @keyframes hm-pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(52, 152, 255, 0.15), 0 8px 32px rgba(52, 152, 255, 0.35); }
+    50% { box-shadow: 0 0 0 8px rgba(52, 152, 255, 0.1), 0 8px 40px rgba(52, 152, 255, 0.5); }
+  }
+
+  .hm-routine-emoji {
+    font-size: 26px;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .hm-routine-step-num {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+
+  .hm-routine-circle.active .hm-routine-step-num { color: rgba(255,255,255,0.8); }
+  .hm-routine-circle.inactive .hm-routine-step-num { color: #adb5bd; }
+
+  .hm-routine-step-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #141615;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+
+  .hm-routine-step-benefit {
+    font-size: 11px;
+    color: #53585a;
+    text-align: center;
+    margin-top: -8px;
+  }
+
+  /* Connector line between steps */
+  .hm-routine-connector {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, #3498ff, #dee2e6);
+    margin-top: -44px;
+    position: relative;
+    z-index: 1;
+    opacity: 0.5;
+  }
+
+  /* CTA area */
+  .hm-routine-cta-area {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .hm-routine-cta-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 36px;
+    background: linear-gradient(135deg, #3498ff 0%, #2980d9 100%);
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 100px;
+    box-shadow: 0 4px 20px rgba(52, 152, 255, 0.35);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hm-routine-cta-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(52, 152, 255, 0.5);
+    background: linear-gradient(135deg, #4aa8ff 0%, #3498ff 100%);
+  }
+
+  .hm-routine-cta-secondary {
+    font-size: 13px;
+    color: #3498ff;
+    text-decoration: none;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    border-bottom: 1px solid rgba(52, 152, 255, 0.3);
+    padding-bottom: 2px;
+    transition: border-color 0.3s ease;
+  }
+
+  .hm-routine-cta-secondary:hover {
+    border-color: #3498ff;
+  }
+
+  @media (max-width: 768px) {
+    .hm-routine-steps {
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+    }
+    .hm-routine-step-wrapper {
+      max-width: 45%;
+      flex: 0 0 45%;
+    }
+    .hm-routine-connector {
+      display: none;
+    }
+    .hm-routine-teaser {
+      padding: 60px 16px;
+    }
+  }
+{% endstyle %}
+
+<section class="hm-routine-teaser">
+  <div class="hm-routine-teaser-container">
+
+    <div class="hm-routine-teaser-header">
+      <p class="hm-routine-teaser-eyebrow">{{ section.settings.eyebrow | default: 'HARAMOON Glass Skin System' }}</p>
+      <h2 class="hm-routine-teaser-title">{{ section.settings.title | default: 'The Complete 4-Step Routine' }}</h2>
+      <p class="hm-routine-teaser-subtitle">{{ section.settings.subtitle | default: 'Start with a good base. HARAMOON gives you the daily foundation that makes every product work harder — and your skin glow brighter.' }}</p>
+    </div>
+
+    <div class="hm-routine-steps">
+
+      <!-- Step 1 -->
+      <div class="hm-routine-step-wrapper">
+        <div class="hm-routine-step">
+          <div class="hm-routine-circle active">
+            <span class="hm-routine-emoji">💧</span>
+            <span class="hm-routine-step-num">STEP 1</span>
+          </div>
+          <span class="hm-routine-step-label">{{ section.settings.step1_label | default: 'Cleanser' }}</span>
+          <span class="hm-routine-step-benefit">{{ section.settings.step1_benefit | default: 'Deep cleanse' }}</span>
+        </div>
+        <div class="hm-routine-connector"></div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="hm-routine-step-wrapper">
+        <div class="hm-routine-step">
+          <div class="hm-routine-circle inactive">
+            <span class="hm-routine-emoji">🌸</span>
+            <span class="hm-routine-step-num">STEP 2</span>
+          </div>
+          <span class="hm-routine-step-label">{{ section.settings.step2_label | default: 'Toner' }}</span>
+          <span class="hm-routine-step-benefit">{{ section.settings.step2_benefit | default: 'Balance pH' }}</span>
+        </div>
+        <div class="hm-routine-connector"></div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="hm-routine-step-wrapper">
+        <div class="hm-routine-step">
+          <div class="hm-routine-circle inactive">
+            <span class="hm-routine-emoji">✨</span>
+            <span class="hm-routine-step-num">STEP 3</span>
+          </div>
+          <span class="hm-routine-step-label">{{ section.settings.step3_label | default: 'Ampoule' }}</span>
+          <span class="hm-routine-step-benefit">{{ section.settings.step3_benefit | default: 'Boost hydration' }}</span>
+        </div>
+        <div class="hm-routine-connector"></div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="hm-routine-step-wrapper">
+        <div class="hm-routine-step">
+          <div class="hm-routine-circle inactive">
+            <span class="hm-routine-emoji">🔥</span>
+            <span class="hm-routine-step-num">STEP 4</span>
+          </div>
+          <span class="hm-routine-step-label">{{ section.settings.step4_label | default: 'Moisturizer' }}</span>
+          <span class="hm-routine-step-benefit">{{ section.settings.step4_benefit | default: 'Lock moisture' }}</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="hm-routine-cta-area">
+      <a href="{{ section.settings.bundle_link | default: '/pages/the-complete-routine' }}" class="hm-routine-cta-primary">
+        {{ section.settings.cta_primary | default: 'Shop The Complete Routine Bundle' }} →
+      </a>
+      <a href="{{ section.settings.learn_more_link | default: '/pages/the-complete-routine' }}" class="hm-routine-cta-secondary">
+        {{ section.settings.cta_secondary | default: 'Learn About Each Step' }}
+      </a>
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "HARAMOON Routine Teaser",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "color", "id": "bg_color", "label": "Background color", "default": "#ffffff" },
+    { "type": "color", "id": "title_color", "label": "Title color", "default": "#141615" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow text", "default": "HARAMOON Glass Skin System" },
+    { "type": "text", "id": "title", "label": "Title", "default": "The Complete 4-Step Routine" },
+    { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "Start with a good base. HARAMOON gives you the daily foundation that makes every product work harder — and your skin glow brighter." },
+    { "type": "header", "content": "Steps" },
+    { "type": "text", "id": "step1_label", "label": "Step 1 label", "default": "Cleanser" },
+    { "type": "text", "id": "step1_benefit", "label": "Step 1 benefit", "default": "Deep cleanse" },
+    { "type": "text", "id": "step2_label", "label": "Step 2 label", "default": "Toner" },
+    { "type": "text", "id": "step2_benefit", "label": "Step 2 benefit", "default": "Balance pH" },
+    { "type": "text", "id": "step3_label", "label": "Step 3 label", "default": "Ampoule" },
+    { "type": "text", "id": "step3_benefit", "label": "Step 3 benefit", "default": "Boost hydration" },
+    { "type": "text", "id": "step4_label", "label": "Step 4 label", "default": "Moisturizer" },
+    { "type": "text", "id": "step4_benefit", "label": "Step 4 benefit", "default": "Lock moisture" },
+    { "type": "header", "content": "CTAs" },
+    { "type": "url", "id": "bundle_link", "label": "Bundle product link" },
+    { "type": "text", "id": "cta_primary", "label": "Primary CTA text", "default": "Shop The Complete Routine Bundle" },
+    { "type": "url", "id": "learn_more_link", "label": "Learn more link" },
+    { "type": "text", "id": "cta_secondary", "label": "Secondary CTA text", "default": "Learn About Each Step" }
+  ],
+  "presets": [
+    { "name": "HARAMOON Routine Teaser" }
+  ]
+}
+{% endschema %}
