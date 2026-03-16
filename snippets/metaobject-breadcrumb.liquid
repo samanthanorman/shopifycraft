@@ -1,0 +1,203 @@
+{%- comment -%}
+  Breadcrumb + Prev/Next navigation for metaobject entries (mineral, ingredient)
+  Usage: {% render 'metaobject-breadcrumb', metaobject: metaobject, type: 'mineral' %}
+  type options: 'mineral' | 'ingredient'
+{%- endcomment -%}
+
+{%- liquid
+  case type
+    when 'mineral'
+      assign glossary_url = '/pages/crystal-compendium'
+      assign glossary_label = 'Crystal Compendium'
+      assign category_label = 'Crystals & Minerals'
+      assign brand_color = '#0e5349'
+      assign brand_glow = 'rgba(14, 83, 73, 0.3)'
+    when 'ingredient'
+      assign glossary_url = '/pages/haramoon-ingredient-glossary'
+      assign glossary_label = 'HARAMOON Ingredient Glossary'
+      assign category_label = 'K-Beauty Ingredients'
+      assign brand_color = '#3498ff'
+      assign brand_glow = 'rgba(52, 152, 255, 0.3)'
+    else
+      assign glossary_url = '/'
+      assign glossary_label = 'Home'
+      assign category_label = 'Explore'
+      assign brand_color = '#ab94a0'
+      assign brand_glow = 'rgba(171, 148, 160, 0.3)'
+  endcase
+
+  assign entry_name = metaobject.system.handle | replace: '-', ' ' | capitalize
+  if metaobject.name != blank
+    assign entry_name = metaobject.name
+  elsif metaobject.display_name != blank
+    assign entry_name = metaobject.display_name
+  endif
+-%}
+
+<style>
+  .mobj-breadcrumb-wrapper {
+    width: 100%;
+    padding: 12px 0 8px;
+    border-bottom: 1px solid rgba(171, 148, 160, 0.15);
+    margin-bottom: 0;
+    background: transparent;
+  }
+
+  .mobj-breadcrumb {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+
+  .mobj-breadcrumb a {
+    color: {{ brand_color }};
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+  }
+
+  .mobj-breadcrumb a:hover {
+    background: {{ brand_glow }};
+    border-color: {{ brand_color }};
+    text-shadow: 0 0 8px {{ brand_glow }};
+  }
+
+  .mobj-breadcrumb .sep {
+    color: rgba(171, 148, 160, 0.6);
+    font-size: 11px;
+  }
+
+  .mobj-breadcrumb .current {
+    color: #252525;
+    font-weight: 600;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Structured data helper - visually hidden */
+  .mobj-breadcrumb-schema {
+    display: none;
+  }
+
+  /* Prev / Next navigation */
+  .mobj-prevnext {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 32px auto 0;
+    padding: 0 24px;
+    gap: 16px;
+  }
+
+  .mobj-prevnext-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    border: 1px solid {{ brand_color }};
+    color: {{ brand_color }};
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    background: transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.03em;
+  }
+
+  .mobj-prevnext-btn:hover {
+    background: {{ brand_color }};
+    color: #fff;
+    box-shadow: 0 0 16px {{ brand_glow }}, 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+  }
+
+  .mobj-prevnext-btn svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  .mobj-prevnext-center {
+    text-align: center;
+    flex: 1;
+  }
+
+  .mobj-prevnext-center a {
+    font-size: 12px;
+    color: rgba(171, 148, 160, 0.8);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+
+  .mobj-prevnext-center a:hover {
+    color: {{ brand_color }};
+  }
+
+  @media (max-width: 640px) {
+    .mobj-prevnext {
+      flex-direction: column;
+      align-items: stretch;
+      text-align: center;
+    }
+    .mobj-prevnext-btn {
+      justify-content: center;
+    }
+  }
+</style>
+
+{%- comment -%} Breadcrumb trail {%- endcomment -%}
+<nav class="mobj-breadcrumb-wrapper" aria-label="Breadcrumb">
+  <ol class="mobj-breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+      <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <span class="sep" aria-hidden="true">›</span>
+    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+      <a href="{{ glossary_url }}" itemprop="item"><span itemprop="name">{{ glossary_label }}</span></a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <span class="sep" aria-hidden="true">›</span>
+    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+      <span class="current" itemprop="name">{{ entry_name }}</span>
+      <meta itemprop="position" content="3" />
+    </li>
+  </ol>
+</nav>
+
+{%- comment -%} Prev / Next navigation {%- endcomment -%}
+<div class="mobj-prevnext" role="navigation" aria-label="Browse {{ category_label }}">
+  <a href="{{ glossary_url }}" class="mobj-prevnext-btn" aria-label="Back to {{ glossary_label }}">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+    Back to {{ glossary_label }}
+  </a>
+
+  <div class="mobj-prevnext-center">
+    <a href="{{ glossary_url }}">View All {{ category_label }}</a>
+  </div>
+
+  <a href="{{ glossary_url }}" class="mobj-prevnext-btn" aria-label="Browse more {{ category_label }}">
+    Browse More
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </a>
+</div>

@@ -5,22 +5,38 @@
     "announcement_bar_4MYDXL": {
       "type": "announcement-bar",
       "blocks": {
-        "announcement_RDTn6Y": {
+        "ann_shipping": {
           "type": "announcement",
           "settings": {
-            "text": "with good intentions",
+            "text": "✨ FREE SHIPPING on orders $50+ | Korean Skincare · Crystals · EMF Protection",
             "link": "shopify://collections/all"
+          }
+        },
+        "ann_haramoon": {
+          "type": "announcement",
+          "settings": {
+            "text": "🌙 NEW: HARAMOON 4-Step Glass Skin Routine — Shop the Bundle →",
+            "link": "/pages/the-complete-routine"
+          }
+        },
+        "ann_crystals": {
+          "type": "announcement",
+          "settings": {
+            "text": "🔮 Explore the Crystal Compendium — 50+ minerals with full metaphysical profiles",
+            "link": "/pages/crystal-compendium"
           }
         }
       },
       "block_order": [
-        "announcement_RDTn6Y"
+        "ann_shipping",
+        "ann_haramoon",
+        "ann_crystals"
       ],
-      "disabled": true,
+      "disabled": false,
       "name": "t:sections.announcement-bar.presets.name",
       "settings": {
         "auto_rotate": true,
-        "change_slides_speed": 5,
+        "change_slides_speed": 4,
         "color_scheme": "scheme-2",
         "show_line_separator": true,
         "show_social": true,
@@ -33,20 +49,20 @@
       "disabled": false,
       "custom_css": [],
       "settings": {
-        "logo_position": "top-center",
+        "logo_position": "middle-left",
         "mobile_logo_position": "center",
         "menu": "main-menu-1",
-        "menu_type_desktop": "drawer",
-        "sticky_header_type": "none",
+        "menu_type_desktop": "dropdown",
+        "sticky_header_type": "reduce-logo-size",
         "show_line_separator": true,
         "color_scheme": "scheme-1",
         "menu_color_scheme": "scheme-1",
         "enable_country_selector": true,
         "enable_language_selector": true,
         "enable_customer_avatar": false,
-        "margin_bottom": 16,
-        "padding_top": 12,
-        "padding_bottom": 12
+        "margin_bottom": 0,
+        "padding_top": 8,
+        "padding_bottom": 8
       }
     }
   },

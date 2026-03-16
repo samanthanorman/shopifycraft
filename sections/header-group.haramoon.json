@@ -4,7 +4,7 @@
   "sections": {
     "announcement_bar": {
       "type": "announcement-bar",
-      "disabled": true,
+      "disabled": false,
       "blocks": {},
       "block_order": [],
       "settings": {}

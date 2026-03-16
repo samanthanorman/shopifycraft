@@ -404,3 +404,129 @@
     transform: scale(1.04);
   }
 }
+
+/* APPENDED */
+
+/* ─── ANNOUNCEMENT BAR — Neon Energy ───────────────────────── */
+.utility-bar {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+}
+
+.announcement-bar__message {
+  font-weight: 600 !important;
+  letter-spacing: 0.03em !important;
+}
+
+/* Announcement bar link hover — neon yellow */
+.announcement-bar__link:hover .announcement-bar__message {
+  color: var(--neon-yellow) !important;
+  text-shadow: 0 0 10px var(--neon-yellow-glow) !important;
+}
+
+/* ─── HOMEPAGE HERO BANNER ──────────────────────────────────── */
+/* Image banner with glassmorphism text box */
+.banner__content .banner__box {
+  background: var(--glass-dark) !important;
+  backdrop-filter: blur(var(--glass-blur)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 16px !important;
+  padding: 40px 48px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+              0 0 60px rgba(10, 80, 109, 0.15) !important;
+}
+
+/* Hero heading — holographic shimmer */
+.banner__content .banner__heading {
+  background: linear-gradient(135deg,
+    var(--ww-lunar-mist) 0%,
+    #ffffff 40%,
+    var(--ww-gold) 70%,
+    var(--hm-blue) 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Hero subtext */
+.banner__content .banner__text {
+  color: rgba(219, 232, 255, 0.85) !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+}
+
+/* Hero CTA buttons — neon yellow primary */
+.banner__content .button--primary {
+  background: var(--neon-yellow) !important;
+  color: #0a0a0a !important;
+  border-color: var(--neon-yellow) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  box-shadow: 0 0 20px var(--neon-yellow-glow) !important;
+  transition: all 0.3s ease !important;
+}
+
+.banner__content .button--primary:hover {
+  box-shadow: 0 0 35px var(--neon-yellow-glow),
+              0 4px 16px rgba(0,0,0,0.2) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* ─── HEADER LOGO SIZE CONTROL ──────────────────────────────── */
+.header__heading-logo {
+  max-height: 56px !important;
+  width: auto !important;
+}
+
+/* ─── DROPDOWN NAVIGATION STYLING ──────────────────────────── */
+.header__menu-item {
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  letter-spacing: 0.03em !important;
+  transition: color 0.2s ease !important;
+}
+
+.header__menu-item:hover {
+  color: var(--hm-blue) !important;
+}
+
+/* Dropdown menus — glassmorphism */
+.header__submenu {
+  background: rgba(255, 255, 255, 0.97) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(10, 80, 109, 0.1) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(10, 80, 109, 0.15),
+              0 2px 8px rgba(0,0,0,0.08) !important;
+  overflow: hidden !important;
+}
+
+/* ─── COLLECTION LIST HOVER ─────────────────────────────────── */
+.collection-list__item .card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+.collection-list__item .card:hover {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 16px 40px rgba(10, 80, 109, 0.2),
+              0 0 0 1px rgba(52, 152, 255, 0.2) !important;
+}
+
+/* ─── FOOTER ENHANCEMENTS ───────────────────────────────────── */
+.footer__list-item a:hover {
+  color: var(--hm-blue) !important;
+}
+
+.footer__heading {
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  font-size: 12px !important;
+}
