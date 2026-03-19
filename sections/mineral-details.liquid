@@ -160,6 +160,73 @@
   </div>
 </div>
 
+{%- comment -%} MINERAL-SPECIFIC BLOG POSTS
+  Loops through crystals-science-magic blog and surfaces only articles
+  whose custom.crystal_object metafield references THIS mineral metaobject.
+  Falls back to 3 most recent posts if no matched articles exist.
+{%- endcomment -%}
+{%- assign crystal_blog = blogs['crystals-science-magic'] -%}
+{%- if crystal_blog -%}
+  {%- assign matched_articles = '' | split: '' -%}
+  {%- for article in crystal_blog.articles limit: 50 -%}
+    {%- assign article_mineral = article.metafields.custom.crystal_object.value -%}
+    {%- if article_mineral and article_mineral.system.handle == metaobject.system.handle -%}
+      {%- assign matched_articles = matched_articles | concat: article | compact -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if matched_articles.size > 0 -%}
+    {%- assign blog_articles = matched_articles -%}
+    {%- assign blog_heading = 'From The Blog: ' | append: m.display_name -%}
+  {%- else -%}
+    {%- assign blog_articles = crystal_blog.articles -%}
+    {%- assign blog_heading = 'From The Crystal Blog' -%}
+  {%- endif -%}
+  <div class="mineral-blog-section">
+    <h2 class="mineral-blog-section__title">{{ blog_heading }}</h2>
+    <div class="mineral-blog-section__grid">
+      {%- for article in blog_articles limit: 3 -%}
+        <a href="{{ article.url }}" class="mineral-blog-card">
+          {%- if article.image -%}
+            <div class="mineral-blog-card__image">
+              {{ article.image | image_url: width: 600 | image_tag: alt: article.title, loading: 'lazy' }}
+            </div>
+          {%- endif -%}
+          <div class="mineral-blog-card__body">
+            <p class="mineral-blog-card__date">{{ article.published_at | date: '%b %d, %Y' }}</p>
+            <h3 class="mineral-blog-card__title">{{ article.title }}</h3>
+            {%- if article.excerpt != blank -%}
+              <p class="mineral-blog-card__excerpt">{{ article.excerpt | strip_html | truncate: 100 }}</p>
+            {%- endif -%}
+            <span class="mineral-blog-card__read">Read More →</span>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+    <div class="mineral-blog-section__footer">
+      <a href="{{ crystal_blog.url }}" class="mineral-blog-section__all-link">View All Crystal Posts →</a>
+    </div>
+  </div>
+{%- endif -%}
+
+<style>
+.mineral-blog-section{max-width:1200px;margin:0 auto 64px;padding:0 clamp(16px,2vw,24px)}
+.mineral-blog-section__title{font-size:0.75rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#d1e9fc;margin:0 0 28px;padding-bottom:12px;border-bottom:1px solid rgba(209,233,252,0.15)}
+.mineral-blog-section__grid{display:grid;grid-template-columns:1fr;gap:24px}
+@media(min-width:640px){.mineral-blog-section__grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:900px){.mineral-blog-section__grid{grid-template-columns:repeat(3,1fr)}}
+.mineral-blog-card{display:block;text-decoration:none;color:inherit;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);transition:all 0.4s ease}
+.mineral-blog-card:hover{transform:translateY(-4px);box-shadow:0 0 16px rgba(155,89,182,0.3),0 8px 24px rgba(0,0,0,0.2);border-color:rgba(155,89,182,0.3)}
+.mineral-blog-card__image img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.mineral-blog-card__body{padding:18px 20px}
+.mineral-blog-card__date{font-size:0.7rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#ab94a0;margin:0 0 6px}
+.mineral-blog-card__title{font-size:1rem;font-weight:700;color:#d1e9fc;margin:0 0 8px;line-height:1.35}
+.mineral-blog-card__excerpt{font-size:0.85rem;line-height:1.6;opacity:0.7;margin:0 0 12px}
+.mineral-blog-card__read{font-size:0.75rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#c9a961}
+.mineral-blog-section__footer{text-align:center;margin-top:28px}
+.mineral-blog-section__all-link{font-size:0.8rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#9b59b6;text-decoration:none;border-bottom:1px solid rgba(155,89,182,0.4);padding-bottom:2px;transition:color 0.2s,border-color 0.2s}
+.mineral-blog-section__all-link:hover{color:#c9a961;border-color:rgba(201,169,97,0.5)}
+</style>
+
 <style>
 .mineral-page-wrapper{--mineral-accent:#9b59b6;--mineral-glow:rgba(155,89,182,0.4)}
 .mineral-hero-bleed{position:relative;width:100vw;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;overflow:hidden;margin-bottom:0}
