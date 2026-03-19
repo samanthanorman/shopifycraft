@@ -1,0 +1,21 @@
+{
+  "sections": {
+    "crystal_compendium_main": {
+      "type": "crystal-compendium",
+      "settings": {
+        "heading": "The Crystal Compendium",
+        "subheading": "Explore our curated collection of minerals, crystals, and earth energies.",
+        "bg_color_start": "#f9f7ff",
+        "bg_color_end": "#f0f4ff",
+        "accent_color": "#c9a961",
+        "title_color": "#0a506d",
+        "text_color": "#333333",
+        "card_bg": "#ffffff",
+        "title_size": 48
+      }
+    }
+  },
+  "order": [
+    "crystal_compendium_main"
+  ]
+}

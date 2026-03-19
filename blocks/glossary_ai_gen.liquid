@@ -1,0 +1,629 @@
+{% comment %}
+  HARAMOON Ingredient Glossary Block — Wax | Wane
+  ─────────────────────────────────────────────────────────────────
+  Loops shop.metaobjects.ingredient_profile.values and renders a
+  searchable, filterable card grid. Each card links to
+  ingredient.system.url (the auto-generated Shopify metaobject page).
+
+  Google Structured Data: ItemList (CollectionPage)
+  — recognized by Google Search Console, eligible for rich results.
+
+  Metaobject type: ingredient_profile
+  Key fields: name, ingredient_origin, main_function, system.url
+  ─────────────────────────────────────────────────────────────────
+{% endcomment %}
+
+{%- liquid
+  assign ai_gen_id = block.id | replace: '__', '' | replace: '-', ''
+  assign ingredient_profiles = shop.metaobjects.ingredient_profile.values | sort: 'name'
+
+  comment
+    Collect unique filter values for origin and function dropdowns
+  endcomment
+  assign all_origins   = ''
+  assign all_functions = ''
+  for ing in ingredient_profiles
+    if ing.ingredient_origin
+      assign ov = ing.ingredient_origin.value | strip
+      unless all_origins contains ov
+        assign all_origins = all_origins | append: ov | append: '|'
+      endunless
+    endif
+    if ing.main_function
+      assign fv = ing.main_function.value | strip
+      unless all_functions contains fv
+        assign all_functions = all_functions | append: fv | append: '|'
+      endunless
+    endif
+  endfor
+  assign origin_list   = all_origins   | split: '|'
+  assign function_list = all_functions | split: '|'
+
+  comment
+    Trending ingredients — hardcoded spotlight cards
+  endcomment
+  assign trending_names = 'Niacinamide,PDRN,Artemisia Oil' | split: ','
+-%}
+
+{%- comment -%} Google Structured Data — ItemList {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": {{ block.settings.heading | json }},
+  "description": "A comprehensive glossary of Korean skincare ingredients used in HARAMOON formulations.",
+  "url": "{{ shop.url }}{{ page.url }}",
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": {{ block.settings.heading | json }},
+    "numberOfItems": {{ ingredient_profiles | size }},
+    "itemListElement": [
+      {%- assign pos = 0 -%}
+      {%- for ing in ingredient_profiles -%}
+        {%- assign pos = pos | plus: 1 -%}
+        {
+          "@type": "ListItem",
+          "position": {{ pos }},
+          "url": "{{ shop.url }}{{ ing.system.url }}",
+          "name": {{ ing.name | json }},
+          "description": {{ ing.main_function.value | default: ing.name | json }}
+        }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    ]
+  }
+}
+</script>
+
+{% style %}
+  /* ── Wrapper ── */
+  .ai-gloss-{{ ai_gen_id }} {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* ── Heading ── */
+  .ai-gloss-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
+    text-align: center;
+  }
+  .ai-gloss-subhead-{{ ai_gen_id }} {
+    text-align: center;
+    font-size: 16px;
+    color: #6b7280;
+    margin: 0 0 36px;
+  }
+  .ai-gloss-count-{{ ai_gen_id }} {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: {{ block.settings.heading_color }};
+    border: 1px solid {{ block.settings.heading_color }};
+    border-radius: 20px;
+    padding: 3px 12px;
+    margin-bottom: 40px;
+  }
+
+  /* ── Trending Section ── */
+  .ai-gloss-trending-label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.trending_font_size }}px;
+    font-weight: 700;
+    color: {{ block.settings.trending_text_color }};
+    border-bottom: 2px solid {{ block.settings.trending_border_color }};
+    padding-bottom: 8px;
+    margin: 0 0 20px;
+  }
+  .ai-gloss-trending-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  .ai-gloss-trending-card-{{ ai_gen_id }} {
+    display: block;
+    text-decoration: none;
+    background: linear-gradient(135deg, #dbeafe 0%, #ffffff 100%);
+    border: 1.5px solid {{ block.settings.trending_border_color }};
+    border-radius: 14px;
+    padding: 20px 18px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .ai-gloss-trending-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 20px rgba(30,58,138,0.15), 0 8px 24px rgba(0,0,0,0.1);
+  }
+  .ai-gloss-trending-name-{{ ai_gen_id }} {
+    font-size: 15px;
+    font-weight: 700;
+    color: {{ block.settings.trending_text_color }};
+    margin: 0 0 4px;
+  }
+  .ai-gloss-trending-tag-{{ ai_gen_id }} {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #3b82f6;
+    opacity: 0.8;
+  }
+
+  /* ── Filter Bar ── */
+  .ai-gloss-filters-{{ ai_gen_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+  .ai-gloss-filter-group-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1 1 180px;
+  }
+  .ai-gloss-filter-label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.filter_label_size }}px;
+    font-weight: 600;
+    color: {{ block.settings.filter_label_color }};
+    letter-spacing: 0.04em;
+  }
+  .ai-gloss-filter-input-{{ ai_gen_id }},
+  .ai-gloss-filter-select-{{ ai_gen_id }} {
+    padding: 10px 16px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 14px;
+    background: #ffffff;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+  }
+  .ai-gloss-filter-input-{{ ai_gen_id }}:focus,
+  .ai-gloss-filter-select-{{ ai_gen_id }}:focus {
+    border-color: {{ block.settings.heading_color }};
+    box-shadow: 0 0 0 3px {{ block.settings.heading_color }}22;
+  }
+  .ai-gloss-reset-{{ ai_gen_id }} {
+    align-self: flex-end;
+    padding: 10px 20px;
+    border: 1.5px solid {{ block.settings.heading_color }};
+    border-radius: 10px;
+    background: transparent;
+    color: {{ block.settings.heading_color }};
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .ai-gloss-reset-{{ ai_gen_id }}:hover {
+    background: {{ block.settings.heading_color }};
+    color: #fff;
+  }
+
+  /* ── Ingredient Grid ── */
+  .ai-gloss-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  @media (max-width: 640px) {
+    .ai-gloss-grid-{{ ai_gen_id }} { grid-template-columns: 1fr; }
+    .ai-gloss-trending-grid-{{ ai_gen_id }} { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ── Ingredient Card ── */
+  .ai-gloss-card-{{ ai_gen_id }} {
+    display: block;
+    text-decoration: none;
+    background: linear-gradient(160deg, #ffffff 0%, #f0f6ff 100%);
+    border: 1.5px solid {{ block.settings.card_border_color }};
+    border-radius: 14px;
+    padding: 20px;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+  }
+  .ai-gloss-card-{{ ai_gen_id }}.hidden { display: none; }
+  .ai-gloss-card-{{ ai_gen_id }}:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 20px rgba(30,58,138,0.12), 0 8px 28px rgba(0,0,0,0.1);
+  }
+
+  /* Shimmer on click */
+  .ai-gloss-card-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    transition: left 0.4s ease;
+    pointer-events: none;
+  }
+  .ai-gloss-card-{{ ai_gen_id }}:active::before { left: 150%; }
+
+  /* Origin badge */
+  .ai-gloss-origin-badge-{{ ai_gen_id }} {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+  .ai-gloss-origin-badge-{{ ai_gen_id }}.natural  { background: #d1fae5; color: #065f46; }
+  .ai-gloss-origin-badge-{{ ai_gen_id }}.synthetic { background: #ede9fe; color: #5b21b6; }
+  .ai-gloss-origin-badge-{{ ai_gen_id }}.biotech   { background: #dbeafe; color: #1e40af; }
+  .ai-gloss-origin-badge-{{ ai_gen_id }}.marine    { background: #cffafe; color: #164e63; }
+  .ai-gloss-origin-badge-{{ ai_gen_id }}.other     { background: #f3f4f6; color: #374151; }
+
+  .ai-gloss-card-header-{{ ai_gen_id }} {
+    padding-right: 70px;
+    margin-bottom: 10px;
+  }
+  .ai-gloss-card-name-{{ ai_gen_id }} {
+    font-size: 17px;
+    font-weight: 700;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 4px;
+    line-height: 1.25;
+  }
+  .ai-gloss-card-function-{{ ai_gen_id }} {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .ai-gloss-card-cta-{{ ai_gen_id }} {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: {{ block.settings.heading_color }};
+  }
+
+  /* No results */
+  .ai-gloss-no-results-{{ ai_gen_id }} {
+    display: none;
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+    font-style: italic;
+    font-size: 16px;
+  }
+  .ai-gloss-no-results-{{ ai_gen_id }}.visible { display: block; }
+
+  /* Back to top */
+  .ai-gloss-back-top-{{ ai_gen_id }} {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    width: 44px;
+    height: 44px;
+    background: {{ block.settings.heading_color }};
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ai-gloss-back-top-{{ ai_gen_id }}.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+{% endstyle %}
+
+<div class="ai-gloss-{{ ai_gen_id }}">
+
+  <h2 class="ai-gloss-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+  <p class="ai-gloss-subhead-{{ ai_gen_id }}">
+    Research-backed ingredient profiles for every HARAMOON formula.
+  </p>
+  <div style="text-align:center;">
+    <span class="ai-gloss-count-{{ ai_gen_id }}">
+      {{ ingredient_profiles | size }} ingredients catalogued
+    </span>
+  </div>
+
+  {%- comment -%} Trending Spotlight {%- endcomment -%}
+  <p class="ai-gloss-trending-label-{{ ai_gen_id }}">✨ Trending Ingredients</p>
+  <div class="ai-gloss-trending-grid-{{ ai_gen_id }}">
+    {%- for tname in trending_names -%}
+      {%- assign tname_clean = tname | strip -%}
+      {%- assign found_ing = nil -%}
+      {%- for ing in ingredient_profiles -%}
+        {%- if ing.name == tname_clean -%}
+          {%- assign found_ing = ing -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if found_ing -%}
+        <a href="{{ found_ing.system.url }}" class="ai-gloss-trending-card-{{ ai_gen_id }}">
+          <p class="ai-gloss-trending-name-{{ ai_gen_id }}">{{ found_ing.name }}</p>
+          {%- if found_ing.main_function -%}
+            <span class="ai-gloss-trending-tag-{{ ai_gen_id }}">{{ found_ing.main_function.value | truncate: 30 }}</span>
+          {%- endif -%}
+        </a>
+      {%- else -%}
+        <div class="ai-gloss-trending-card-{{ ai_gen_id }}" style="opacity:0.5;">
+          <p class="ai-gloss-trending-name-{{ ai_gen_id }}">{{ tname_clean }}</p>
+          <span class="ai-gloss-trending-tag-{{ ai_gen_id }}">Coming soon</span>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  {%- comment -%} Filter Bar {%- endcomment -%}
+  <div class="ai-gloss-filters-{{ ai_gen_id }}">
+    <div class="ai-gloss-filter-group-{{ ai_gen_id }}">
+      <label class="ai-gloss-filter-label-{{ ai_gen_id }}" for="GlossSearch-{{ ai_gen_id }}">
+        {{ block.settings.search_label }}
+      </label>
+      <input
+        type="search"
+        id="GlossSearch-{{ ai_gen_id }}"
+        class="ai-gloss-filter-input-{{ ai_gen_id }}"
+        placeholder="e.g. Niacinamide…"
+        aria-label="{{ block.settings.search_label }}"
+      >
+    </div>
+
+    <div class="ai-gloss-filter-group-{{ ai_gen_id }}">
+      <label class="ai-gloss-filter-label-{{ ai_gen_id }}" for="OriginFilter-{{ ai_gen_id }}">
+        {{ block.settings.origin_label }}
+      </label>
+      <select id="OriginFilter-{{ ai_gen_id }}" class="ai-gloss-filter-select-{{ ai_gen_id }}" aria-label="{{ block.settings.origin_label }}">
+        <option value="">All Origins</option>
+        {%- for ov in origin_list -%}
+          {%- if ov != blank -%}
+            <option value="{{ ov | downcase }}">{{ ov }}</option>
+          {%- endif -%}
+        {%- endfor -%}
+      </select>
+    </div>
+
+    <div class="ai-gloss-filter-group-{{ ai_gen_id }}">
+      <label class="ai-gloss-filter-label-{{ ai_gen_id }}" for="FunctionFilter-{{ ai_gen_id }}">
+        {{ block.settings.function_label }}
+      </label>
+      <select id="FunctionFilter-{{ ai_gen_id }}" class="ai-gloss-filter-select-{{ ai_gen_id }}" aria-label="{{ block.settings.function_label }}">
+        <option value="">All Functions</option>
+        {%- for fv in function_list -%}
+          {%- if fv != blank -%}
+            <option value="{{ fv | downcase }}">{{ fv }}</option>
+          {%- endif -%}
+        {%- endfor -%}
+      </select>
+    </div>
+
+    <button id="GlossReset-{{ ai_gen_id }}" class="ai-gloss-reset-{{ ai_gen_id }}">Reset Filters</button>
+  </div>
+
+  {%- comment -%} Ingredient Grid {%- endcomment -%}
+  <div class="ai-gloss-grid-{{ ai_gen_id }}" id="GlossGrid-{{ ai_gen_id }}">
+    {%- for ing in ingredient_profiles -%}
+      {%- assign origin_val = ing.ingredient_origin.value | default: '' -%}
+      {%- assign func_val   = ing.main_function.value   | default: '' -%}
+      {%- assign origin_class = origin_val | downcase | replace: ' ', '' -%}
+      {%- unless origin_class == 'natural' or origin_class == 'synthetic' or origin_class == 'biotech' or origin_class == 'marine' -%}
+        {%- assign origin_class = 'other' -%}
+      {%- endunless -%}
+      <a
+        href="{{ ing.system.url }}"
+        class="ai-gloss-card-{{ ai_gen_id }}"
+        data-name="{{ ing.name | downcase }}"
+        data-origin="{{ origin_val | downcase }}"
+        data-function="{{ func_val | downcase }}"
+        aria-label="Learn about {{ ing.name }}"
+      >
+        {%- if origin_val != blank -%}
+          <span class="ai-gloss-origin-badge-{{ ai_gen_id }} {{ origin_class }}">
+            {%- if origin_class == 'natural' -%}🌿{%- elsif origin_class == 'synthetic' -%}⚗️{%- elsif origin_class == 'biotech' -%}🧬{%- elsif origin_class == 'marine' -%}🌊{%- endif -%}
+            {{ origin_val }}
+          </span>
+        {%- endif -%}
+        <div class="ai-gloss-card-header-{{ ai_gen_id }}">
+          <h3 class="ai-gloss-card-name-{{ ai_gen_id }}">{{ ing.name }}</h3>
+          {%- if func_val != blank -%}
+            <p class="ai-gloss-card-function-{{ ai_gen_id }}">{{ func_val }}</p>
+          {%- endif -%}
+        </div>
+        <span class="ai-gloss-card-cta-{{ ai_gen_id }}">Read Profile →</span>
+      </a>
+    {%- endfor -%}
+
+    <div class="ai-gloss-no-results-{{ ai_gen_id }}" id="GlossNoResults-{{ ai_gen_id }}">
+      No ingredients found matching your filters.
+    </div>
+  </div>
+
+</div>
+
+<button class="ai-gloss-back-top-{{ ai_gen_id }}" id="GlossBackTop-{{ ai_gen_id }}" aria-label="Back to top">↑</button>
+
+<script>
+(function() {
+  const searchInput  = document.getElementById('GlossSearch-{{ ai_gen_id }}');
+  const originSel    = document.getElementById('OriginFilter-{{ ai_gen_id }}');
+  const functionSel  = document.getElementById('FunctionFilter-{{ ai_gen_id }}');
+  const resetBtn     = document.getElementById('GlossReset-{{ ai_gen_id }}');
+  const grid         = document.getElementById('GlossGrid-{{ ai_gen_id }}');
+  const noResults    = document.getElementById('GlossNoResults-{{ ai_gen_id }}');
+  const backTop      = document.getElementById('GlossBackTop-{{ ai_gen_id }}');
+  const cards        = grid ? Array.from(grid.querySelectorAll('.ai-gloss-card-{{ ai_gen_id }}')) : [];
+
+  function applyFilters() {
+    const term     = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const origin   = originSel   ? originSel.value.toLowerCase()   : '';
+    const func     = functionSel ? functionSel.value.toLowerCase() : '';
+    let visible = 0;
+    cards.forEach(card => {
+      const nameMatch   = !term   || card.dataset.name.includes(term);
+      const originMatch = !origin || card.dataset.origin.includes(origin);
+      const funcMatch   = !func   || card.dataset.function.includes(func);
+      const show = nameMatch && originMatch && funcMatch;
+      card.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+    if (noResults) noResults.classList.toggle('visible', visible === 0);
+  }
+
+  function resetFilters() {
+    if (searchInput) searchInput.value = '';
+    if (originSel)   originSel.value   = '';
+    if (functionSel) functionSel.value = '';
+    applyFilters();
+  }
+
+  if (searchInput) searchInput.addEventListener('input', applyFilters);
+  if (originSel)   originSel.addEventListener('change', applyFilters);
+  if (functionSel) functionSel.addEventListener('change', applyFilters);
+  if (resetBtn)    resetBtn.addEventListener('click', resetFilters);
+
+  // Back to top
+  if (backTop) {
+    window.addEventListener('scroll', () => {
+      backTop.classList.toggle('visible', window.scrollY > 400);
+    });
+    backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Ingredient glossary",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Main heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Ultimate Korean Skincare Ingredient Glossary"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 24,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 36
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#1E3A8A"
+    },
+    {
+      "type": "header",
+      "content": "Trending cards"
+    },
+    {
+      "type": "range",
+      "id": "trending_font_size",
+      "min": 14,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Trending label size",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "trending_text_color",
+      "label": "Trending text color",
+      "default": "#1E3A8A"
+    },
+    {
+      "type": "color",
+      "id": "trending_border_color",
+      "label": "Trending border color",
+      "default": "#1E3A8A"
+    },
+    {
+      "type": "header",
+      "content": "Filter labels"
+    },
+    {
+      "type": "text",
+      "id": "search_label",
+      "label": "Search label",
+      "default": "Search by name"
+    },
+    {
+      "type": "text",
+      "id": "origin_label",
+      "label": "Origin label",
+      "default": "Origin"
+    },
+    {
+      "type": "text",
+      "id": "function_label",
+      "label": "Function label",
+      "default": "Function"
+    },
+    {
+      "type": "range",
+      "id": "filter_label_size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Label font size",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "filter_label_color",
+      "label": "Label color",
+      "default": "#374151"
+    },
+    {
+      "type": "header",
+      "content": "Ingredient cards"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border color",
+      "default": "#1E3A8A"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredient glossary"
+    }
+  ]
+}
+{% endschema %}

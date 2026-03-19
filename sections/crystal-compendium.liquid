@@ -1,0 +1,519 @@
+{% comment %}
+  Crystal Compendium — Wax | Wane
+  ─────────────────────────────────────────────────────────────────
+  Loops shop.metaobjects.mineral.values and renders a searchable,
+  filterable card grid. Each card links to mineral.system.url
+  (the auto-generated Shopify metaobject page).
+
+  Google Structured Data: ItemList (CollectionPage)
+  — recognized by Google Search Console and eligible for rich results.
+
+  Metaobject type: mineral
+  Key fields used: display_name, one_liner, image, other_images,
+                   element, color, mohs_hardness, chakra
+  ─────────────────────────────────────────────────────────────────
+{% endcomment %}
+
+{%- assign unique_id = section.id | replace: '__', '' | replace: '-', '' -%}
+
+{%- comment -%} Collect unique filter values {%- endcomment -%}
+{%- assign all_elements = '' -%}
+{%- assign all_chakras = '' -%}
+{%- for mineral in shop.metaobjects.mineral.values -%}
+  {%- if mineral.element and mineral.element != blank -%}
+    {%- assign el = mineral.element | strip -%}
+    {%- unless all_elements contains el -%}
+      {%- assign all_elements = all_elements | append: el | append: '|' -%}
+    {%- endunless -%}
+  {%- endif -%}
+  {%- if mineral.chakra and mineral.chakra != blank -%}
+    {%- assign ck = mineral.chakra | strip -%}
+    {%- unless all_chakras contains ck -%}
+      {%- assign all_chakras = all_chakras | append: ck | append: '|' -%}
+    {%- endunless -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign element_list = all_elements | split: '|' -%}
+{%- assign chakra_list = all_chakras | split: '|' -%}
+
+{%- comment -%} Google Structured Data — ItemList {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": {{ section.settings.heading | json }},
+  "description": {{ section.settings.subheading | json }},
+  "url": "{{ shop.url }}{{ page.url }}",
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": {{ section.settings.heading | json }},
+    "numberOfItems": {{ shop.metaobjects.mineral.values | size }},
+    "itemListElement": [
+      {%- assign pos = 0 -%}
+      {%- for mineral in shop.metaobjects.mineral.values -%}
+        {%- assign pos = pos | plus: 1 -%}
+        {
+          "@type": "ListItem",
+          "position": {{ pos }},
+          "url": "{{ shop.url }}{{ mineral.system.url }}",
+          "name": {{ mineral.display_name | json }},
+          "description": {{ mineral.one_liner | default: mineral.display_name | json }}
+        }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    ]
+  }
+}
+</script>
+
+{% style %}
+  .compendium-{{ unique_id }} {
+    background: linear-gradient(160deg,
+      {{ section.settings.bg_color_start }} 0%,
+      {{ section.settings.bg_color_end }} 100%);
+    padding: 60px 24px 80px;
+    min-height: 60vh;
+  }
+  .compendium-inner-{{ unique_id }} {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .compendium-header-{{ unique_id }} {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .compendium-title-{{ unique_id }} {
+    font-size: {{ section.settings.title_size }}px;
+    color: {{ section.settings.title_color }};
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+    line-height: 1.1;
+  }
+  .compendium-subtitle-{{ unique_id }} {
+    font-size: 18px;
+    color: {{ section.settings.text_color }};
+    opacity: 0.75;
+    margin: 0 0 8px;
+  }
+  .compendium-count-{{ unique_id }} {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: {{ section.settings.accent_color }};
+    border: 1px solid {{ section.settings.accent_color }};
+    border-radius: 20px;
+    padding: 4px 14px;
+    margin-top: 8px;
+  }
+
+  /* ── Filter Bar ── */
+  .compendium-filters-{{ unique_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 36px;
+  }
+  .compendium-search-{{ unique_id }} {
+    flex: 1 1 260px;
+    max-width: 360px;
+    padding: 10px 18px;
+    border: 1.5px solid rgba(10,80,109,0.2);
+    border-radius: 30px;
+    font-size: 15px;
+    outline: none;
+    background: rgba(255,255,255,0.9);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .compendium-search-{{ unique_id }}:focus {
+    border-color: {{ section.settings.accent_color }};
+    box-shadow: 0 0 0 3px {{ section.settings.accent_color }}33;
+  }
+  .compendium-select-{{ unique_id }} {
+    padding: 10px 18px;
+    border: 1.5px solid rgba(10,80,109,0.2);
+    border-radius: 30px;
+    font-size: 14px;
+    background: rgba(255,255,255,0.9);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .compendium-select-{{ unique_id }}:focus {
+    border-color: {{ section.settings.accent_color }};
+  }
+  .compendium-reset-{{ unique_id }} {
+    padding: 10px 20px;
+    border: 1.5px solid {{ section.settings.accent_color }};
+    border-radius: 30px;
+    background: transparent;
+    color: {{ section.settings.accent_color }};
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .compendium-reset-{{ unique_id }}:hover {
+    background: {{ section.settings.accent_color }};
+    color: #fff;
+  }
+
+  /* ── Crystal Grid ── */
+  .crystal-grid-{{ unique_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 24px;
+  }
+  @media (max-width: 600px) {
+    .crystal-grid-{{ unique_id }} { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .compendium-title-{{ unique_id }} { font-size: 28px; }
+  }
+
+  /* ── Crystal Card ── */
+  .crystal-card-{{ unique_id }} {
+    display: block;
+    text-decoration: none;
+    background: {{ section.settings.card_bg }};
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1),
+                box-shadow 0.35s cubic-bezier(0.4,0,0.2,1);
+    position: relative;
+  }
+  .crystal-card-{{ unique_id }}.hidden { display: none; }
+  .crystal-card-{{ unique_id }}:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 0 2px {{ section.settings.accent_color }}66,
+                0 12px 36px rgba(0,0,0,0.14);
+  }
+
+  /* Card image */
+  .card-img-wrap-{{ unique_id }} {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #f3f4f6;
+  }
+  .card-img-wrap-{{ unique_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease, opacity 0.4s ease;
+    position: absolute;
+    inset: 0;
+  }
+  .card-img-main-{{ unique_id }} { opacity: 1; z-index: 1; }
+  .card-img-hover-{{ unique_id }} { opacity: 0; z-index: 2; }
+  .crystal-card-{{ unique_id }}:hover .card-img-main-{{ unique_id }} { transform: scale(1.06); }
+  .crystal-card-{{ unique_id }}:hover .card-img-hover-{{ unique_id }} { opacity: 1; }
+
+  /* Element badge */
+  .card-element-badge-{{ unique_id }} {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 3;
+    background: rgba(13,27,62,0.75);
+    color: {{ section.settings.accent_color }};
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 20px;
+    backdrop-filter: blur(6px);
+  }
+
+  /* Card body */
+  .card-body-{{ unique_id }} {
+    padding: 14px 16px 18px;
+  }
+  .card-name-{{ unique_id }} {
+    font-size: 17px;
+    font-weight: 700;
+    color: {{ section.settings.title_color }};
+    margin: 0 0 6px;
+    line-height: 1.25;
+  }
+  .card-oneliner-{{ unique_id }} {
+    font-size: 13px;
+    color: {{ section.settings.text_color }};
+    opacity: 0.7;
+    margin: 0 0 10px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-meta-{{ unique_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .card-chip-{{ unique_id }} {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: rgba(10,80,109,0.07);
+    color: {{ section.settings.title_color }};
+    letter-spacing: 0.03em;
+  }
+  .card-cta-{{ unique_id }} {
+    display: block;
+    margin-top: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: {{ section.settings.accent_color }};
+    text-decoration: none;
+  }
+
+  /* No results */
+  .no-results-{{ unique_id }} {
+    display: none;
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: {{ section.settings.text_color }};
+    opacity: 0.6;
+    font-size: 16px;
+    font-style: italic;
+  }
+  .no-results-{{ unique_id }}.visible { display: block; }
+{% endstyle %}
+
+<div class="compendium-{{ unique_id }}">
+  <div class="compendium-inner-{{ unique_id }}">
+
+    <header class="compendium-header-{{ unique_id }}">
+      <h1 class="compendium-title-{{ unique_id }}">{{ section.settings.heading }}</h1>
+      <p class="compendium-subtitle-{{ unique_id }}">{{ section.settings.subheading }}</p>
+      <span class="compendium-count-{{ unique_id }}">
+        {{ shop.metaobjects.mineral.values | size }} minerals catalogued
+      </span>
+    </header>
+
+    {%- comment -%} Filter Bar {%- endcomment -%}
+    <div class="compendium-filters-{{ unique_id }}">
+      <input
+        type="search"
+        id="CrystalSearch-{{ unique_id }}"
+        class="compendium-search-{{ unique_id }}"
+        placeholder="Search crystals by name…"
+        aria-label="Search crystals"
+      >
+      {%- if element_list.size > 1 -%}
+        <select id="ElementFilter-{{ unique_id }}" class="compendium-select-{{ unique_id }}" aria-label="Filter by element">
+          <option value="">All Elements</option>
+          {%- for el in element_list -%}
+            {%- if el != blank -%}
+              <option value="{{ el | downcase }}">{{ el }}</option>
+            {%- endif -%}
+          {%- endfor -%}
+        </select>
+      {%- endif -%}
+      {%- if chakra_list.size > 1 -%}
+        <select id="ChakraFilter-{{ unique_id }}" class="compendium-select-{{ unique_id }}" aria-label="Filter by chakra">
+          <option value="">All Chakras</option>
+          {%- for ck in chakra_list -%}
+            {%- if ck != blank -%}
+              <option value="{{ ck | downcase }}">{{ ck }}</option>
+            {%- endif -%}
+          {%- endfor -%}
+        </select>
+      {%- endif -%}
+      <button id="ResetFilters-{{ unique_id }}" class="compendium-reset-{{ unique_id }}">Reset</button>
+    </div>
+
+    {%- comment -%} Crystal Grid {%- endcomment -%}
+    <div class="crystal-grid-{{ unique_id }}" id="CrystalGrid-{{ unique_id }}">
+      {%- for mineral in shop.metaobjects.mineral.values -%}
+        <a
+          href="{{ mineral.system.url }}"
+          class="crystal-card-{{ unique_id }}"
+          data-name="{{ mineral.display_name | downcase }}"
+          data-element="{{ mineral.element | downcase | default: '' }}"
+          data-chakra="{{ mineral.chakra | downcase | default: '' }}"
+          aria-label="Learn about {{ mineral.display_name }}"
+        >
+          <div class="card-img-wrap-{{ unique_id }}">
+            {%- if mineral.image -%}
+              {{ mineral.image | image_url: width: 600 | image_tag:
+                  class: 'card-img-main-' | append: unique_id,
+                  alt: mineral.display_name,
+                  loading: 'lazy',
+                  width: 600,
+                  height: 600
+              }}
+              {%- assign hover_img = mineral.other_images.value | first -%}
+              {%- if hover_img -%}
+                {{ hover_img | image_url: width: 600 | image_tag:
+                    class: 'card-img-hover-' | append: unique_id,
+                    alt: mineral.display_name | append: ' — alternate view',
+                    loading: 'lazy',
+                    width: 600,
+                    height: 600
+                }}
+              {%- endif -%}
+            {%- else -%}
+              {{ 'stone' | placeholder_svg_tag: 'card-img-main-' | append: unique_id }}
+            {%- endif -%}
+            {%- if mineral.element and mineral.element != blank -%}
+              <span class="card-element-badge-{{ unique_id }}">{{ mineral.element }}</span>
+            {%- endif -%}
+          </div>
+
+          <div class="card-body-{{ unique_id }}">
+            <h3 class="card-name-{{ unique_id }}">{{ mineral.display_name }}</h3>
+            {%- if mineral.one_liner and mineral.one_liner != blank -%}
+              <p class="card-oneliner-{{ unique_id }}">{{ mineral.one_liner }}</p>
+            {%- endif -%}
+            <div class="card-meta-{{ unique_id }}">
+              {%- if mineral.mohs_hardness and mineral.mohs_hardness != blank -%}
+                <span class="card-chip-{{ unique_id }}">Mohs {{ mineral.mohs_hardness }}</span>
+              {%- endif -%}
+              {%- if mineral.color and mineral.color != blank -%}
+                <span class="card-chip-{{ unique_id }}">{{ mineral.color | truncate: 18 }}</span>
+              {%- endif -%}
+              {%- if mineral.chakra and mineral.chakra != blank -%}
+                <span class="card-chip-{{ unique_id }}">{{ mineral.chakra | truncate: 18 }}</span>
+              {%- endif -%}
+            </div>
+            <span class="card-cta-{{ unique_id }}">Explore →</span>
+          </div>
+        </a>
+      {%- endfor -%}
+
+      <div class="no-results-{{ unique_id }}" id="NoResults-{{ unique_id }}">
+        No crystals found matching your search.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function() {
+  const searchInput  = document.getElementById('CrystalSearch-{{ unique_id }}');
+  const elementSel   = document.getElementById('ElementFilter-{{ unique_id }}');
+  const chakraSel    = document.getElementById('ChakraFilter-{{ unique_id }}');
+  const resetBtn     = document.getElementById('ResetFilters-{{ unique_id }}');
+  const grid         = document.getElementById('CrystalGrid-{{ unique_id }}');
+  const noResults    = document.getElementById('NoResults-{{ unique_id }}');
+  const cards        = grid ? Array.from(grid.querySelectorAll('.crystal-card-{{ unique_id }}')) : [];
+
+  function applyFilters() {
+    const term    = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const element = elementSel  ? elementSel.value.toLowerCase()  : '';
+    const chakra  = chakraSel   ? chakraSel.value.toLowerCase()   : '';
+    let visible = 0;
+    cards.forEach(card => {
+      const nameMatch    = !term    || card.dataset.name.includes(term);
+      const elementMatch = !element || card.dataset.element.includes(element);
+      const chakraMatch  = !chakra  || card.dataset.chakra.includes(chakra);
+      const show = nameMatch && elementMatch && chakraMatch;
+      card.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+    if (noResults) noResults.classList.toggle('visible', visible === 0);
+  }
+
+  function resetFilters() {
+    if (searchInput) searchInput.value = '';
+    if (elementSel)  elementSel.value  = '';
+    if (chakraSel)   chakraSel.value   = '';
+    applyFilters();
+  }
+
+  if (searchInput) searchInput.addEventListener('input', applyFilters);
+  if (elementSel)  elementSel.addEventListener('change', applyFilters);
+  if (chakraSel)   chakraSel.addEventListener('change', applyFilters);
+  if (resetBtn)    resetBtn.addEventListener('click', resetFilters);
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Crystal Compendium",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The Crystal Compendium"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Explore our curated collection of minerals, crystals, and earth energies."
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color_start",
+      "label": "Background Gradient Start",
+      "default": "#f9f7ff"
+    },
+    {
+      "type": "color",
+      "id": "bg_color_end",
+      "label": "Background Gradient End",
+      "default": "#f0f4ff"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color (Gold)",
+      "default": "#c9a961"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Heading Color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Body Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Size",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Crystal Compendium"
+    }
+  ]
+}
+{% endschema %}
