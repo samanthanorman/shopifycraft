@@ -619,11 +619,20 @@
       ],
       "disabled": true,
       "settings": {}
+    },
+    "haramoon_101_detail": {
+      "type": "haramoon-101-detail",
+      "settings": {
+        "bg_color": "#ffffff",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
     }
   },
   "order": [
     "1761606515075c8768",
     "main",
+    "haramoon_101_detail",
     "related-products",
     "blocks_DGrbDr",
     "video_jPKMty",
