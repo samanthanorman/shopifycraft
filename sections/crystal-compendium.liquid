@@ -345,25 +345,13 @@
         >
           <div class="card-img-wrap-{{ unique_id }}">
             {%- if mineral.image -%}
-              {{ mineral.image | image_url: width: 600 | image_tag:
-                  class: 'card-img-main-' | append: unique_id,
-                  alt: mineral.display_name,
-                  loading: 'lazy',
-                  width: 600,
-                  height: 600
-              }}
+              {{ mineral.image | image_url: width: 600 | image_tag: class: 'card-img-main', alt: mineral.display_name, loading: 'lazy' }}
               {%- assign hover_img = mineral.other_images.value | first -%}
               {%- if hover_img -%}
-                {{ hover_img | image_url: width: 600 | image_tag:
-                    class: 'card-img-hover-' | append: unique_id,
-                    alt: mineral.display_name | append: ' — alternate view',
-                    loading: 'lazy',
-                    width: 600,
-                    height: 600
-                }}
+                {{ hover_img | image_url: width: 600 | image_tag: class: 'card-img-hover', alt: mineral.display_name, loading: 'lazy' }}
               {%- endif -%}
             {%- else -%}
-              {{ 'stone' | placeholder_svg_tag: 'card-img-main-' | append: unique_id }}
+              {{ 'image' | placeholder_svg_tag: 'card-img-main' }}
             {%- endif -%}
             {%- if mineral.element and mineral.element != blank -%}
               <span class="card-element-badge-{{ unique_id }}">{{ mineral.element }}</span>

@@ -1,398 +1,178 @@
-{% comment %}
-  Ingredient Profile metaobject detail section — HARAMOON Premium Edition
-  Wax | Wane — Gen Z · K-pop · Holographic · Cyber · Hermione Granger
-  
-  Renders individual ingredient_profile metaobject pages with:
-  - Breadcrumb navigation (Home > HARAMOON Glossary > Ingredient Name)
-  - Structured data for Google Search Console
-  - Prev/Next navigation
-  - HARAMOON brand styling (#3498ff medical blue)
-{% endcomment %}
+{%- comment -%}
+  Ingredient Profile Detail Section — HARAMOON / Wax | Wane
+  Verified real field names from exported theme:
+    name, ingredient_name, inci_name, ingredient_origin, main_function,
+    description, skin_benefits, what_it_is, what_it_does, why_we_use_it,
+    who_it_s_for, suitable_for_skin_type, effective_at,
+    potentially_pore_clogging, cautions_side_effects,
+    related_ingredients, products_containing
+{%- endcomment -%}
 
 {%- assign m = metaobject -%}
-{%- render 'metaobject-breadcrumb', metaobject: metaobject, type: 'ingredient' -%}
+{%- assign display_name = m.name | default: m.ingredient_name -%}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Thing",
+  "name": {{ display_name | json }},
+  "description": {{ m.description | default: m.skin_benefits | default: display_name | json }},
+  "url": "{{ shop.url }}{{ metaobject.system.url }}",
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type":"ListItem","position":1,"name":"Home","item":"{{ shop.url }}/"},
+      {"@type":"ListItem","position":2,"name":"Ingredient Glossary","item":"{{ shop.url }}/pages/ultimate-korean-skincare-ingredient-glossary"},
+      {"@type":"ListItem","position":3,"name":{{ display_name | json }},"item":"{{ shop.url }}{{ metaobject.system.url }}"}
+    ]
+  }
+}
+</script>
 
 <style>
-  .ingredient-page-wrapper {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px 80px;
-    font-family: inherit;
-  }
-
-  /* Hero Section */
-  .ingredient-hero {
-    background: linear-gradient(135deg, #f0f7ff 0%, #e8f4ff 50%, #f5f0ff 100%);
-    border-radius: 20px;
-    padding: 48px 40px;
-    margin: 32px 0;
-    border: 1px solid rgba(52, 152, 255, 0.15);
-    position: relative;
-    overflow: hidden;
-  }
-  .ingredient-hero::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -20%;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(52, 152, 255, 0.08) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .ingredient-hero__meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-  .ingredient-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-  .ingredient-badge--category {
-    background: rgba(52, 152, 255, 0.12);
-    color: #3498ff;
-    border: 1px solid rgba(52, 152, 255, 0.25);
-  }
-  .ingredient-badge--origin-natural {
-    background: rgba(14, 83, 73, 0.1);
-    color: #0e5349;
-    border: 1px solid rgba(14, 83, 73, 0.2);
-  }
-  .ingredient-badge--origin-synthetic {
-    background: rgba(171, 148, 160, 0.15);
-    color: #6b5b6e;
-    border: 1px solid rgba(171, 148, 160, 0.3);
-  }
-  .ingredient-badge--origin-both {
-    background: rgba(10, 80, 109, 0.1);
-    color: #0a506d;
-    border: 1px solid rgba(10, 80, 109, 0.2);
-  }
-  .ingredient-hero__name {
-    font-size: clamp(28px, 5vw, 48px);
-    font-weight: 800;
-    color: #0a506d;
-    margin: 0 0 8px;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-  }
-  .ingredient-hero__inci {
-    font-size: 14px;
-    color: rgba(10, 80, 109, 0.6);
-    font-style: italic;
-    margin-bottom: 16px;
-    letter-spacing: 0.02em;
-  }
-  .ingredient-hero__function {
-    font-size: 16px;
-    color: #3498ff;
-    font-weight: 600;
-    margin-bottom: 0;
-  }
-
-  /* Content Grid */
-  .ingredient-content-grid {
-    display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 32px;
-    margin-top: 32px;
-  }
-  @media (max-width: 768px) {
-    .ingredient-content-grid {
-      grid-template-columns: 1fr;
-    }
-    .ingredient-hero {
-      padding: 32px 24px;
-    }
-  }
-
-  /* Description Block */
-  .ingredient-description-block {
-    background: #fff;
-    border-radius: 16px;
-    padding: 32px;
-    border: 1px solid rgba(52, 152, 255, 0.1);
-    box-shadow: 0 2px 20px rgba(10, 80, 109, 0.05);
-  }
-  .ingredient-description-block h2 {
-    font-size: 18px;
-    font-weight: 700;
-    color: #0a506d;
-    margin: 0 0 16px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid rgba(52, 152, 255, 0.15);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .ingredient-description-block h2::before {
-    content: '';
-    display: inline-block;
-    width: 4px;
-    height: 20px;
-    background: #3498ff;
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
-  .ingredient-description-block p {
-    font-size: 15px;
-    line-height: 1.75;
-    color: #2c2c2c;
-    margin: 0;
-  }
-
-  /* Sidebar Info Card */
-  .ingredient-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  .ingredient-info-card {
-    background: #fff;
-    border-radius: 16px;
-    padding: 24px;
-    border: 1px solid rgba(52, 152, 255, 0.1);
-    box-shadow: 0 2px 20px rgba(10, 80, 109, 0.05);
-  }
-  .ingredient-info-card h3 {
-    font-size: 13px;
-    font-weight: 700;
-    color: #3498ff;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin: 0 0 16px;
-  }
-  .ingredient-info-row {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .ingredient-info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .ingredient-info-item__label {
-    font-size: 11px;
-    font-weight: 600;
-    color: rgba(10, 80, 109, 0.5);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-  .ingredient-info-item__value {
-    font-size: 14px;
-    color: #0a506d;
-    font-weight: 500;
-  }
-
-  /* Cultural Note */
-  .ingredient-cultural-note {
-    background: linear-gradient(135deg, #efeeec 0%, #e8e4f0 100%);
-    border-radius: 16px;
-    padding: 24px;
-    border-left: 4px solid #ab94a0;
-  }
-  .ingredient-cultural-note h3 {
-    font-size: 13px;
-    font-weight: 700;
-    color: #6b5b6e;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin: 0 0 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .ingredient-cultural-note p {
-    font-size: 14px;
-    line-height: 1.65;
-    color: #3d2f40;
-    margin: 0;
-  }
-
-  /* CTA Section */
-  .ingredient-cta-section {
-    margin-top: 48px;
-    padding: 40px;
-    background: linear-gradient(135deg, #001f44 0%, #002c60 100%);
-    border-radius: 20px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .ingredient-cta-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at 30% 50%, rgba(52, 152, 255, 0.15) 0%, transparent 60%),
-                radial-gradient(circle at 70% 50%, rgba(171, 148, 160, 0.1) 0%, transparent 60%);
-    pointer-events: none;
-  }
-  .ingredient-cta-section h2 {
-    font-size: 24px;
-    font-weight: 700;
-    color: #dbe8ff;
-    margin: 0 0 12px;
-    position: relative;
-  }
-  .ingredient-cta-section p {
-    font-size: 15px;
-    color: rgba(219, 232, 255, 0.7);
-    margin: 0 0 24px;
-    position: relative;
-  }
-  .ingredient-cta-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 32px;
-    background: #3498ff;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 30px;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
-    position: relative;
-    box-shadow: 0 0 20px rgba(52, 152, 255, 0.4);
-  }
-  .ingredient-cta-btn:hover {
-    background: #5aabff;
-    box-shadow: 0 0 30px rgba(52, 152, 255, 0.6);
-    transform: translateY(-2px);
-  }
+  .ip-wrap{max-width:1100px;margin:0 auto;padding:0 20px 80px;font-family:'Poppins',sans-serif}
+  .ip-breadcrumb{font-size:13px;color:#6b7280;margin:24px 0 20px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+  .ip-breadcrumb a{color:#1e3a8a;text-decoration:none}
+  .ip-breadcrumb a:hover{text-decoration:underline}
+  .ip-breadcrumb span{opacity:.5}
+  .ip-back-link{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:#1e3a8a;text-decoration:none;margin-bottom:28px;padding:8px 16px;border:1.5px solid #1e3a8a;border-radius:8px;transition:background .2s}
+  .ip-back-link:hover{background:#eff6ff}
+  .ip-header{margin-bottom:36px;padding-bottom:24px;border-bottom:2px solid #e5e7eb}
+  .ip-badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  .ip-badge{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border-radius:20px;border:1.5px solid currentColor}
+  .ip-badge--origin{color:#1e3a8a;background:#dbeafe}
+  .ip-badge--function{color:#065f46;background:#d1fae5}
+  .ip-h1{font-size:38px;font-weight:800;color:#1e3a8a;margin:0 0 8px;line-height:1.15}
+  .ip-inci{font-size:14px;color:#6b7280;font-style:italic;margin:0}
+  @media(max-width:768px){.ip-h1{font-size:26px}}
+  .ip-layout{display:grid;grid-template-columns:300px 1fr;gap:40px;align-items:start}
+  @media(max-width:768px){.ip-layout{grid-template-columns:1fr;gap:24px}}
+  .ip-card{background:#f8faff;border:1.5px solid #dbeafe;border-radius:14px;padding:20px;margin-bottom:20px}
+  .ip-card-title{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#1e3a8a;margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid #dbeafe}
+  .ip-info-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #f0f4ff;font-size:14px}
+  .ip-info-row:last-child{border-bottom:none}
+  .ip-info-label{color:#6b7280;font-weight:600;flex-shrink:0}
+  .ip-info-value{color:#1f2937;text-align:right}
+  .ip-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .ip-chip{font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:#eff6ff;color:#1e3a8a;border:1px solid #bfdbfe;text-decoration:none;transition:background .2s}
+  .ip-chip:hover{background:#dbeafe}
+  .ip-chip--green{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
+  .ip-chip--green:hover{background:#d1fae5}
+  .ip-warning{background:#fff7ed;border:1.5px solid #fed7aa;border-radius:12px;padding:16px 20px;margin-top:0}
+  .ip-warning-title{font-size:12px;font-weight:700;color:#9a3412;text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px}
+  .ip-warning p{font-size:14px;color:#7c2d12;margin:0;line-height:1.6}
+  .ip-pore-yes{color:#dc2626;font-weight:700}
+  .ip-pore-no{color:#16a34a;font-weight:700}
+  .ip-section{margin-bottom:32px}
+  .ip-section-title{font-size:19px;font-weight:700;color:#1e3a8a;margin:0 0 12px;padding-bottom:8px;border-bottom:2px solid #dbeafe}
+  .ip-prose{font-size:15px;line-height:1.75;color:#374151}
+  .ip-prose p{margin:0 0 12px}
+  .ip-products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-top:14px}
+  .ip-product-card{display:block;text-decoration:none;border:1.5px solid #e5e7eb;border-radius:12px;overflow:hidden;transition:box-shadow .2s,transform .2s}
+  .ip-product-card:hover{box-shadow:0 4px 16px rgba(30,58,138,.12);transform:translateY(-2px)}
+  .ip-product-card img{width:100%;aspect-ratio:1;object-fit:cover}
+  .ip-product-card-name{font-size:13px;font-weight:600;color:#1f2937;padding:8px 10px;line-height:1.3}
 </style>
 
-<div class="ingredient-page-wrapper">
-  {%- comment -%} Hero Section {%- endcomment -%}
-  <div class="ingredient-hero">
-    <div class="ingredient-hero__meta">
-      {%- if m.category != blank -%}
-        <span class="ingredient-badge ingredient-badge--category">{{ m.category }}</span>
-      {%- endif -%}
-      {%- if m.chemical_class != blank -%}
-        <span class="ingredient-badge ingredient-badge--category" style="background: rgba(10,80,109,0.08); color: #0a506d; border-color: rgba(10,80,109,0.2);">{{ m.chemical_class }}</span>
-      {%- endif -%}
-      {%- if m.origin != blank -%}
-        {%- assign origin_lower = m.origin | downcase -%}
-        {%- if origin_lower contains 'natural' and origin_lower contains 'synthetic' -%}
-          <span class="ingredient-badge ingredient-badge--origin-both">{{ m.origin }}</span>
-        {%- elsif origin_lower contains 'natural' -%}
-          <span class="ingredient-badge ingredient-badge--origin-natural">🌿 {{ m.origin }}</span>
-        {%- else -%}
-          <span class="ingredient-badge ingredient-badge--origin-synthetic">⚗️ {{ m.origin }}</span>
+<div class="ip-wrap">
+  <nav class="ip-breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a><span>›</span>
+    <a href="/pages/ultimate-korean-skincare-ingredient-glossary">HARAMOON Ingredient Glossary</a><span>›</span>
+    <span>{{ display_name }}</span>
+  </nav>
+  <a href="/pages/ultimate-korean-skincare-ingredient-glossary" class="ip-back-link">← Back to Ingredient Glossary</a>
+  <header class="ip-header">
+    <div class="ip-badges">
+      {%- if m.ingredient_origin -%}<span class="ip-badge ip-badge--origin">{{ m.ingredient_origin }}</span>{%- endif -%}
+      {%- if m.main_function -%}<span class="ip-badge ip-badge--function">{{ m.main_function }}</span>{%- endif -%}
+    </div>
+    <h1 class="ip-h1">{{ display_name }}</h1>
+    {%- if m.inci_name and m.inci_name != blank -%}<p class="ip-inci">INCI: {{ m.inci_name }}</p>{%- endif -%}
+  </header>
+  <div class="ip-layout">
+    <aside>
+      <div class="ip-card">
+        <p class="ip-card-title">Quick Facts</p>
+        {%- if m.ingredient_origin -%}<div class="ip-info-row"><span class="ip-info-label">Origin</span><span class="ip-info-value">{{ m.ingredient_origin }}</span></div>{%- endif -%}
+        {%- if m.main_function -%}<div class="ip-info-row"><span class="ip-info-label">Function</span><span class="ip-info-value">{{ m.main_function }}</span></div>{%- endif -%}
+        {%- if m.inci_name and m.inci_name != blank -%}<div class="ip-info-row"><span class="ip-info-label">INCI</span><span class="ip-info-value">{{ m.inci_name }}</span></div>{%- endif -%}
+        {%- if m.potentially_pore_clogging != blank -%}
+          <div class="ip-info-row"><span class="ip-info-label">Pore-Clogging?</span><span class="ip-info-value">{%- if m.potentially_pore_clogging == true -%}<span class="ip-pore-yes">Yes</span>{%- else -%}<span class="ip-pore-no">No</span>{%- endif -%}</span></div>
         {%- endif -%}
-      {%- endif -%}
-    </div>
-
-    <h1 class="ingredient-hero__name">{{ m.name | default: m.display_name }}</h1>
-
-    {%- if m.inci_name != blank and m.inci_name != m.name -%}
-      <p class="ingredient-hero__inci">INCI: {{ m.inci_name }}</p>
-    {%- endif -%}
-
-    {%- if m.function != blank -%}
-      <p class="ingredient-hero__function">{{ m.function }}</p>
-    {%- elsif m.benefits != blank -%}
-      <p class="ingredient-hero__function">{{ m.benefits }}</p>
-    {%- endif -%}
-  </div>
-
-  {%- comment -%} Content Grid {%- endcomment -%}
-  <div class="ingredient-content-grid">
-    {%- comment -%} Main Description {%- endcomment -%}
-    <div>
-      {%- if m.description != blank -%}
-        <div class="ingredient-description-block">
-          <h2>About This Ingredient</h2>
-          <p>{{ m.description }}</p>
+      </div>
+      {%- if m.suitable_for_skin_type -%}
+        <div class="ip-card">
+          <p class="ip-card-title">Best For Skin Type</p>
+          <div class="ip-chips">
+            {%- for skin_type in m.suitable_for_skin_type -%}
+              {%- if skin_type.system.url -%}<a href="{{ skin_type.system.url }}" class="ip-chip ip-chip--green">{{ skin_type.name | default: skin_type }}</a>
+              {%- else -%}<span class="ip-chip ip-chip--green">{{ skin_type }}</span>{%- endif -%}
+            {%- endfor -%}
+          </div>
         </div>
       {%- endif -%}
-
-      {%- if m.cultural_note != blank or m.korean_use != blank -%}
-        <div class="ingredient-cultural-note" style="margin-top: 20px;">
-          <h3>🌸 K-Beauty Perspective</h3>
-          <p>{{ m.cultural_note | default: m.korean_use }}</p>
+      {%- if m.effective_at -%}
+        <div class="ip-card">
+          <p class="ip-card-title">Effective At</p>
+          <div class="ip-chips">
+            {%- for concern in m.effective_at -%}
+              {%- if concern.system.url -%}<a href="{{ concern.system.url }}" class="ip-chip">{{ concern.name | default: concern }}</a>
+              {%- else -%}<span class="ip-chip">{{ concern }}</span>{%- endif -%}
+            {%- endfor -%}
+          </div>
         </div>
       {%- endif -%}
-
-      {%- comment -%} CTA to shop HARAMOON {%- endcomment -%}
-      <div class="ingredient-cta-section">
-        <h2>Find This Ingredient in HARAMOON</h2>
-        <p>Explore our curated Korean skincare collection featuring this and other powerful ingredients.</p>
-        <a href="/collections/haramoon-korean-skincare" class="ingredient-cta-btn">
-          Shop HARAMOON →
-        </a>
-      </div>
-    </div>
-
-    {%- comment -%} Sidebar {%- endcomment -%}
-    <div class="ingredient-sidebar">
-      <div class="ingredient-info-card">
-        <h3>Ingredient Details</h3>
-        <div class="ingredient-info-row">
-          {%- if m.category != blank -%}
-            <div class="ingredient-info-item">
-              <span class="ingredient-info-item__label">Category</span>
-              <span class="ingredient-info-item__value">{{ m.category }}</span>
-            </div>
-          {%- endif -%}
-          {%- if m.chemical_class != blank -%}
-            <div class="ingredient-info-item">
-              <span class="ingredient-info-item__label">Chemical Class</span>
-              <span class="ingredient-info-item__value">{{ m.chemical_class }}</span>
-            </div>
-          {%- endif -%}
-          {%- if m.origin != blank -%}
-            <div class="ingredient-info-item">
-              <span class="ingredient-info-item__label">Origin</span>
-              <span class="ingredient-info-item__value">{{ m.origin }}</span>
-            </div>
-          {%- endif -%}
-          {%- if m.function != blank -%}
-            <div class="ingredient-info-item">
-              <span class="ingredient-info-item__label">Function</span>
-              <span class="ingredient-info-item__value">{{ m.function }}</span>
-            </div>
-          {%- endif -%}
-          {%- if m.skin_type != blank -%}
-            <div class="ingredient-info-item">
-              <span class="ingredient-info-item__label">Best For</span>
-              <span class="ingredient-info-item__value">{{ m.skin_type }}</span>
-            </div>
-          {%- endif -%}
-          {%- if m.concentration != blank -%}
-            <div class="ingredient-info-item">
-              <span class="ingredient-info-item__label">Typical Concentration</span>
-              <span class="ingredient-info-item__value">{{ m.concentration }}</span>
-            </div>
-          {%- endif -%}
+      {%- if m.related_ingredients -%}
+        <div class="ip-card">
+          <p class="ip-card-title">Pairs Well With</p>
+          <div class="ip-chips">
+            {%- for rel in m.related_ingredients -%}
+              {%- if rel.system.url -%}<a href="{{ rel.system.url }}" class="ip-chip">{{ rel.name | default: rel }}</a>
+              {%- else -%}<span class="ip-chip">{{ rel }}</span>{%- endif -%}
+            {%- endfor -%}
+          </div>
         </div>
-      </div>
-
-      {%- comment -%} Back to glossary card {%- endcomment -%}
-      <div class="ingredient-info-card" style="text-align: center; background: linear-gradient(135deg, #f0f7ff, #e8f4ff);">
-        <h3>Explore More</h3>
-        <p style="font-size: 13px; color: #0a506d; margin: 0 0 16px; line-height: 1.5;">Browse all Korean skincare ingredients in our interactive glossary.</p>
-        <a href="/pages/haramoon-ingredient-glossary" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; background: #3498ff; color: #fff; text-decoration: none; border-radius: 20px; font-size: 13px; font-weight: 600; transition: all 0.2s ease;">
-          View Full Glossary
-        </a>
-      </div>
-    </div>
+      {%- endif -%}
+      {%- if m.cautions_side_effects and m.cautions_side_effects != blank -%}
+        <div class="ip-warning">
+          <p class="ip-warning-title">Cautions and Side Effects</p>
+          <p>{{ m.cautions_side_effects }}</p>
+        </div>
+      {%- endif -%}
+    </aside>
+    <main>
+      {%- if m.skin_benefits and m.skin_benefits != blank -%}
+        <div class="ip-section"><h2 class="ip-section-title">Skin Benefits</h2><div class="ip-prose">{{ m.skin_benefits | newline_to_br }}</div></div>
+      {%- endif -%}
+      {%- if m.description and m.description != blank -%}
+        <div class="ip-section"><h2 class="ip-section-title">About This Ingredient</h2><div class="ip-prose">{{ m.description | newline_to_br }}</div></div>
+      {%- endif -%}
+      {%- if m.what_it_is and m.what_it_is != blank -%}
+        <div class="ip-section"><h2 class="ip-section-title">What It Is</h2><div class="ip-prose">{{ m.what_it_is | newline_to_br }}</div></div>
+      {%- endif -%}
+      {%- if m.what_it_does and m.what_it_does != blank -%}
+        <div class="ip-section"><h2 class="ip-section-title">What It Does</h2><div class="ip-prose">{{ m.what_it_does | newline_to_br }}</div></div>
+      {%- endif -%}
+      {%- if m.why_we_use_it and m.why_we_use_it != blank -%}
+        <div class="ip-section"><h2 class="ip-section-title">Why HARAMOON Uses It</h2><div class="ip-prose">{{ m.why_we_use_it | newline_to_br }}</div></div>
+      {%- endif -%}
+      {%- if m.who_it_s_for and m.who_it_s_for != blank -%}
+        <div class="ip-section"><h2 class="ip-section-title">Who It's For</h2><div class="ip-prose">{{ m.who_it_s_for | newline_to_br }}</div></div>
+      {%- endif -%}
+      {%- if m.products_containing -%}
+        <div class="ip-section">
+          <h2 class="ip-section-title">Products Featuring This Ingredient</h2>
+          <div class="ip-products-grid">
+            {%- for product in m.products_containing -%}
+              <a href="{{ product.url }}" class="ip-product-card">
+                {%- if product.featured_image -%}{{ product.featured_image | image_url: width: 400 | image_tag: alt: product.title, loading: 'lazy' }}{%- endif -%}
+                <p class="ip-product-card-name">{{ product.title }}</p>
+              </a>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </main>
   </div>
 </div>
 
@@ -402,10 +182,6 @@
   "tag": "section",
   "class": "section",
   "settings": [],
-  "presets": [
-    {
-      "name": "Ingredient Profile Detail"
-    }
-  ]
+  "presets": [{ "name": "Ingredient Profile Detail" }]
 }
 {% endschema %}
