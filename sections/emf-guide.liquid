@@ -1,0 +1,612 @@
+{%- comment -%}
+  EMF Protection Guide Section — Wax | Wane
+  Loops through emf_concept and emf_protection_type metaobjects.
+  Includes Google ItemList structured data for both metaobject types.
+  No individual entry pages needed — all content displays inline on this page.
+{%- endcomment -%}
+
+{%- assign emf_concepts = shop.metaobjects.emf_concept.values -%}
+{%- assign emf_types = shop.metaobjects.emf_protection_type.values -%}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Complete Guide to EMF Protection",
+  "description": "A comprehensive guide to understanding electromagnetic frequencies, EMF exposure risks, and the different types of EMF protection available.",
+  "url": "{{ shop.url }}{{ page.url }}",
+  "mainEntity": [
+    {
+      "@type": "ItemList",
+      "name": "EMF Concepts",
+      "description": "Key concepts for understanding electromagnetic frequency exposure and protection.",
+      "itemListElement": [
+        {%- for concept in emf_concepts -%}
+          {
+            "@type": "ListItem",
+            "position": {{ forloop.index }},
+            "name": {{ concept.display_name | json }},
+            "description": {{ concept.definition | default: concept.how_it_works | json }}
+          }{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      ]
+    },
+    {
+      "@type": "ItemList",
+      "name": "EMF Protection Methods",
+      "description": "Types of EMF protection and shielding technologies available.",
+      "itemListElement": [
+        {%- for ptype in emf_types -%}
+          {
+            "@type": "ListItem",
+            "position": {{ forloop.index }},
+            "name": {{ ptype.display_name | json }},
+            "description": {{ ptype.description | default: ptype.how_it_works | json }}
+          }{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      ]
+    }
+  ]
+}
+</script>
+
+<style>
+  .emf-guide {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    padding: {{ section.settings.padding_top }}px {{ section.settings.padding_h }}px {{ section.settings.padding_bottom }}px;
+    font-family: var(--font-body-family);
+    color: {{ section.settings.text_color }};
+    background: {{ section.settings.bg_color }};
+  }
+  .emf-guide__intro {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 56px;
+  }
+  .emf-guide__intro h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-family: var(--font-heading-family);
+    color: {{ section.settings.heading_color }};
+    margin: 0 0 16px;
+    line-height: 1.15;
+  }
+  .emf-guide__intro p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    opacity: 0.85;
+  }
+  /* SECTION HEADERS */
+  .emf-guide__section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid {{ section.settings.accent_color }};
+  }
+  .emf-guide__section-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+  }
+  .emf-guide__section-title {
+    font-family: var(--font-heading-family);
+    font-size: 1.5rem;
+    color: {{ section.settings.heading_color }};
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .emf-guide__section-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin: 4px 0 0;
+  }
+  /* CONCEPT GRID */
+  .emf-concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 64px;
+  }
+  .emf-concept-card {
+    background: {{ section.settings.card_bg }};
+    border: 1px solid {{ section.settings.card_border }};
+    border-radius: 14px;
+    padding: 28px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .emf-concept-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, {{ section.settings.accent_color }}, {{ section.settings.accent_color_2 }});
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .emf-concept-card:hover::before { opacity: 1; }
+  .emf-concept-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    border-color: {{ section.settings.accent_color }};
+  }
+  .emf-concept-card__name {
+    font-family: var(--font-heading-family);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: {{ section.settings.heading_color }};
+    margin: 0 0 10px;
+  }
+  .emf-concept-card__definition {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    opacity: 0.85;
+    margin: 0 0 16px;
+  }
+  .emf-concept-accordion {
+    margin-top: 16px;
+    border-top: 1px solid {{ section.settings.card_border }};
+    padding-top: 14px;
+  }
+  .emf-concept-accordion__btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: {{ section.settings.accent_color }};
+    text-align: left;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .emf-concept-accordion__btn svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    stroke: {{ section.settings.accent_color }};
+  }
+  .emf-concept-accordion__btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .emf-concept-accordion__body {
+    display: none;
+    padding-top: 12px;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    opacity: 0.85;
+  }
+  .emf-concept-accordion__body.is-open { display: block; }
+  .emf-concept-accordion__label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: {{ section.settings.accent_color }};
+    margin: 12px 0 4px;
+  }
+  /* PROTECTION TYPES */
+  .emf-types-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 64px;
+  }
+  .emf-type-card {
+    background: {{ section.settings.card_bg }};
+    border: 1px solid {{ section.settings.card_border }};
+    border-radius: 14px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  .emf-type-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    border-color: {{ section.settings.accent_color_2 }};
+  }
+  .emf-type-card__header {
+    background: linear-gradient(135deg, {{ section.settings.accent_color }}, {{ section.settings.accent_color_2 }});
+    padding: 20px 24px;
+  }
+  .emf-type-card__name {
+    font-family: var(--font-heading-family);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .emf-type-card__body {
+    padding: 20px 24px;
+  }
+  .emf-type-card__description {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    opacity: 0.85;
+    margin: 0 0 12px;
+  }
+  .emf-type-card__how {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    opacity: 0.75;
+    border-top: 1px solid {{ section.settings.card_border }};
+    padding-top: 12px;
+    margin-top: 4px;
+  }
+  .emf-type-card__how-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: {{ section.settings.accent_color }};
+    margin-bottom: 4px;
+  }
+  /* EMPTY STATE */
+  .emf-guide__empty {
+    text-align: center;
+    padding: 40px;
+    opacity: 0.5;
+    font-style: italic;
+  }
+  /* SHOP CTA */
+  .emf-guide__cta {
+    text-align: center;
+    padding: 48px 24px;
+    background: linear-gradient(135deg, {{ section.settings.accent_color }}15, {{ section.settings.accent_color_2 }}15);
+    border-radius: 20px;
+    border: 1px solid {{ section.settings.card_border }};
+    margin-top: 32px;
+  }
+  .emf-guide__cta h2 {
+    font-family: var(--font-heading-family);
+    font-size: 1.6rem;
+    color: {{ section.settings.heading_color }};
+    margin: 0 0 12px;
+  }
+  .emf-guide__cta p {
+    font-size: 1rem;
+    opacity: 0.8;
+    margin: 0 0 24px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .emf-guide__cta-btn {
+    display: inline-block;
+    background: {{ section.settings.accent_color }};
+    color: #fff;
+    padding: 14px 36px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-radius: 8px;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .emf-guide__cta-btn:hover { opacity: 0.85; transform: translateY(-2px); }
+</style>
+
+<div class="emf-guide">
+
+  {%- comment -%} INTRO {%- endcomment -%}
+  {%- if section.settings.show_intro -%}
+    <div class="emf-guide__intro">
+      <h1>{{ section.settings.intro_heading }}</h1>
+      {%- if section.settings.intro_text != blank -%}
+        <p>{{ section.settings.intro_text }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} EMF CONCEPTS {%- endcomment -%}
+  {%- if section.settings.show_concepts -%}
+    <div class="emf-guide__section-header">
+      <span class="emf-guide__section-icon">⚡</span>
+      <div>
+        <h2 class="emf-guide__section-title">{{ section.settings.concepts_heading }}</h2>
+        <p class="emf-guide__section-subtitle">{{ section.settings.concepts_subtitle }}</p>
+      </div>
+    </div>
+
+    {%- if emf_concepts.size > 0 -%}
+      <div class="emf-concepts-grid">
+        {%- for concept in emf_concepts -%}
+          <div class="emf-concept-card">
+            <h3 class="emf-concept-card__name">{{ concept.display_name }}</h3>
+            {%- if concept.definition and concept.definition != blank -%}
+              <p class="emf-concept-card__definition">{{ concept.definition }}</p>
+            {%- endif -%}
+            {%- if concept.how_it_works != blank or concept.real_world_example != blank -%}
+              <div class="emf-concept-accordion">
+                <button class="emf-concept-accordion__btn" aria-expanded="false" aria-controls="concept-{{ forloop.index }}">
+                  Learn More
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="emf-concept-accordion__body" id="concept-{{ forloop.index }}">
+                  {%- if concept.how_it_works and concept.how_it_works != blank -%}
+                    <p class="emf-concept-accordion__label">How It Works</p>
+                    <p>{{ concept.how_it_works }}</p>
+                  {%- endif -%}
+                  {%- if concept.real_world_example and concept.real_world_example != blank -%}
+                    <p class="emf-concept-accordion__label">Real World Example</p>
+                    <p>{{ concept.real_world_example }}</p>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <p class="emf-guide__empty">EMF concept entries will appear here once published in Shopify.</p>
+    {%- endif -%}
+  {%- endif -%}
+
+  {%- comment -%} EMF PROTECTION TYPES {%- endcomment -%}
+  {%- if section.settings.show_types -%}
+    <div class="emf-guide__section-header">
+      <span class="emf-guide__section-icon">🛡️</span>
+      <div>
+        <h2 class="emf-guide__section-title">{{ section.settings.types_heading }}</h2>
+        <p class="emf-guide__section-subtitle">{{ section.settings.types_subtitle }}</p>
+      </div>
+    </div>
+
+    {%- if emf_types.size > 0 -%}
+      <div class="emf-types-grid">
+        {%- for ptype in emf_types -%}
+          <div class="emf-type-card">
+            <div class="emf-type-card__header">
+              <h3 class="emf-type-card__name">{{ ptype.display_name }}</h3>
+            </div>
+            <div class="emf-type-card__body">
+              {%- if ptype.description and ptype.description != blank -%}
+                <p class="emf-type-card__description">{{ ptype.description }}</p>
+              {%- endif -%}
+              {%- if ptype.how_it_works and ptype.how_it_works != blank -%}
+                <div class="emf-type-card__how">
+                  <p class="emf-type-card__how-label">How It Works</p>
+                  <p>{{ ptype.how_it_works }}</p>
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <p class="emf-guide__empty">EMF protection type entries will appear here once published in Shopify.</p>
+    {%- endif -%}
+  {%- endif -%}
+
+  {%- comment -%} SHOP CTA {%- endcomment -%}
+  {%- if section.settings.show_cta -%}
+    <div class="emf-guide__cta">
+      <h2>{{ section.settings.cta_heading }}</h2>
+      <p>{{ section.settings.cta_text }}</p>
+      <a href="{{ section.settings.cta_link }}" class="emf-guide__cta-btn">{{ section.settings.cta_label }}</a>
+    </div>
+  {%- endif -%}
+
+</div>
+
+<script>
+  document.querySelectorAll('.emf-concept-accordion__btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var expanded = this.getAttribute('aria-expanded') === 'true';
+      var bodyId = this.getAttribute('aria-controls');
+      var body = document.getElementById(bodyId);
+      this.setAttribute('aria-expanded', !expanded);
+      body.classList.toggle('is-open', !expanded);
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "EMF Guide",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 900,
+      "max": 1600,
+      "step": 100,
+      "unit": "px",
+      "label": "Max Width",
+      "default": 1300
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 8,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 8,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_h",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Horizontal Padding",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#1f2937"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#0a1628"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color (Primary)",
+      "default": "#1a5276"
+    },
+    {
+      "type": "color",
+      "id": "accent_color_2",
+      "label": "Accent Color (Secondary)",
+      "default": "#117a65"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card Background",
+      "default": "#f8fafc"
+    },
+    {
+      "type": "color",
+      "id": "card_border",
+      "label": "Card Border",
+      "default": "#e2e8f0"
+    },
+    {
+      "type": "header",
+      "content": "Intro Section"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_intro",
+      "label": "Show Intro",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "intro_heading",
+      "label": "Intro Heading",
+      "default": "Complete Guide to EMF Protection"
+    },
+    {
+      "type": "textarea",
+      "id": "intro_text",
+      "label": "Intro Text",
+      "default": "Electromagnetic frequencies (EMF) are all around us — from Wi-Fi and cell towers to everyday appliances. Understanding what EMF is and how to protect yourself is the first step to a more intentional, health-conscious life."
+    },
+    {
+      "type": "header",
+      "content": "EMF Concepts Section"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_concepts",
+      "label": "Show EMF Concepts",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "concepts_heading",
+      "label": "Concepts Section Heading",
+      "default": "Understanding EMF"
+    },
+    {
+      "type": "text",
+      "id": "concepts_subtitle",
+      "label": "Concepts Section Subtitle",
+      "default": "Key concepts and terminology for navigating EMF exposure"
+    },
+    {
+      "type": "header",
+      "content": "Protection Types Section"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_types",
+      "label": "Show Protection Types",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "types_heading",
+      "label": "Protection Types Heading",
+      "default": "Types of EMF Protection"
+    },
+    {
+      "type": "text",
+      "id": "types_subtitle",
+      "label": "Protection Types Subtitle",
+      "default": "Methods and technologies for shielding against EMF exposure"
+    },
+    {
+      "type": "header",
+      "content": "Shop CTA"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Show Shop CTA",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_heading",
+      "label": "CTA Heading",
+      "default": "Ready to Protect Yourself?"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA Text",
+      "default": "Browse our curated collection of EMF shielding products — from Faraday bags to grounding accessories."
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA Link"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA Button Label",
+      "default": "Shop EMF Protection"
+    }
+  ],
+  "presets": [{ "name": "EMF Guide" }]
+}
+{% endschema %}
