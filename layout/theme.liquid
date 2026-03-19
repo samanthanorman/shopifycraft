@@ -1,14 +1,6 @@
 <!doctype html>
 <html class="js" lang="{{ request.locale.iso_code }}">
-  <head>{% if request.host contains 'lnknebraska.com' and request.path == '/' %}
-
-  <script>
-    
-    if (location.pathname === '/' || location.pathname === '') {
-      location.replace('/pages/lnk-nebraska'); // 
-    }
-  </script>
-{% endif %}
+  <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -48,27 +40,6 @@
     {%- endif -%}
 
     {{ content_for_header }}
-{%- comment -%} Domain‑specific redirects {%- endcomment -%}
-<script>
-(function() {
-  var host = window.location.hostname.toLowerCase();
-  var pathname = window.location.pathname || '/';
-
-  // Redirect for Harry Norman Music (hyphenated handle)
-  if ((host === 'harrynormanmusic.com' || host === 'www.harrynormanmusic.com') &&
-      (pathname === '/' || pathname === '')) {
-    window.location.replace('https://harrynormanmusic.com/pages/harry-norman-music');
-    return;
-  }
-
-  // Redirect for LNK Nebraska
-  if ((host === 'lnknebraska.com' || host === 'www.lnknebraska.com') &&
-      (pathname === '/' || pathname === '')) {
-    window.location.replace('https://lnknebraska.com/pages/lnk-nebraska');
-    return;
-  }
-})();
-</script>
 
     {%- liquid
       assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
@@ -326,15 +297,6 @@
         document.documentElement.classList.add('shopify-design-mode');
       }
     </script>
-
-
-
-
-    {% if request.host == "harrynormanmusic.com" %}
-  <script>
-    window.location.href = "/pages/harry-norman-music";
-  </script>
-{% endif %}
 
 
     <!-- Google Tag Manager -->

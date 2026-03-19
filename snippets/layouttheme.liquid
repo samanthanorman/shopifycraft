@@ -1,13 +1,3 @@
-{% if request.host contains 'lnknebraska.com' and request.path == '/' %}
-
-  <script>
-    if (location.pathname === '/' || location.pathname === '') {
-      location.replace('/pages/lnk-nebraska'); 
-    }
-  </script>
-
-{% render 'lnk-corn.svg' %}
-{% endif %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
