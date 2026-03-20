@@ -14,15 +14,15 @@
     <div class="hm-routine-hero__inner">
       <p class="hm-routine-eyebrow">{{ section.settings.eyebrow | default: 'HARAMOON × Korean Glass Skin' }}</p>
       <h1 class="hm-routine-hero__title">{{ section.settings.hero_title | default: 'Your Skin Has Been Trying to Tell You Something.' }}</h1>
-      <p class="hm-routine-hero__problem">{{ section.settings.problem_text | default: 'Dullness. Uneven texture. Products that promise everything and deliver nothing. You've tried the 10-step routines, the trending serums, the overnight miracles. And your skin is still not where you want it to be.' }}</p>
+      <p class="hm-routine-hero__problem">{{ section.settings.problem_text | default: 'Dullness. Uneven texture. Products that promise everything and deliver nothing. You have tried the 10-step routines, the trending serums, the overnight miracles. And your skin is still not where you want it to be.' }}</p>
     </div>
   </section>
 
   {%- comment -%} ── AGITATE ── {%- endcomment -%}
   <section class="hm-routine-agitate">
     <div class="hm-routine-agitate__inner">
-      <h2 class="hm-routine-agitate__title">{{ section.settings.agitate_title | default: 'The Problem Isn\'t Your Skin. It\'s Your Routine.' }}</h2>
-      <p class="hm-routine-agitate__body">{{ section.settings.agitate_text | default: 'Most Western skincare is formulated to mask — not transform. Korean skincare is different. It\'s built on the principle that skin health is earned through consistency, layering, and ingredients that actually work with your biology. HARAMOON distills 4 decades of K-beauty science into 4 precise steps. No filler. No fluff. Just glass skin.' }}</p>
+      <h2 class="hm-routine-agitate__title">{{ section.settings.agitate_title | default: 'The Problem Is Not Your Skin. It Is Your Routine.' }}</h2>
+      <p class="hm-routine-agitate__body">{{ section.settings.agitate_text | default: 'Most Western skincare is formulated to mask, not transform. Korean skincare is different. It is built on the principle that skin health is earned through consistency, layering, and ingredients that work with your biology. HARAMOON distills decades of K-beauty science into precise steps. No filler. No fluff. Just glass skin.' }}</p>
       <div class="hm-routine-agitate__stats">
         <div class="hm-routine-stat">
           <span class="hm-routine-stat__number">4</span>
@@ -721,7 +721,7 @@
     { "type": "text", "id": "steps_title", "label": "Steps Section Title", "default": "The HARAMOON 4-Step Glass Skin System" },
     { "type": "text", "id": "steps_subtitle", "label": "Steps Section Subtitle" },
     { "type": "product", "id": "bundle_product", "label": "Bundle Product (optional)" },
-    { "type": "url", "id": "bundle_url", "label": "Bundle URL (fallback if no product selected)", "default": "/collections/haramoon-korean-skincare" },
+    { "type": "url", "id": "bundle_url", "label": "Bundle URL (fallback if no product selected)" },
     { "type": "text", "id": "bundle_heading", "label": "Bundle CTA Heading", "default": "The HARAMOON Glass Skin Bundle" },
     { "type": "textarea", "id": "bundle_text", "label": "Bundle CTA Body Text", "default": "All 4 steps. One box. Free shipping." }
   ],
