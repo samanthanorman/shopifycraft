@@ -174,7 +174,7 @@
       "scheme-1": {
         "settings": {
           "background": "#fdfaf0",
-          "background_gradient": "",
+          "background_gradient": "radial-gradient(rgba(253, 250, 240, 1) 78%, rgba(255, 255, 255, 1) 100%)",
           "text": "#0d1b3e",
           "button": "#f0d84a",
           "button_label": "#0d1b3e",
@@ -195,8 +195,8 @@
       },
       "scheme-3": {
         "settings": {
-          "background": "#f2f2f0",
-          "background_gradient": "linear-gradient(135deg, rgba(242, 242, 240, 1), rgba(232, 221, 212, 1) 100%)",
+          "background": "#e8d5d0",
+          "background_gradient": "radial-gradient(rgba(242, 242, 240, 1) 44%, rgba(232, 213, 208, 1) 99%)",
           "text": "#4a4a48",
           "button": "#d4c98a",
           "button_label": "#2c2c2a",
@@ -206,13 +206,13 @@
       },
       "scheme-4": {
         "settings": {
-          "background": "#f5f2ec",
-          "background_gradient": "radial-gradient(rgba(245, 242, 236, 1) 82%, rgba(212, 245, 160, 1) 100%)",
-          "text": "#2c3a2a",
-          "button": "#aaff00",
-          "button_label": "#1a2400",
-          "secondary_button_label": "#2c3a2a",
-          "shadow": "#d4f5a0"
+          "background": "#f7ffe8",
+          "background_gradient": "linear-gradient(135deg, rgba(247, 255, 232, 1), rgba(233, 255, 189, 1) 100%)",
+          "text": "#1c2b1a",
+          "button": "#e9ffbd",
+          "button_label": "#1c2b1a",
+          "secondary_button_label": "#1c2b1a",
+          "shadow": "#a8d5a2"
         }
       },
       "scheme-5": {
@@ -239,13 +239,13 @@
       },
       "scheme-5a71830d-bb14-4361-a5f4-6672bdde5b1f": {
         "settings": {
-          "background": "#ffffff",
+          "background": "#f0f8ff",
           "background_gradient": "",
-          "text": "#0a506d",
-          "button": "#0a506d",
+          "text": "#0d1b3e",
+          "button": "#16a9e6",
           "button_label": "#ffffff",
           "secondary_button_label": "#0a506d",
-          "shadow": "#0a506d"
+          "shadow": "#a5dbf1"
         }
       }
     }
