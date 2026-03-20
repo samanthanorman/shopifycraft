@@ -1,12 +1,12 @@
 {%- comment -%}
   EMF Protection Guide Section — Wax | Wane
-  Loops through emf_concept and emf_protection_type metaobjects.
+  Loops through emf_concept and emf_protection_method metaobjects.
   Includes Google ItemList structured data for both metaobject types.
   No individual entry pages needed — all content displays inline on this page.
 {%- endcomment -%}
 
 {%- assign emf_concepts = shop.metaobjects.emf_concept.values -%}
-{%- assign emf_types = shop.metaobjects.emf_protection_type.values -%}
+{%- assign emf_types = shop.metaobjects.emf_protection_method.values -%}
 
 <script type="application/ld+json">
 {
@@ -26,7 +26,7 @@
             "@type": "ListItem",
             "position": {{ forloop.index }},
             "name": {{ concept.display_name | json }},
-            "description": {{ concept.definition | default: concept.how_it_works | json }}
+            "description": {{ concept.simple_explanation | default: concept.concept_name | json }}
           }{%- unless forloop.last -%},{%- endunless -%}
         {%- endfor -%}
       ]
@@ -41,7 +41,7 @@
             "@type": "ListItem",
             "position": {{ forloop.index }},
             "name": {{ ptype.display_name | json }},
-            "description": {{ ptype.description | default: ptype.how_it_works | json }}
+            "description": {{ ptype.simple_description | default: ptype.method_name | json }}
           }{%- unless forloop.last -%},{%- endunless -%}
         {%- endfor -%}
       ]
@@ -323,8 +323,8 @@
         {%- for concept in emf_concepts -%}
           <div class="emf-concept-card">
             <h3 class="emf-concept-card__name">{{ concept.display_name }}</h3>
-            {%- if concept.definition and concept.definition != blank -%}
-              <p class="emf-concept-card__definition">{{ concept.definition }}</p>
+            {%- if concept.simple_explanation and concept.simple_explanation != blank -%}
+              <p class="emf-concept-card__definition">{{ concept.simple_explanation }}</p>
             {%- endif -%}
             {%- if concept.how_it_works != blank or concept.real_world_example != blank -%}
               <div class="emf-concept-accordion">
@@ -370,13 +370,13 @@
               <h3 class="emf-type-card__name">{{ ptype.display_name }}</h3>
             </div>
             <div class="emf-type-card__body">
-              {%- if ptype.description and ptype.description != blank -%}
-                <p class="emf-type-card__description">{{ ptype.description }}</p>
+              {%- if ptype.simple_description and ptype.simple_description != blank -%}
+                <p class="emf-type-card__description">{{ ptype.simple_description }}</p>
               {%- endif -%}
-              {%- if ptype.how_it_works and ptype.how_it_works != blank -%}
+              {%- if ptype.xl_description and ptype.xl_description != blank -%}
                 <div class="emf-type-card__how">
                   <p class="emf-type-card__how-label">How It Works</p>
-                  <p>{{ ptype.how_it_works }}</p>
+                  <p>{{ ptype.xl_description }}</p>
                 </div>
               {%- endif -%}
             </div>
