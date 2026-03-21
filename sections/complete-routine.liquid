@@ -111,7 +111,7 @@
                 {%- if step_clinical != blank -%}
                   <div class="hm-routine-step-card__clinical">
                     <span class="hm-routine-step-card__label">Clinical Results</span>
-                    <p>{{ step_clinical }}</p>
+                    <div class="hm-routine-step-card__clinical-body rte">{{ step_clinical | metafield_tag }}</div>
                   </div>
                 {%- endif -%}
 
@@ -135,8 +135,9 @@
 
                 {%- comment -%} Usage timing {%- endcomment -%}
                 <div class="hm-routine-step-card__meta">
-                  {%- if step.best_for_time_of_day != blank -%}
-                    <span class="hm-routine-step-card__meta-item">🕐 {{ step.best_for_time_of_day }}</span>
+                  {%- assign time_of_day = step.best_for_time_of_day | split: '"' | join: '' | remove: '[' | remove: ']' | replace: ',', ' & ' | strip -%}
+                  {%- if time_of_day != blank -%}
+                    <span class="hm-routine-step-card__meta-item">🕐 {{ time_of_day }}</span>
                   {%- endif -%}
                   {%- if step.absorption_time != blank -%}
                     <span class="hm-routine-step-card__meta-item">⏱ Absorbs in {{ step.absorption_time }}</span>
@@ -207,6 +208,107 @@
       </div>
     </section>
   {%- endif -%}
+
+  {%- comment -%} ── INFOGRAPHIC VISUAL BREAK: CLEANSER ── {%- endcomment -%}
+  <section class="hm-infographic-break hm-infographic-break--cleanser">
+    <div class="hm-infographic-break__inner">
+      <div class="hm-infographic-break__image-col">
+        <img src="{{ 'haramoon-cleanser-vegan.png' | asset_url }}" alt="HARAMOON Pure Moisture Cleanser — 100% Vegan, Skincare Begins With Deep Cleansing" loading="lazy" class="hm-infographic-break__img" />
+      </div>
+      <div class="hm-infographic-break__text-col">
+        <p class="hm-routine-eyebrow">Step 1 — The Foundation</p>
+        <h2 class="hm-infographic-break__title">Skincare Begins With Deep Cleansing</h2>
+        <p class="hm-infographic-break__body">The HARAMOON Pure Moisture Cleanser is 100% vegan and formulated with amino acid surfactants that match your skin's natural pH. It removes impurities, sunscreen, and daily buildup without stripping — so every product that follows can actually absorb and perform.</p>
+        <ul class="hm-infographic-break__list">
+          <li>pH 5.5 balanced — works with your skin barrier, not against it</li>
+          <li>Amino acid foam — gentle enough for twice-daily use</li>
+          <li>EWG Verified — no parabens, sulfates, or artificial fragrance</li>
+          <li>100% Vegan &amp; Cruelty-Free</li>
+        </ul>
+        <a href="/collections/haramoon-korean-skincare" class="hm-infographic-break__cta">Shop the Cleanser →</a>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ── INFOGRAPHIC VISUAL BREAK: DEEP SEA TONER ── {%- endcomment -%}
+  <section class="hm-infographic-break hm-infographic-break--toner hm-infographic-break--reverse">
+    <div class="hm-infographic-break__inner">
+      <div class="hm-infographic-break__image-col">
+        <img src="{{ 'haramoon-deep-sea-toner-infographic.png' | asset_url }}" alt="HARAMOON Deep Sea Water Toner — 7-Layer Hyaluronic Acid, Deep Sea Minerals, pH 5.5, EWG Verified" loading="lazy" class="hm-infographic-break__img" />
+      </div>
+      <div class="hm-infographic-break__text-col">
+        <p class="hm-routine-eyebrow">Step 2 — The Vital Prep</p>
+        <h2 class="hm-infographic-break__title">Dive Into Deep Hydration</h2>
+        <p class="hm-infographic-break__body">The Derma Super Dam Toner is formulated with mineral-rich deep sea water and a 7-layer hyaluronic acid complex. It preps skin for ultimate anti-aging results by layering moisture at every depth — from the surface to the dermis — while calming stressed and reactive skin.</p>
+        <div class="hm-infographic-break__badges">
+          <span class="hm-infographic-break__badge">7-Layer Hyaluronic Acid</span>
+          <span class="hm-infographic-break__badge">Deep Sea Minerals</span>
+          <span class="hm-infographic-break__badge">pH 5.5 Balanced</span>
+          <span class="hm-infographic-break__badge">EWG Verified + Vegan</span>
+        </div>
+        <a href="/collections/haramoon-korean-skincare" class="hm-infographic-break__cta">Shop the Toner →</a>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ── INFOGRAPHIC VISUAL BREAK: CREAM ── {%- endcomment -%}
+  <section class="hm-infographic-break hm-infographic-break--cream">
+    <div class="hm-infographic-break__inner">
+      <div class="hm-infographic-break__image-col">
+        <img src="{{ 'haramoon-cream-barrier.png' | asset_url }}" alt="HARAMOON Derma Limpide Dam Cream — Your Skin's Strongest Barrier" loading="lazy" class="hm-infographic-break__img" />
+      </div>
+      <div class="hm-infographic-break__text-col">
+        <p class="hm-routine-eyebrow">Step 4 — The Seal</p>
+        <h2 class="hm-infographic-break__title">Your Skin's Strongest Barrier</h2>
+        <p class="hm-infographic-break__body">The Derma Limpide Dam Cream seals in every layer of hydration you have built. Formulated with 64% Centella Asiatica leaf water, it protects against modern stressors — pollution, blue light, environmental aggressors — with HARAMOON's science-backed barrier technology.</p>
+        <ul class="hm-infographic-break__list">
+          <li>64% Centella Asiatica — clinically proven barrier repair</li>
+          <li>Locks in toner, ampoule, and serum layers</li>
+          <li>Suitable for sensitive, reactive, and stressed skin</li>
+          <li>pH 5.5 — skin-identical moisture sealing</li>
+        </ul>
+        <a href="/collections/haramoon-korean-skincare" class="hm-infographic-break__cta">Shop the Cream →</a>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ── HARAMOON GLOBAL BRAND AUTHORITY SECTION ── {%- endcomment -%}
+  <section class="hm-global-authority">
+    <div class="hm-global-authority__inner">
+      <p class="hm-routine-eyebrow">A Global Brand, Now In The USA</p>
+      <h2 class="hm-global-authority__title">HARAMOON — Born In Korea. Built For Your Skin.</h2>
+      <p class="hm-global-authority__body">HARAMOON is a Korean cosmetic brand founded by Hyeonji Kim with one philosophy: skin health is earned, not masked. Every product is formulated to work with your skin's natural cycle — building a foundation so strong that even the most powerful actives can multiply their effect. Now available in the United States exclusively through Wax &amp; Wane.</p>
+      <div class="hm-global-authority__links">
+        <a href="https://store.haramoon.co.kr/aboutus" target="_blank" rel="noopener noreferrer" class="hm-global-authority__link hm-global-authority__link--korea">
+          <span class="hm-global-authority__link-icon">🇰🇷</span>
+          <span class="hm-global-authority__link-text">
+            <strong>Visit HARAMOON Korea</strong>
+            <small>The original brand — store.haramoon.co.kr</small>
+          </span>
+          <span class="hm-global-authority__link-arrow">→</span>
+        </a>
+        <a href="https://www.amazon.com/stores/HaramoonUSA/page/4D229D57-2C46-409B-8ECB-ABECAA03B46D" target="_blank" rel="noopener noreferrer" class="hm-global-authority__link hm-global-authority__link--amazon">
+          <span class="hm-global-authority__link-icon">🛒</span>
+          <span class="hm-global-authority__link-text">
+            <strong>HARAMOON USA on Amazon</strong>
+            <small>Award-winning K-beauty — official Amazon storefront</small>
+          </span>
+          <span class="hm-global-authority__link-arrow">→</span>
+        </a>
+        <a href="/collections/haramoon-korean-skincare" class="hm-global-authority__link hm-global-authority__link--store">
+          <span class="hm-global-authority__link-icon">✦</span>
+          <span class="hm-global-authority__link-text">
+            <strong>Shop HARAMOON at Wax &amp; Wane</strong>
+            <small>US-based shipping — waxandwane.store</small>
+          </span>
+          <span class="hm-global-authority__link-arrow">→</span>
+        </a>
+      </div>
+      <div class="hm-global-authority__infographic">
+        <img src="{{ 'haramoon-super-dam-toner-infographic.png' | asset_url }}" alt="HARAMOON Super Dam Toner — 7-Layer Hyaluronic Acid, Deep Sea Minerals, pH 5.5 Balanced, EWG Verified + Vegan" loading="lazy" class="hm-global-authority__img" />
+      </div>
+    </div>
+  </section>
 
   {%- comment -%} ── HARAMOON BLOG ── {%- endcomment -%}
   {%- assign hm_blog = blogs['why-korean-skincare'] -%}
@@ -438,8 +540,10 @@
     100% { background-position: 200% 0%; }
   }
   .hm-routine-step-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 40px rgba(52,152,255,0.18);
+    transform: translateY(-8px);
+    box-shadow: 0 16px 48px rgba(52,152,255,0.28);
+    border-color: rgba(52,152,255,0.55);
+    outline: 2px solid rgba(52,152,255,0.18);
   }
   .hm-routine-step-card__header {
     padding: 28px 28px 0;
@@ -461,7 +565,7 @@
     line-height: 1.2;
   }
   .hm-routine-step-card__highlight {
-    font-size: 13px;
+    font-size: 15px;
     color: #53585a;
     margin: 0 0 16px;
     line-height: 1.5;
@@ -485,14 +589,14 @@
     padding: 20px 28px;
   }
   .hm-routine-step-card__story {
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.75;
     color: #53585a;
     margin: 0 0 16px;
   }
   .hm-routine-step-card__label {
     display: block;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.15em;
     text-transform: uppercase;
@@ -505,7 +609,7 @@
     margin: 0 0 16px;
   }
   .hm-routine-step-card__claims li {
-    font-size: 13px;
+    font-size: 15px;
     color: #141615;
     padding: 4px 0 4px 18px;
     position: relative;
@@ -521,7 +625,7 @@
   .hm-routine-step-card__benefits,
   .hm-routine-step-card__clinical {
     margin-bottom: 16px;
-    font-size: 13px;
+    font-size: 15px;
     color: #53585a;
     line-height: 1.6;
   }
@@ -533,9 +637,9 @@
   }
   .hm-routine-ingredient-chip {
     display: inline-block;
-    padding: 4px 12px;
+    padding: 5px 14px;
     border-radius: 20px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     background: rgba(52,152,255,0.08);
     border: 1px solid rgba(52,152,255,0.2);
@@ -559,7 +663,7 @@
     border-top: 1px solid rgba(0,0,0,0.06);
   }
   .hm-routine-step-card__meta-item {
-    font-size: 11px;
+    font-size: 13px;
     color: #53585a;
     font-weight: 500;
   }
@@ -568,10 +672,10 @@
   }
   .hm-routine-step-card__btn {
     display: inline-block;
-    padding: 10px 24px;
+    padding: 12px 28px;
     background: #141615;
     color: #fff;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -706,6 +810,239 @@
     text-decoration: none;
     border-bottom: 1px solid rgba(52,152,255,0.4);
     padding-bottom: 2px;
+  }
+
+  /* ── INFOGRAPHIC VISUAL BREAKS ── */
+  .hm-infographic-break {
+    padding: 80px 20px;
+    background: #fff;
+  }
+  .hm-infographic-break--toner {
+    background: linear-gradient(135deg, #f0f7ff 0%, #e8f3ff 100%);
+  }
+  .hm-infographic-break--cream {
+    background: #f8f4f0;
+  }
+  .hm-infographic-break__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .hm-infographic-break--reverse .hm-infographic-break__inner {
+    direction: rtl;
+  }
+  .hm-infographic-break--reverse .hm-infographic-break__inner > * {
+    direction: ltr;
+  }
+  @media(max-width: 768px) {
+    .hm-infographic-break__inner {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .hm-infographic-break--reverse .hm-infographic-break__inner {
+      direction: ltr;
+    }
+  }
+  .hm-infographic-break__img {
+    width: 100%;
+    max-width: 480px;
+    border-radius: 20px;
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 8px 40px rgba(52,152,255,0.12);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  .hm-infographic-break__img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 16px 56px rgba(52,152,255,0.22);
+  }
+  .hm-infographic-break__title {
+    font-size: clamp(22px, 2.5vw, 34px);
+    font-weight: 700;
+    color: #141615;
+    margin: 0 0 16px;
+    line-height: 1.2;
+  }
+  .hm-infographic-break__body {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #53585a;
+    margin: 0 0 24px;
+  }
+  .hm-infographic-break__list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 28px;
+  }
+  .hm-infographic-break__list li {
+    font-size: 15px;
+    color: #141615;
+    padding: 6px 0 6px 22px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .hm-infographic-break__list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #3498ff;
+    font-weight: 700;
+  }
+  .hm-infographic-break__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+  .hm-infographic-break__badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(52,152,255,0.1);
+    border: 1px solid rgba(52,152,255,0.25);
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0d6efd;
+  }
+  .hm-infographic-break__cta {
+    display: inline-block;
+    padding: 13px 30px;
+    background: #141615;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: background 0.25s ease, transform 0.25s ease;
+  }
+  .hm-infographic-break__cta:hover {
+    background: #3498ff;
+    transform: translateY(-2px);
+  }
+
+  /* ── HARAMOON GLOBAL AUTHORITY ── */
+  .hm-global-authority {
+    background: linear-gradient(135deg, #0d1b3e 0%, #0a2a6e 50%, #0d1b3e 100%);
+    padding: 100px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hm-global-authority::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(52,152,255,0.2) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hm-global-authority__inner {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+  .hm-global-authority .hm-routine-eyebrow { color: #7ec8ff; }
+  .hm-global-authority__title {
+    font-size: clamp(26px, 3.5vw, 44px);
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 20px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+  .hm-global-authority__body {
+    font-size: 17px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.78);
+    margin: 0 0 48px;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hm-global-authority__links {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 600px;
+    margin: 0 auto 60px;
+  }
+  .hm-global-authority__link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 24px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    text-decoration: none;
+    color: #fff;
+    transition: all 0.3s ease;
+    text-align: left;
+  }
+  .hm-global-authority__link:hover {
+    background: rgba(52,152,255,0.18);
+    border-color: rgba(52,152,255,0.45);
+    transform: translateX(4px);
+  }
+  .hm-global-authority__link-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .hm-global-authority__link-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .hm-global-authority__link-text strong {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .hm-global-authority__link-text small {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 400;
+  }
+  .hm-global-authority__link-arrow {
+    font-size: 18px;
+    color: #7ec8ff;
+    flex-shrink: 0;
+    transition: transform 0.25s ease;
+  }
+  .hm-global-authority__link:hover .hm-global-authority__link-arrow {
+    transform: translateX(4px);
+  }
+  .hm-global-authority__link--store {
+    background: rgba(245,230,66,0.08);
+    border-color: rgba(245,230,66,0.2);
+  }
+  .hm-global-authority__link--store:hover {
+    background: rgba(245,230,66,0.15);
+    border-color: rgba(245,230,66,0.4);
+  }
+  .hm-global-authority__link--store .hm-global-authority__link-arrow {
+    color: #f5e642;
+  }
+  .hm-global-authority__infographic {
+    margin-top: 0;
+  }
+  .hm-global-authority__img {
+    max-width: 480px;
+    width: 100%;
+    border-radius: 20px;
+    margin: 0 auto;
+    display: block;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.4);
+    transition: transform 0.4s ease;
+  }
+  .hm-global-authority__img:hover {
+    transform: scale(1.02);
   }
 </style>
 
