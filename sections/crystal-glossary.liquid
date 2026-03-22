@@ -25,71 +25,29 @@
     </div>
   </header>
 
-  {%- comment -%} ── FILTER BAR ── {%- endcomment -%}
-  <div class="cc-filters" role="search" aria-label="Filter crystals">
+  {%- comment -%} ── FILTER BAR — 4 Element Toggles ── {%- endcomment -%}
+  <div class="cc-filters" role="search" aria-label="Filter crystals by element">
     <div class="cc-filters__inner">
-
-      <div class="cc-filter-group">
-        <label class="cc-filter-label" for="filter-zodiac">♈ Zodiac</label>
-        <select class="cc-filter-select" id="filter-zodiac" data-filter="zodiac">
-          <option value="">All Signs</option>
-          <option value="Aries">Aries ♈</option>
-          <option value="Taurus">Taurus ♉</option>
-          <option value="Gemini">Gemini ♊</option>
-          <option value="Cancer">Cancer ♋</option>
-          <option value="Leo">Leo ♌</option>
-          <option value="Virgo">Virgo ♍</option>
-          <option value="Libra">Libra ♎</option>
-          <option value="Scorpio">Scorpio ♏</option>
-          <option value="Sagittarius">Sagittarius ♐</option>
-          <option value="Capricorn">Capricorn ♑</option>
-          <option value="Aquarius">Aquarius ♒</option>
-          <option value="Pisces">Pisces ♓</option>
-          <option value="All Signs">All Signs ✨</option>
-        </select>
-      </div>
-
-      <div class="cc-filter-group">
-        <label class="cc-filter-label" for="filter-element">🌿 Element</label>
-        <select class="cc-filter-select" id="filter-element" data-filter="element">
-          <option value="">All Elements</option>
-          <option value="Earth">Earth 🌍</option>
-          <option value="Fire">Fire 🔥</option>
-          <option value="Air">Air 💨</option>
-          <option value="Water">Water 💧</option>
-        </select>
-      </div>
-
-      <div class="cc-filter-group">
-        <label class="cc-filter-label" for="filter-chakra">🔮 Chakra</label>
-        <select class="cc-filter-select" id="filter-chakra" data-filter="chakra">
-          <option value="">All Chakras</option>
-          <option value="Root">Root — Grounding</option>
-          <option value="Heart">Heart — Love</option>
-          <option value="Throat">Throat — Truth</option>
-          <option value="Third Eye">Third Eye — Intuition</option>
-          <option value="Crown">Crown — Transcendence</option>
-          <option value="Solar">Solar Plexus — Power</option>
-        </select>
-      </div>
-
-      <div class="cc-filter-group">
-        <label class="cc-filter-label" for="filter-color">🎨 Color Family</label>
-        <select class="cc-filter-select" id="filter-color" data-filter="color">
-          <option value="">All Colors</option>
-          <option value="purple">Purple / Violet</option>
-          <option value="pink">Pink / Rose</option>
-          <option value="blue">Blue / Indigo</option>
-          <option value="green">Green / Teal</option>
-          <option value="yellow">Yellow / Gold / Citrine</option>
-          <option value="black">Black / Dark</option>
-          <option value="white">White / Clear</option>
-          <option value="brown">Brown / Earthy</option>
-          <option value="gray">Gray / Silver / Metallic</option>
-        </select>
-      </div>
-
-      <button class="cc-filter-reset" id="cc-reset-filters" type="button">✕ Clear Filters</button>
+      <button class="cc-elem-btn cc-elem-btn--all active" data-element="" type="button">
+        <span class="cc-elem-icon">✦</span>
+        <span class="cc-elem-label">All</span>
+      </button>
+      <button class="cc-elem-btn cc-elem-btn--fire" data-element="Fire" type="button">
+        <span class="cc-elem-icon">🔥</span>
+        <span class="cc-elem-label">Fire</span>
+      </button>
+      <button class="cc-elem-btn cc-elem-btn--earth" data-element="Earth" type="button">
+        <span class="cc-elem-icon">🌍</span>
+        <span class="cc-elem-label">Earth</span>
+      </button>
+      <button class="cc-elem-btn cc-elem-btn--air" data-element="Air" type="button">
+        <span class="cc-elem-icon">💨</span>
+        <span class="cc-elem-label">Air</span>
+      </button>
+      <button class="cc-elem-btn cc-elem-btn--water" data-element="Water" type="button">
+        <span class="cc-elem-icon">💧</span>
+        <span class="cc-elem-label">Water</span>
+      </button>
     </div>
     <p class="cc-filter-count" id="cc-filter-count" aria-live="polite">Showing {{ all_crystals.size }} crystals</p>
   </div>
@@ -302,7 +260,7 @@
   margin: 0;
 }
 
-/* ── FILTER BAR ── */
+/* ── FILTER BAR — Element Toggle Buttons ── */
 .cc-filters {
   background: var(--cc-plum);
   border-bottom: 1px solid var(--cc-border);
@@ -313,69 +271,80 @@
   backdrop-filter: blur(12px);
 }
 .cc-filters__inner {
-  max-width: 1200px;
+  max-width: 800px;
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  align-items: flex-end;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
 }
-.cc-filter-group {
+.cc-elem-btn {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-  min-width: 140px;
-}
-.cc-filter-label {
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--cc-gold);
-  font-weight: 600;
-}
-.cc-filter-select {
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 50px;
+  border: 2px solid transparent;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
   background: rgba(255,255,255,0.06);
-  border: 1px solid var(--cc-border);
-  border-radius: 10px;
-  color: var(--cc-text);
-  padding: 8px 12px;
-  font-size: 13px;
-  font-family: inherit;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23D4A843' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  padding-right: 28px;
-}
-.cc-filter-select:focus {
-  outline: none;
-  border-color: var(--cc-gold);
-  background-color: rgba(255,255,255,0.1);
-}
-.cc-filter-select option { background: #231340; color: var(--cc-text); }
-.cc-filter-reset {
-  background: transparent;
-  border: 1px solid rgba(212,168,67,0.3);
   color: var(--cc-text-muted);
-  border-radius: 10px;
-  padding: 8px 14px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
-  white-space: nowrap;
-  align-self: flex-end;
 }
-.cc-filter-reset:hover { border-color: var(--cc-gold); color: var(--cc-gold); }
+.cc-elem-btn .cc-elem-icon { font-size: 18px; line-height: 1; }
+.cc-elem-btn:hover, .cc-elem-btn.active { transform: translateY(-2px); color: #fff; }
+
+/* All */
+.cc-elem-btn--all { border-color: rgba(212,168,67,0.4); }
+.cc-elem-btn--all:hover, .cc-elem-btn--all.active {
+  background: rgba(212,168,67,0.18);
+  border-color: #D4A843;
+  box-shadow: 0 0 20px rgba(212,168,67,0.3);
+  color: #D4A843;
+}
+/* Fire */
+.cc-elem-btn--fire { border-color: rgba(245,158,11,0.4); }
+.cc-elem-btn--fire:hover, .cc-elem-btn--fire.active {
+  background: rgba(245,158,11,0.18);
+  border-color: #F59E0B;
+  box-shadow: 0 0 20px rgba(245,158,11,0.35);
+  color: #FCD34D;
+}
+/* Earth */
+.cc-elem-btn--earth { border-color: rgba(22,163,74,0.4); }
+.cc-elem-btn--earth:hover, .cc-elem-btn--earth.active {
+  background: rgba(22,163,74,0.18);
+  border-color: #16A34A;
+  box-shadow: 0 0 20px rgba(22,163,74,0.35);
+  color: #4ADE80;
+}
+/* Air */
+.cc-elem-btn--air { border-color: rgba(14,165,233,0.4); }
+.cc-elem-btn--air:hover, .cc-elem-btn--air.active {
+  background: rgba(14,165,233,0.18);
+  border-color: #0EA5E9;
+  box-shadow: 0 0 20px rgba(14,165,233,0.35);
+  color: #7DD3FC;
+}
+/* Water */
+.cc-elem-btn--water { border-color: rgba(124,58,237,0.4); }
+.cc-elem-btn--water:hover, .cc-elem-btn--water.active {
+  background: rgba(124,58,237,0.18);
+  border-color: #7C3AED;
+  box-shadow: 0 0 20px rgba(124,58,237,0.35);
+  color: #C4B5FD;
+}
 .cc-filter-count {
-  max-width: 1200px;
-  margin: 8px auto 0;
+  max-width: 800px;
+  margin: 10px auto 0;
   font-size: 11px;
   color: var(--cc-text-muted);
   letter-spacing: 0.08em;
+  text-align: center;
 }
 
 /* ── CARD GRID ── */
@@ -404,6 +373,27 @@
   transform: translateY(-6px) scale(1.02);
   box-shadow: 0 20px 60px rgba(212,168,67,0.15), 0 0 0 1px rgba(212,168,67,0.3);
   border-color: rgba(212,168,67,0.4);
+}
+/* Element-based card border colors */
+.cc-card[data-element="Fire"] { border-color: rgba(245,158,11,0.35); }
+.cc-card[data-element="Fire"]:hover {
+  border-color: #F59E0B;
+  box-shadow: 0 20px 60px rgba(245,158,11,0.2), 0 0 0 1px rgba(245,158,11,0.4);
+}
+.cc-card[data-element="Earth"] { border-color: rgba(22,163,74,0.35); }
+.cc-card[data-element="Earth"]:hover {
+  border-color: #16A34A;
+  box-shadow: 0 20px 60px rgba(22,163,74,0.2), 0 0 0 1px rgba(22,163,74,0.4);
+}
+.cc-card[data-element="Air"] { border-color: rgba(14,165,233,0.35); }
+.cc-card[data-element="Air"]:hover {
+  border-color: #0EA5E9;
+  box-shadow: 0 20px 60px rgba(14,165,233,0.2), 0 0 0 1px rgba(14,165,233,0.4);
+}
+.cc-card[data-element="Water"] { border-color: rgba(124,58,237,0.35); }
+.cc-card[data-element="Water"]:hover {
+  border-color: #7C3AED;
+  box-shadow: 0 20px 60px rgba(124,58,237,0.2), 0 0 0 1px rgba(124,58,237,0.4);
 }
 .cc-card[hidden] { display: none; }
 .cc-card__link {
@@ -548,61 +538,33 @@
 <script>
 (function() {
   const cards = Array.from(document.querySelectorAll('.cc-card'));
-  const filters = document.querySelectorAll('.cc-filter-select');
-  const resetBtn = document.getElementById('cc-reset-filters');
+  const btns = Array.from(document.querySelectorAll('.cc-elem-btn'));
   const countEl = document.getElementById('cc-filter-count');
   const emptyEl = document.getElementById('cc-empty');
   const total = cards.length;
+  let activeElement = '';
 
-  function getActiveFilters() {
-    const f = {};
-    filters.forEach(sel => { f[sel.dataset.filter] = sel.value; });
-    return f;
-  }
-
-  function applyFilters() {
-    const f = getActiveFilters();
+  function applyFilter() {
     let visible = 0;
-
     cards.forEach(card => {
-      let show = true;
-
-      if (f.zodiac) {
-        const cardZodiac = card.dataset.zodiac || '';
-        if (!cardZodiac.toLowerCase().includes(f.zodiac.toLowerCase()) &&
-            !cardZodiac.toLowerCase().includes('all signs')) {
-          show = false;
-        }
-      }
-      if (show && f.element) {
-        const cardEl = card.dataset.element || '';
-        if (!cardEl.toLowerCase().includes(f.element.toLowerCase())) show = false;
-      }
-      if (show && f.chakra) {
-        const cardChakra = card.dataset.chakra || '';
-        if (!cardChakra.toLowerCase().includes(f.chakra.toLowerCase())) show = false;
-      }
-      if (show && f.color) {
-        const cardColor = card.dataset.color || '';
-        if (cardColor !== f.color) show = false;
-      }
-
+      const cardEl = (card.dataset.element || '').trim();
+      const show = !activeElement || cardEl.toLowerCase() === activeElement.toLowerCase();
       card.hidden = !show;
       if (show) visible++;
     });
-
     countEl.textContent = visible === total
       ? `Showing all ${total} crystals`
       : `Showing ${visible} of ${total} crystals`;
-
     emptyEl.hidden = visible > 0;
   }
 
-  filters.forEach(sel => sel.addEventListener('change', applyFilters));
-
-  resetBtn.addEventListener('click', function() {
-    filters.forEach(sel => { sel.value = ''; });
-    applyFilters();
+  btns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      btns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      activeElement = this.dataset.element || '';
+      applyFilter();
+    });
   });
 })();
 </script>
