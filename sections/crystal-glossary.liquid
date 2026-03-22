@@ -1,0 +1,616 @@
+{% comment %}
+  Crystal Courtesan — Crystal Glossary Section
+  Pulls all mineral metaobjects, renders A-Z card grid
+  with live JS filters by zodiac, element, chakra, and color family.
+  Schema.org/ItemList structured data for SEO.
+{% endcomment %}
+
+{% assign all_crystals = shop.metaobjects['mineral'].values | sort: 'display_name' %}
+
+<div class="cc-page" itemscope itemtype="https://schema.org/CollectionPage">
+  <meta itemprop="name" content="Crystal Courtesan — The Complete Crystal Glossary" />
+  <meta itemprop="description" content="A one-stop shop for the best current crystals and unique deep dives into each one. Making the material meaningful." />
+
+  {%- comment -%} ── HERO (no image, pure vibes) ── {%- endcomment -%}
+  <header class="cc-hero">
+    <div class="cc-hero__inner">
+      <div class="cc-hero__sigil" aria-hidden="true">✦</div>
+      <p class="cc-hero__eyebrow">Wax &amp; Wane Presents</p>
+      <h1 class="cc-hero__title">Crystal Courtesan</h1>
+      <p class="cc-hero__tagline">A one-stop shop for the best current crystals &amp; unique deep dives into each one.<br><em>Making the material meaningful.</em></p>
+      <div class="cc-hero__divider" aria-hidden="true">
+        <span>◆</span><span>◆</span><span>◆</span>
+      </div>
+      <p class="cc-hero__count">{{ all_crystals.size }} Stones &amp; Minerals — A to Z</p>
+    </div>
+  </header>
+
+  {%- comment -%} ── FILTER BAR ── {%- endcomment -%}
+  <div class="cc-filters" role="search" aria-label="Filter crystals">
+    <div class="cc-filters__inner">
+
+      <div class="cc-filter-group">
+        <label class="cc-filter-label" for="filter-zodiac">♈ Zodiac</label>
+        <select class="cc-filter-select" id="filter-zodiac" data-filter="zodiac">
+          <option value="">All Signs</option>
+          <option value="Aries">Aries ♈</option>
+          <option value="Taurus">Taurus ♉</option>
+          <option value="Gemini">Gemini ♊</option>
+          <option value="Cancer">Cancer ♋</option>
+          <option value="Leo">Leo ♌</option>
+          <option value="Virgo">Virgo ♍</option>
+          <option value="Libra">Libra ♎</option>
+          <option value="Scorpio">Scorpio ♏</option>
+          <option value="Sagittarius">Sagittarius ♐</option>
+          <option value="Capricorn">Capricorn ♑</option>
+          <option value="Aquarius">Aquarius ♒</option>
+          <option value="Pisces">Pisces ♓</option>
+          <option value="All Signs">All Signs ✨</option>
+        </select>
+      </div>
+
+      <div class="cc-filter-group">
+        <label class="cc-filter-label" for="filter-element">🌿 Element</label>
+        <select class="cc-filter-select" id="filter-element" data-filter="element">
+          <option value="">All Elements</option>
+          <option value="Earth">Earth 🌍</option>
+          <option value="Fire">Fire 🔥</option>
+          <option value="Air">Air 💨</option>
+          <option value="Water">Water 💧</option>
+        </select>
+      </div>
+
+      <div class="cc-filter-group">
+        <label class="cc-filter-label" for="filter-chakra">🔮 Chakra</label>
+        <select class="cc-filter-select" id="filter-chakra" data-filter="chakra">
+          <option value="">All Chakras</option>
+          <option value="Root">Root — Grounding</option>
+          <option value="Heart">Heart — Love</option>
+          <option value="Throat">Throat — Truth</option>
+          <option value="Third Eye">Third Eye — Intuition</option>
+          <option value="Crown">Crown — Transcendence</option>
+          <option value="Solar">Solar Plexus — Power</option>
+        </select>
+      </div>
+
+      <div class="cc-filter-group">
+        <label class="cc-filter-label" for="filter-color">🎨 Color Family</label>
+        <select class="cc-filter-select" id="filter-color" data-filter="color">
+          <option value="">All Colors</option>
+          <option value="purple">Purple / Violet</option>
+          <option value="pink">Pink / Rose</option>
+          <option value="blue">Blue / Indigo</option>
+          <option value="green">Green / Teal</option>
+          <option value="yellow">Yellow / Gold / Citrine</option>
+          <option value="black">Black / Dark</option>
+          <option value="white">White / Clear</option>
+          <option value="brown">Brown / Earthy</option>
+          <option value="gray">Gray / Silver / Metallic</option>
+        </select>
+      </div>
+
+      <button class="cc-filter-reset" id="cc-reset-filters" type="button">✕ Clear Filters</button>
+    </div>
+    <p class="cc-filter-count" id="cc-filter-count" aria-live="polite">Showing {{ all_crystals.size }} crystals</p>
+  </div>
+
+  {%- comment -%} ── A-Z CARD GRID ── {%- endcomment -%}
+  <div class="cc-grid" id="cc-grid" itemscope itemtype="https://schema.org/ItemList">
+    <meta itemprop="numberOfItems" content="{{ all_crystals.size }}" />
+
+    {% assign position = 1 %}
+    {% for crystal in all_crystals %}
+      {%- assign c_name = crystal.display_name | default: crystal.system.handle -%}
+      {%- assign c_one_liner = crystal.one_liner | default: crystal.seo_description -%}
+      {%- assign c_zodiac = crystal.zodiac | default: '' -%}
+      {%- assign c_element = crystal.element | default: '' -%}
+      {%- assign c_chakra = crystal.chakra | default: '' -%}
+      {%- assign c_color = crystal.color | default: '' -%}
+      {%- assign c_why = crystal.why_you_need_it | default: '' -%}
+      {%- assign c_url = crystal.system.url -%}
+
+      {%- comment -%} Build color family for JS filtering {%- endcomment -%}
+      {%- assign color_lower = c_color | downcase -%}
+      {%- assign color_family = '' -%}
+      {%- if color_lower contains '#920' or color_lower contains 'purple' or color_lower contains 'violet' or color_lower contains 'amethyst' -%}
+        {%- assign color_family = 'purple' -%}
+      {%- elsif color_lower contains 'f7b' or color_lower contains 'pink' or color_lower contains 'rose' or color_lower contains 'a45' -%}
+        {%- assign color_family = 'pink' -%}
+      {%- elsif color_lower contains '#1c3' or color_lower contains '#7bd' or color_lower contains '#9bd' or color_lower contains 'blue' or color_lower contains 'indigo' -%}
+        {%- assign color_family = 'blue' -%}
+      {%- elsif color_lower contains '#167' or color_lower contains '#6bb' or color_lower contains 'green' or color_lower contains 'jade' or color_lower contains 'malachite' -%}
+        {%- assign color_family = 'green' -%}
+      {%- elsif color_lower contains '#f4c' or color_lower contains '#f2d' or color_lower contains 'yellow' or color_lower contains 'gold' or color_lower contains 'citrine' or color_lower contains '#877' -%}
+        {%- assign color_family = 'yellow' -%}
+      {%- elsif color_lower contains '#0b0' or color_lower contains '#111' or color_lower contains 'black' or color_lower contains 'dark' -%}
+        {%- assign color_family = 'black' -%}
+      {%- elsif color_lower contains '#f5f' or color_lower contains 'white' or color_lower contains 'clear' -%}
+        {%- assign color_family = 'white' -%}
+      {%- elsif color_lower contains '#52' or color_lower contains '#b9a' or color_lower contains '#b8a' or color_lower contains 'brown' or color_lower contains 'earth' -%}
+        {%- assign color_family = 'brown' -%}
+      {%- elsif color_lower contains '#a0a' or color_lower contains '#a19' or color_lower contains 'silver' or color_lower contains 'gray' or color_lower contains 'metal' -%}
+        {%- assign color_family = 'gray' -%}
+      {%- endif -%}
+
+      <article class="cc-card"
+        data-name="{{ c_name | downcase | escape }}"
+        data-zodiac="{{ c_zodiac | replace: '[', '' | replace: ']', '' | replace: '"', '' | strip | escape }}"
+        data-element="{{ c_element | escape }}"
+        data-chakra="{{ c_chakra | escape }}"
+        data-color="{{ color_family }}"
+        itemprop="itemListElement"
+        itemscope
+        itemtype="https://schema.org/ListItem">
+        <meta itemprop="position" content="{{ position }}" />
+        <meta itemprop="name" content="{{ c_name | escape }}" />
+        <meta itemprop="url" content="{{ shop.url }}{{ c_url }}" />
+
+        <a class="cc-card__link" href="{{ c_url }}" aria-label="Learn more about {{ c_name }}">
+
+          {%- comment -%} Color orb instead of image {%- endcomment -%}
+          <div class="cc-card__orb-wrap" aria-hidden="true">
+            <div class="cc-card__orb"
+              {% if c_color != blank %}style="background: radial-gradient(circle at 35% 35%, {{ c_color }}cc, {{ c_color }}44 60%, transparent 100%);"{% endif %}>
+              <div class="cc-card__orb-shimmer"></div>
+            </div>
+          </div>
+
+          <div class="cc-card__body">
+            <h2 class="cc-card__name">{{ c_name }}</h2>
+
+            {% if c_one_liner != blank %}
+              <p class="cc-card__liner">{{ c_one_liner | truncate: 80 }}</p>
+            {% endif %}
+
+            <div class="cc-card__badges">
+              {% if c_chakra != blank %}
+                <span class="cc-badge cc-badge--chakra">{{ c_chakra | truncate: 20, '' }}</span>
+              {% endif %}
+              {% if c_zodiac != blank %}
+                {%- assign z_clean = c_zodiac | replace: '[', '' | replace: ']', '' | replace: '"', '' | strip -%}
+                {%- assign z_parts = z_clean | split: ',' -%}
+                <span class="cc-badge cc-badge--zodiac">{{ z_parts.first | strip }}</span>
+              {% endif %}
+              {% if c_element != blank %}
+                <span class="cc-badge cc-badge--element">{{ c_element | split: ' +' | first | strip }}</span>
+              {% endif %}
+            </div>
+
+            {% if c_why != blank %}
+              <p class="cc-card__why">{{ c_why | truncate: 70 }}</p>
+            {% endif %}
+
+            <span class="cc-card__cta" aria-hidden="true">Explore ✦</span>
+          </div>
+        </a>
+      </article>
+
+      {% assign position = position | plus: 1 %}
+    {% endfor %}
+  </div>
+
+  {%- comment -%} Empty state {%- endcomment -%}
+  <div class="cc-empty" id="cc-empty" hidden>
+    <p>✦ No crystals match those filters. Try a different combination.</p>
+    <button class="cc-filter-reset" onclick="document.getElementById('cc-reset-filters').click()">Clear Filters</button>
+  </div>
+
+  {%- comment -%} Footer tagline {%- endcomment -%}
+  <footer class="cc-footer">
+    <p>✦ Crystal Courtesan is a Wax &amp; Wane original — curated with intention, researched with care. ✦</p>
+    <p><a href="/collections/crystals" class="cc-footer__link">Shop All Crystals →</a></p>
+  </footer>
+</div>
+
+<style>
+/* ══════════════════════════════════════════
+   CRYSTAL COURTESAN — Warm Mystical Palette
+   ══════════════════════════════════════════ */
+:root {
+  --cc-bg:          #1a0e2e;
+  --cc-bg2:         #231340;
+  --cc-gold:        #D4A843;
+  --cc-gold-light:  #F0CC7A;
+  --cc-rose:        #C9956C;
+  --cc-cream:       #F5EDD6;
+  --cc-mauve:       #B08A9E;
+  --cc-plum:        #2D1B4E;
+  --cc-text:        #F5EDD6;
+  --cc-text-muted:  rgba(245,237,214,0.65);
+  --cc-border:      rgba(212,168,67,0.18);
+  --cc-card-bg:     rgba(45,27,78,0.7);
+  --cc-card-hover:  rgba(60,35,100,0.9);
+}
+
+.cc-page {
+  background: var(--cc-bg);
+  min-height: 100vh;
+  color: var(--cc-text);
+  font-family: 'Raleway', 'Poppins', sans-serif;
+}
+
+/* ── HERO ── */
+.cc-hero {
+  text-align: center;
+  padding: 80px 20px 60px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(212,168,67,0.12) 0%, transparent 65%),
+              radial-gradient(ellipse at 20% 80%, rgba(201,149,108,0.08) 0%, transparent 50%),
+              var(--cc-bg);
+  border-bottom: 1px solid var(--cc-border);
+  position: relative;
+  overflow: hidden;
+}
+.cc-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4A843' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+}
+.cc-hero__inner { position: relative; max-width: 800px; margin: 0 auto; }
+.cc-hero__sigil {
+  font-size: 48px;
+  color: var(--cc-gold);
+  display: block;
+  margin-bottom: 12px;
+  animation: cc-float 4s ease-in-out infinite;
+  text-shadow: 0 0 30px rgba(212,168,67,0.6);
+}
+@keyframes cc-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.cc-hero__eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--cc-mauve);
+  margin: 0 0 8px;
+}
+.cc-hero__title {
+  font-size: clamp(38px, 6vw, 72px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 16px;
+  background: linear-gradient(135deg, var(--cc-gold-light) 0%, var(--cc-rose) 50%, var(--cc-mauve) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.05;
+}
+.cc-hero__tagline {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--cc-text-muted);
+  margin: 0 0 24px;
+}
+.cc-hero__tagline em { color: var(--cc-gold); font-style: italic; }
+.cc-hero__divider {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 0 20px;
+  color: var(--cc-gold);
+  opacity: 0.4;
+  font-size: 8px;
+  letter-spacing: 8px;
+}
+.cc-hero__count {
+  font-size: 13px;
+  color: var(--cc-mauve);
+  letter-spacing: 0.1em;
+  margin: 0;
+}
+
+/* ── FILTER BAR ── */
+.cc-filters {
+  background: var(--cc-plum);
+  border-bottom: 1px solid var(--cc-border);
+  padding: 20px 20px 12px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+.cc-filters__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+.cc-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 140px;
+}
+.cc-filter-label {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cc-gold);
+  font-weight: 600;
+}
+.cc-filter-select {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--cc-border);
+  border-radius: 10px;
+  color: var(--cc-text);
+  padding: 8px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23D4A843' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+}
+.cc-filter-select:focus {
+  outline: none;
+  border-color: var(--cc-gold);
+  background-color: rgba(255,255,255,0.1);
+}
+.cc-filter-select option { background: #231340; color: var(--cc-text); }
+.cc-filter-reset {
+  background: transparent;
+  border: 1px solid rgba(212,168,67,0.3);
+  color: var(--cc-text-muted);
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  white-space: nowrap;
+  align-self: flex-end;
+}
+.cc-filter-reset:hover { border-color: var(--cc-gold); color: var(--cc-gold); }
+.cc-filter-count {
+  max-width: 1200px;
+  margin: 8px auto 0;
+  font-size: 11px;
+  color: var(--cc-text-muted);
+  letter-spacing: 0.08em;
+}
+
+/* ── CARD GRID ── */
+.cc-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+@media (min-width: 640px) { .cc-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 900px) { .cc-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 1200px) { .cc-grid { grid-template-columns: repeat(5, 1fr); } }
+
+/* ── CARD ── */
+.cc-card {
+  background: var(--cc-card-bg);
+  border: 1px solid var(--cc-border);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s ease, border-color 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+.cc-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(212,168,67,0.15), 0 0 0 1px rgba(212,168,67,0.3);
+  border-color: rgba(212,168,67,0.4);
+}
+.cc-card[hidden] { display: none; }
+.cc-card__link {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+/* Orb (color swatch) */
+.cc-card__orb-wrap {
+  padding: 24px 24px 0;
+  display: flex;
+  justify-content: center;
+}
+.cc-card__orb {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(212,168,67,0.3), rgba(45,27,78,0.6));
+  position: relative;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+  transition: box-shadow 0.3s ease;
+}
+.cc-card:hover .cc-card__orb {
+  box-shadow: 0 0 40px rgba(212,168,67,0.4), 0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.cc-card__orb-shimmer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Card body */
+.cc-card__body {
+  padding: 16px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 8px;
+}
+.cc-card__name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--cc-cream);
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+.cc-card__liner {
+  font-size: 12px;
+  color: var(--cc-text-muted);
+  margin: 0;
+  line-height: 1.5;
+  flex: 1;
+}
+.cc-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 4px;
+}
+.cc-badge {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.cc-badge--chakra { background: rgba(176,138,158,0.25); color: var(--cc-mauve); border: 1px solid rgba(176,138,158,0.3); }
+.cc-badge--zodiac { background: rgba(212,168,67,0.15); color: var(--cc-gold); border: 1px solid rgba(212,168,67,0.25); }
+.cc-badge--element { background: rgba(201,149,108,0.15); color: var(--cc-rose); border: 1px solid rgba(201,149,108,0.25); }
+.cc-card__why {
+  font-size: 11px;
+  color: rgba(245,237,214,0.5);
+  margin: 0;
+  font-style: italic;
+  line-height: 1.4;
+}
+.cc-card__cta {
+  font-size: 11px;
+  color: var(--cc-gold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: auto;
+  padding-top: 8px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.cc-card:hover .cc-card__cta { opacity: 1; transform: translateY(0); }
+
+/* ── EMPTY STATE ── */
+.cc-empty {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--cc-text-muted);
+  font-size: 16px;
+}
+.cc-empty button {
+  margin-top: 16px;
+  background: transparent;
+  border: 1px solid var(--cc-gold);
+  color: var(--cc-gold);
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+/* ── FOOTER ── */
+.cc-footer {
+  text-align: center;
+  padding: 40px 20px 60px;
+  border-top: 1px solid var(--cc-border);
+  color: var(--cc-text-muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+.cc-footer__link {
+  color: var(--cc-gold);
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.cc-footer__link:hover { text-decoration: underline; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+  .cc-hero { padding: 60px 16px 40px; }
+  .cc-hero__title { font-size: 36px; }
+  .cc-filters__inner { gap: 8px; }
+  .cc-filter-group { min-width: 100%; }
+}
+</style>
+
+<script>
+(function() {
+  const cards = Array.from(document.querySelectorAll('.cc-card'));
+  const filters = document.querySelectorAll('.cc-filter-select');
+  const resetBtn = document.getElementById('cc-reset-filters');
+  const countEl = document.getElementById('cc-filter-count');
+  const emptyEl = document.getElementById('cc-empty');
+  const total = cards.length;
+
+  function getActiveFilters() {
+    const f = {};
+    filters.forEach(sel => { f[sel.dataset.filter] = sel.value; });
+    return f;
+  }
+
+  function applyFilters() {
+    const f = getActiveFilters();
+    let visible = 0;
+
+    cards.forEach(card => {
+      let show = true;
+
+      if (f.zodiac) {
+        const cardZodiac = card.dataset.zodiac || '';
+        if (!cardZodiac.toLowerCase().includes(f.zodiac.toLowerCase()) &&
+            !cardZodiac.toLowerCase().includes('all signs')) {
+          show = false;
+        }
+      }
+      if (show && f.element) {
+        const cardEl = card.dataset.element || '';
+        if (!cardEl.toLowerCase().includes(f.element.toLowerCase())) show = false;
+      }
+      if (show && f.chakra) {
+        const cardChakra = card.dataset.chakra || '';
+        if (!cardChakra.toLowerCase().includes(f.chakra.toLowerCase())) show = false;
+      }
+      if (show && f.color) {
+        const cardColor = card.dataset.color || '';
+        if (cardColor !== f.color) show = false;
+      }
+
+      card.hidden = !show;
+      if (show) visible++;
+    });
+
+    countEl.textContent = visible === total
+      ? `Showing all ${total} crystals`
+      : `Showing ${visible} of ${total} crystals`;
+
+    emptyEl.hidden = visible > 0;
+  }
+
+  filters.forEach(sel => sel.addEventListener('change', applyFilters));
+
+  resetBtn.addEventListener('click', function() {
+    filters.forEach(sel => { sel.value = ''; });
+    applyFilters();
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Crystal Glossary",
+  "settings": [],
+  "presets": [{ "name": "Crystal Glossary" }]
+}
+{% endschema %}
