@@ -73,6 +73,75 @@ SCOPES = [
 # Local log file to track posted articles
 POSTED_LOG_FILE = SKILL_DIR / 'posted_links.txt'
 
+# ─────────────────────────────────────────────────────────────────────────────
+# NEWS HEADLINE QUERIES — one search query per blog, used to pull trending
+# Google News headlines and weave them into social captions for freshness.
+# Uses Google News RSS (completely free, no API key required).
+# ─────────────────────────────────────────────────────────────────────────────
+NEWS_QUERIES = {
+    '119979376952': 'wellness lifestyle beauty trends ritual',          # Wax | Wane Blog
+    '115858669880': 'Korean skincare K-beauty glass skin trends',       # HARAMOON
+    '115660620088': 'EMF radiation health 5G shielding',                # EMF and EMI
+    '115710034232': 'crystal healing minerals gemstones spirituality',  # Crystals
+}
+
+
+def fetch_trending_headline(blog_id):
+    """Pull the top trending news headline for a blog topic using Google News RSS.
+    Completely free — no API key needed. Returns headline string or None."""
+    import urllib.request
+    import urllib.parse
+    import re
+    query = NEWS_QUERIES.get(blog_id)
+    if not query:
+        return None
+    try:
+        encoded = urllib.parse.quote(query)
+        rss_url = f'https://news.google.com/rss/search?q={encoded}&hl=en-US&gl=US&ceid=US:en'
+        req = urllib.request.Request(rss_url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            raw = resp.read().decode('utf-8')
+        titles = re.findall(r'<item>.*?<title>(.*?)</title>', raw, re.DOTALL)
+        if titles:
+            headline = re.sub(r'<!\[CDATA\[|\]\]>', '', titles[0]).strip()
+            print(f'  📰 Trending headline: {headline}')
+            return headline
+    except Exception as e:
+        print(f'  ⚠️  Could not fetch news headline: {str(e)[:60]}')
+    return None
+
+
+def ping_google_after_post(article_url):
+    """Submit the new article URL to search engines via IndexNow.
+    IndexNow is the modern standard (replaces deprecated Google sitemap ping).
+    Supported by Bing, Yandex, and Google. No API key setup required.
+    Returns True if accepted, False otherwise (non-critical — posts still go out)."""
+    import urllib.request
+    import json
+    try:
+        payload = json.dumps({
+            'host': 'waxandwane.store',
+            'key': 'waxwane2026',
+            'keyLocation': 'https://waxandwane.store/waxwane2026.txt',
+            'urlList': [article_url]
+        }).encode('utf-8')
+        req = urllib.request.Request(
+            'https://api.indexnow.org/indexnow',
+            data=payload,
+            headers={'Content-Type': 'application/json; charset=utf-8', 'User-Agent': 'Mozilla/5.0'},
+            method='POST'
+        )
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            if resp.status in (200, 202):
+                print(f'  🏓 IndexNow accepted — search engines notified for: {article_url}')
+                return True
+            else:
+                print(f'  ⚠️  IndexNow returned HTTP {resp.status}')
+    except Exception as e:
+        print(f'  ⚠️  IndexNow ping failed (non-critical): {str(e)[:60]}')
+    return False
+
+
 
 class ShopifyAutoposter:
     """Main automation class for cross-posting Shopify blog articles."""
@@ -207,8 +276,12 @@ class ShopifyAutoposter:
             # Facebook Graph API endpoint for posting photos
             url = f"https://graph.facebook.com/v25.0/{self.facebook_page_id}/photos"
             
-            # Prepare post data
-            caption = f"{article['title']}\n\n{article['summary'][:200]}...\n\nRead more: {article['url']}"
+            # Pull trending news headline for this blog topic (free, no API key)
+            trending = fetch_trending_headline(article.get('blog_id', ''))
+            news_line = f"\n\n📰 Trending now: {trending}" if trending else ""
+
+            # Prepare post data — weave in trending headline if available
+            caption = f"{article['title']}\n\n{article['summary'][:200]}...{news_line}\n\nRead more: {article['url']}"
             
             data = {
                 'access_token': self.facebook_page_token,
@@ -420,7 +493,10 @@ Shopify Social Autoposter - Facebook & Instagram Edition
         
         # Mark as posted
         self._save_posted_link(article['url'])
-        
+
+        # Ping Google to fast-track indexing of the new post (free, no API key)
+        ping_google_after_post(article['url'])
+
         print(f"✅ Completed processing: {article['title']}")
     
     def run(self):
