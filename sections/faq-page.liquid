@@ -1,0 +1,514 @@
+{% comment %}
+  FAQ Page Section — Wax | Wane
+  Pulls from faq_group metaobjects, renders with category tabs,
+  accordion UI, and schema.org/FAQPage structured data for Google rich results.
+{% endcomment %}
+
+{%- assign all_faqs = shop.metaobjects.faq_group.values -%}
+
+{%- assign categories = "HARAMOON Korean Skincare,Crystal Courtesan,EMF Protection,Wax | Wane Store,Jewelry & Accessories,Niche Wellness" | split: "," -%}
+
+<style>
+  /* ── FAQ Page Layout ─────────────────────────────────── */
+  .faq-page {
+    font-family: 'Raleway', sans-serif;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+    color: #1a1a2e;
+  }
+
+  .faq-hero {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .faq-hero h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+
+  .faq-hero p {
+    font-size: 1.05rem;
+    color: #555;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* ── Category Tabs ───────────────────────────────────── */
+  .faq-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 2.25rem;
+  }
+
+  .faq-tab-btn {
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    border: 2px solid transparent;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #f0f0f0;
+    color: #444;
+    letter-spacing: 0.02em;
+  }
+
+  .faq-tab-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+  }
+
+  .faq-tab-btn.active {
+    color: #fff;
+  }
+
+  /* Per-category active colors */
+  .faq-tab-btn[data-cat="HARAMOON Korean Skincare"].active { background: #1565C0; border-color: #1565C0; }
+  .faq-tab-btn[data-cat="Crystal Courtesan"].active         { background: #7C3AED; border-color: #7C3AED; }
+  .faq-tab-btn[data-cat="EMF Protection"].active            { background: #16A34A; border-color: #16A34A; }
+  .faq-tab-btn[data-cat="Wax | Wane Store"].active          { background: #D97706; border-color: #D97706; }
+  .faq-tab-btn[data-cat="Jewelry & Accessories"].active     { background: #DB2777; border-color: #DB2777; }
+  .faq-tab-btn[data-cat="Niche Wellness"].active            { background: #0891B2; border-color: #0891B2; }
+  .faq-tab-btn[data-cat="all"].active                       { background: #1a1a2e; border-color: #1a1a2e; }
+
+  /* ── FAQ Section Groups ──────────────────────────────── */
+  .faq-category-section {
+    margin-bottom: 2.5rem;
+    display: none;
+  }
+
+  .faq-category-section.visible {
+    display: block;
+  }
+
+  .faq-category-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 3px solid currentColor;
+    display: inline-block;
+  }
+
+  /* Per-category title colors */
+  .faq-category-section[data-cat="HARAMOON Korean Skincare"] .faq-category-title { color: #1565C0; }
+  .faq-category-section[data-cat="Crystal Courtesan"] .faq-category-title         { color: #7C3AED; }
+  .faq-category-section[data-cat="EMF Protection"] .faq-category-title            { color: #16A34A; }
+  .faq-category-section[data-cat="Wax | Wane Store"] .faq-category-title          { color: #D97706; }
+  .faq-category-section[data-cat="Jewelry & Accessories"] .faq-category-title     { color: #DB2777; }
+  .faq-category-section[data-cat="Niche Wellness"] .faq-category-title            { color: #0891B2; }
+
+  /* ── Accordion Items ─────────────────────────────────── */
+  .faq-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-bottom: 0.6rem;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .faq-item:hover {
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+
+  .faq-question {
+    width: 100%;
+    background: #fff;
+    border: none;
+    text-align: left;
+    padding: 1rem 1.25rem;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    transition: background 0.15s ease;
+  }
+
+  .faq-question:hover {
+    background: #fafafa;
+  }
+
+  .faq-question[aria-expanded="true"] {
+    background: #f8f9ff;
+  }
+
+  .faq-chevron {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.25s ease;
+    opacity: 0.5;
+  }
+
+  .faq-question[aria-expanded="true"] .faq-chevron {
+    transform: rotate(180deg);
+    opacity: 1;
+  }
+
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.2s ease;
+    padding: 0 1.25rem;
+    background: #fff;
+  }
+
+  .faq-answer.open {
+    max-height: 600px;
+    padding: 0.75rem 1.25rem 1.1rem;
+  }
+
+  .faq-answer p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #374151;
+    margin: 0;
+  }
+
+  /* ── Search Bar ──────────────────────────────────────── */
+  .faq-search-wrap {
+    position: relative;
+    max-width: 520px;
+    margin: 0 auto 2rem;
+  }
+
+  .faq-search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.8rem;
+    border: 2px solid #d1d5db;
+    border-radius: 999px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.95rem;
+    color: #1a1a2e;
+    outline: none;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .faq-search-input:focus {
+    border-color: #1565C0;
+  }
+
+  .faq-search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    opacity: 0.4;
+  }
+
+  .faq-no-results {
+    text-align: center;
+    color: #888;
+    font-size: 0.95rem;
+    padding: 2rem 0;
+    display: none;
+  }
+
+  /* ── CTA Footer ──────────────────────────────────────── */
+  .faq-cta {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f0f4ff 0%, #fdf4ff 100%);
+    border-radius: 16px;
+  }
+
+  .faq-cta h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 0.5rem;
+  }
+
+  .faq-cta p {
+    color: #555;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  .faq-cta-btn {
+    display: inline-block;
+    padding: 0.65rem 1.75rem;
+    background: #1a1a2e;
+    color: #fff;
+    border-radius: 999px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.15s ease;
+  }
+
+  .faq-cta-btn:hover {
+    background: #1565C0;
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 600px) {
+    .faq-tabs { gap: 0.35rem; }
+    .faq-tab-btn { font-size: 0.75rem; padding: 0.4rem 0.85rem; }
+    .faq-question { font-size: 0.88rem; }
+  }
+</style>
+
+<div class="faq-page" id="faq-page">
+
+  <!-- Hero -->
+  <div class="faq-hero">
+    <h1>{{ section.settings.page_title | default: "Frequently Asked Questions" }}</h1>
+    <p>{{ section.settings.page_subtitle | default: "Everything you need to know about our products, shipping, and wellness philosophy." }}</p>
+  </div>
+
+  <!-- Search -->
+  <div class="faq-search-wrap">
+    <svg class="faq-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+    </svg>
+    <input
+      type="text"
+      class="faq-search-input"
+      id="faqSearch"
+      placeholder="Search questions…"
+      aria-label="Search FAQs"
+    />
+  </div>
+
+  <!-- Category Tabs -->
+  <div class="faq-tabs" id="faqTabs" role="tablist">
+    <button class="faq-tab-btn active" data-cat="all" role="tab" aria-selected="true">All Topics</button>
+    {%- for cat in categories -%}
+      <button class="faq-tab-btn" data-cat="{{ cat }}" role="tab" aria-selected="false">{{ cat }}</button>
+    {%- endfor -%}
+  </div>
+
+  <!-- FAQ Groups -->
+  <div id="faqGroups">
+    {%- for cat in categories -%}
+      {%- assign cat_faqs = all_faqs | where: "category.value", cat -%}
+      {%- if cat_faqs.size > 0 -%}
+        <div class="faq-category-section visible" data-cat="{{ cat }}">
+          <div class="faq-category-title">{{ cat }}</div>
+
+          {%- for faq in cat_faqs -%}
+            {%- assign q = faq.question.value -%}
+            {%- assign a = faq.answer.value -%}
+            {%- if q != blank and a != blank -%}
+              <div class="faq-item" data-question="{{ q | downcase | escape }}">
+                <button
+                  class="faq-question"
+                  aria-expanded="false"
+                  aria-controls="faq-answer-{{ forloop.parentloop.index }}-{{ forloop.index }}"
+                >
+                  {{ q }}
+                  <svg class="faq-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </button>
+                <div
+                  class="faq-answer"
+                  id="faq-answer-{{ forloop.parentloop.index }}-{{ forloop.index }}"
+                  role="region"
+                >
+                  <p>{{ a }}</p>
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    <div class="faq-no-results" id="faqNoResults">
+      No questions found matching your search. Try a different keyword or <a href="/pages/contact">contact us directly</a>.
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="faq-cta">
+    <h3>Still have questions?</h3>
+    <p>Our team is happy to help — reach out anytime.</p>
+    <a href="/pages/contact" class="faq-cta-btn">Contact Us</a>
+  </div>
+
+</div>
+
+<!-- ── schema.org FAQPage Structured Data ─────────────────────── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {%- assign faq_list = all_faqs -%}
+    {%- for faq in faq_list -%}
+      {%- assign q = faq.question.value -%}
+      {%- assign a = faq.answer.value -%}
+      {%- if q != blank and a != blank -%}
+        {
+          "@type": "Question",
+          "name": {{ q | json }},
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": {{ a | json }}
+          }
+        }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endif -%}
+    {%- endfor -%}
+  ]
+}
+</script>
+
+<!-- ── JavaScript: Tabs + Accordion + Search ──────────────────── -->
+<script>
+(function() {
+  // ── Accordion ──────────────────────────────────────────────────
+  document.querySelectorAll('.faq-question').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var expanded = this.getAttribute('aria-expanded') === 'true';
+      var answerId = this.getAttribute('aria-controls');
+      var answerEl = document.getElementById(answerId);
+
+      // Close all others in same section
+      var section = this.closest('.faq-category-section');
+      if (section) {
+        section.querySelectorAll('.faq-question[aria-expanded="true"]').forEach(function(other) {
+          if (other !== btn) {
+            other.setAttribute('aria-expanded', 'false');
+            var otherId = other.getAttribute('aria-controls');
+            var otherEl = document.getElementById(otherId);
+            if (otherEl) otherEl.classList.remove('open');
+          }
+        });
+      }
+
+      this.setAttribute('aria-expanded', String(!expanded));
+      if (answerEl) {
+        answerEl.classList.toggle('open', !expanded);
+      }
+    });
+  });
+
+  // ── Category Tabs ──────────────────────────────────────────────
+  var tabs = document.querySelectorAll('.faq-tab-btn');
+  var sections = document.querySelectorAll('.faq-category-section');
+
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var cat = this.getAttribute('data-cat');
+
+      // Update tab active state
+      tabs.forEach(function(t) {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      this.classList.add('active');
+      this.setAttribute('aria-selected', 'true');
+
+      // Show/hide sections
+      sections.forEach(function(sec) {
+        if (cat === 'all' || sec.getAttribute('data-cat') === cat) {
+          sec.classList.add('visible');
+        } else {
+          sec.classList.remove('visible');
+        }
+      });
+
+      // Clear search
+      var searchInput = document.getElementById('faqSearch');
+      if (searchInput) searchInput.value = '';
+      document.querySelectorAll('.faq-item').forEach(function(item) {
+        item.style.display = '';
+      });
+      document.getElementById('faqNoResults').style.display = 'none';
+    });
+  });
+
+  // ── Search ─────────────────────────────────────────────────────
+  var searchInput = document.getElementById('faqSearch');
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      var query = this.value.toLowerCase().trim();
+      var noResults = document.getElementById('faqNoResults');
+      var totalVisible = 0;
+
+      // Reset tabs to "all" when searching
+      if (query.length > 0) {
+        tabs.forEach(function(t) {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        document.querySelector('[data-cat="all"]').classList.add('active');
+        sections.forEach(function(sec) { sec.classList.add('visible'); });
+      }
+
+      sections.forEach(function(sec) {
+        var sectionVisible = 0;
+        sec.querySelectorAll('.faq-item').forEach(function(item) {
+          var questionText = item.getAttribute('data-question') || '';
+          var answerEl = item.querySelector('.faq-answer p');
+          var answerText = answerEl ? answerEl.textContent.toLowerCase() : '';
+
+          if (query === '' || questionText.includes(query) || answerText.includes(query)) {
+            item.style.display = '';
+            sectionVisible++;
+            totalVisible++;
+          } else {
+            item.style.display = 'none';
+          }
+        });
+
+        // Hide empty sections during search
+        if (query.length > 0 && sectionVisible === 0) {
+          sec.classList.remove('visible');
+        } else if (query === '') {
+          sec.classList.add('visible');
+        }
+      });
+
+      noResults.style.display = (query.length > 0 && totalVisible === 0) ? 'block' : 'none';
+    });
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "FAQ Page",
+  "settings": [
+    {
+      "type": "text",
+      "id": "page_title",
+      "label": "Page Title",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "textarea",
+      "id": "page_subtitle",
+      "label": "Page Subtitle",
+      "default": "Everything you need to know about our products, shipping, and wellness philosophy."
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Page"
+    }
+  ]
+}
+{% endschema %}
