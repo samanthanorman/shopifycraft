@@ -5,6 +5,7 @@
 {% endcomment %}
 
 {%- assign all_faqs = shop.metaobjects.faq_group.values -%}
+{%- comment -%}Note: Shopify Liquid accesses metaobject fields directly, e.g. faq.question not faq.question.value{%- endcomment -%}
 
 {%- assign categories = "HARAMOON Korean Skincare,Crystal Courtesan,EMF Protection,Wax | Wane Store,Jewelry & Accessories,Niche Wellness" | split: "," -%}
 
@@ -302,14 +303,14 @@
   <!-- FAQ Groups -->
   <div id="faqGroups">
     {%- for cat in categories -%}
-      {%- assign cat_faqs = all_faqs | where: "category.value", cat -%}
+      {%- assign cat_faqs = all_faqs | where: "category", cat -%}
       {%- if cat_faqs.size > 0 -%}
         <div class="faq-category-section visible" data-cat="{{ cat }}">
           <div class="faq-category-title">{{ cat }}</div>
 
           {%- for faq in cat_faqs -%}
-            {%- assign q = faq.question.value -%}
-            {%- assign a = faq.answer.value -%}
+            {%- assign q = faq.question -%}
+            {%- assign a = faq.answer -%}
             {%- if q != blank and a != blank -%}
               <div class="faq-item" data-question="{{ q | downcase | escape }}">
                 <button
@@ -358,8 +359,8 @@
   "mainEntity": [
     {%- assign faq_list = all_faqs -%}
     {%- for faq in faq_list -%}
-      {%- assign q = faq.question.value -%}
-      {%- assign a = faq.answer.value -%}
+      {%- assign q = faq.question -%}
+      {%- assign a = faq.answer -%}
       {%- if q != blank and a != blank -%}
         {
           "@type": "Question",
