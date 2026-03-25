@@ -1,5 +1,40 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
+    "ingredient_carousel": {
+      "type": "ingredient-carousel-banner",
+      "name": "Ingredient Carousel Banner",
+      "settings": {
+        "spotlight_ingredients": "Niacinamide,Centella Asiatica Extract,Hyaluronic Acid,Beta-Glucan,Adenosine,Arginine,Panax Ginseng Root Extract,Green Tea Extract (Camellia Sinensis),Snail Secretion Filtrate,Retinol,Mugwort (Artemisia Vulgaris),Ceramide NP,Centella Asiatica Leaf Water,Betaine,Allantoin,PDRN,Bakuchiol",
+        "label_text": "Featured Ingredients",
+        "padding_vertical": 16,
+        "scroll_speed": 35,
+        "card_gap": 12,
+        "card_radius": 20,
+        "card_padding_v": 10,
+        "card_padding_h": 16,
+        "border_width": 1,
+        "card_name_size": 13,
+        "card_fn_size": 11,
+        "bg_color": "#f0f6ff",
+        "border_color": "#dbeafe",
+        "label_bg": "#1e3a8a",
+        "label_text_color": "#ffffff",
+        "accent_color": "#3b82f6",
+        "card_bg": "#ffffff",
+        "card_border": "#e5e7eb",
+        "card_name_color": "#1e3a8a",
+        "card_fn_color": "#6b7280"
+      }
+    },
     "ingredient_glossary_main": {
       "type": "_blocks",
       "blocks": {
@@ -9,9 +44,6 @@
             "heading": "Ultimate Korean Skincare Ingredient Glossary",
             "heading_size": 36,
             "heading_color": "#1e3a8a",
-            "trending_font_size": 20,
-            "trending_text_color": "#1e3a8a",
-            "trending_border_color": "#1e3a8a",
             "search_label": "Search by name",
             "origin_label": "Origin",
             "function_label": "Function",
@@ -24,7 +56,7 @@
       "block_order": [
         "glossary_ai_gen_main"
       ],
-      "name": "Ingredient glossary",
+      "name": "Ingredient Glossary",
       "settings": {}
     },
     "featured_collection_haramoon": {
@@ -48,10 +80,46 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
+    },
+    "radiant_skin_cta": {
+      "type": "_blocks",
+      "blocks": {
+        "radiant_skin_block": {
+          "type": "ai_gen_block_90ebc6c",
+          "settings": {
+            "layout": "image_right",
+            "section_padding": 80,
+            "badge_text": "HARAMOON Korean Skincare ✨",
+            "subtitle": "Science-Backed K-Beauty",
+            "title": "<p>Radiant Skin Starts Here</p>",
+            "description": "<p>Every ingredient in our glossary is carefully selected for HARAMOON formulations. EWG Verified, vegan, and rooted in traditional Korean skincare wisdom — now backed by modern cosmetic science.</p>",
+            "show_features": true,
+            "button_text": "Shop HARAMOON",
+            "button_link": "/collections/haramoon-korean-skincare",
+            "image": "shopify://shop_images/ampoule_with_beach.jpg",
+            "primary_gradient_color": "#f8f4f0",
+            "secondary_gradient_color": "#ffffff",
+            "text_color": "#2c2c2c",
+            "accent_color": "#0082ee",
+            "button_gradient_start": "#0b7af6",
+            "button_gradient_end": "#ffffff",
+            "button_text_color": "#ffffff",
+            "title_size": 38,
+            "subtitle_size": 14,
+            "description_size": 15
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": ["radiant_skin_block"],
+      "name": "Radiant Skin CTA",
+      "settings": {}
     }
   },
   "order": [
+    "ingredient_carousel",
     "ingredient_glossary_main",
-    "featured_collection_haramoon"
+    "featured_collection_haramoon",
+    "radiant_skin_cta"
   ]
 }

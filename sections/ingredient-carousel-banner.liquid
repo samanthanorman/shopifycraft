@@ -1,0 +1,528 @@
+{%- comment -%}
+  Ingredient Carousel Banner — Wax | Wane / HARAMOON
+  ─────────────────────────────────────────────────────────────────
+  Animated horizontal-scrolling carousel of ingredient spotlight cards.
+  Thicker than an announcement bar, thinner than a hero banner.
+  Each card is clickable and links to the ingredient profile page.
+  Auto-rotates on a configurable interval. Pauses on hover.
+  Pulls from ingredient_profile metaobjects — spotlights configurable
+  via section settings (comma-separated ingredient names).
+  ─────────────────────────────────────────────────────────────────
+{%- endcomment -%}
+
+{%- liquid
+  assign spotlight_names = section.settings.spotlight_ingredients | split: ','
+  assign all_ingredients = shop.metaobjects.ingredient_profile.values | sort: 'name'
+
+  comment
+    Build spotlight list — match by name, fall back to all if empty
+  endcomment
+  assign carousel_items = ''
+-%}
+
+{%- comment -%} Structured Data — ItemList for carousel {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Featured Korean Skincare Ingredients",
+  "description": "Spotlight on key ingredients used in HARAMOON Korean skincare formulations.",
+  "url": "{{ shop.url }}{{ page.url }}",
+  "itemListElement": [
+    {%- assign pos = 0 -%}
+    {%- for sname in spotlight_names -%}
+      {%- assign sname_clean = sname | strip -%}
+      {%- for ing in all_ingredients -%}
+        {%- if ing.name == sname_clean -%}
+          {%- assign pos = pos | plus: 1 -%}
+          {
+            "@type": "ListItem",
+            "position": {{ pos }},
+            "url": "{{ shop.url }}{{ ing.system.url }}",
+            "name": {{ ing.name | json }}
+          }{%- unless forloop.last and pos > 0 -%},{%- endunless -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endfor -%}
+  ]
+}
+</script>
+
+<style>
+  /* ── Carousel Banner Wrapper ── */
+  .ing-carousel-banner {
+    background: {{ section.settings.bg_color }};
+    border-top: {{ section.settings.border_width }}px solid {{ section.settings.border_color }};
+    border-bottom: {{ section.settings.border_width }}px solid {{ section.settings.border_color }};
+    padding: {{ section.settings.padding_vertical }}px 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Label pinned left */
+  .ing-carousel-label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: {{ section.settings.label_bg }};
+    z-index: 10;
+    padding: 0 16px;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .ing-carousel-label-text {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: {{ section.settings.label_text_color }};
+    writing-mode: horizontal-tb;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .ing-carousel-label-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: {{ section.settings.accent_color }};
+    animation: ing-pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes ing-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* Fade edges */
+  .ing-carousel-banner::before,
+  .ing-carousel-banner::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 80px;
+    z-index: 5;
+    pointer-events: none;
+  }
+  .ing-carousel-banner::before {
+    left: 160px;
+    background: linear-gradient(to right, {{ section.settings.bg_color }}, transparent);
+  }
+  .ing-carousel-banner::after {
+    right: 0;
+    background: linear-gradient(to left, {{ section.settings.bg_color }}, transparent);
+  }
+
+  /* Track */
+  .ing-carousel-track-wrap {
+    margin-left: 160px;
+    overflow: hidden;
+  }
+  .ing-carousel-track {
+    display: flex;
+    gap: {{ section.settings.card_gap }}px;
+    width: max-content;
+    animation: ing-scroll {{ section.settings.scroll_speed }}s linear infinite;
+  }
+  .ing-carousel-track:hover,
+  .ing-carousel-track:focus-within {
+    animation-play-state: paused;
+  }
+  @keyframes ing-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Card */
+  .ing-carousel-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    background: {{ section.settings.card_bg }};
+    border: 1.5px solid {{ section.settings.card_border }};
+    border-radius: {{ section.settings.card_radius }}px;
+    padding: {{ section.settings.card_padding_v }}px {{ section.settings.card_padding_h }}px;
+    white-space: nowrap;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .ing-carousel-card:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    border-color: {{ section.settings.accent_color }};
+  }
+  .ing-carousel-card:focus-visible {
+    outline: 2px solid {{ section.settings.accent_color }};
+    outline-offset: 2px;
+  }
+
+  /* Card icon dot */
+  .ing-carousel-card-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .ing-carousel-card-dot.natural  { background: #10b981; }
+  .ing-carousel-card-dot.synthetic { background: #8b5cf6; }
+  .ing-carousel-card-dot.biotech  { background: #3b82f6; }
+  .ing-carousel-card-dot.marine   { background: #06b6d4; }
+  .ing-carousel-card-dot.fermented { background: #f59e0b; }
+  .ing-carousel-card-dot.animal   { background: #ec4899; }
+  .ing-carousel-card-dot.mineral  { background: #6b7280; }
+  .ing-carousel-card-dot.other    { background: #d1d5db; }
+
+  /* Card text */
+  .ing-carousel-card-name {
+    font-size: {{ section.settings.card_name_size }}px;
+    font-weight: 700;
+    color: {{ section.settings.card_name_color }};
+    line-height: 1.2;
+  }
+  .ing-carousel-card-fn {
+    font-size: {{ section.settings.card_fn_size }}px;
+    color: {{ section.settings.card_fn_color }};
+    line-height: 1.2;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ing-carousel-card-arrow {
+    font-size: 13px;
+    color: {{ section.settings.accent_color }};
+    margin-left: 4px;
+    transition: transform 0.2s;
+  }
+  .ing-carousel-card:hover .ing-carousel-card-arrow {
+    transform: translateX(3px);
+  }
+
+  @media (max-width: 640px) {
+    .ing-carousel-label { width: 100px; }
+    .ing-carousel-track-wrap { margin-left: 100px; }
+    .ing-carousel-banner::before { left: 100px; }
+    .ing-carousel-card-fn { display: none; }
+  }
+</style>
+
+<div class="ing-carousel-banner" role="region" aria-label="Featured Ingredients">
+  <div class="ing-carousel-label" aria-hidden="true">
+    <span class="ing-carousel-label-dot"></span>
+    <span class="ing-carousel-label-text">{{ section.settings.label_text }}</span>
+  </div>
+
+  <div class="ing-carousel-track-wrap">
+    <div class="ing-carousel-track" id="ingCarouselTrack">
+      {%- comment -%} First pass — real items {%- endcomment -%}
+      {%- assign rendered_count = 0 -%}
+      {%- for sname in spotlight_names -%}
+        {%- assign sname_clean = sname | strip -%}
+        {%- for ing in all_ingredients -%}
+          {%- if ing.name == sname_clean -%}
+            {%- assign origin_val = ing.ingredient_origin | default: '' -%}
+            {%- assign origin_key = origin_val | downcase | replace: ' ', '' | replace: '-', '' | replace: '_', '' -%}
+            {%- if origin_key contains 'natural' -%}{%- assign dot_class = 'natural' -%}
+            {%- elsif origin_key contains 'synthetic' -%}{%- assign dot_class = 'synthetic' -%}
+            {%- elsif origin_key contains 'biotech' or origin_key contains 'bioengineered' -%}{%- assign dot_class = 'biotech' -%}
+            {%- elsif origin_key contains 'marine' -%}{%- assign dot_class = 'marine' -%}
+            {%- elsif origin_key contains 'fermented' -%}{%- assign dot_class = 'fermented' -%}
+            {%- elsif origin_key contains 'animal' -%}{%- assign dot_class = 'animal' -%}
+            {%- elsif origin_key contains 'mineral' -%}{%- assign dot_class = 'mineral' -%}
+            {%- else -%}{%- assign dot_class = 'other' -%}
+            {%- endif -%}
+            <a href="{{ ing.system.url }}" class="ing-carousel-card" aria-label="Learn about {{ ing.name }}">
+              <span class="ing-carousel-card-dot {{ dot_class }}"></span>
+              <span>
+                <span class="ing-carousel-card-name">{{ ing.name }}</span>
+                {%- if ing.main_function and ing.main_function != blank -%}
+                  <br><span class="ing-carousel-card-fn">{{ ing.main_function | truncate: 40 }}</span>
+                {%- endif -%}
+              </span>
+              <span class="ing-carousel-card-arrow">→</span>
+            </a>
+            {%- assign rendered_count = rendered_count | plus: 1 -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endfor -%}
+
+      {%- comment -%} If no spotlight names matched, show first 12 ingredients {%- endcomment -%}
+      {%- if rendered_count == 0 -%}
+        {%- for ing in all_ingredients limit: 12 -%}
+          {%- assign origin_val = ing.ingredient_origin | default: '' -%}
+          {%- assign origin_key = origin_val | downcase | replace: ' ', '' -%}
+          {%- if origin_key contains 'natural' -%}{%- assign dot_class = 'natural' -%}
+          {%- elsif origin_key contains 'synthetic' -%}{%- assign dot_class = 'synthetic' -%}
+          {%- elsif origin_key contains 'biotech' or origin_key contains 'bioengineered' -%}{%- assign dot_class = 'biotech' -%}
+          {%- elsif origin_key contains 'marine' -%}{%- assign dot_class = 'marine' -%}
+          {%- elsif origin_key contains 'fermented' -%}{%- assign dot_class = 'fermented' -%}
+          {%- elsif origin_key contains 'animal' -%}{%- assign dot_class = 'animal' -%}
+          {%- elsif origin_key contains 'mineral' -%}{%- assign dot_class = 'mineral' -%}
+          {%- else -%}{%- assign dot_class = 'other' -%}
+          {%- endif -%}
+          <a href="{{ ing.system.url }}" class="ing-carousel-card" aria-label="Learn about {{ ing.name }}">
+            <span class="ing-carousel-card-dot {{ dot_class }}"></span>
+            <span>
+              <span class="ing-carousel-card-name">{{ ing.name }}</span>
+              {%- if ing.main_function and ing.main_function != blank -%}
+                <br><span class="ing-carousel-card-fn">{{ ing.main_function | truncate: 40 }}</span>
+              {%- endif -%}
+            </span>
+            <span class="ing-carousel-card-arrow">→</span>
+          </a>
+        {%- endfor -%}
+      {%- endif -%}
+
+      {%- comment -%} Duplicate the track for seamless infinite loop {%- endcomment -%}
+      {%- for sname in spotlight_names -%}
+        {%- assign sname_clean = sname | strip -%}
+        {%- for ing in all_ingredients -%}
+          {%- if ing.name == sname_clean -%}
+            {%- assign origin_val = ing.ingredient_origin | default: '' -%}
+            {%- assign origin_key = origin_val | downcase | replace: ' ', '' | replace: '-', '' | replace: '_', '' -%}
+            {%- if origin_key contains 'natural' -%}{%- assign dot_class = 'natural' -%}
+            {%- elsif origin_key contains 'synthetic' -%}{%- assign dot_class = 'synthetic' -%}
+            {%- elsif origin_key contains 'biotech' or origin_key contains 'bioengineered' -%}{%- assign dot_class = 'biotech' -%}
+            {%- elsif origin_key contains 'marine' -%}{%- assign dot_class = 'marine' -%}
+            {%- elsif origin_key contains 'fermented' -%}{%- assign dot_class = 'fermented' -%}
+            {%- elsif origin_key contains 'animal' -%}{%- assign dot_class = 'animal' -%}
+            {%- elsif origin_key contains 'mineral' -%}{%- assign dot_class = 'mineral' -%}
+            {%- else -%}{%- assign dot_class = 'other' -%}
+            {%- endif -%}
+            <a href="{{ ing.system.url }}" class="ing-carousel-card" aria-label="Learn about {{ ing.name }}" aria-hidden="true" tabindex="-1">
+              <span class="ing-carousel-card-dot {{ dot_class }}"></span>
+              <span>
+                <span class="ing-carousel-card-name">{{ ing.name }}</span>
+                {%- if ing.main_function and ing.main_function != blank -%}
+                  <br><span class="ing-carousel-card-fn">{{ ing.main_function | truncate: 40 }}</span>
+                {%- endif -%}
+              </span>
+              <span class="ing-carousel-card-arrow">→</span>
+            </a>
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endfor -%}
+
+      {%- if rendered_count == 0 -%}
+        {%- for ing in all_ingredients limit: 12 -%}
+          {%- assign origin_val = ing.ingredient_origin | default: '' -%}
+          {%- assign origin_key = origin_val | downcase | replace: ' ', '' -%}
+          {%- if origin_key contains 'natural' -%}{%- assign dot_class = 'natural' -%}
+          {%- elsif origin_key contains 'synthetic' -%}{%- assign dot_class = 'synthetic' -%}
+          {%- elsif origin_key contains 'biotech' or origin_key contains 'bioengineered' -%}{%- assign dot_class = 'biotech' -%}
+          {%- elsif origin_key contains 'marine' -%}{%- assign dot_class = 'marine' -%}
+          {%- elsif origin_key contains 'fermented' -%}{%- assign dot_class = 'fermented' -%}
+          {%- elsif origin_key contains 'animal' -%}{%- assign dot_class = 'animal' -%}
+          {%- elsif origin_key contains 'mineral' -%}{%- assign dot_class = 'mineral' -%}
+          {%- else -%}{%- assign dot_class = 'other' -%}
+          {%- endif -%}
+          <a href="{{ ing.system.url }}" class="ing-carousel-card" aria-label="Learn about {{ ing.name }}" aria-hidden="true" tabindex="-1">
+            <span class="ing-carousel-card-dot {{ dot_class }}"></span>
+            <span>
+              <span class="ing-carousel-card-name">{{ ing.name }}</span>
+              {%- if ing.main_function and ing.main_function != blank -%}
+                <br><span class="ing-carousel-card-fn">{{ ing.main_function | truncate: 40 }}</span>
+              {%- endif -%}
+            </span>
+            <span class="ing-carousel-card-arrow">→</span>
+          </a>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Ingredient Carousel",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Spotlight Ingredients"
+    },
+    {
+      "type": "textarea",
+      "id": "spotlight_ingredients",
+      "label": "Ingredient names (comma-separated)",
+      "info": "Enter exact ingredient names as they appear in your metaobjects. Leave blank to auto-show first 12.",
+      "default": "Niacinamide,Centella Asiatica Extract,Hyaluronic Acid,Beta-Glucan,Adenosine,Arginine,Panax Ginseng Root Extract,Green Tea Extract (Camellia Sinensis),Snail Secretion Filtrate,Retinol,Mugwort (Artemisia Vulgaris),Ceramide NP,Niacinamide,Centella Asiatica Leaf Water,Betaine,Allantoin"
+    },
+    {
+      "type": "text",
+      "id": "label_text",
+      "label": "Left label text",
+      "default": "Featured Ingredients"
+    },
+    {
+      "type": "header",
+      "content": "Layout & Speed"
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Vertical padding",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "min": 15,
+      "max": 80,
+      "step": 5,
+      "unit": "s",
+      "label": "Scroll speed (seconds for full loop)",
+      "default": 35
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "unit": "px",
+      "label": "Gap between cards",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_padding_v",
+      "min": 6,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Card vertical padding",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "card_padding_h",
+      "min": 10,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Card horizontal padding",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Banner border width",
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "card_name_size",
+      "min": 11,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Card name font size",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "card_fn_size",
+      "min": 10,
+      "max": 14,
+      "step": 1,
+      "unit": "px",
+      "label": "Card function font size",
+      "default": 11
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Banner background",
+      "default": "#f0f6ff"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Banner border color",
+      "default": "#dbeafe"
+    },
+    {
+      "type": "color",
+      "id": "label_bg",
+      "label": "Label background",
+      "default": "#1e3a8a"
+    },
+    {
+      "type": "color",
+      "id": "label_text_color",
+      "label": "Label text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color (dots, arrows, hover)",
+      "default": "#3b82f6"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_border",
+      "label": "Card border",
+      "default": "#e5e7eb"
+    },
+    {
+      "type": "color",
+      "id": "card_name_color",
+      "label": "Card name color",
+      "default": "#1e3a8a"
+    },
+    {
+      "type": "color",
+      "id": "card_fn_color",
+      "label": "Card function color",
+      "default": "#6b7280"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredient Carousel"
+    }
+  ]
+}
+{% endschema %}
