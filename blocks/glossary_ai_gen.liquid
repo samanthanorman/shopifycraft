@@ -1,17 +1,23 @@
-{% comment %}
+{%- comment -%}
   HARAMOON Ingredient Glossary Block — Wax | Wane
   ─────────────────────────────────────────────────────────────────
   Loops shop.metaobjects.ingredient_profile.values and renders a
-  searchable, filterable card grid. Each card links to
-  ingredient.system.url (the auto-generated Shopify metaobject page).
+  searchable, filterable card grid with TOGGLE-EXPAND interaction.
+
+  Card design adapted from ai_gen_block_9306306 pattern:
+  — Click card to expand benefits + usage tip inline
+  — Chevron rotates on expand
+  — "View Full Profile →" link at bottom of expanded state
+  — No Korean font used
 
   Google Structured Data: ItemList (CollectionPage)
   — recognized by Google Search Console, eligible for rich results.
 
   Metaobject type: ingredient_profile
-  Key fields: name, ingredient_origin, main_function, system.url
+  Key fields: name, ingredient_origin, main_function, description,
+              skin_benefits, cautions_side_effects, system.url
   ─────────────────────────────────────────────────────────────────
-{% endcomment %}
+{%- endcomment -%}
 
 {%- liquid
   assign ai_gen_id = block.id | replace: '__', '' | replace: '-', ''
@@ -24,13 +30,13 @@
   assign all_functions = ''
   for ing in ingredient_profiles
     if ing.ingredient_origin
-      assign ov = ing.ingredient_origin.value | strip
+      assign ov = ing.ingredient_origin | strip
       unless all_origins contains ov
         assign all_origins = all_origins | append: ov | append: '|'
       endunless
     endif
     if ing.main_function
-      assign fv = ing.main_function.value | strip
+      assign fv = ing.main_function | strip
       unless all_functions contains fv
         assign all_functions = all_functions | append: fv | append: '|'
       endunless
@@ -38,20 +44,15 @@
   endfor
   assign origin_list   = all_origins   | split: '|'
   assign function_list = all_functions | split: '|'
-
-  comment
-    Trending ingredients — hardcoded spotlight cards
-  endcomment
-  assign trending_names = 'Niacinamide,PDRN,Artemisia Oil' | split: ','
 -%}
 
-{%- comment -%} Google Structured Data — ItemList {%- endcomment -%}
+{%- comment -%} Google Structured Data — ItemList + DefinedTermSet {%- endcomment -%}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
   "name": {{ block.settings.heading | json }},
-  "description": "A comprehensive glossary of Korean skincare ingredients used in HARAMOON formulations.",
+  "description": "A comprehensive glossary of Korean skincare ingredients used in HARAMOON formulations — with research-backed profiles, skin benefits, and usage guidance.",
   "url": "{{ shop.url }}{{ page.url }}",
   "mainEntity": {
     "@type": "ItemList",
@@ -66,7 +67,7 @@
           "position": {{ pos }},
           "url": "{{ shop.url }}{{ ing.system.url }}",
           "name": {{ ing.name | json }},
-          "description": {{ ing.main_function.value | default: ing.name | json }}
+          "description": {{ ing.main_function | default: ing.name | json }}
         }{%- unless forloop.last -%},{%- endunless -%}
       {%- endfor -%}
     ]
@@ -74,7 +75,7 @@
 }
 </script>
 
-{% style %}
+<style>
   /* ── Wrapper ── */
   .ai-gloss-{{ ai_gen_id }} {
     max-width: 1280px;
@@ -109,49 +110,6 @@
     border-radius: 20px;
     padding: 3px 12px;
     margin-bottom: 40px;
-  }
-
-  /* ── Trending Section ── */
-  .ai-gloss-trending-label-{{ ai_gen_id }} {
-    font-size: {{ block.settings.trending_font_size }}px;
-    font-weight: 700;
-    color: {{ block.settings.trending_text_color }};
-    border-bottom: 2px solid {{ block.settings.trending_border_color }};
-    padding-bottom: 8px;
-    margin: 0 0 20px;
-  }
-  .ai-gloss-trending-grid-{{ ai_gen_id }} {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
-    margin-bottom: 48px;
-  }
-  .ai-gloss-trending-card-{{ ai_gen_id }} {
-    display: block;
-    text-decoration: none;
-    background: linear-gradient(135deg, #dbeafe 0%, #ffffff 100%);
-    border: 1.5px solid {{ block.settings.trending_border_color }};
-    border-radius: 14px;
-    padding: 20px 18px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  .ai-gloss-trending-card-{{ ai_gen_id }}:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 0 20px rgba(30,58,138,0.15), 0 8px 24px rgba(0,0,0,0.1);
-  }
-  .ai-gloss-trending-name-{{ ai_gen_id }} {
-    font-size: 15px;
-    font-weight: 700;
-    color: {{ block.settings.trending_text_color }};
-    margin: 0 0 4px;
-  }
-  .ai-gloss-trending-tag-{{ ai_gen_id }} {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: #3b82f6;
-    opacity: 0.8;
   }
 
   /* ── Filter Bar ── */
@@ -211,30 +169,32 @@
   /* ── Ingredient Grid ── */
   .ai-gloss-grid-{{ ai_gen_id }} {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
   }
   @media (max-width: 640px) {
     .ai-gloss-grid-{{ ai_gen_id }} { grid-template-columns: 1fr; }
-    .ai-gloss-trending-grid-{{ ai_gen_id }} { grid-template-columns: 1fr 1fr; }
   }
 
-  /* ── Ingredient Card ── */
+  /* ── Ingredient Card (Toggle-Expand) ── */
   .ai-gloss-card-{{ ai_gen_id }} {
-    display: block;
-    text-decoration: none;
     background: linear-gradient(160deg, #ffffff 0%, #f0f6ff 100%);
     border: 1.5px solid {{ block.settings.card_border_color }};
-    border-radius: 14px;
-    padding: 20px;
+    border-radius: 16px;
+    padding: 22px;
     position: relative;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     overflow: hidden;
   }
   .ai-gloss-card-{{ ai_gen_id }}.hidden { display: none; }
   .ai-gloss-card-{{ ai_gen_id }}:hover {
-    transform: scale(1.03);
-    box-shadow: 0 0 20px rgba(30,58,138,0.12), 0 8px 28px rgba(0,0,0,0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px rgba(30,58,138,0.12), 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .ai-gloss-card-{{ ai_gen_id }}.expanded {
+    border-color: {{ block.settings.heading_color }};
+    box-shadow: 0 0 0 3px {{ block.settings.heading_color }}18, 0 8px 28px rgba(30,58,138,0.12);
   }
 
   /* Shimmer on click */
@@ -244,34 +204,43 @@
     top: 0; left: -100%;
     width: 60%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
     transition: left 0.4s ease;
     pointer-events: none;
   }
   .ai-gloss-card-{{ ai_gen_id }}:active::before { left: 150%; }
 
-  /* Origin badge */
-  .ai-gloss-origin-badge-{{ ai_gen_id }} {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding: 3px 9px;
-    border-radius: 20px;
-  }
-  .ai-gloss-origin-badge-{{ ai_gen_id }}.natural  { background: #d1fae5; color: #065f46; }
-  .ai-gloss-origin-badge-{{ ai_gen_id }}.synthetic { background: #ede9fe; color: #5b21b6; }
-  .ai-gloss-origin-badge-{{ ai_gen_id }}.biotech   { background: #dbeafe; color: #1e40af; }
-  .ai-gloss-origin-badge-{{ ai_gen_id }}.marine    { background: #cffafe; color: #164e63; }
-  .ai-gloss-origin-badge-{{ ai_gen_id }}.other     { background: #f3f4f6; color: #374151; }
-
+  /* Card header row */
   .ai-gloss-card-header-{{ ai_gen_id }} {
-    padding-right: 70px;
-    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 12px;
+    padding-right: 32px;
   }
+
+  /* Icon circle */
+  .ai-gloss-card-icon-{{ ai_gen_id }} {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+    line-height: 1;
+  }
+  .ai-gloss-card-icon-{{ ai_gen_id }}.natural   { background: linear-gradient(135deg, #d1fae5, #a7f3d0); }
+  .ai-gloss-card-icon-{{ ai_gen_id }}.synthetic  { background: linear-gradient(135deg, #ede9fe, #ddd6fe); }
+  .ai-gloss-card-icon-{{ ai_gen_id }}.biotech    { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+  .ai-gloss-card-icon-{{ ai_gen_id }}.marine     { background: linear-gradient(135deg, #cffafe, #a5f3fc); }
+  .ai-gloss-card-icon-{{ ai_gen_id }}.fermented  { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+  .ai-gloss-card-icon-{{ ai_gen_id }}.animal     { background: linear-gradient(135deg, #fce7f3, #fbcfe8); }
+  .ai-gloss-card-icon-{{ ai_gen_id }}.mineral    { background: linear-gradient(135deg, #f3f4f6, #e5e7eb); }
+  .ai-gloss-card-icon-{{ ai_gen_id }}.other      { background: linear-gradient(135deg, #f9fafb, #f3f4f6); }
+
+  /* Name + origin badge */
   .ai-gloss-card-name-{{ ai_gen_id }} {
     font-size: 17px;
     font-weight: 700;
@@ -279,24 +248,134 @@
     margin: 0 0 4px;
     line-height: 1.25;
   }
-  .ai-gloss-card-function-{{ ai_gen_id }} {
+  .ai-gloss-origin-badge-{{ ai_gen_id }} {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+  .ai-gloss-origin-badge-{{ ai_gen_id }}.natural   { background: #d1fae5; color: #065f46; }
+  .ai-gloss-origin-badge-{{ ai_gen_id }}.synthetic  { background: #ede9fe; color: #5b21b6; }
+  .ai-gloss-origin-badge-{{ ai_gen_id }}.biotech    { background: #dbeafe; color: #1e40af; }
+  .ai-gloss-origin-badge-{{ ai_gen_id }}.marine     { background: #cffafe; color: #164e63; }
+  .ai-gloss-origin-badge-{{ ai_gen_id }}.fermented  { background: #fef3c7; color: #92400e; }
+  .ai-gloss-origin-badge-{{ ai_gen_id }}.animal     { background: #fce7f3; color: #9d174d; }
+  .ai-gloss-origin-badge-{{ ai_gen_id }}.mineral    { background: #f3f4f6; color: #374151; }
+  .ai-gloss-origin-badge-{{ ai_gen_id }}.other      { background: #f9fafb; color: #6b7280; }
+
+  /* Function tag */
+  .ai-gloss-card-fn-{{ ai_gen_id }} {
     font-size: 13px;
     color: #6b7280;
-    margin: 0;
+    margin: 8px 0 0;
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  /* Chevron toggle */
+  .ai-gloss-chevron-{{ ai_gen_id }} {
+    position: absolute;
+    top: 20px;
+    right: 18px;
+    width: 22px;
+    height: 22px;
+    color: {{ block.settings.heading_color }};
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+  }
+  .ai-gloss-card-{{ ai_gen_id }}.expanded .ai-gloss-chevron-{{ ai_gen_id }} {
+    transform: rotate(180deg);
+  }
+
+  /* Expandable content */
+  .ai-gloss-expand-{{ ai_gen_id }} {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+  .ai-gloss-card-{{ ai_gen_id }}.expanded .ai-gloss-expand-{{ ai_gen_id }} {
+    max-height: 600px;
+  }
+
+  /* Benefits list */
+  .ai-gloss-benefits-title-{{ ai_gen_id }} {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: {{ block.settings.heading_color }};
+    margin: 16px 0 8px;
+  }
+  .ai-gloss-benefits-list-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px;
+  }
+  .ai-gloss-benefit-item-{{ ai_gen_id }} {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #374151;
+    margin-bottom: 6px;
+  }
+  .ai-gloss-benefit-check-{{ ai_gen_id }} {
+    width: 15px;
+    height: 15px;
+    color: #10b981;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* Usage tip box */
+  .ai-gloss-usage-{{ ai_gen_id }} {
+    background: {{ block.settings.heading_color }}0d;
+    border-left: 3px solid {{ block.settings.heading_color }};
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+  }
+  .ai-gloss-usage-title-{{ ai_gen_id }} {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 4px;
+  }
+  .ai-gloss-usage-text-{{ ai_gen_id }} {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #4b5563;
+    margin: 0;
+  }
+
+  /* View full profile CTA */
   .ai-gloss-card-cta-{{ ai_gen_id }} {
-    display: inline-block;
-    margin-top: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: {{ block.settings.heading_color }};
+    text-decoration: none;
+    border: 1.5px solid {{ block.settings.heading_color }};
+    border-radius: 8px;
+    padding: 7px 14px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .ai-gloss-card-cta-{{ ai_gen_id }}:hover {
+    background: {{ block.settings.heading_color }};
+    color: #fff;
   }
 
   /* No results */
@@ -336,46 +415,18 @@
     opacity: 1;
     pointer-events: auto;
   }
-{% endstyle %}
+</style>
 
 <div class="ai-gloss-{{ ai_gen_id }}">
 
   <h2 class="ai-gloss-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
   <p class="ai-gloss-subhead-{{ ai_gen_id }}">
-    Research-backed ingredient profiles for every HARAMOON formula.
+    Research-backed ingredient profiles for every HARAMOON formula. Click any card to expand.
   </p>
   <div style="text-align:center;">
     <span class="ai-gloss-count-{{ ai_gen_id }}">
       {{ ingredient_profiles | size }} ingredients catalogued
     </span>
-  </div>
-
-  {%- comment -%} Trending Spotlight {%- endcomment -%}
-  <p class="ai-gloss-trending-label-{{ ai_gen_id }}">✨ Trending Ingredients</p>
-  <div class="ai-gloss-trending-grid-{{ ai_gen_id }}">
-    {%- for tname in trending_names -%}
-      {%- assign tname_clean = tname | strip -%}
-      {%- assign found_ing = nil -%}
-      {%- for ing in ingredient_profiles -%}
-        {%- if ing.name == tname_clean -%}
-          {%- assign found_ing = ing -%}
-          {%- break -%}
-        {%- endif -%}
-      {%- endfor -%}
-      {%- if found_ing -%}
-        <a href="{{ found_ing.system.url }}" class="ai-gloss-trending-card-{{ ai_gen_id }}">
-          <p class="ai-gloss-trending-name-{{ ai_gen_id }}">{{ found_ing.name }}</p>
-          {%- if found_ing.main_function -%}
-            <span class="ai-gloss-trending-tag-{{ ai_gen_id }}">{{ found_ing.main_function.value | truncate: 30 }}</span>
-          {%- endif -%}
-        </a>
-      {%- else -%}
-        <div class="ai-gloss-trending-card-{{ ai_gen_id }}" style="opacity:0.5;">
-          <p class="ai-gloss-trending-name-{{ ai_gen_id }}">{{ tname_clean }}</p>
-          <span class="ai-gloss-trending-tag-{{ ai_gen_id }}">Coming soon</span>
-        </div>
-      {%- endif -%}
-    {%- endfor -%}
   </div>
 
   {%- comment -%} Filter Bar {%- endcomment -%}
@@ -424,37 +475,104 @@
     <button id="GlossReset-{{ ai_gen_id }}" class="ai-gloss-reset-{{ ai_gen_id }}">Reset Filters</button>
   </div>
 
-  {%- comment -%} Ingredient Grid {%- endcomment -%}
+  {%- comment -%} Ingredient Grid — Toggle-Expand Cards {%- endcomment -%}
   <div class="ai-gloss-grid-{{ ai_gen_id }}" id="GlossGrid-{{ ai_gen_id }}">
     {%- for ing in ingredient_profiles -%}
-      {%- assign origin_val = ing.ingredient_origin.value | default: '' -%}
-      {%- assign func_val   = ing.main_function.value   | default: '' -%}
-      {%- assign origin_class = origin_val | downcase | replace: ' ', '' -%}
-      {%- unless origin_class == 'natural' or origin_class == 'synthetic' or origin_class == 'biotech' or origin_class == 'marine' -%}
-        {%- assign origin_class = 'other' -%}
-      {%- endunless -%}
-      <a
-        href="{{ ing.system.url }}"
+      {%- assign origin_val = ing.ingredient_origin | default: '' -%}
+      {%- assign func_val   = ing.main_function   | default: '' -%}
+      {%- assign desc_val   = ing.description     | default: '' -%}
+      {%- assign benefits_val = ing.skin_benefits | default: '' -%}
+
+      {%- comment -%} Determine origin class for badge + icon color {%- endcomment -%}
+      {%- assign origin_key = origin_val | downcase | replace: ' ', '' | replace: '-', '' | replace: '_', '' -%}
+      {%- if origin_key contains 'natural' -%}{%- assign origin_class = 'natural' -%}{%- assign origin_icon = '🌿' -%}
+      {%- elsif origin_key contains 'synthetic' -%}{%- assign origin_class = 'synthetic' -%}{%- assign origin_icon = '⚗️' -%}
+      {%- elsif origin_key contains 'biotech' or origin_key contains 'bioengineered' -%}{%- assign origin_class = 'biotech' -%}{%- assign origin_icon = '🧬' -%}
+      {%- elsif origin_key contains 'marine' -%}{%- assign origin_class = 'marine' -%}{%- assign origin_icon = '🌊' -%}
+      {%- elsif origin_key contains 'fermented' -%}{%- assign origin_class = 'fermented' -%}{%- assign origin_icon = '🍵' -%}
+      {%- elsif origin_key contains 'animal' -%}{%- assign origin_class = 'animal' -%}{%- assign origin_icon = '🐌' -%}
+      {%- elsif origin_key contains 'mineral' -%}{%- assign origin_class = 'mineral' -%}{%- assign origin_icon = '💎' -%}
+      {%- else -%}{%- assign origin_class = 'other' -%}{%- assign origin_icon = '✨' -%}
+      {%- endif -%}
+
+      {%- comment -%} Parse benefits into list items (split by period or newline) {%- endcomment -%}
+      {%- assign benefit_lines = benefits_val | split: '.' -%}
+
+      <div
         class="ai-gloss-card-{{ ai_gen_id }}"
         data-name="{{ ing.name | downcase }}"
         data-origin="{{ origin_val | downcase }}"
         data-function="{{ func_val | downcase }}"
-        aria-label="Learn about {{ ing.name }}"
+        role="button"
+        tabindex="0"
+        aria-expanded="false"
+        aria-label="Toggle details for {{ ing.name }}"
       >
-        {%- if origin_val != blank -%}
-          <span class="ai-gloss-origin-badge-{{ ai_gen_id }} {{ origin_class }}">
-            {%- if origin_class == 'natural' -%}🌿{%- elsif origin_class == 'synthetic' -%}⚗️{%- elsif origin_class == 'biotech' -%}🧬{%- elsif origin_class == 'marine' -%}🌊{%- endif -%}
-            {{ origin_val }}
-          </span>
-        {%- endif -%}
+        {%- comment -%} Chevron {%- endcomment -%}
+        <svg class="ai-gloss-chevron-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <polyline points="6,9 12,15 18,9"></polyline>
+        </svg>
+
+        {%- comment -%} Card Header {%- endcomment -%}
         <div class="ai-gloss-card-header-{{ ai_gen_id }}">
-          <h3 class="ai-gloss-card-name-{{ ai_gen_id }}">{{ ing.name }}</h3>
-          {%- if func_val != blank -%}
-            <p class="ai-gloss-card-function-{{ ai_gen_id }}">{{ func_val }}</p>
-          {%- endif -%}
+          <div class="ai-gloss-card-icon-{{ ai_gen_id }} {{ origin_class }}" aria-hidden="true">
+            {{ origin_icon }}
+          </div>
+          <div>
+            <h3 class="ai-gloss-card-name-{{ ai_gen_id }}">{{ ing.name }}</h3>
+            {%- if origin_val != blank -%}
+              <span class="ai-gloss-origin-badge-{{ ai_gen_id }} {{ origin_class }}">{{ origin_val }}</span>
+            {%- endif -%}
+          </div>
         </div>
-        <span class="ai-gloss-card-cta-{{ ai_gen_id }}">Read Profile →</span>
-      </a>
+
+        {%- comment -%} Always-visible function summary {%- endcomment -%}
+        {%- if func_val != blank -%}
+          <p class="ai-gloss-card-fn-{{ ai_gen_id }}">{{ func_val }}</p>
+        {%- endif -%}
+
+        {%- comment -%} Expandable content {%- endcomment -%}
+        <div class="ai-gloss-expand-{{ ai_gen_id }}">
+
+          {%- comment -%} Benefits list {%- endcomment -%}
+          {%- if benefits_val != blank -%}
+            <p class="ai-gloss-benefits-title-{{ ai_gen_id }}">Key Benefits</p>
+            <ul class="ai-gloss-benefits-list-{{ ai_gen_id }}">
+              {%- for benefit in benefit_lines limit: 5 -%}
+                {%- assign b = benefit | strip -%}
+                {%- if b.size > 8 -%}
+                  <li class="ai-gloss-benefit-item-{{ ai_gen_id }}">
+                    <svg class="ai-gloss-benefit-check-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                      <polyline points="20,6 9,17 4,12"></polyline>
+                    </svg>
+                    {{ b }}
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          {%- elsif desc_val != blank -%}
+            <p style="font-size:13px;color:#4b5563;line-height:1.6;margin:14px 0;">{{ desc_val | truncate: 200 }}</p>
+          {%- endif -%}
+
+          {%- comment -%} Usage tip from cautions or fallback {%- endcomment -%}
+          {%- if ing.cautions_side_effects and ing.cautions_side_effects != blank -%}
+            <div class="ai-gloss-usage-{{ ai_gen_id }}">
+              <p class="ai-gloss-usage-title-{{ ai_gen_id }}">Good to Know</p>
+              <p class="ai-gloss-usage-text-{{ ai_gen_id }}">{{ ing.cautions_side_effects | truncate: 160 }}</p>
+            </div>
+          {%- endif -%}
+
+          {%- comment -%} View Full Profile CTA {%- endcomment -%}
+          <a href="{{ ing.system.url }}" class="ai-gloss-card-cta-{{ ai_gen_id }}" aria-label="View full profile for {{ ing.name }}">
+            View Full Profile
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12,5 19,12 12,19"></polyline>
+            </svg>
+          </a>
+        </div>
+
+      </div>
     {%- endfor -%}
 
     <div class="ai-gloss-no-results-{{ ai_gen_id }}" id="GlossNoResults-{{ ai_gen_id }}">
@@ -477,11 +595,12 @@
   const backTop      = document.getElementById('GlossBackTop-{{ ai_gen_id }}');
   const cards        = grid ? Array.from(grid.querySelectorAll('.ai-gloss-card-{{ ai_gen_id }}')) : [];
 
+  /* ── Filter logic ── */
   function applyFilters() {
-    const term     = searchInput ? searchInput.value.toLowerCase().trim() : '';
-    const origin   = originSel   ? originSel.value.toLowerCase()   : '';
-    const func     = functionSel ? functionSel.value.toLowerCase() : '';
-    let visible = 0;
+    const term   = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const origin = originSel   ? originSel.value.toLowerCase()   : '';
+    const func   = functionSel ? functionSel.value.toLowerCase() : '';
+    let visible  = 0;
     cards.forEach(card => {
       const nameMatch   = !term   || card.dataset.name.includes(term);
       const originMatch = !origin || card.dataset.origin.includes(origin);
@@ -505,7 +624,37 @@
   if (functionSel) functionSel.addEventListener('change', applyFilters);
   if (resetBtn)    resetBtn.addEventListener('click', resetFilters);
 
-  // Back to top
+  /* ── Toggle-expand logic ── */
+  cards.forEach(card => {
+    function toggleCard() {
+      const isExpanded = card.classList.contains('expanded');
+      // Collapse all others
+      cards.forEach(other => {
+        if (other !== card) {
+          other.classList.remove('expanded');
+          other.setAttribute('aria-expanded', 'false');
+        }
+      });
+      // Toggle this one
+      card.classList.toggle('expanded', !isExpanded);
+      card.setAttribute('aria-expanded', String(!isExpanded));
+    }
+
+    card.addEventListener('click', function(e) {
+      // Don't toggle if clicking the "View Full Profile" link
+      if (e.target.closest('.ai-gloss-card-cta-{{ ai_gen_id }}')) return;
+      toggleCard();
+    });
+
+    card.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleCard();
+      }
+    });
+  });
+
+  /* ── Back to top ── */
   if (backTop) {
     window.addEventListener('scroll', () => {
       backTop.classList.toggle('visible', window.scrollY > 400);
@@ -547,32 +696,6 @@
     },
     {
       "type": "header",
-      "content": "Trending cards"
-    },
-    {
-      "type": "range",
-      "id": "trending_font_size",
-      "min": 14,
-      "max": 32,
-      "step": 2,
-      "unit": "px",
-      "label": "Trending label size",
-      "default": 20
-    },
-    {
-      "type": "color",
-      "id": "trending_text_color",
-      "label": "Trending text color",
-      "default": "#1E3A8A"
-    },
-    {
-      "type": "color",
-      "id": "trending_border_color",
-      "label": "Trending border color",
-      "default": "#1E3A8A"
-    },
-    {
-      "type": "header",
       "content": "Filter labels"
     },
     {
@@ -600,18 +723,18 @@
       "max": 20,
       "step": 1,
       "unit": "px",
-      "label": "Label font size",
+      "label": "Filter label size",
       "default": 14
     },
     {
       "type": "color",
       "id": "filter_label_color",
-      "label": "Label color",
+      "label": "Filter label color",
       "default": "#374151"
     },
     {
       "type": "header",
-      "content": "Ingredient cards"
+      "content": "Card colors"
     },
     {
       "type": "color",
@@ -622,7 +745,7 @@
   ],
   "presets": [
     {
-      "name": "Ingredient glossary"
+      "name": "Ingredient Glossary"
     }
   ]
 }

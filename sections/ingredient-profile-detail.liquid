@@ -1,42 +1,101 @@
 {%- comment -%}
   Ingredient Profile Detail Section — HARAMOON / Wax | Wane
-  Verified real field names from exported theme:
-    name, ingredient_name, inci_name, ingredient_origin, main_function,
-    description, skin_benefits, what_it_is, what_it_does, why_we_use_it,
-    who_it_s_for, suitable_for_skin_type, effective_at,
-    potentially_pore_clogging, cautions_side_effects,
-    related_ingredients, products_containing
+  ─────────────────────────────────────────────────────────────────
+  Enhancements in this version:
+  1. Breadcrumb nav at top (Home → Glossary → Ingredient Name)
+  2. Prev/Next ingredient navigation (A–Z order) at bottom
+  3. "Shop This Ingredient" section — only visible if m.products has entries
+  4. Full schema.org structured data (DefinedTerm + BreadcrumbList)
+  5. Existing: Quick Facts sidebar, skin benefits, description, related
+  ─────────────────────────────────────────────────────────────────
+  Verified real field names:
+    name, ingredient_origin, main_function, description, skin_benefits,
+    suitable_for_skin_type, effective_at, potentially_pore_clogging,
+    cautions_side_effects, related_ingredients, products_containing,
+    products (list.product_reference — HARAMOON products)
 {%- endcomment -%}
 
 {%- assign m = metaobject -%}
 {%- assign display_name = m.name | default: m.ingredient_name -%}
 
+{%- comment -%}
+  Build sorted ingredient list for prev/next navigation.
+  We use shop.metaobjects.ingredient_profile.values sorted by name.
+{%- endcomment -%}
+{%- assign all_ingredients = shop.metaobjects.ingredient_profile.values | sort: 'name' -%}
+{%- assign current_handle = metaobject.system.handle -%}
+{%- assign prev_ing = nil -%}
+{%- assign next_ing = nil -%}
+{%- assign found_current = false -%}
+
+{%- for ing in all_ingredients -%}
+  {%- if found_current == false -%}
+    {%- if ing.system.handle == current_handle -%}
+      {%- assign found_current = true -%}
+    {%- else -%}
+      {%- assign prev_ing = ing -%}
+    {%- endif -%}
+  {%- elsif next_ing == nil -%}
+    {%- assign next_ing = ing -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- comment -%} Check if this ingredient has HARAMOON products linked {%- endcomment -%}
+{%- assign has_products = false -%}
+{%- if m.products -%}
+  {%- for prod in m.products limit: 1 -%}
+    {%- assign has_products = true -%}
+  {%- endfor -%}
+{%- endif -%}
+{%- comment -%} Also check products_containing (legacy field) {%- endcomment -%}
+{%- if has_products == false and m.products_containing -%}
+  {%- for prod in m.products_containing limit: 1 -%}
+    {%- assign has_products = true -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- comment -%} Google Structured Data — DefinedTerm + BreadcrumbList + Product mentions {%- endcomment -%}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Thing",
+  "@type": "DefinedTerm",
   "name": {{ display_name | json }},
-  "description": {{ m.description | default: m.skin_benefits | default: display_name | json }},
+  "description": {{ m.description | default: m.skin_benefits | default: m.main_function | default: display_name | json }},
   "url": "{{ shop.url }}{{ metaobject.system.url }}",
-  "breadcrumb": {
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {"@type":"ListItem","position":1,"name":"Home","item":"{{ shop.url }}/"},
-      {"@type":"ListItem","position":2,"name":"Ingredient Glossary","item":"{{ shop.url }}/pages/ultimate-korean-skincare-ingredient-glossary"},
-      {"@type":"ListItem","position":3,"name":{{ display_name | json }},"item":"{{ shop.url }}{{ metaobject.system.url }}"}
-    ]
+  "inDefinedTermSet": {
+    "@type": "DefinedTermSet",
+    "name": "HARAMOON Korean Skincare Ingredient Glossary",
+    "url": "{{ shop.url }}/pages/ultimate-korean-skincare-ingredient-glossary"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type":"ListItem","position":1,"name":"Home","item":"{{ shop.url }}/"},
+    {"@type":"ListItem","position":2,"name":"Ingredient Glossary","item":"{{ shop.url }}/pages/ultimate-korean-skincare-ingredient-glossary"},
+    {"@type":"ListItem","position":3,"name":{{ display_name | json }},"item":"{{ shop.url }}{{ metaobject.system.url }}"}
+  ]
 }
 </script>
 
 <style>
   .ip-wrap{max-width:1100px;margin:0 auto;padding:0 20px 80px;font-family:'Poppins',sans-serif}
-  .ip-breadcrumb{font-size:13px;color:#6b7280;margin:24px 0 20px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
-  .ip-breadcrumb a{color:#1e3a8a;text-decoration:none}
+
+  /* ── Breadcrumb ── */
+  .ip-breadcrumb{font-size:13px;color:#6b7280;margin:24px 0 8px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+  .ip-breadcrumb a{color:#1e3a8a;text-decoration:none;font-weight:500}
   .ip-breadcrumb a:hover{text-decoration:underline}
-  .ip-breadcrumb span{opacity:.5}
-  .ip-back-link{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:#1e3a8a;text-decoration:none;margin-bottom:28px;padding:8px 16px;border:1.5px solid #1e3a8a;border-radius:8px;transition:background .2s}
+  .ip-breadcrumb-sep{opacity:.4;margin:0 2px}
+
+  /* ── Back link ── */
+  .ip-back-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#1e3a8a;text-decoration:none;margin-bottom:28px;padding:7px 14px;border:1.5px solid #1e3a8a;border-radius:8px;transition:background .2s}
   .ip-back-link:hover{background:#eff6ff}
+
+  /* ── Header ── */
   .ip-header{margin-bottom:36px;padding-bottom:24px;border-bottom:2px solid #e5e7eb}
   .ip-badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
   .ip-badge{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border-radius:20px;border:1.5px solid currentColor}
@@ -45,8 +104,12 @@
   .ip-h1{font-size:38px;font-weight:800;color:#1e3a8a;margin:0 0 8px;line-height:1.15}
   .ip-inci{font-size:14px;color:#6b7280;font-style:italic;margin:0}
   @media(max-width:768px){.ip-h1{font-size:26px}}
+
+  /* ── Layout ── */
   .ip-layout{display:grid;grid-template-columns:300px 1fr;gap:40px;align-items:start}
   @media(max-width:768px){.ip-layout{grid-template-columns:1fr;gap:24px}}
+
+  /* ── Sidebar cards ── */
   .ip-card{background:#f8faff;border:1.5px solid #dbeafe;border-radius:14px;padding:20px;margin-bottom:20px}
   .ip-card-title{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#1e3a8a;margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid #dbeafe}
   .ip-info-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #f0f4ff;font-size:14px}
@@ -63,24 +126,62 @@
   .ip-warning p{font-size:14px;color:#7c2d12;margin:0;line-height:1.6}
   .ip-pore-yes{color:#dc2626;font-weight:700}
   .ip-pore-no{color:#16a34a;font-weight:700}
+
+  /* ── Main content ── */
   .ip-section{margin-bottom:32px}
   .ip-section-title{font-size:19px;font-weight:700;color:#1e3a8a;margin:0 0 12px;padding-bottom:8px;border-bottom:2px solid #dbeafe}
   .ip-prose{font-size:15px;line-height:1.75;color:#374151}
   .ip-prose p{margin:0 0 12px}
-  .ip-products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-top:14px}
-  .ip-product-card{display:block;text-decoration:none;border:1.5px solid #e5e7eb;border-radius:12px;overflow:hidden;transition:box-shadow .2s,transform .2s}
-  .ip-product-card:hover{box-shadow:0 4px 16px rgba(30,58,138,.12);transform:translateY(-2px)}
-  .ip-product-card img{width:100%;aspect-ratio:1;object-fit:cover}
-  .ip-product-card-name{font-size:13px;font-weight:600;color:#1f2937;padding:8px 10px;line-height:1.3}
+
+  /* ── Shop This Ingredient section ── */
+  .ip-shop-section{
+    background:linear-gradient(135deg,#1e3a8a 0%,#1a2744 100%);
+    border-radius:18px;
+    padding:32px 28px;
+    margin-bottom:32px;
+    color:#fff;
+  }
+  .ip-shop-eyebrow{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.6);margin:0 0 6px}
+  .ip-shop-title{font-size:22px;font-weight:800;color:#fff;margin:0 0 6px;line-height:1.2}
+  .ip-shop-sub{font-size:14px;color:rgba(255,255,255,.7);margin:0 0 24px;line-height:1.5}
+  .ip-shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+  .ip-shop-card{display:block;text-decoration:none;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;overflow:hidden;transition:background .2s,transform .2s,box-shadow .2s}
+  .ip-shop-card:hover{background:rgba(255,255,255,.14);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+  .ip-shop-card img{width:100%;aspect-ratio:1;object-fit:cover}
+  .ip-shop-card-name{font-size:13px;font-weight:600;color:#fff;padding:10px 12px;line-height:1.3}
+  .ip-shop-card-price{font-size:12px;color:rgba(255,255,255,.6);padding:0 12px 10px}
+  .ip-shop-cta{display:inline-flex;align-items:center;gap:8px;margin-top:20px;padding:11px 22px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:10px;color:#fff;font-size:13px;font-weight:700;text-decoration:none;letter-spacing:.04em;transition:background .2s}
+  .ip-shop-cta:hover{background:rgba(255,255,255,.25)}
+
+  /* ── Prev/Next navigation ── */
+  .ip-prevnext{display:flex;justify-content:space-between;align-items:stretch;gap:16px;margin-top:48px;padding-top:32px;border-top:2px solid #e5e7eb}
+  .ip-prevnext-btn{display:flex;flex-direction:column;gap:4px;text-decoration:none;padding:16px 20px;border:1.5px solid #dbeafe;border-radius:14px;background:#f8faff;transition:border-color .2s,box-shadow .2s,background .2s;max-width:48%;min-width:0}
+  .ip-prevnext-btn:hover{border-color:#1e3a8a;background:#eff6ff;box-shadow:0 4px 16px rgba(30,58,138,.1)}
+  .ip-prevnext-btn.ip-next{text-align:right;margin-left:auto}
+  .ip-prevnext-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6b7280;margin-bottom:2px}
+  .ip-prevnext-name{font-size:15px;font-weight:700;color:#1e3a8a;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ip-prevnext-arrow{font-size:18px;color:#1e3a8a;line-height:1}
+  @media(max-width:640px){
+    .ip-prevnext{flex-direction:column}
+    .ip-prevnext-btn{max-width:100%}
+    .ip-prevnext-btn.ip-next{text-align:left;margin-left:0}
+  }
 </style>
 
 <div class="ip-wrap">
+
+  {%- comment -%} Breadcrumb {%- endcomment -%}
   <nav class="ip-breadcrumb" aria-label="Breadcrumb">
-    <a href="/">Home</a><span>›</span>
-    <a href="/pages/ultimate-korean-skincare-ingredient-glossary">HARAMOON Ingredient Glossary</a><span>›</span>
-    <span>{{ display_name }}</span>
+    <a href="/">Home</a>
+    <span class="ip-breadcrumb-sep" aria-hidden="true">›</span>
+    <a href="/pages/ultimate-korean-skincare-ingredient-glossary">Ingredient Glossary</a>
+    <span class="ip-breadcrumb-sep" aria-hidden="true">›</span>
+    <span aria-current="page">{{ display_name }}</span>
   </nav>
+
   <a href="/pages/ultimate-korean-skincare-ingredient-glossary" class="ip-back-link">← Back to Ingredient Glossary</a>
+
+  {%- comment -%} Header {%- endcomment -%}
   <header class="ip-header">
     <div class="ip-badges">
       {%- if m.ingredient_origin -%}<span class="ip-badge ip-badge--origin">{{ m.ingredient_origin }}</span>{%- endif -%}
@@ -89,91 +190,205 @@
     <h1 class="ip-h1">{{ display_name }}</h1>
     {%- if m.inci_name and m.inci_name != blank -%}<p class="ip-inci">INCI: {{ m.inci_name }}</p>{%- endif -%}
   </header>
+
+  {%- comment -%} Main layout: sidebar + content {%- endcomment -%}
   <div class="ip-layout">
     <aside>
       <div class="ip-card">
         <p class="ip-card-title">Quick Facts</p>
-        {%- if m.ingredient_origin -%}<div class="ip-info-row"><span class="ip-info-label">Origin</span><span class="ip-info-value">{{ m.ingredient_origin }}</span></div>{%- endif -%}
-        {%- if m.main_function -%}<div class="ip-info-row"><span class="ip-info-label">Function</span><span class="ip-info-value">{{ m.main_function }}</span></div>{%- endif -%}
-        {%- if m.inci_name and m.inci_name != blank -%}<div class="ip-info-row"><span class="ip-info-label">INCI</span><span class="ip-info-value">{{ m.inci_name }}</span></div>{%- endif -%}
+        {%- if m.ingredient_origin -%}
+          <div class="ip-info-row"><span class="ip-info-label">Origin</span><span class="ip-info-value">{{ m.ingredient_origin }}</span></div>
+        {%- endif -%}
+        {%- if m.main_function -%}
+          <div class="ip-info-row"><span class="ip-info-label">Function</span><span class="ip-info-value">{{ m.main_function }}</span></div>
+        {%- endif -%}
+        {%- if m.sub_category and m.sub_category != blank -%}
+          <div class="ip-info-row"><span class="ip-info-label">Category</span><span class="ip-info-value">{{ m.sub_category }}</span></div>
+        {%- endif -%}
+        {%- if m.inci_name and m.inci_name != blank -%}
+          <div class="ip-info-row"><span class="ip-info-label">INCI</span><span class="ip-info-value">{{ m.inci_name }}</span></div>
+        {%- endif -%}
         {%- if m.potentially_pore_clogging != blank -%}
-          <div class="ip-info-row"><span class="ip-info-label">Pore-Clogging?</span><span class="ip-info-value">{%- if m.potentially_pore_clogging == true -%}<span class="ip-pore-yes">Yes</span>{%- else -%}<span class="ip-pore-no">No</span>{%- endif -%}</span></div>
+          <div class="ip-info-row">
+            <span class="ip-info-label">Pore-Clogging?</span>
+            <span class="ip-info-value">
+              {%- if m.potentially_pore_clogging == true -%}<span class="ip-pore-yes">Yes</span>
+              {%- else -%}<span class="ip-pore-no">No</span>{%- endif -%}
+            </span>
+          </div>
         {%- endif -%}
       </div>
+
       {%- if m.suitable_for_skin_type -%}
         <div class="ip-card">
           <p class="ip-card-title">Best For Skin Type</p>
           <div class="ip-chips">
             {%- for skin_type in m.suitable_for_skin_type -%}
-              {%- if skin_type.system.url -%}<a href="{{ skin_type.system.url }}" class="ip-chip ip-chip--green">{{ skin_type.name | default: skin_type }}</a>
-              {%- else -%}<span class="ip-chip ip-chip--green">{{ skin_type }}</span>{%- endif -%}
+              {%- if skin_type.system.url -%}
+                <a href="{{ skin_type.system.url }}" class="ip-chip ip-chip--green">{{ skin_type.name | default: skin_type }}</a>
+              {%- else -%}
+                <span class="ip-chip ip-chip--green">{{ skin_type }}</span>
+              {%- endif -%}
             {%- endfor -%}
           </div>
         </div>
       {%- endif -%}
+
       {%- if m.effective_at -%}
         <div class="ip-card">
           <p class="ip-card-title">Effective At</p>
           <div class="ip-chips">
             {%- for concern in m.effective_at -%}
-              {%- if concern.system.url -%}<a href="{{ concern.system.url }}" class="ip-chip">{{ concern.name | default: concern }}</a>
-              {%- else -%}<span class="ip-chip">{{ concern }}</span>{%- endif -%}
+              {%- if concern.system.url -%}
+                <a href="{{ concern.system.url }}" class="ip-chip">{{ concern.name | default: concern }}</a>
+              {%- else -%}
+                <span class="ip-chip">{{ concern }}</span>
+              {%- endif -%}
             {%- endfor -%}
           </div>
         </div>
       {%- endif -%}
+
       {%- if m.related_ingredients -%}
         <div class="ip-card">
           <p class="ip-card-title">Pairs Well With</p>
           <div class="ip-chips">
             {%- for rel in m.related_ingredients -%}
-              {%- if rel.system.url -%}<a href="{{ rel.system.url }}" class="ip-chip">{{ rel.name | default: rel }}</a>
-              {%- else -%}<span class="ip-chip">{{ rel }}</span>{%- endif -%}
+              {%- if rel.system.url -%}
+                <a href="{{ rel.system.url }}" class="ip-chip">{{ rel.name | default: rel }}</a>
+              {%- else -%}
+                <span class="ip-chip">{{ rel }}</span>
+              {%- endif -%}
             {%- endfor -%}
           </div>
         </div>
       {%- endif -%}
+
       {%- if m.cautions_side_effects and m.cautions_side_effects != blank -%}
         <div class="ip-warning">
-          <p class="ip-warning-title">Cautions and Side Effects</p>
+          <p class="ip-warning-title">Cautions &amp; Side Effects</p>
           <p>{{ m.cautions_side_effects }}</p>
         </div>
       {%- endif -%}
     </aside>
+
     <main>
       {%- if m.skin_benefits and m.skin_benefits != blank -%}
-        <div class="ip-section"><h2 class="ip-section-title">Skin Benefits</h2><div class="ip-prose">{{ m.skin_benefits | newline_to_br }}</div></div>
-      {%- endif -%}
-      {%- if m.description and m.description != blank -%}
-        <div class="ip-section"><h2 class="ip-section-title">About This Ingredient</h2><div class="ip-prose">{{ m.description | newline_to_br }}</div></div>
-      {%- endif -%}
-      {%- if m.what_it_is and m.what_it_is != blank -%}
-        <div class="ip-section"><h2 class="ip-section-title">What It Is</h2><div class="ip-prose">{{ m.what_it_is | newline_to_br }}</div></div>
-      {%- endif -%}
-      {%- if m.what_it_does and m.what_it_does != blank -%}
-        <div class="ip-section"><h2 class="ip-section-title">What It Does</h2><div class="ip-prose">{{ m.what_it_does | newline_to_br }}</div></div>
-      {%- endif -%}
-      {%- if m.why_we_use_it and m.why_we_use_it != blank -%}
-        <div class="ip-section"><h2 class="ip-section-title">Why HARAMOON Uses It</h2><div class="ip-prose">{{ m.why_we_use_it | newline_to_br }}</div></div>
-      {%- endif -%}
-      {%- if m.who_it_s_for and m.who_it_s_for != blank -%}
-        <div class="ip-section"><h2 class="ip-section-title">Who It's For</h2><div class="ip-prose">{{ m.who_it_s_for | newline_to_br }}</div></div>
-      {%- endif -%}
-      {%- if m.products_containing -%}
         <div class="ip-section">
-          <h2 class="ip-section-title">Products Featuring This Ingredient</h2>
-          <div class="ip-products-grid">
-            {%- for product in m.products_containing -%}
-              <a href="{{ product.url }}" class="ip-product-card">
-                {%- if product.featured_image -%}{{ product.featured_image | image_url: width: 400 | image_tag: alt: product.title, loading: 'lazy' }}{%- endif -%}
-                <p class="ip-product-card-name">{{ product.title }}</p>
-              </a>
-            {%- endfor -%}
-          </div>
+          <h2 class="ip-section-title">Skin Benefits</h2>
+          <div class="ip-prose">{{ m.skin_benefits | newline_to_br }}</div>
         </div>
       {%- endif -%}
+
+      {%- if m.description and m.description != blank -%}
+        <div class="ip-section">
+          <h2 class="ip-section-title">About This Ingredient</h2>
+          <div class="ip-prose">{{ m.description | newline_to_br }}</div>
+        </div>
+      {%- endif -%}
+
+      {%- if m.what_it_is and m.what_it_is != blank -%}
+        <div class="ip-section">
+          <h2 class="ip-section-title">What It Is</h2>
+          <div class="ip-prose">{{ m.what_it_is | newline_to_br }}</div>
+        </div>
+      {%- endif -%}
+
+      {%- if m.what_it_does and m.what_it_does != blank -%}
+        <div class="ip-section">
+          <h2 class="ip-section-title">What It Does</h2>
+          <div class="ip-prose">{{ m.what_it_does | newline_to_br }}</div>
+        </div>
+      {%- endif -%}
+
+      {%- if m.why_we_use_it and m.why_we_use_it != blank -%}
+        <div class="ip-section">
+          <h2 class="ip-section-title">Why HARAMOON Uses It</h2>
+          <div class="ip-prose">{{ m.why_we_use_it | newline_to_br }}</div>
+        </div>
+      {%- endif -%}
+
+      {%- if m.who_it_s_for and m.who_it_s_for != blank -%}
+        <div class="ip-section">
+          <h2 class="ip-section-title">Who It's For</h2>
+          <div class="ip-prose">{{ m.who_it_s_for | newline_to_br }}</div>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%}
+        ── Shop This Ingredient ──
+        Only renders if m.products (or m.products_containing) has entries.
+        This section is invisible for ingredients not in any HARAMOON product.
+      {%- endcomment -%}
+      {%- if has_products -%}
+        <div class="ip-shop-section">
+          <p class="ip-shop-eyebrow">Found in HARAMOON</p>
+          <h2 class="ip-shop-title">Shop This Ingredient</h2>
+          <p class="ip-shop-sub">{{ display_name }} is an active ingredient in these HARAMOON formulations.</p>
+          <div class="ip-shop-grid">
+            {%- if m.products -%}
+              {%- for product in m.products -%}
+                <a href="{{ product.url }}" class="ip-shop-card">
+                  {%- if product.featured_image -%}
+                    {{ product.featured_image | image_url: width: 400 | image_tag: alt: product.title, loading: 'lazy' }}
+                  {%- endif -%}
+                  <p class="ip-shop-card-name">{{ product.title }}</p>
+                  {%- if product.price_min -%}
+                    <p class="ip-shop-card-price">{{ product.price_min | money }}</p>
+                  {%- endif -%}
+                </a>
+              {%- endfor -%}
+            {%- elsif m.products_containing -%}
+              {%- for product in m.products_containing -%}
+                <a href="{{ product.url }}" class="ip-shop-card">
+                  {%- if product.featured_image -%}
+                    {{ product.featured_image | image_url: width: 400 | image_tag: alt: product.title, loading: 'lazy' }}
+                  {%- endif -%}
+                  <p class="ip-shop-card-name">{{ product.title }}</p>
+                  {%- if product.price_min -%}
+                    <p class="ip-shop-card-price">{{ product.price_min | money }}</p>
+                  {%- endif -%}
+                </a>
+              {%- endfor -%}
+            {%- endif -%}
+          </div>
+          <a href="/collections/haramoon-korean-skincare" class="ip-shop-cta">
+            View All HARAMOON Products
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12,5 19,12 12,19"></polyline>
+            </svg>
+          </a>
+        </div>
+      {%- endif -%}
+
     </main>
   </div>
+
+  {%- comment -%} ── Prev / Next Navigation ── {%- endcomment -%}
+  {%- if prev_ing or next_ing -%}
+    <nav class="ip-prevnext" aria-label="Ingredient navigation">
+      {%- if prev_ing -%}
+        <a href="{{ prev_ing.system.url }}" class="ip-prevnext-btn ip-prev">
+          <span class="ip-prevnext-arrow" aria-hidden="true">←</span>
+          <span class="ip-prevnext-label">Previous Ingredient</span>
+          <span class="ip-prevnext-name">{{ prev_ing.name }}</span>
+        </a>
+      {%- else -%}
+        <div></div>
+      {%- endif -%}
+
+      {%- if next_ing -%}
+        <a href="{{ next_ing.system.url }}" class="ip-prevnext-btn ip-next">
+          <span class="ip-prevnext-label">Next Ingredient</span>
+          <span class="ip-prevnext-name">{{ next_ing.name }}</span>
+          <span class="ip-prevnext-arrow" aria-hidden="true">→</span>
+        </a>
+      {%- else -%}
+        <div></div>
+      {%- endif -%}
+    </nav>
+  {%- endif -%}
+
 </div>
 
 {% schema %}
