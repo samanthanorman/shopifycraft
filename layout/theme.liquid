@@ -298,7 +298,7 @@
       }
     </script>
 
-    <!-- Pinterest Tag -->
+   <!-- Pinterest Tag -->
 <script>
 !function(e){if(!window.pintrk){window.pintrk=function(){
 window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var
@@ -315,11 +315,13 @@ pintrk('page');
 </noscript>
 <!-- End Pinterest Tag -->
 
-{% if customer %}
 <script>
+  {% if customer %}
   window.addEventListener('load', function() {
     pintrk('set', { em: '{{ customer.email | downcase | sha256 }}' });
   });
+  {% endif %}
+
   document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('form[action="/cart/add"]').forEach(function(form) {
       form.addEventListener('submit', function() {
@@ -328,7 +330,7 @@ pintrk('page');
     });
   });
 </script>
-{% endif %}
+
 
 
 <!-- Google tag (gtag.js) -->
