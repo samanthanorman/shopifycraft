@@ -322,16 +322,16 @@ pintrk('page');
   });
   {% endif %}
 
-  document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('form[action="/cart/add"]').forEach(function(form) {
       form.addEventListener('submit', function() {
-        pintrk('track', 'addtocart');
+        var eventId = 'atc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        pintrk('track', 'addtocart', { event_id: eventId });
       });
     });
   });
+
 </script>
-
-
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=GT-WVGDC7TL"></script>
@@ -350,7 +350,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-WKSB8S9H');</script>
 <!-- End Google Tag Manager -->
-
 
 </head>
 
