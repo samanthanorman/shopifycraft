@@ -196,34 +196,34 @@
       "scheme-3": {
         "settings": {
           "background": "#e8d5d0",
-          "background_gradient": "radial-gradient(rgba(242, 242, 240, 1) 44%, rgba(232, 213, 208, 1) 99%)",
-          "text": "#4a4a48",
-          "button": "#d4c98a",
-          "button_label": "#2c2c2a",
-          "secondary_button_label": "#4a4a48",
+          "background_gradient": "radial-gradient(rgba(253, 250, 240, 1) 38%, rgba(232, 213, 208, 1) 76%)",
+          "text": "#181816",
+          "button": "#dfac40",
+          "button_label": "#ffffff",
+          "secondary_button_label": "#3c3c3a",
           "shadow": "#c4bfcc"
         }
       },
       "scheme-4": {
         "settings": {
           "background": "#f7ffe8",
-          "background_gradient": "linear-gradient(135deg, rgba(247, 255, 232, 1), rgba(233, 255, 189, 1) 100%)",
-          "text": "#1c2b1a",
-          "button": "#e9ffbd",
-          "button_label": "#1c2b1a",
-          "secondary_button_label": "#1c2b1a",
-          "shadow": "#a8d5a2"
+          "background_gradient": "radial-gradient(rgba(233, 255, 189, 1) 5%, rgba(255, 255, 255, 1) 76%)",
+          "text": "#0e3436",
+          "button": "#0a9174",
+          "button_label": "#ffffff",
+          "secondary_button_label": "#1c6569",
+          "shadow": "#caf8c4"
         }
       },
       "scheme-5": {
         "settings": {
           "background": "#f0f8ff",
-          "background_gradient": "linear-gradient(135deg, rgba(240, 248, 255, 1), rgba(200, 232, 255, 1) 50%, rgba(232, 216, 255, 1) 100%)",
+          "background_gradient": "linear-gradient(135deg, rgba(245, 251, 255, 1) 4%, rgba(200, 245, 255, 1) 29%, rgba(232, 216, 255, 1) 73%)",
           "text": "#0a1628",
-          "button": "#1e90ff",
+          "button": "#0d87ff",
           "button_label": "#ffffff",
           "secondary_button_label": "#0a1628",
-          "shadow": "#c8e8ff"
+          "shadow": "#ffffff"
         }
       },
       "scheme-18454811-40b3-4438-bce6-d3a35687366e": {
@@ -239,13 +239,13 @@
       },
       "scheme-5a71830d-bb14-4361-a5f4-6672bdde5b1f": {
         "settings": {
-          "background": "#f0f8ff",
+          "background": "#9eeaff",
           "background_gradient": "",
           "text": "#0d1b3e",
-          "button": "#16a9e6",
-          "button_label": "#ffffff",
-          "secondary_button_label": "#0a506d",
-          "shadow": "#a5dbf1"
+          "button": "#ffffff",
+          "button_label": "#0d1b3e",
+          "secondary_button_label": "#00479c",
+          "shadow": "#80e4ff"
         }
       }
     }

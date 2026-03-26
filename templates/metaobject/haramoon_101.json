@@ -9,90 +9,6 @@
  */
 {
   "sections": {
-    "blocks_MWyGF6": {
-      "type": "_blocks",
-      "name": "Korean skincare routine",
-      "settings": {}
-    },
-    "featured_product_R9Cfba": {
-      "type": "featured-product",
-      "blocks": {
-        "title_yHywP4": {
-          "type": "title",
-          "settings": {
-            "heading_size": "h2"
-          }
-        },
-        "text_ykLRAM": {
-          "type": "text",
-          "disabled": true,
-          "settings": {
-            "text": "{{ section.settings.product.vendor }}",
-            "text_style": "uppercase"
-          }
-        },
-        "text_tdEUdd": {
-          "type": "text",
-          "settings": {
-            "text": "{{ section.settings.product.metafields.custom.product_rating | metafield_tag }}",
-            "text_style": "body"
-          }
-        },
-        "price_d8gRCE": {
-          "type": "price",
-          "settings": {}
-        },
-        "variant_picker_RBGVRP": {
-          "type": "variant_picker",
-          "settings": {
-            "picker_type": "button",
-            "swatch_shape": "circle"
-          }
-        },
-        "quantity_selector_fLidHA": {
-          "type": "quantity_selector",
-          "settings": {}
-        },
-        "buy_buttons_bAhMjr": {
-          "type": "buy_buttons",
-          "settings": {
-            "show_dynamic_checkout": true,
-            "show_gift_card_recipient": true
-          }
-        },
-        "share_zzB8qq": {
-          "type": "share",
-          "settings": {
-            "share_label": "Share"
-          }
-        }
-      },
-      "block_order": [
-        "title_yHywP4",
-        "text_ykLRAM",
-        "text_tdEUdd",
-        "price_d8gRCE",
-        "variant_picker_RBGVRP",
-        "quantity_selector_fLidHA",
-        "buy_buttons_bAhMjr",
-        "share_zzB8qq"
-      ],
-      "name": "t:sections.featured-product.presets.name",
-      "settings": {
-        "product": "{{ metaobject.product.value }}",
-        "color_scheme": "scheme-2",
-        "secondary_background": false,
-        "media_size": "small",
-        "constrain_to_viewport": true,
-        "media_fit": "contain",
-        "media_position": "left",
-        "image_zoom": "hover",
-        "hide_variants": false,
-        "enable_video_looping": false,
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
     "blocks_yiW46k": {
       "type": "_blocks",
       "name": "Glass skin routine",
@@ -124,13 +40,13 @@
           "settings": {
             "title": "Frequently Asked Questions",
             "subtitle": "<p>Find answers to common questions about our skincare ingredients and their benefits.</p>",
-            "text_alignment": "center",
+            "text_alignment": "left",
             "allow_multiple_open": true,
-            "first_item_open": false,
+            "first_item_open": true,
             "faq_1_category": "",
             "faq_1_question": "What are the benefits of Hyaluronic Acid?",
             "faq_1_answer": "<p>Hyaluronic Acid is a powerful humectant that can hold up to 1000 times its weight in water. It helps to deeply hydrate the skin, plump fine lines, and maintain skin elasticity. This ingredient is suitable for all skin types and works well with other active ingredients.</p>",
-            "faq_1_link": "",
+            "faq_1_link": "shopify://pages/ultimate-korean-skincare-ingredient-glossary",
             "faq_2_category": "",
             "faq_2_question": "How does Niacinamide help with skin concerns?",
             "faq_2_answer": "<p>Niacinamide (Vitamin B3) is a versatile ingredient that helps regulate oil production, minimize the appearance of pores, improve skin texture, and reduce redness. It's gentle enough for sensitive skin and can be used morning and evening. Niacinamide also helps strengthen the skin barrier and provides antioxidant protection.</p>",
@@ -217,19 +133,52 @@
       "name": "t:sections.page.presets.name",
       "settings": {
         "page": "about-haramoon",
-        "heading_size": "h1",
-        "color_scheme": "",
-        "padding_top": 36,
-        "padding_bottom": 36
+        "heading_size": "h2",
+        "color_scheme": "scheme-5a71830d-bb14-4361-a5f4-6672bdde5b1f",
+        "padding_top": 40,
+        "padding_bottom": 4
+      }
+    },
+    "newsletter_HGwxHL": {
+      "type": "newsletter",
+      "blocks": {
+        "heading_mPKWJN": {
+          "type": "heading",
+          "settings": {
+            "heading": "Subscribe to our emails",
+            "heading_size": "h1"
+          }
+        },
+        "paragraph_BHwXbr": {
+          "type": "paragraph",
+          "settings": {
+            "text": "<p>Be the first to know about new collections and exclusive offers.</p>"
+          }
+        },
+        "email_form_iTa88j": {
+          "type": "email_form",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "heading_mPKWJN",
+        "paragraph_BHwXbr",
+        "email_form_iTa88j"
+      ],
+      "name": "t:sections.newsletter.presets.name",
+      "settings": {
+        "color_scheme": "scheme-5",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
       }
     }
   },
   "order": [
-    "blocks_MWyGF6",
-    "featured_product_R9Cfba",
     "blocks_yiW46k",
     "featured_blog_LQA93x",
     "blocks_mrDj7Y",
-    "page_LDRjA9"
+    "page_LDRjA9",
+    "newsletter_HGwxHL"
   ]
 }
