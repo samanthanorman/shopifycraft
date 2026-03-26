@@ -1,0 +1,526 @@
+{%- comment -%}
+  HM Ingredient Heroes Grid — Wax | Wane / HARAMOON
+  ─────────────────────────────────────────────────────────────────
+  Shows up to 9 ingredient_profile metaobjects linked to the current
+  product in a 3×3 responsive pill grid. Each pill is clickable and
+  links to the ingredient's profile page.
+  Glassmorphism + hover glow effects. Fully editable in theme editor.
+  Invisible if the product has no linked ingredient_profiles.
+  ─────────────────────────────────────────────────────────────────
+{%- endcomment -%}
+
+{%- liquid
+  assign ing_list = product.metafields.custom.ingredient_profiles.value
+  assign ing_count = ing_list | size
+-%}
+
+{%- if ing_list and ing_count > 0 -%}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Key Ingredients in {{ product.title | escape }}",
+  "description": "Active ingredient profiles used in {{ product.title | escape }} by HARAMOON Korean Skincare.",
+  "url": "{{ shop.url }}{{ product.url }}",
+  "itemListElement": [
+    {%- for ing in ing_list limit: 9 -%}
+    {
+      "@type": "ListItem",
+      "position": {{ forloop.index }},
+      "name": {{ ing.name | json }},
+      "url": "{{ shop.url }}{{ ing.system.url }}"
+    }{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ]
+}
+</script>
+
+<style>
+  /* ── Section wrapper ── */
+  .hm-ing-heroes {
+    padding: {{ section.settings.padding_top }}px {{ section.settings.side_padding }}px {{ section.settings.padding_bottom }}px;
+    background: {{ section.settings.bg_color }};
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Subtle ambient glow behind the section */
+  .hm-ing-heroes::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 50%, {{ section.settings.accent_color | color_modify: 'alpha', 0.06 }} 0%, transparent 70%),
+      radial-gradient(ellipse 60% 50% at 80% 50%, {{ section.settings.accent_color_2 | color_modify: 'alpha', 0.06 }} 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hm-ing-heroes__inner {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Header ── */
+  .hm-ing-heroes__header {
+    text-align: {{ section.settings.header_align }};
+    margin-bottom: {{ section.settings.header_gap }}px;
+  }
+  .hm-ing-heroes__eyebrow {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: {{ section.settings.accent_color }};
+    margin-bottom: 8px;
+  }
+  .hm-ing-heroes__title {
+    font-size: {{ section.settings.title_size }}px;
+    font-weight: 700;
+    color: {{ section.settings.title_color }};
+    margin: 0 0 6px;
+    line-height: 1.2;
+  }
+  .hm-ing-heroes__subtitle {
+    font-size: {{ section.settings.subtitle_size }}px;
+    color: {{ section.settings.subtitle_color }};
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ── Pill grid ── */
+  .hm-ing-heroes__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: {{ section.settings.pill_gap }}px;
+  }
+
+  /* ── Individual pill ── */
+  .hm-ing-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    padding: {{ section.settings.pill_padding_v }}px {{ section.settings.pill_padding_h }}px;
+    border-radius: {{ section.settings.pill_radius }}px;
+    background: {{ section.settings.pill_bg }};
+    border: 1.5px solid {{ section.settings.pill_border }};
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow:
+      0 4px 20px {{ section.settings.shadow_color | color_modify: 'alpha', 0.08 }},
+      inset 0 1px 0 {{ section.settings.glass_highlight | color_modify: 'alpha', 0.45 }};
+    transition:
+      transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.3s ease,
+      border-color 0.3s ease,
+      background 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    min-height: {{ section.settings.pill_min_height }}px;
+    text-align: center;
+  }
+
+  /* Frosted glass shimmer overlay */
+  .hm-ing-pill::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+      {{ section.settings.glass_highlight | color_modify: 'alpha', 0.22 }} 0%,
+      transparent 60%);
+    border-radius: inherit;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  /* Hover glow */
+  .hm-ing-pill:hover {
+    transform: translateY(-5px) scale(1.04);
+    border-color: {{ section.settings.accent_color }};
+    background: {{ section.settings.pill_hover_bg }};
+    box-shadow:
+      0 10px 32px {{ section.settings.accent_color | color_modify: 'alpha', 0.22 }},
+      0 0 0 1px {{ section.settings.accent_color | color_modify: 'alpha', 0.18 }},
+      inset 0 1px 0 {{ section.settings.glass_highlight | color_modify: 'alpha', 0.6 }};
+  }
+  .hm-ing-pill:hover::before { opacity: 0.4; }
+
+  .hm-ing-pill:focus-visible {
+    outline: 2px solid {{ section.settings.accent_color }};
+    outline-offset: 3px;
+  }
+
+  /* Origin dot */
+  .hm-ing-pill__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+  .hm-ing-pill:hover .hm-ing-pill__dot {
+    transform: scale(1.4);
+  }
+  .hm-ing-pill__dot--natural   { background: #10b981; }
+  .hm-ing-pill__dot--synthetic { background: #8b5cf6; }
+  .hm-ing-pill__dot--fermented { background: #f59e0b; }
+  .hm-ing-pill__dot--biotech   { background: #3b82f6; }
+  .hm-ing-pill__dot--marine    { background: #06b6d4; }
+  .hm-ing-pill__dot--animal    { background: #ec4899; }
+  .hm-ing-pill__dot--mineral   { background: #6b7280; }
+  .hm-ing-pill__dot--other     { background: #d1d5db; }
+
+  /* Pill name text */
+  .hm-ing-pill__name {
+    font-size: {{ section.settings.pill_font_size }}px;
+    font-weight: 600;
+    color: {{ section.settings.pill_text_color }};
+    line-height: 1.25;
+    transition: color 0.25s ease;
+  }
+  .hm-ing-pill:hover .hm-ing-pill__name {
+    color: {{ section.settings.accent_color }};
+  }
+
+  /* Arrow on hover */
+  .hm-ing-pill__arrow {
+    font-size: 11px;
+    color: {{ section.settings.accent_color }};
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    flex-shrink: 0;
+  }
+  .hm-ing-pill:hover .hm-ing-pill__arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 640px) {
+    .hm-ing-heroes__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: {{ section.settings.pill_gap | times: 0.75 }}px;
+    }
+    .hm-ing-heroes__title {
+      font-size: {{ section.settings.title_size | times: 0.8 }}px;
+    }
+    .hm-ing-pill {
+      padding: {{ section.settings.pill_padding_v | times: 0.8 }}px {{ section.settings.pill_padding_h | times: 0.8 }}px;
+    }
+    .hm-ing-pill__name {
+      font-size: {{ section.settings.pill_font_size | times: 0.88 }}px;
+    }
+  }
+</style>
+
+<div class="hm-ing-heroes">
+  <div class="hm-ing-heroes__inner">
+
+    {%- if section.settings.eyebrow != blank or section.settings.title != blank -%}
+      <div class="hm-ing-heroes__header">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="hm-ing-heroes__eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="hm-ing-heroes__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtitle != blank -%}
+          <p class="hm-ing-heroes__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="hm-ing-heroes__grid">
+      {%- for ing in ing_list limit: 9 -%}
+        {%- assign origin_raw = ing.ingredient_origin | default: '' | downcase | replace: ' ', '' -%}
+        {%- if origin_raw contains 'natural' -%}{%- assign dot_mod = 'natural' -%}
+        {%- elsif origin_raw contains 'synthetic' -%}{%- assign dot_mod = 'synthetic' -%}
+        {%- elsif origin_raw contains 'fermented' -%}{%- assign dot_mod = 'fermented' -%}
+        {%- elsif origin_raw contains 'biotech' or origin_raw contains 'bioengineered' -%}{%- assign dot_mod = 'biotech' -%}
+        {%- elsif origin_raw contains 'marine' -%}{%- assign dot_mod = 'marine' -%}
+        {%- elsif origin_raw contains 'animal' -%}{%- assign dot_mod = 'animal' -%}
+        {%- elsif origin_raw contains 'mineral' -%}{%- assign dot_mod = 'mineral' -%}
+        {%- else -%}{%- assign dot_mod = 'other' -%}
+        {%- endif -%}
+
+        <a
+          href="{{ ing.system.url }}"
+          class="hm-ing-pill"
+          aria-label="Learn about {{ ing.name }}"
+          title="{{ ing.name }}{% if ing.main_function %} — {{ ing.main_function }}{% endif %}"
+        >
+          <span class="hm-ing-pill__dot hm-ing-pill__dot--{{ dot_mod }}"></span>
+          <span class="hm-ing-pill__name">{{ ing.name }}</span>
+          <span class="hm-ing-pill__arrow" aria-hidden="true">→</span>
+        </a>
+      {%- endfor -%}
+    </div>
+
+  </div>
+</div>
+
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Ingredient Heroes",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "What's Inside"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "Ingredient Heroes in This Formula"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle / description",
+      "default": "Tap any ingredient to explore its full profile."
+    },
+    {
+      "type": "select",
+      "id": "header_align",
+      "label": "Header alignment",
+      "options": [
+        { "value": "left",   "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right",  "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "header_gap",
+      "min": 12,
+      "max": 56,
+      "step": 4,
+      "unit": "px",
+      "label": "Space below header",
+      "default": 28
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Title font size",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle font size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "pill_font_size",
+      "min": 11,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Pill name font size",
+      "default": 13
+    },
+    {
+      "type": "header",
+      "content": "Layout & spacing"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 600,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "label": "Max content width",
+      "default": 900
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Section padding top",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Section padding bottom",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "side_padding",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Side padding",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "pill_gap",
+      "min": 6,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between pills",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "pill_padding_v",
+      "min": 8,
+      "max": 28,
+      "step": 2,
+      "unit": "px",
+      "label": "Pill vertical padding",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "pill_padding_h",
+      "min": 10,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Pill horizontal padding",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "pill_radius",
+      "min": 4,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Pill border radius",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "pill_min_height",
+      "min": 40,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Pill minimum height",
+      "default": 52
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background",
+      "default": "#f8faff"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#141615"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#53585a"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color (glow, hover, dots)",
+      "default": "#3498ff"
+    },
+    {
+      "type": "color",
+      "id": "accent_color_2",
+      "label": "Accent color 2 (ambient glow)",
+      "default": "#a78bfa"
+    },
+    {
+      "type": "color",
+      "id": "pill_bg",
+      "label": "Pill background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "pill_hover_bg",
+      "label": "Pill hover background",
+      "default": "#eff6ff"
+    },
+    {
+      "type": "color",
+      "id": "pill_border",
+      "label": "Pill border color",
+      "default": "#e5e7eb"
+    },
+    {
+      "type": "color",
+      "id": "pill_text_color",
+      "label": "Pill text color",
+      "default": "#1e3a8a"
+    },
+    {
+      "type": "color",
+      "id": "glass_highlight",
+      "label": "Glass highlight",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "shadow_color",
+      "label": "Shadow color",
+      "default": "#141615"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredient Heroes"
+    }
+  ]
+}
+{% endschema %}

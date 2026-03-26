@@ -274,7 +274,11 @@
   <section class="hm-infographic-break hm-infographic-break--cleanser" itemscope itemtype="https://schema.org/Product">
     <div class="hm-infographic-break__inner">
       <div class="hm-infographic-break__image-col">
-        <img src="{{ 'infographic_cleanser.png' | asset_url }}" alt="HARAMOON Pure Moisture Cleanser — Amino Acid Foam, pH 5.5, 100% Vegan, EWG Green Grade" loading="lazy" class="hm-infographic-break__img" itemprop="image" />
+        {%- if section.settings.cleanser_image != blank -%}
+          {{ section.settings.cleanser_image | image_url: width: 800 | image_tag: alt: section.settings.cleanser_image_alt | default: 'HARAMOON Pure Moisture Cleanser', loading: 'lazy', class: 'hm-infographic-break__img', itemprop: 'image' }}
+        {%- else -%}
+          <img src="{{ 'infographic_cleanser.png' | asset_url }}" alt="HARAMOON Pure Moisture Cleanser — Amino Acid Foam, pH 5.5, 100% Vegan, EWG Green Grade" loading="lazy" class="hm-infographic-break__img" itemprop="image" />
+        {%- endif -%}
       </div>
       <div class="hm-infographic-break__text-col">
         <p class="hm-routine-eyebrow">Step 1 — The Foundation</p>
@@ -295,7 +299,11 @@
   <section class="hm-infographic-break hm-infographic-break--toner hm-infographic-break--reverse" itemscope itemtype="https://schema.org/Product">
     <div class="hm-infographic-break__inner">
       <div class="hm-infographic-break__image-col">
-        <img src="{{ 'deepseawater1x1infographic.png' | asset_url }}" alt="HARAMOON Deep Sea Water Toner — 7-Layer Hyaluronic Acid, Deep Sea Minerals, pH 5.5, EWG Verified" loading="lazy" class="hm-infographic-break__img" itemprop="image" />
+        {%- if section.settings.toner_image != blank -%}
+          {{ section.settings.toner_image | image_url: width: 800 | image_tag: alt: section.settings.toner_image_alt | default: 'HARAMOON Deep Sea Water Toner', loading: 'lazy', class: 'hm-infographic-break__img', itemprop: 'image' }}
+        {%- else -%}
+          <img src="{{ 'deepseawater1x1infographic.png' | asset_url }}" alt="HARAMOON Deep Sea Water Toner — 7-Layer Hyaluronic Acid, Deep Sea Minerals, pH 5.5, EWG Verified" loading="lazy" class="hm-infographic-break__img" itemprop="image" />
+        {%- endif -%}
       </div>
       <div class="hm-infographic-break__text-col">
         <p class="hm-routine-eyebrow">Step 2 — The Vital Prep</p>
@@ -316,7 +324,11 @@
   <section class="hm-infographic-break hm-infographic-break--ampoule" itemscope itemtype="https://schema.org/Product">
     <div class="hm-infographic-break__inner">
       <div class="hm-infographic-break__image-col">
-        <img src="{{ 'infographic_ampoule.png' | asset_url }}" alt="HARAMOON Silky Hydration Ampoule — Syn-Hycan Complex, 8-Layer Hyaluronic Acid, Collagen Boosting, EWG Verified" loading="lazy" class="hm-infographic-break__img" itemprop="image" />
+        {%- if section.settings.ampoule_image != blank -%}
+          {{ section.settings.ampoule_image | image_url: width: 800 | image_tag: alt: section.settings.ampoule_image_alt | default: 'HARAMOON Silky Hydration Ampoule', loading: 'lazy', class: 'hm-infographic-break__img', itemprop: 'image' }}
+        {%- else -%}
+          <img src="{{ 'infographic_ampoule.png' | asset_url }}" alt="HARAMOON Silky Hydration Ampoule — Syn-Hycan Complex, 8-Layer Hyaluronic Acid, Collagen Boosting, EWG Verified" loading="lazy" class="hm-infographic-break__img" itemprop="image" />
+        {%- endif -%}
       </div>
       <div class="hm-infographic-break__text-col">
         <p class="hm-routine-eyebrow">Step 3 — The Treatment</p>
@@ -337,7 +349,11 @@
   <section class="hm-infographic-break hm-infographic-break--cream hm-infographic-break--reverse" itemscope itemtype="https://schema.org/Product">
     <div class="hm-infographic-break__inner">
       <div class="hm-infographic-break__image-col">
-        <img src="{{ 'infographic_cream.png' | asset_url }}" alt="HARAMOON Soothing Centella Cream — 64% Centella Asiatica, Skin Barrier Repair, EWG Verified + Vegan" loading="lazy" class="hm-infographic-break__img" itemprop="image" />
+        {%- if section.settings.cream_image != blank -%}
+          {{ section.settings.cream_image | image_url: width: 800 | image_tag: alt: section.settings.cream_image_alt | default: 'HARAMOON Soothing Centella Cream', loading: 'lazy', class: 'hm-infographic-break__img', itemprop: 'image' }}
+        {%- else -%}
+          <img src="{{ 'infographic_cream.png' | asset_url }}" alt="HARAMOON Soothing Centella Cream — 64% Centella Asiatica, Skin Barrier Repair, EWG Verified + Vegan" loading="lazy" class="hm-infographic-break__img" itemprop="image" />
+        {%- endif -%}
       </div>
       <div class="hm-infographic-break__text-col">
         <p class="hm-routine-eyebrow">Step 4 — The Seal</p>
@@ -1301,7 +1317,19 @@
     { "type": "product", "id": "bundle_product", "label": "Bundle Product (optional)" },
     { "type": "url", "id": "bundle_url", "label": "Bundle URL (fallback if no product selected)" },
     { "type": "text", "id": "bundle_heading", "label": "Bundle CTA Heading", "default": "The HARAMOON Glass Skin Bundle" },
-    { "type": "textarea", "id": "bundle_text", "label": "Bundle CTA Body Text", "default": "All 4 steps. One box. Free shipping." }
+    { "type": "textarea", "id": "bundle_text", "label": "Bundle CTA Body Text", "default": "All 4 steps. One box. Free shipping." },
+    { "type": "header", "content": "Step 1 — Cleanser Image" },
+    { "type": "image_picker", "id": "cleanser_image", "label": "Cleanser infographic image", "info": "Upload your own image here. Leave blank to keep the default AI-generated image." },
+    { "type": "text", "id": "cleanser_image_alt", "label": "Cleanser image alt text", "default": "HARAMOON Pure Moisture Cleanser — Amino Acid Foam, pH 5.5, 100% Vegan" },
+    { "type": "header", "content": "Step 2 — Toner Image" },
+    { "type": "image_picker", "id": "toner_image", "label": "Toner infographic image", "info": "Upload your own image here. Leave blank to keep the default AI-generated image." },
+    { "type": "text", "id": "toner_image_alt", "label": "Toner image alt text", "default": "HARAMOON Deep Sea Water Toner — 7-Layer Hyaluronic Acid, Deep Sea Minerals" },
+    { "type": "header", "content": "Step 3 — Ampoule Image" },
+    { "type": "image_picker", "id": "ampoule_image", "label": "Ampoule infographic image", "info": "Upload your own image here. Leave blank to keep the default AI-generated image." },
+    { "type": "text", "id": "ampoule_image_alt", "label": "Ampoule image alt text", "default": "HARAMOON Silky Hydration Ampoule — Syn-Hycan Complex, 8-Layer Hyaluronic Acid" },
+    { "type": "header", "content": "Step 4 — Cream Image" },
+    { "type": "image_picker", "id": "cream_image", "label": "Cream infographic image", "info": "Upload your own image here. Leave blank to keep the default AI-generated image." },
+    { "type": "text", "id": "cream_image_alt", "label": "Cream image alt text", "default": "HARAMOON Soothing Centella Cream — 64% Centella Asiatica, Skin Barrier Repair" }
   ],
   "presets": [{ "name": "HARAMOON Complete Routine" }]
 }

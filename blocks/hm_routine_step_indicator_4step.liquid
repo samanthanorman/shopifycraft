@@ -1,0 +1,804 @@
+{% comment %}
+  HARAMOON 4-Step Routine Indicator Block
+  ─────────────────────────────────────────────────────────────────
+  Displays 4 connected glassmorphism circles: Cleanser → Toner → Ampoule → Cream
+  The current product's step (from product.metafields.custom.routine_step_number)
+  is highlighted with a pulsing glow. All labels, colors, sizes, and spacing
+  are fully editable in the Shopify theme editor.
+  ─────────────────────────────────────────────────────────────────
+{% endcomment %}
+
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{% assign current_step = product.metafields.custom.routine_step_number | default: 1 %}
+
+{% style %}
+  .hm4step-{{ ai_gen_id }} {
+    padding: {{ block.settings.padding_top }}px 20px {{ block.settings.padding_bottom }}px;
+    background: linear-gradient(135deg, {{ block.settings.bg_color_start }} 0%, {{ block.settings.bg_color_end }} 100%);
+    border-radius: {{ block.settings.border_radius }}px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Ambient radial glow background */
+  .hm4step-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 15% 50%, {{ block.settings.accent_1 | color_modify: 'alpha', 0.08 }} 0%, transparent 55%),
+      radial-gradient(circle at 85% 50%, {{ block.settings.accent_2 | color_modify: 'alpha', 0.08 }} 0%, transparent 55%);
+    pointer-events: none;
+  }
+
+  .hm4step__container-{{ ai_gen_id }} {
+    max-width: 760px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Heading ── */
+  .hm4step__heading-{{ ai_gen_id }} {
+    text-align: center;
+    margin: 0 0 {{ block.settings.heading_margin_bottom }}px;
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.heading_size }}px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .hm4step__emoji-{{ ai_gen_id }} {
+    display: inline-block;
+    margin: 0 6px;
+  }
+
+  /* ── Progress row ── */
+  .hm4step__progress-{{ ai_gen_id }} {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+    position: relative;
+  }
+
+  /* ── Individual step wrapper ── */
+  .hm4step__step-{{ ai_gen_id }} {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    max-width: 160px;
+  }
+
+  /* ── Circle button ── */
+  .hm4step__btn-{{ ai_gen_id }} {
+    width: {{ block.settings.circle_size }}px;
+    height: {{ block.settings.circle_size }}px;
+    border-radius: 50%;
+    border: none;
+    background: {{ block.settings.glass_bg }};
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow:
+      0 8px 32px 0 {{ block.settings.shadow_color | color_modify: 'alpha', 0.14 }},
+      inset 0 1px 0 0 {{ block.settings.glass_highlight | color_modify: 'alpha', 0.5 }},
+      inset 0 -1px 0 0 {{ block.settings.shadow_color | color_modify: 'alpha', 0.08 }};
+    color: {{ block.settings.inactive_text_color }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: {{ block.settings.circle_size | divided_by: 3 }}px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+  }
+
+  /* Frosted glass shimmer overlay */
+  .hm4step__btn-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, {{ block.settings.glass_highlight | color_modify: 'alpha', 0.28 }} 0%, transparent 100%);
+    border-radius: 50%;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Hover lift + glow */
+  .hm4step__btn-{{ ai_gen_id }}:hover {
+    transform: translateY(-8px) scale(1.1);
+    box-shadow:
+      0 14px 40px 0 {{ block.settings.shadow_color | color_modify: 'alpha', 0.22 }},
+      inset 0 1px 0 0 {{ block.settings.glass_highlight | color_modify: 'alpha', 0.7 }},
+      0 0 22px {{ block.settings.accent_1 | color_modify: 'alpha', 0.28 }};
+  }
+  .hm4step__btn-{{ ai_gen_id }}:hover::before { opacity: 0.5; }
+
+  .hm4step__btn-{{ ai_gen_id }}:focus-visible {
+    outline: 2px solid {{ block.settings.active_color }};
+    outline-offset: 4px;
+  }
+
+  /* ── ACTIVE step ── */
+  .hm4step__step-{{ ai_gen_id }}.active .hm4step__btn-{{ ai_gen_id }} {
+    background: linear-gradient(135deg, {{ block.settings.active_color }} 0%, {{ block.settings.active_color_end }} 100%);
+    background-size: 200% 200%;
+    color: {{ block.settings.active_text_color }};
+    box-shadow:
+      0 12px 48px 0 {{ block.settings.active_color | color_modify: 'alpha', 0.42 }},
+      0 0 32px {{ block.settings.active_color | color_modify: 'alpha', 0.5 }},
+      inset 0 1px 0 0 {{ block.settings.glass_highlight }};
+    animation:
+      hm4step-pulse-{{ ai_gen_id }} 2s ease-in-out infinite,
+      hm4step-gradient-{{ ai_gen_id }} 3s ease infinite;
+  }
+
+  /* Rainbow shimmer ring on active */
+  .hm4step__step-{{ ai_gen_id }}.active .hm4step__btn-{{ ai_gen_id }}::after {
+    content: '';
+    position: absolute;
+    top: -3px; left: -3px; right: -3px; bottom: -3px;
+    background: linear-gradient(45deg, {{ block.settings.accent_1 }}, {{ block.settings.accent_2 }}, {{ block.settings.accent_1 }});
+    background-size: 300% 300%;
+    border-radius: 50%;
+    z-index: -1;
+    animation: hm4step-shimmer-{{ ai_gen_id }} 3s linear infinite;
+    opacity: 0.55;
+  }
+
+  /* ── COMPLETED step ── */
+  .hm4step__step-{{ ai_gen_id }}.completed .hm4step__btn-{{ ai_gen_id }} {
+    background: linear-gradient(135deg, {{ block.settings.completed_color }} 0%, {{ block.settings.completed_color_end }} 100%);
+    color: {{ block.settings.active_text_color }};
+    box-shadow:
+      0 8px 32px 0 {{ block.settings.completed_color | color_modify: 'alpha', 0.28 }},
+      inset 0 1px 0 0 {{ block.settings.glass_highlight | color_modify: 'alpha', 0.5 }};
+  }
+
+  /* ── Animations ── */
+  @keyframes hm4step-pulse-{{ ai_gen_id }} {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.06); }
+  }
+  @keyframes hm4step-gradient-{{ ai_gen_id }} {
+    0%, 100% { background-position: 0% 50%; }
+    50%       { background-position: 100% 50%; }
+  }
+  @keyframes hm4step-shimmer-{{ ai_gen_id }} {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+  }
+
+  /* Sparkle particles on active */
+  .hm4step__sparkle-{{ ai_gen_id }} {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: {{ block.settings.glass_highlight }};
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .hm4step__step-{{ ai_gen_id }}.active .hm4step__sparkle-{{ ai_gen_id }} {
+    animation: hm4step-sparkle-{{ ai_gen_id }} 1.6s ease-in-out infinite;
+  }
+  @keyframes hm4step-sparkle-{{ ai_gen_id }} {
+    0%, 100% { opacity: 0; transform: translate(0,0) scale(0); }
+    50%       { opacity: 1; transform: translate(var(--sx), var(--sy)) scale(1); }
+  }
+
+  /* ── Connector line ── */
+  .hm4step__connector-{{ ai_gen_id }} {
+    position: absolute;
+    top: {{ block.settings.circle_size | divided_by: 2 }}px;
+    left: 50%;
+    right: -50%;
+    height: 3px;
+    background: linear-gradient(90deg,
+      {{ block.settings.connector_color | color_modify: 'alpha', 0.22 }} 0%,
+      {{ block.settings.connector_color | color_modify: 'alpha', 0.10 }} 100%);
+    z-index: 1;
+    border-radius: 2px;
+    transition: all 0.4s ease;
+  }
+  .hm4step__step-{{ ai_gen_id }}.completed .hm4step__connector-{{ ai_gen_id }} {
+    background: linear-gradient(90deg, {{ block.settings.completed_color }} 0%, {{ block.settings.completed_color_end }} 100%);
+    box-shadow: 0 0 10px {{ block.settings.completed_color | color_modify: 'alpha', 0.3 }};
+  }
+  .hm4step__step-{{ ai_gen_id }}:last-child .hm4step__connector-{{ ai_gen_id }} {
+    display: none;
+  }
+
+  /* ── Tooltip ── */
+  .hm4step__tooltip-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: calc(100% + 14px);
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: {{ block.settings.tooltip_bg }};
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    color: {{ block.settings.tooltip_text }};
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+    z-index: 20;
+    box-shadow:
+      0 8px 32px 0 {{ block.settings.shadow_color | color_modify: 'alpha', 0.18 }},
+      inset 0 1px 0 0 {{ block.settings.glass_highlight | color_modify: 'alpha', 0.25 }};
+    border: 1px solid {{ block.settings.glass_highlight | color_modify: 'alpha', 0.18 }};
+    font-weight: 500;
+  }
+  .hm4step__tooltip-{{ ai_gen_id }}::after {
+    content: '';
+    position: absolute;
+    top: 100%; left: 50%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-top-color: {{ block.settings.tooltip_bg }};
+  }
+  .hm4step__btn-{{ ai_gen_id }}:hover + .hm4step__tooltip-{{ ai_gen_id }},
+  .hm4step__btn-{{ ai_gen_id }}:focus + .hm4step__tooltip-{{ ai_gen_id }} {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+  .hm4step__tooltip-benefit-{{ ai_gen_id }} {
+    display: block;
+    font-size: 10px;
+    opacity: 0.75;
+    margin-top: 3px;
+    font-weight: 400;
+  }
+
+  /* ── Step label ── */
+  .hm4step__label-{{ ai_gen_id }} {
+    margin-top: 14px;
+    font-size: {{ block.settings.label_size }}px;
+    color: {{ block.settings.text_color }};
+    text-align: center;
+    opacity: 0.55;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1.3;
+  }
+  .hm4step__step-{{ ai_gen_id }}.active .hm4step__label-{{ ai_gen_id }} {
+    opacity: 1;
+    font-weight: 700;
+    color: {{ block.settings.active_color }};
+  }
+  .hm4step__step-{{ ai_gen_id }}:hover .hm4step__label-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 640px) {
+    .hm4step-{{ ai_gen_id }} {
+      padding: {{ block.settings.padding_top | times: 0.65 }}px 12px {{ block.settings.padding_bottom | times: 0.65 }}px;
+    }
+    .hm4step__heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.72 }}px;
+      margin-bottom: {{ block.settings.heading_margin_bottom | times: 0.7 }}px;
+    }
+    .hm4step__btn-{{ ai_gen_id }} {
+      width: {{ block.settings.circle_size | times: 0.72 }}px;
+      height: {{ block.settings.circle_size | times: 0.72 }}px;
+      font-size: {{ block.settings.circle_size | times: 0.72 | divided_by: 3 }}px;
+    }
+    .hm4step__connector-{{ ai_gen_id }} {
+      top: {{ block.settings.circle_size | times: 0.72 | divided_by: 2 }}px;
+      height: 2px;
+    }
+    .hm4step__label-{{ ai_gen_id }} {
+      font-size: {{ block.settings.label_size | times: 0.82 }}px;
+      margin-top: 10px;
+    }
+    .hm4step__step-{{ ai_gen_id }} { max-width: 80px; }
+    .hm4step__tooltip-{{ ai_gen_id }} { display: none; }
+  }
+{% endstyle %}
+
+<hm4-routine-{{ ai_gen_id }}
+  class="hm4step-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+  role="region"
+  aria-label="Korean skincare routine steps"
+>
+  <div class="hm4step__container-{{ ai_gen_id }}">
+
+    {%- if block.settings.heading != blank -%}
+      {%- assign heading_text = block.settings.heading | replace: '{step}', current_step -%}
+      <h2 class="hm4step__heading-{{ ai_gen_id }}">
+        {%- if block.settings.emoji_before != blank -%}
+          <span class="hm4step__emoji-{{ ai_gen_id }}">{{ block.settings.emoji_before }}</span>
+        {%- endif -%}
+        {{- heading_text -}}
+        {%- if block.settings.emoji_after != blank -%}
+          <span class="hm4step__emoji-{{ ai_gen_id }}">{{ block.settings.emoji_after }}</span>
+        {%- endif -%}
+      </h2>
+    {%- endif -%}
+
+    <div class="hm4step__progress-{{ ai_gen_id }}" role="group" aria-label="4 steps: Cleanser, Toner, Ampoule, Cream">
+
+      {%- for i in (1..4) -%}
+        {%- assign is_active    = false -%}
+        {%- assign is_completed = false -%}
+        {%- if i == current_step -%}{%- assign is_active = true -%}
+        {%- elsif i < current_step -%}{%- assign is_completed = true -%}
+        {%- endif -%}
+
+        {%- liquid
+          case i
+            when 1
+              assign step_label   = block.settings.step_1_label
+              assign step_benefit = block.settings.step_1_benefit
+              assign step_emoji   = block.settings.step_1_emoji
+            when 2
+              assign step_label   = block.settings.step_2_label
+              assign step_benefit = block.settings.step_2_benefit
+              assign step_emoji   = block.settings.step_2_emoji
+            when 3
+              assign step_label   = block.settings.step_3_label
+              assign step_benefit = block.settings.step_3_benefit
+              assign step_emoji   = block.settings.step_3_emoji
+            when 4
+              assign step_label   = block.settings.step_4_label
+              assign step_benefit = block.settings.step_4_benefit
+              assign step_emoji   = block.settings.step_4_emoji
+          endcase
+        -%}
+
+        <div
+          class="hm4step__step-{{ ai_gen_id }}{% if is_active %} active{% endif %}{% if is_completed %} completed{% endif %}"
+          data-step="{{ i }}"
+        >
+          <button
+            class="hm4step__btn-{{ ai_gen_id }}"
+            type="button"
+            aria-label="Step {{ i }}: {{ step_label }}"
+            aria-current="{% if is_active %}step{% else %}false{% endif %}"
+            tabindex="0"
+          >
+            {%- if step_emoji != blank -%}
+              {{ step_emoji }}
+            {%- else -%}
+              {{ i }}
+            {%- endif -%}
+
+            {%- if is_active -%}
+              {%- for j in (1..4) -%}
+                {%- assign angle = j | times: 90 -%}
+                {%- assign sx = 28 -%}
+                {%- assign sy = 28 -%}
+                {%- if j == 1 -%}{%- assign sx = 28 -%}{%- assign sy = -28 -%}
+                {%- elsif j == 2 -%}{%- assign sx = -28 -%}{%- assign sy = -28 -%}
+                {%- elsif j == 3 -%}{%- assign sx = -28 -%}{%- assign sy = 28 -%}
+                {%- endif -%}
+                <span
+                  class="hm4step__sparkle-{{ ai_gen_id }}"
+                  style="--sx: {{ sx }}px; --sy: {{ sy }}px; animation-delay: {{ j | times: 0.2 }}s;"
+                ></span>
+              {%- endfor -%}
+            {%- endif -%}
+          </button>
+
+          <div class="hm4step__tooltip-{{ ai_gen_id }}" role="tooltip">
+            {{ step_label }}
+            {%- if step_benefit != blank -%}
+              <span class="hm4step__tooltip-benefit-{{ ai_gen_id }}">{{ step_benefit }}</span>
+            {%- endif -%}
+          </div>
+
+          <div class="hm4step__connector-{{ ai_gen_id }}" aria-hidden="true"></div>
+
+          {%- if step_label != blank -%}
+            <div class="hm4step__label-{{ ai_gen_id }}">{{ step_label }}</div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+
+    </div>
+  </div>
+</hm4-routine-{{ ai_gen_id }}>
+
+<script>
+(function() {
+  class HM4Routine{{ ai_gen_id }} extends HTMLElement {
+    connectedCallback() {
+      this._setupKeyboard();
+      this._setupRipple();
+    }
+
+    _setupKeyboard() {
+      const btns = this.querySelectorAll('.hm4step__btn-{{ ai_gen_id }}');
+      btns.forEach((btn, idx) => {
+        btn.addEventListener('keydown', e => {
+          let t = idx;
+          if (e.key === 'ArrowRight' || e.key === 'ArrowDown')  { e.preventDefault(); t = idx < btns.length - 1 ? idx + 1 : 0; }
+          if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    { e.preventDefault(); t = idx > 0 ? idx - 1 : btns.length - 1; }
+          if (e.key === 'Home') { e.preventDefault(); t = 0; }
+          if (e.key === 'End')  { e.preventDefault(); t = btns.length - 1; }
+          if (t !== idx) btns[t].focus();
+        });
+      });
+    }
+
+    _setupRipple() {
+      const btns = this.querySelectorAll('.hm4step__btn-{{ ai_gen_id }}');
+      btns.forEach(btn => {
+        btn.addEventListener('click', e => {
+          this._ripple(e, btn);
+          if (navigator.vibrate) navigator.vibrate(40);
+        });
+      });
+    }
+
+    _ripple(e, btn) {
+      const r = btn.getBoundingClientRect();
+      const sz = Math.max(r.width, r.height);
+      const x = e.clientX - r.left - sz / 2;
+      const y = e.clientY - r.top  - sz / 2;
+      const el = document.createElement('span');
+      el.style.cssText = `position:absolute;width:${sz}px;height:${sz}px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.55) 0%,transparent 70%);top:${y}px;left:${x}px;pointer-events:none;animation:hm4step-ripple-{{ ai_gen_id }} .55s ease-out forwards;`;
+      btn.appendChild(el);
+      setTimeout(() => el.remove(), 600);
+    }
+  }
+
+  const s = document.createElement('style');
+  s.textContent = `@keyframes hm4step-ripple-{{ ai_gen_id }}{0%{transform:scale(0);opacity:1}100%{transform:scale(2);opacity:0}}`;
+  document.head.appendChild(s);
+
+  if (!customElements.get('hm4-routine-{{ ai_gen_id }}')) {
+    customElements.define('hm4-routine-{{ ai_gen_id }}', HM4Routine{{ ai_gen_id }});
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "4-Step Routine Indicator",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading text",
+      "default": "Step {step} of 4 — Your HARAMOON Routine",
+      "info": "Use {step} to show the current step number dynamically"
+    },
+    {
+      "type": "text",
+      "id": "emoji_before",
+      "label": "Emoji before heading",
+      "default": "✨"
+    },
+    {
+      "type": "text",
+      "id": "emoji_after",
+      "label": "Emoji after heading",
+      "default": "💧"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 14,
+      "max": 42,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading font size",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "heading_margin_bottom",
+      "min": 16,
+      "max": 56,
+      "step": 4,
+      "unit": "px",
+      "label": "Space below heading",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Step 1 — Cleanser"
+    },
+    {
+      "type": "text",
+      "id": "step_1_label",
+      "label": "Label",
+      "default": "Cleanser"
+    },
+    {
+      "type": "text",
+      "id": "step_1_benefit",
+      "label": "Tooltip benefit text",
+      "default": "Deep cleanse & prep"
+    },
+    {
+      "type": "text",
+      "id": "step_1_emoji",
+      "label": "Circle icon (emoji or leave blank for number)",
+      "default": "🫧"
+    },
+    {
+      "type": "header",
+      "content": "Step 2 — Toner"
+    },
+    {
+      "type": "text",
+      "id": "step_2_label",
+      "label": "Label",
+      "default": "Toner"
+    },
+    {
+      "type": "text",
+      "id": "step_2_benefit",
+      "label": "Tooltip benefit text",
+      "default": "Balance pH & hydrate"
+    },
+    {
+      "type": "text",
+      "id": "step_2_emoji",
+      "label": "Circle icon (emoji or leave blank for number)",
+      "default": "💧"
+    },
+    {
+      "type": "header",
+      "content": "Step 3 — Ampoule"
+    },
+    {
+      "type": "text",
+      "id": "step_3_label",
+      "label": "Label",
+      "default": "Ampoule"
+    },
+    {
+      "type": "text",
+      "id": "step_3_benefit",
+      "label": "Tooltip benefit text",
+      "default": "Boost & target concerns"
+    },
+    {
+      "type": "text",
+      "id": "step_3_emoji",
+      "label": "Circle icon (emoji or leave blank for number)",
+      "default": "⚗️"
+    },
+    {
+      "type": "header",
+      "content": "Step 4 — Cream"
+    },
+    {
+      "type": "text",
+      "id": "step_4_label",
+      "label": "Label",
+      "default": "Cream"
+    },
+    {
+      "type": "text",
+      "id": "step_4_benefit",
+      "label": "Tooltip benefit text",
+      "default": "Seal & protect"
+    },
+    {
+      "type": "text",
+      "id": "step_4_emoji",
+      "label": "Circle icon (emoji or leave blank for number)",
+      "default": "🌙"
+    },
+    {
+      "type": "header",
+      "content": "Circle size & labels"
+    },
+    {
+      "type": "range",
+      "id": "circle_size",
+      "min": 48,
+      "max": 96,
+      "step": 4,
+      "unit": "px",
+      "label": "Circle diameter",
+      "default": 68
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Step label font size",
+      "default": 13
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 16,
+      "max": 72,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 16,
+      "max": 72,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "color",
+      "id": "bg_color_start",
+      "label": "Background gradient start",
+      "default": "#f0f6ff"
+    },
+    {
+      "type": "color",
+      "id": "bg_color_end",
+      "label": "Background gradient end",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Heading & label color",
+      "default": "#141615"
+    },
+    {
+      "type": "color",
+      "id": "inactive_text_color",
+      "label": "Inactive circle number color",
+      "default": "#53585a"
+    },
+    {
+      "type": "color",
+      "id": "active_text_color",
+      "label": "Active circle text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Active step"
+    },
+    {
+      "type": "color",
+      "id": "active_color",
+      "label": "Active gradient start",
+      "default": "#3498ff"
+    },
+    {
+      "type": "color",
+      "id": "active_color_end",
+      "label": "Active gradient end",
+      "default": "#1a6fd4"
+    },
+    {
+      "type": "header",
+      "content": "Completed step"
+    },
+    {
+      "type": "color",
+      "id": "completed_color",
+      "label": "Completed gradient start",
+      "default": "#53585a"
+    },
+    {
+      "type": "color",
+      "id": "completed_color_end",
+      "label": "Completed gradient end",
+      "default": "#3d4143"
+    },
+    {
+      "type": "header",
+      "content": "Glass effect"
+    },
+    {
+      "type": "color",
+      "id": "glass_bg",
+      "label": "Glass circle background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "glass_highlight",
+      "label": "Glass highlight / shimmer",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "shadow_color",
+      "label": "Shadow color",
+      "default": "#141615"
+    },
+    {
+      "type": "header",
+      "content": "Accent & connector"
+    },
+    {
+      "type": "color",
+      "id": "accent_1",
+      "label": "Accent color 1 (shimmer ring)",
+      "default": "#3498ff"
+    },
+    {
+      "type": "color",
+      "id": "accent_2",
+      "label": "Accent color 2 (shimmer ring)",
+      "default": "#a78bfa"
+    },
+    {
+      "type": "color",
+      "id": "connector_color",
+      "label": "Connector line color",
+      "default": "#53585a"
+    },
+    {
+      "type": "header",
+      "content": "Tooltip"
+    },
+    {
+      "type": "color",
+      "id": "tooltip_bg",
+      "label": "Tooltip background",
+      "default": "#141615"
+    },
+    {
+      "type": "color",
+      "id": "tooltip_text",
+      "label": "Tooltip text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Shape"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "label": "Section border radius",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "4-Step Routine Indicator"
+    }
+  ]
+}
+{% endschema %}

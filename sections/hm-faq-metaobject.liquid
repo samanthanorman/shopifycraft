@@ -1,0 +1,610 @@
+{%- comment -%}
+  HM FAQ — Metaobject-Powered Accordion
+  ─────────────────────────────────────────────────────────────────
+  Pulls FAQ items from the faq_group metaobject.
+  On a PRODUCT page: filters to FAQs whose related_products includes
+  the current product, OR shows a manually-selected category.
+  On an INGREDIENT PROFILE page: shows a manually-selected category.
+  Falls back to showing ALL FAQs if no match found.
+  Includes schema.org/FAQPage structured data for Google rich results.
+  Fully editable in theme editor.
+  ─────────────────────────────────────────────────────────────────
+{%- endcomment -%}
+
+{%- liquid
+  assign all_faqs = shop.metaobjects.faq_group.values
+  assign display_faqs = ''
+  assign matched_faqs = ''
+
+  comment
+    Step 1: Filter by related_products if we're on a product page
+  endcomment
+  if product
+    for faq in all_faqs
+      assign faq_products = faq.related_products.value
+      if faq_products
+        for fp in faq_products
+          if fp.id == product.id
+            assign matched_faqs = matched_faqs | append: faq.system.handle | append: '|'
+          endif
+        endfor
+      endif
+    endfor
+  endif
+
+  comment
+    Step 2: Filter by category setting if provided
+  endcomment
+  assign filter_category = section.settings.filter_category | strip
+  assign limit = section.settings.max_items | default: 10
+-%}
+
+{%- comment -%} Collect FAQs to display {%- endcomment -%}
+{%- assign display_list = '' -%}
+{%- for faq in all_faqs -%}
+  {%- assign include_faq = false -%}
+
+  {%- if matched_faqs != blank -%}
+    {%- comment -%} Product-matched FAQs take priority {%- endcomment -%}
+    {%- if matched_faqs contains faq.system.handle -%}
+      {%- assign include_faq = true -%}
+    {%- endif -%}
+  {%- elsif filter_category != blank -%}
+    {%- comment -%} Category filter {%- endcomment -%}
+    {%- assign faq_cat = faq.category | downcase | strip -%}
+    {%- assign filter_cat = filter_category | downcase | strip -%}
+    {%- if faq_cat == filter_cat or faq_cat contains filter_cat -%}
+      {%- assign include_faq = true -%}
+    {%- endif -%}
+  {%- else -%}
+    {%- comment -%} No filter — show all {%- endcomment -%}
+    {%- assign include_faq = true -%}
+  {%- endif -%}
+
+  {%- if include_faq -%}
+    {%- assign display_list = display_list | append: faq.system.handle | append: '|||' -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- assign display_handles = display_list | split: '|||' -%}
+{%- assign display_count = display_handles | size -%}
+
+{%- if display_count > 0 -%}
+
+{%- comment -%} ── Schema.org FAQPage structured data ── {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "name": {{ section.settings.title | default: 'Frequently Asked Questions' | json }},
+  "mainEntity": [
+    {%- assign schema_count = 0 -%}
+    {%- for handle in display_handles limit: limit -%}
+      {%- assign faq = shop.metaobjects.faq_group[handle] -%}
+      {%- if faq.question != blank and faq.answer != blank -%}
+        {%- if schema_count > 0 -%},{%- endif -%}
+        {
+          "@type": "Question",
+          "name": {{ faq.question | json }},
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": {{ faq.answer | strip_html | json }}
+          }
+        }
+        {%- assign schema_count = schema_count | plus: 1 -%}
+      {%- endif -%}
+    {%- endfor -%}
+  ]
+}
+</script>
+
+<style>
+  .hm-faq-mo {
+    padding: {{ section.settings.padding_top }}px {{ section.settings.side_padding }}px {{ section.settings.padding_bottom }}px;
+    background: {{ section.settings.bg_color }};
+    position: relative;
+  }
+
+  .hm-faq-mo__inner {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .hm-faq-mo__header {
+    text-align: {{ section.settings.header_align }};
+    margin-bottom: {{ section.settings.header_gap }}px;
+  }
+  .hm-faq-mo__eyebrow {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: {{ section.settings.accent_color }};
+    margin-bottom: 8px;
+  }
+  .hm-faq-mo__title {
+    font-size: {{ section.settings.title_size }}px;
+    font-weight: 700;
+    color: {{ section.settings.title_color }};
+    margin: 0 0 6px;
+    line-height: 1.2;
+  }
+  .hm-faq-mo__subtitle {
+    font-size: 14px;
+    color: {{ section.settings.subtitle_color }};
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ── Accordion list ── */
+  .hm-faq-mo__list {
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.item_gap }}px;
+  }
+
+  /* ── Item ── */
+  .hm-faq-mo__item {
+    background: {{ section.settings.item_bg }};
+    border: {{ section.settings.item_border_width }}px solid {{ section.settings.item_border_color }};
+    border-radius: {{ section.settings.item_radius }}px;
+    overflow: hidden;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .hm-faq-mo__item:hover {
+    border-color: {{ section.settings.accent_color | color_modify: 'alpha', 0.4 }};
+    box-shadow: 0 4px 20px {{ section.settings.accent_color | color_modify: 'alpha', 0.1 }};
+  }
+  .hm-faq-mo__item.open {
+    border-color: {{ section.settings.accent_color | color_modify: 'alpha', 0.6 }};
+    box-shadow: 0 4px 24px {{ section.settings.accent_color | color_modify: 'alpha', 0.14 }};
+  }
+
+  /* ── Question button ── */
+  .hm-faq-mo__question {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: {{ section.settings.q_padding }}px {{ section.settings.q_padding | plus: 4 }}px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    font-size: {{ section.settings.q_size }}px;
+    color: {{ section.settings.q_color }};
+    font-weight: 600;
+    line-height: 1.4;
+    transition: color 0.25s ease;
+    font-family: inherit;
+  }
+  .hm-faq-mo__question:hover { color: {{ section.settings.accent_color }}; }
+  .hm-faq-mo__question:focus-visible {
+    outline: 2px solid {{ section.settings.accent_color }};
+    outline-offset: -2px;
+  }
+
+  /* ── Chevron icon ── */
+  .hm-faq-mo__chevron {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: {{ section.settings.accent_color }};
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .hm-faq-mo__item.open .hm-faq-mo__chevron {
+    transform: rotate(180deg);
+    color: {{ section.settings.accent_color }};
+  }
+
+  /* ── Answer panel ── */
+  .hm-faq-mo__answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.25s ease;
+    background: {{ section.settings.answer_bg }};
+  }
+  .hm-faq-mo__item.open .hm-faq-mo__answer {
+    max-height: 1200px;
+  }
+  .hm-faq-mo__answer-inner {
+    padding: 0 {{ section.settings.q_padding | plus: 4 }}px {{ section.settings.q_padding }}px;
+    font-size: {{ section.settings.a_size }}px;
+    color: {{ section.settings.a_color }};
+    line-height: 1.65;
+  }
+  .hm-faq-mo__item.open .hm-faq-mo__answer-inner {
+    padding-top: 4px;
+  }
+  .hm-faq-mo__answer-inner p { margin: 0 0 12px; }
+  .hm-faq-mo__answer-inner p:last-child { margin-bottom: 0; }
+
+  /* ── Category badge ── */
+  .hm-faq-mo__category {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: {{ section.settings.accent_color }};
+    padding: 20px {{ section.settings.q_padding | plus: 4 }}px 6px;
+    opacity: 0.8;
+  }
+  .hm-faq-mo__category:first-child { padding-top: 0; }
+
+  @media (max-width: 640px) {
+    .hm-faq-mo__title { font-size: {{ section.settings.title_size | times: 0.82 }}px; }
+    .hm-faq-mo__question { font-size: {{ section.settings.q_size | times: 0.92 }}px; padding: {{ section.settings.q_padding | times: 0.8 }}px; }
+    .hm-faq-mo__answer-inner { padding: 0 {{ section.settings.q_padding | times: 0.8 }}px {{ section.settings.q_padding | times: 0.8 }}px; font-size: {{ section.settings.a_size | times: 0.94 }}px; }
+  }
+</style>
+
+<div class="hm-faq-mo">
+  <div class="hm-faq-mo__inner">
+
+    {%- if section.settings.eyebrow != blank or section.settings.title != blank -%}
+      <div class="hm-faq-mo__header">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="hm-faq-mo__eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="hm-faq-mo__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtitle != blank -%}
+          <p class="hm-faq-mo__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="hm-faq-mo__list" id="hm-faq-list">
+      {%- assign prev_cat = '' -%}
+      {%- assign shown = 0 -%}
+      {%- for handle in display_handles -%}
+        {%- if shown >= limit -%}{%- break -%}{%- endif -%}
+        {%- assign faq = shop.metaobjects.faq_group[handle] -%}
+        {%- if faq.question == blank -%}{%- continue -%}{%- endif -%}
+
+        {%- if section.settings.show_categories and faq.category != blank and faq.category != prev_cat -%}
+          <div class="hm-faq-mo__category">{{ faq.category }}</div>
+          {%- assign prev_cat = faq.category -%}
+        {%- endif -%}
+
+        <div
+          class="hm-faq-mo__item"
+          data-faq-item
+          itemscope
+          itemprop="mainEntity"
+          itemtype="https://schema.org/Question"
+        >
+          <button
+            class="hm-faq-mo__question"
+            type="button"
+            aria-expanded="false"
+            aria-controls="hm-faq-answer-{{ handle }}"
+            data-faq-btn
+          >
+            <span itemprop="name">{{ faq.question }}</span>
+            <svg class="hm-faq-mo__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+
+          <div
+            class="hm-faq-mo__answer"
+            id="hm-faq-answer-{{ handle }}"
+            role="region"
+            itemscope
+            itemprop="acceptedAnswer"
+            itemtype="https://schema.org/Answer"
+          >
+            <div class="hm-faq-mo__answer-inner" itemprop="text">
+              {{ faq.answer | newline_to_br }}
+            </div>
+          </div>
+        </div>
+
+        {%- assign shown = shown | plus: 1 -%}
+      {%- endfor -%}
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function() {
+  const list = document.getElementById('hm-faq-list');
+  if (!list) return;
+
+  const allowMultiple = {{ section.settings.allow_multiple | default: true }};
+
+  list.querySelectorAll('[data-faq-item]').forEach(item => {
+    const btn = item.querySelector('[data-faq-btn]');
+    if (!btn) return;
+
+    btn.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+
+      if (!allowMultiple) {
+        list.querySelectorAll('[data-faq-item].open').forEach(other => {
+          if (other !== item) {
+            other.classList.remove('open');
+            other.querySelector('[data-faq-btn]').setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      item.classList.toggle('open', !isOpen);
+      btn.setAttribute('aria-expanded', String(!isOpen));
+    });
+  });
+})();
+</script>
+
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "FAQ — Metaobject",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "Got Questions?"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Everything you need to know."
+    },
+    {
+      "type": "select",
+      "id": "header_align",
+      "label": "Header alignment",
+      "options": [
+        { "value": "left",   "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right",  "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "header_gap",
+      "min": 12,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Space below header",
+      "default": 32
+    },
+    {
+      "type": "header",
+      "content": "Content filtering"
+    },
+    {
+      "type": "text",
+      "id": "filter_category",
+      "label": "Filter by category (leave blank to auto-match by product or show all)",
+      "info": "Enter the exact category name from your faq_group metaobjects, e.g. 'HARAMOON Korean Skincare'. On product pages, FAQs linked to the current product are shown automatically."
+    },
+    {
+      "type": "range",
+      "id": "max_items",
+      "min": 1,
+      "max": 20,
+      "step": 1,
+      "label": "Max FAQs to show",
+      "default": 10
+    },
+    {
+      "type": "checkbox",
+      "id": "show_categories",
+      "label": "Show category labels above FAQ groups",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "allow_multiple",
+      "label": "Allow multiple FAQs open at once",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Title font size",
+      "default": 26
+    },
+    {
+      "type": "range",
+      "id": "q_size",
+      "min": 13,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Question font size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "a_size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Answer font size",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 500,
+      "max": 1200,
+      "step": 50,
+      "unit": "px",
+      "label": "Max content width",
+      "default": 800
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Section padding top",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Section padding bottom",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "side_padding",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Side padding",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "item_gap",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Space between FAQ items",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "q_padding",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Question/answer padding",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#141615"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#53585a"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color (chevron, hover, glow)",
+      "default": "#3498ff"
+    },
+    {
+      "type": "color",
+      "id": "item_bg",
+      "label": "FAQ item background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "item_border_color",
+      "label": "FAQ item border color",
+      "default": "#e5e7eb"
+    },
+    {
+      "type": "range",
+      "id": "item_border_width",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "unit": "px",
+      "label": "FAQ item border width",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "item_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "FAQ item border radius",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "answer_bg",
+      "label": "Answer background",
+      "default": "#f8faff"
+    },
+    {
+      "type": "color",
+      "id": "q_color",
+      "label": "Question text color",
+      "default": "#141615"
+    },
+    {
+      "type": "color",
+      "id": "a_color",
+      "label": "Answer text color",
+      "default": "#53585a"
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ — Metaobject"
+    }
+  ]
+}
+{% endschema %}
