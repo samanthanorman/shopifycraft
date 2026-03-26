@@ -10,7 +10,7 @@
 {
   "current": {
     "logo": "shopify://shop_images/6_8e715715-0d2b-42fd-ad70-0d2c795f94c7.png",
-    "logo_width": 140,
+    "logo_width": 80,
     "favicon": "shopify://shop_images/BCB19F48-7EF6-4C3B-A09C-68E93DF8E32F.gif",
     "type_header_font": "raleway_n4",
     "heading_scale": 120,
@@ -120,7 +120,7 @@
     "social_pinterest_link": "https://www.pinterest.com/uncutandunderrated/",
     "social_tumblr_link": "",
     "social_vimeo_link": "",
-    "predictive_search_enabled": false,
+    "predictive_search_enabled": true,
     "predictive_search_show_vendor": false,
     "predictive_search_show_price": true,
     "currency_code_enabled": true,
@@ -150,24 +150,24 @@
         "disabled": false,
         "settings": {}
       },
+      "2353461558643755616": {
+        "type": "shopify://apps/tinyseo/blocks/breadcrumbs-json-ld-embed/0605268f-f7c4-4e95-b560-e43df7d59ae4",
+        "disabled": false,
+        "settings": {}
+      },
       "15683396631634586217": {
         "type": "shopify://apps/inbox/blocks/chat/841fc607-4181-4ad1-842d-e24d7f8bad6b",
         "disabled": false,
         "settings": {
-          "button_color": "#000000",
-          "secondary_color": "#FFFFFF",
-          "ternary_color": "#6A6A6A",
+          "button_color": "#2cbbe1",
+          "secondary_color": "#ffffff",
+          "ternary_color": "#0d1b3e",
           "button_icon": "chat_bubble",
           "button_text": "chat_with_us",
           "button_horizontal_position": "bottom_right",
           "button_vertical_position": "lowest",
           "greeting_message": ""
         }
-      },
-      "2353461558643755616": {
-        "type": "shopify://apps/tinyseo/blocks/breadcrumbs-json-ld-embed/0605268f-f7c4-4e95-b560-e43df7d59ae4",
-        "disabled": false,
-        "settings": {}
       }
     },
     "color_schemes": {
