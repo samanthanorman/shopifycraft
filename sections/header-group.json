@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "name": "t:sections.header.name",
   "type": "header",
@@ -8,7 +17,7 @@
         "ann_shipping": {
           "type": "announcement",
           "settings": {
-            "text": "✨ FREE SHIPPING on orders $50+ | Korean Skincare · Crystals · EMF Protection",
+            "text": "✨ FREE SHIPPING | Korean Skincare · Crystals · EMF Protection",
             "link": "shopify://collections/all"
           }
         },
@@ -16,7 +25,7 @@
           "type": "announcement",
           "settings": {
             "text": "🌙 NEW: HARAMOON 4-Step Glass Skin Routine — Shop the Bundle →",
-            "link": "/pages/the-complete-routine"
+            "link": "shopify://pages/radiant-skin-starts-here"
           }
         },
         "ann_crystals": {
@@ -32,12 +41,11 @@
         "ann_haramoon",
         "ann_crystals"
       ],
-      "disabled": false,
       "name": "t:sections.announcement-bar.presets.name",
       "settings": {
         "auto_rotate": true,
         "change_slides_speed": 4,
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-4",
         "show_line_separator": true,
         "show_social": true,
         "enable_country_selector": false,
@@ -46,16 +54,15 @@
     },
     "header": {
       "type": "header",
-      "disabled": false,
       "custom_css": [],
       "settings": {
-        "logo_position": "middle-left",
+        "logo_position": "top-center",
         "mobile_logo_position": "center",
         "menu": "main-menu-1",
         "menu_type_desktop": "dropdown",
         "sticky_header_type": "reduce-logo-size",
         "show_line_separator": true,
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-5",
         "menu_color_scheme": "scheme-1",
         "enable_country_selector": true,
         "enable_language_selector": true,
