@@ -1,17 +1,33 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "about_haramoon_main": {
-      "type": "about-haramoon",
+    "main": {
+      "type": "main-page",
       "settings": {
-        "routine_link": "/pages/the-complete-routine",
-        "collection_link": "/collections/haramoon-korean-skincare",
-        "glossary_link": "/pages/ingredient-glossary"
+        "padding_top": 36,
+        "padding_bottom": 36
       }
+    },
+    "hm-why-we-chose": {
+      "type": "hm-why-we-chose",
+      "settings": {}
+    },
+    "hm-founder-block": {
+      "type": "hm-founder-block",
+      "settings": {}
     }
   },
   "order": [
-    "about_haramoon_main"
-  ],
-  "header": "header-group.haramoon",
-  "footer": "footer-group.haramoon"
+    "main",
+    "hm-why-we-chose",
+    "hm-founder-block"
+  ]
 }

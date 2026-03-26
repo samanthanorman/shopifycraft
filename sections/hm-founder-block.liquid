@@ -1,0 +1,400 @@
+{% doc %}
+  About HARAMOON — Founder / Curator Block
+  "Curated by Samantha" trust-building section
+  Photo, bio, personal mission statement, social links
+  Glassmorphism card, animated entrance, fully editable in theme editor
+  ⚠️  SAMANTHA: Replace ALL placeholder text in theme editor with your own words!
+     Go to: Shopify Admin → Online Store → Customize → About HARAMOON page
+     → "Founder / Curator Block" section → edit all text fields + upload your photo
+{% enddoc %}
+
+{% style %}
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+  .hm-founder-section {
+    background: {{ section.settings.bg_color }};
+    padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    overflow: hidden;
+  }
+  .hm-founder-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, rgba(52,152,255,0.05) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hm-founder-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+  .hm-founder-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: {{ section.settings.accent_color }};
+    text-align: center;
+    margin: 0 0 10px;
+  }
+  .hm-founder-title {
+    font-size: clamp(22px, 3.5vw, 36px);
+    font-weight: 700;
+    color: {{ section.settings.heading_color }};
+    text-align: center;
+    margin: 0 0 48px;
+    letter-spacing: -0.02em;
+  }
+
+  /* Main card */
+  .hm-founder-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 40px 36px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 40px;
+    align-items: start;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+  }
+  .hm-founder-card:hover {
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  }
+  .hm-founder-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, {{ section.settings.accent_color }}40, {{ section.settings.accent_color }}, {{ section.settings.accent_color }}40);
+    border-radius: 24px 24px 0 0;
+  }
+  /* Glow orb */
+  .hm-founder-card::after {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, {{ section.settings.accent_color }}10 0%, transparent 70%);
+    bottom: -60px; right: -60px;
+    pointer-events: none;
+  }
+  @media (max-width: 640px) {
+    .hm-founder-card {
+      grid-template-columns: 1fr;
+      padding: 28px 22px;
+    }
+  }
+
+  /* Photo column */
+  .hm-founder-photo-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .hm-founder-photo-wrap {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid {{ section.settings.accent_color }}40;
+    box-shadow: 0 0 0 6px {{ section.settings.accent_color }}10, 0 8px 32px rgba(0,0,0,0.3);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .hm-founder-photo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hm-founder-photo-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, {{ section.settings.accent_color }}20, {{ section.settings.accent_color }}08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 56px;
+  }
+  .hm-founder-photo-badge {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: {{ section.settings.accent_color }};
+    background: rgba(52,152,255,0.1);
+    border: 1px solid rgba(52,152,255,0.25);
+    border-radius: 20px;
+    padding: 4px 14px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* Content column */
+  .hm-founder-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .hm-founder-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: {{ section.settings.heading_color }};
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .hm-founder-role {
+    font-size: 13px;
+    color: {{ section.settings.accent_color }};
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    margin: -8px 0 0;
+  }
+  .hm-founder-bio {
+    font-size: 14px;
+    color: {{ section.settings.body_color }};
+    line-height: 1.8;
+    margin: 0;
+  }
+  .hm-founder-bio-2 {
+    font-size: 13px;
+    color: {{ section.settings.subtext_color }};
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* Mission statement */
+  .hm-founder-mission {
+    background: rgba(52,152,255,0.06);
+    border-left: 3px solid {{ section.settings.accent_color }};
+    border-radius: 0 10px 10px 0;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: {{ section.settings.body_color }};
+    line-height: 1.7;
+    font-style: italic;
+    margin: 0;
+  }
+
+  /* Tags */
+  .hm-founder-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+  }
+  .hm-founder-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: {{ section.settings.subtext_color }};
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 4px 12px;
+  }
+{% endstyle %}
+
+<section class="hm-founder-section" id="hm-founder-block">
+  <div class="hm-founder-inner">
+
+    <p class="hm-founder-eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2 class="hm-founder-title">{{ section.settings.heading }}</h2>
+
+    <div class="hm-founder-card">
+
+      <!-- Photo column -->
+      <div class="hm-founder-photo-col">
+        <div class="hm-founder-photo-wrap">
+          {%- if section.settings.photo != blank -%}
+            <img src="{{ section.settings.photo | image_url: width: 320 }}"
+                 alt="{{ section.settings.name }}"
+                 loading="lazy">
+          {%- else -%}
+            <div class="hm-founder-photo-placeholder">🌙</div>
+          {%- endif -%}
+        </div>
+        <span class="hm-founder-photo-badge">{{ section.settings.badge_text }}</span>
+      </div>
+
+      <!-- Content column -->
+      <div class="hm-founder-content">
+        <div>
+          <h3 class="hm-founder-name">{{ section.settings.name }}</h3>
+          <p class="hm-founder-role">{{ section.settings.role }}</p>
+        </div>
+
+        <p class="hm-founder-bio">{{ section.settings.bio_text }}</p>
+        <p class="hm-founder-bio-2">{{ section.settings.bio_text_2 }}</p>
+
+        {%- if section.settings.mission_text != blank -%}
+        <blockquote class="hm-founder-mission">{{ section.settings.mission_text }}</blockquote>
+        {%- endif -%}
+
+        <div class="hm-founder-tags">
+          {%- assign tags_raw = section.settings.tags | split: ',' -%}
+          {%- for tag in tags_raw -%}
+            {%- if tag != blank -%}
+              <span class="hm-founder-tag">{{ tag | strip }}</span>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "HM Founder Block",
+  "tag": "section",
+  "class": "hm-founder-block",
+  "settings": [
+    {
+      "type": "header",
+      "content": "⚠️ Replace placeholder text!"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Label",
+      "default": "The Curator Behind the Brand"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Curated by Samantha"
+    },
+    {
+      "type": "header",
+      "content": "Photo & Badge"
+    },
+    {
+      "type": "image_picker",
+      "id": "photo",
+      "label": "Your Photo"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge Under Photo",
+      "default": "Founder & Curator"
+    },
+    {
+      "type": "header",
+      "content": "Your Story"
+    },
+    {
+      "type": "text",
+      "id": "name",
+      "label": "Your Name",
+      "default": "Samantha"
+    },
+    {
+      "type": "text",
+      "id": "role",
+      "label": "Your Role",
+      "default": "Founder, Wax | Wane Store · The Happiest Hour LLC"
+    },
+    {
+      "type": "textarea",
+      "id": "bio_text",
+      "label": "Bio Paragraph 1 (your voice)",
+      "default": "⚠️ REPLACE THIS: Write 2–3 sentences about who you are and why you started Wax | Wane. What's your background? What problem were you solving for yourself that led you here?"
+    },
+    {
+      "type": "textarea",
+      "id": "bio_text_2",
+      "label": "Bio Paragraph 2 (supporting detail)",
+      "default": "⚠️ REPLACE THIS: Add 2–3 more sentences about your personal journey with Korean skincare, crystals, or EMF wellness. What do you know now that you wish you'd known earlier?"
+    },
+    {
+      "type": "textarea",
+      "id": "mission_text",
+      "label": "Mission / Pull Quote (italic)",
+      "default": "⚠️ REPLACE THIS: One powerful sentence that captures your mission. Something like: 'I built this store because I believe everyone deserves access to the same clean, science-backed skincare that changed my skin.'"
+    },
+    {
+      "type": "header",
+      "content": "Tags (comma-separated)"
+    },
+    {
+      "type": "text",
+      "id": "tags",
+      "label": "Tags",
+      "default": "Korean Skincare Advocate, Clean Beauty, Crystal Wellness, EMF Awareness, Wax | Wane"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Body Text Color",
+      "default": "#d0e4f7"
+    },
+    {
+      "type": "color",
+      "id": "subtext_color",
+      "label": "Subtext Color",
+      "default": "#8fa8c0"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#3498ff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "HM Founder Block"
+    }
+  ]
+}
+{% endschema %}
