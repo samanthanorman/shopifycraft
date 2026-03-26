@@ -1,0 +1,544 @@
+{% doc %}
+  HARAMOON — Trust Badges & Certifications Section
+  EWG Verified, Vegan, Cruelty-Free, pH 5.5, Fragrance-Free badges
+  Glassmorphism pill design, hover glow, schema.org structured data eligible
+  Fully editable in theme editor
+{% enddoc %}
+
+{% style %}
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+  .hm-trust-section {
+    background: {{ section.settings.bg_color }};
+    padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    overflow: hidden;
+  }
+  .hm-trust-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 100%, rgba(52,152,255,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hm-trust-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+  .hm-trust-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: {{ section.settings.accent_color }};
+    text-align: center;
+    margin: 0 0 10px;
+  }
+  .hm-trust-title {
+    font-size: clamp(20px, 3vw, 32px);
+    font-weight: 700;
+    color: {{ section.settings.heading_color }};
+    text-align: center;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+  }
+  .hm-trust-subtitle {
+    font-size: 14px;
+    color: {{ section.settings.subtext_color }};
+    text-align: center;
+    margin: 0 auto 44px;
+    max-width: 520px;
+  }
+
+  /* Badge grid */
+  .hm-trust-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .hm-trust-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50px;
+    padding: 12px 22px 12px 16px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    cursor: default;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .hm-trust-badge::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hm-trust-badge:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 32px rgba(52,152,255,0.25);
+    border-color: {{ section.settings.accent_color }}60;
+    background: rgba(52,152,255,0.08);
+  }
+
+  .hm-trust-badge-icon {
+    font-size: 22px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .hm-trust-badge-text {
+    display: flex;
+    flex-direction: column;
+  }
+  .hm-trust-badge-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: {{ section.settings.heading_color }};
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+  .hm-trust-badge-desc {
+    font-size: 11px;
+    color: {{ section.settings.subtext_color }};
+    line-height: 1.3;
+    margin-top: 1px;
+  }
+
+  /* Divider line */
+  .hm-trust-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    margin: 0 0 32px;
+  }
+
+  /* EWG callout */
+  .hm-trust-ewg-callout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: rgba(52,152,255,0.06);
+    border: 1px solid rgba(52,152,255,0.2);
+    border-radius: 16px;
+    padding: 20px 28px;
+    max-width: 640px;
+    margin: 0 auto;
+    backdrop-filter: blur(10px);
+  }
+  .hm-trust-ewg-icon {
+    font-size: 36px;
+    flex-shrink: 0;
+  }
+  .hm-trust-ewg-text {
+    font-size: 13px;
+    color: {{ section.settings.subtext_color }};
+    line-height: 1.6;
+  }
+  .hm-trust-ewg-text strong {
+    color: {{ section.settings.heading_color }};
+    display: block;
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+  .hm-trust-ewg-link {
+    font-size: 11px;
+    color: {{ section.settings.accent_color }};
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .hm-trust-ewg-link:hover { text-decoration: underline; }
+
+  @media (max-width: 480px) {
+    .hm-trust-ewg-callout { flex-direction: column; text-align: center; }
+  }
+{% endstyle %}
+
+{%- comment -%}
+  Schema.org structured data for certifications
+  Eligible for Google's product certification rich results
+{%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "brand": {
+    "@type": "Brand",
+    "name": "HARAMOON"
+  },
+  "additionalProperty": [
+    {
+      "@type": "PropertyValue",
+      "name": "EWG Verified",
+      "value": "All ingredients independently reviewed for safety and transparency"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Vegan",
+      "value": "No animal-derived ingredients"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Cruelty-Free",
+      "value": "Never tested on animals"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "pH Level",
+      "value": "5.5 — matches skin's natural acid mantle"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Fragrance-Free",
+      "value": "No synthetic fragrance or parfum"
+    }
+  ]
+}
+</script>
+
+<section class="hm-trust-section" id="hm-trust-badges">
+  <div class="hm-trust-inner">
+
+    <p class="hm-trust-eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2 class="hm-trust-title">{{ section.settings.heading }}</h2>
+    <p class="hm-trust-subtitle">{{ section.settings.subheading }}</p>
+
+    <div class="hm-trust-badges" role="list" aria-label="Product certifications">
+
+      {% for i in (1..6) %}
+        {% assign icon_key = 'badge' | append: i | append: '_icon' %}
+        {% assign name_key = 'badge' | append: i | append: '_name' %}
+        {% assign desc_key = 'badge' | append: i | append: '_desc' %}
+        {% assign show_key = 'badge' | append: i | append: '_show' %}
+        {% if section.settings[show_key] %}
+        <div class="hm-trust-badge" role="listitem">
+          <span class="hm-trust-badge-icon" aria-hidden="true">{{ section.settings[icon_key] }}</span>
+          <div class="hm-trust-badge-text">
+            <span class="hm-trust-badge-name">{{ section.settings[name_key] }}</span>
+            <span class="hm-trust-badge-desc">{{ section.settings[desc_key] }}</span>
+          </div>
+        </div>
+        {% endif %}
+      {% endfor %}
+
+    </div>
+
+    {% if section.settings.show_ewg_callout %}
+    <div class="hm-trust-divider"></div>
+    <div class="hm-trust-ewg-callout">
+      <span class="hm-trust-ewg-icon" aria-hidden="true">🔬</span>
+      <div class="hm-trust-ewg-text">
+        <strong>{{ section.settings.ewg_title }}</strong>
+        {{ section.settings.ewg_body }}
+        {% if section.settings.ewg_link != blank %}
+        <br><a href="{{ section.settings.ewg_link }}" class="hm-trust-ewg-link" target="_blank" rel="noopener">{{ section.settings.ewg_link_text }} →</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "HM Trust Badges",
+  "tag": "section",
+  "class": "hm-trust-badges-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Text"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Label",
+      "default": "Clean Beauty Standards"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What We Stand For"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Every HARAMOON product meets the highest standards for safety, transparency, and skin health."
+    },
+    {
+      "type": "header",
+      "content": "Badge 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "badge1_show",
+      "label": "Show Badge 1",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge1_icon",
+      "label": "Icon (emoji)",
+      "default": "✅"
+    },
+    {
+      "type": "text",
+      "id": "badge1_name",
+      "label": "Badge Name",
+      "default": "EWG Verified"
+    },
+    {
+      "type": "text",
+      "id": "badge1_desc",
+      "label": "Badge Description",
+      "default": "Every ingredient reviewed"
+    },
+    {
+      "type": "header",
+      "content": "Badge 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "badge2_show",
+      "label": "Show Badge 2",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge2_icon",
+      "label": "Icon (emoji)",
+      "default": "🌱"
+    },
+    {
+      "type": "text",
+      "id": "badge2_name",
+      "label": "Badge Name",
+      "default": "100% Vegan"
+    },
+    {
+      "type": "text",
+      "id": "badge2_desc",
+      "label": "Badge Description",
+      "default": "No animal-derived ingredients"
+    },
+    {
+      "type": "header",
+      "content": "Badge 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "badge3_show",
+      "label": "Show Badge 3",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge3_icon",
+      "label": "Icon (emoji)",
+      "default": "🐰"
+    },
+    {
+      "type": "text",
+      "id": "badge3_name",
+      "label": "Badge Name",
+      "default": "Cruelty-Free"
+    },
+    {
+      "type": "text",
+      "id": "badge3_desc",
+      "label": "Badge Description",
+      "default": "Never tested on animals"
+    },
+    {
+      "type": "header",
+      "content": "Badge 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "badge4_show",
+      "label": "Show Badge 4",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge4_icon",
+      "label": "Icon (emoji)",
+      "default": "⚗️"
+    },
+    {
+      "type": "text",
+      "id": "badge4_name",
+      "label": "Badge Name",
+      "default": "pH 5.5 Balanced"
+    },
+    {
+      "type": "text",
+      "id": "badge4_desc",
+      "label": "Badge Description",
+      "default": "Matches your skin's acid mantle"
+    },
+    {
+      "type": "header",
+      "content": "Badge 5"
+    },
+    {
+      "type": "checkbox",
+      "id": "badge5_show",
+      "label": "Show Badge 5",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge5_icon",
+      "label": "Icon (emoji)",
+      "default": "🚫"
+    },
+    {
+      "type": "text",
+      "id": "badge5_name",
+      "label": "Badge Name",
+      "default": "Fragrance-Free"
+    },
+    {
+      "type": "text",
+      "id": "badge5_desc",
+      "label": "Badge Description",
+      "default": "No synthetic parfum"
+    },
+    {
+      "type": "header",
+      "content": "Badge 6"
+    },
+    {
+      "type": "checkbox",
+      "id": "badge6_show",
+      "label": "Show Badge 6",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge6_icon",
+      "label": "Icon (emoji)",
+      "default": "🇰🇷"
+    },
+    {
+      "type": "text",
+      "id": "badge6_name",
+      "label": "Badge Name",
+      "default": "Korean R&D"
+    },
+    {
+      "type": "text",
+      "id": "badge6_desc",
+      "label": "Badge Description",
+      "default": "Formulated in South Korea"
+    },
+    {
+      "type": "header",
+      "content": "EWG Callout Block"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_ewg_callout",
+      "label": "Show EWG Callout",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "ewg_title",
+      "label": "EWG Callout Title",
+      "default": "What Does EWG Verified Mean?"
+    },
+    {
+      "type": "textarea",
+      "id": "ewg_body",
+      "label": "EWG Callout Body",
+      "default": "EWG Verified is the gold standard in clean beauty. It means every ingredient in this product has been independently reviewed by the Environmental Working Group for safety, transparency, and full disclosure. No hidden ingredients, no greenwashing."
+    },
+    {
+      "type": "url",
+      "id": "ewg_link",
+      "label": "EWG Link (optional)"
+    },
+    {
+      "type": "text",
+      "id": "ewg_link_text",
+      "label": "EWG Link Text",
+      "default": "Learn more about EWG Verified"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "subtext_color",
+      "label": "Body / Subtext Color",
+      "default": "#8fa8c0"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#3498ff"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "HM Trust Badges"
+    }
+  ]
+}
+{% endschema %}

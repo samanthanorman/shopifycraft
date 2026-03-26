@@ -1,0 +1,392 @@
+{% doc %}
+  Ingredient Glossary — Skin Concern Filter Section
+  Filters ingredient cards by skin concern (hydration, anti-aging, brightening, etc.)
+  Also includes "Found in HARAMOON Products" filter tab
+  Glassmorphism pill filters, animated card grid, fully editable in theme editor
+  Add this section to page.ingredient-glossary.json ABOVE the main glossary block
+{% enddoc %}
+
+{% style %}
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+  .hm-concern-section {
+    background: {{ section.settings.bg_color }};
+    padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    overflow: hidden;
+  }
+  .hm-concern-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(52,152,255,0.06) 0%, transparent 55%);
+    pointer-events: none;
+  }
+  .hm-concern-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+  .hm-concern-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: {{ section.settings.accent_color }};
+    text-align: center;
+    margin: 0 0 10px;
+  }
+  .hm-concern-title {
+    font-size: clamp(20px, 3vw, 32px);
+    font-weight: 700;
+    color: {{ section.settings.heading_color }};
+    text-align: center;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+  }
+  .hm-concern-subtitle {
+    font-size: 14px;
+    color: {{ section.settings.subtext_color }};
+    text-align: center;
+    margin: 0 auto 36px;
+    max-width: 520px;
+  }
+
+  /* Filter pills */
+  .hm-concern-filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+  .hm-concern-filter-btn {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    border-radius: 30px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+    color: {{ section.settings.subtext_color }};
+    cursor: pointer;
+    transition: all 0.22s ease;
+    backdrop-filter: blur(8px);
+    white-space: nowrap;
+  }
+  .hm-concern-filter-btn:hover,
+  .hm-concern-filter-btn.active {
+    background: {{ section.settings.accent_color }};
+    border-color: {{ section.settings.accent_color }};
+    color: #fff;
+    box-shadow: 0 4px 18px rgba(52,152,255,0.35);
+    transform: translateY(-1px);
+  }
+  .hm-concern-filter-btn.haramoon-btn {
+    border-color: rgba(255,215,0,0.4);
+    color: #ffd700;
+    background: rgba(255,215,0,0.06);
+  }
+  .hm-concern-filter-btn.haramoon-btn:hover,
+  .hm-concern-filter-btn.haramoon-btn.active {
+    background: rgba(255,215,0,0.15);
+    border-color: #ffd700;
+    color: #ffd700;
+    box-shadow: 0 4px 18px rgba(255,215,0,0.25);
+  }
+
+  /* Results count */
+  .hm-concern-count {
+    text-align: center;
+    font-size: 12px;
+    color: {{ section.settings.subtext_color }};
+    margin-bottom: 24px;
+    min-height: 18px;
+    transition: opacity 0.2s ease;
+  }
+  .hm-concern-count span {
+    color: {{ section.settings.accent_color }};
+    font-weight: 700;
+  }
+
+  /* Ingredient card grid */
+  .hm-concern-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+  }
+
+  .hm-concern-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 16px 18px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, opacity 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .hm-concern-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, {{ section.settings.accent_color }}60, {{ section.settings.accent_color }});
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .hm-concern-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.25), 0 0 0 1px {{ section.settings.accent_color }}30;
+    border-color: {{ section.settings.accent_color }}40;
+  }
+  .hm-concern-card:hover::before { opacity: 1; }
+  .hm-concern-card.hidden {
+    display: none;
+  }
+  .hm-concern-card.haramoon-product {
+    border-color: rgba(255,215,0,0.2);
+  }
+  .hm-concern-card.haramoon-product::after {
+    content: '★';
+    position: absolute;
+    top: 10px; right: 12px;
+    font-size: 10px;
+    color: #ffd700;
+    opacity: 0.7;
+  }
+
+  .hm-concern-card-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: {{ section.settings.heading_color }};
+    line-height: 1.3;
+  }
+  .hm-concern-card-function {
+    font-size: 11px;
+    color: {{ section.settings.accent_color }};
+    font-weight: 500;
+    letter-spacing: 0.03em;
+  }
+  .hm-concern-card-benefits {
+    font-size: 11px;
+    color: {{ section.settings.subtext_color }};
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* No results */
+  .hm-concern-empty {
+    display: none;
+    text-align: center;
+    padding: 48px 20px;
+    color: {{ section.settings.subtext_color }};
+    font-size: 14px;
+    grid-column: 1 / -1;
+  }
+  .hm-concern-empty.visible { display: block; }
+{% endstyle %}
+
+{%- assign all_ingredients = shop.metaobjects.ingredient_profile.values -%}
+
+<section class="hm-concern-section" id="ingredient-concern-filter">
+  <div class="hm-concern-inner">
+
+    <p class="hm-concern-eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2 class="hm-concern-title">{{ section.settings.heading }}</h2>
+    <p class="hm-concern-subtitle">{{ section.settings.subheading }}</p>
+
+    <!-- Filter Pills -->
+    <div class="hm-concern-filters" role="group" aria-label="Filter by skin concern">
+      <button class="hm-concern-filter-btn active" data-filter="all">All Ingredients</button>
+      <button class="hm-concern-filter-btn haramoon-btn" data-filter="haramoon">⭐ In HARAMOON Products</button>
+      <button class="hm-concern-filter-btn" data-filter="hydration">Hydration</button>
+      <button class="hm-concern-filter-btn" data-filter="brightening">Brightening</button>
+      <button class="hm-concern-filter-btn" data-filter="anti-aging">Anti-Aging</button>
+      <button class="hm-concern-filter-btn" data-filter="barrier">Barrier Repair</button>
+      <button class="hm-concern-filter-btn" data-filter="soothing">Soothing</button>
+      <button class="hm-concern-filter-btn" data-filter="pores">Pore Refining</button>
+      <button class="hm-concern-filter-btn" data-filter="acne">Acne / Blemish</button>
+      <button class="hm-concern-filter-btn" data-filter="antioxidant">Antioxidant</button>
+    </div>
+
+    <p class="hm-concern-count" id="hm-concern-count">
+      Showing <span id="hm-concern-num">{{ all_ingredients | size }}</span> ingredients
+    </p>
+
+    <!-- Ingredient Cards -->
+    <div class="hm-concern-grid" id="hm-concern-grid" role="list">
+
+      {%- for ing in all_ingredients -%}
+        {%- assign benefits_raw = ing.skin_benefits | downcase -%}
+        {%- assign has_products = false -%}
+        {%- if ing.products and ing.products != empty -%}
+          {%- assign has_products = true -%}
+        {%- endif -%}
+
+        {%- comment -%} Build data-concern attribute from skin_benefits field {%- endcomment -%}
+        {%- assign concerns = '' -%}
+        {%- if benefits_raw contains 'hydrat' -%}{%- assign concerns = concerns | append: ' hydration' -%}{%- endif -%}
+        {%- if benefits_raw contains 'brighten' or benefits_raw contains 'tone' or benefits_raw contains 'pigment' -%}{%- assign concerns = concerns | append: ' brightening' -%}{%- endif -%}
+        {%- if benefits_raw contains 'anti-aging' or benefits_raw contains 'anti aging' or benefits_raw contains 'wrinkle' or benefits_raw contains 'collagen' or benefits_raw contains 'peptide' -%}{%- assign concerns = concerns | append: ' anti-aging' -%}{%- endif -%}
+        {%- if benefits_raw contains 'barrier' -%}{%- assign concerns = concerns | append: ' barrier' -%}{%- endif -%}
+        {%- if benefits_raw contains 'sooth' or benefits_raw contains 'calm' or benefits_raw contains 'redness' -%}{%- assign concerns = concerns | append: ' soothing' -%}{%- endif -%}
+        {%- if benefits_raw contains 'pore' -%}{%- assign concerns = concerns | append: ' pores' -%}{%- endif -%}
+        {%- if benefits_raw contains 'acne' or benefits_raw contains 'blemish' or benefits_raw contains 'sebum' -%}{%- assign concerns = concerns | append: ' acne' -%}{%- endif -%}
+        {%- if benefits_raw contains 'antioxidant' or benefits_raw contains 'oxidat' -%}{%- assign concerns = concerns | append: ' antioxidant' -%}{%- endif -%}
+
+        <a href="{{ ing.system.url }}"
+           class="hm-concern-card{% if has_products %} haramoon-product{% endif %}"
+           data-concern="{{ concerns | strip }}"
+           data-haramoon="{{ has_products }}"
+           data-name="{{ ing.name | downcase }}"
+           role="listitem"
+           aria-label="{{ ing.name }}">
+          <span class="hm-concern-card-name">{{ ing.name }}</span>
+          {%- if ing.main_function != blank -%}
+            <span class="hm-concern-card-function">{{ ing.main_function }}</span>
+          {%- endif -%}
+          {%- if ing.skin_benefits != blank -%}
+            <span class="hm-concern-card-benefits">{{ ing.skin_benefits }}</span>
+          {%- endif -%}
+        </a>
+      {%- endfor -%}
+
+      <div class="hm-concern-empty" id="hm-concern-empty" aria-live="polite">
+        No ingredients found for this filter. Try a different concern.
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function() {
+  var filterBtns = document.querySelectorAll('.hm-concern-filter-btn');
+  var cards      = document.querySelectorAll('.hm-concern-card');
+  var countEl    = document.getElementById('hm-concern-num');
+  var emptyEl    = document.getElementById('hm-concern-empty');
+
+  function filterCards(filter) {
+    var visible = 0;
+    cards.forEach(function(card) {
+      var show = false;
+      if (filter === 'all') {
+        show = true;
+      } else if (filter === 'haramoon') {
+        show = card.getAttribute('data-haramoon') === 'true';
+      } else {
+        var concerns = card.getAttribute('data-concern') || '';
+        show = concerns.indexOf(filter) !== -1;
+      }
+      if (show) {
+        card.classList.remove('hidden');
+        visible++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+    if (countEl) countEl.textContent = visible;
+    if (emptyEl) {
+      emptyEl.classList.toggle('visible', visible === 0);
+    }
+  }
+
+  filterBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      filterBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      filterCards(btn.getAttribute('data-filter'));
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Ingredient Concern Filter",
+  "tag": "section",
+  "class": "ingredient-concern-filter",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Label",
+      "default": "Find Your Match"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Browse by Skin Concern"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Filter all ingredients by what your skin needs most. Star (★) marks ingredients found in HARAMOON products."
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#0d1b2a"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "subtext_color",
+      "label": "Subtext Color",
+      "default": "#8fa8c0"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#3498ff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredient Concern Filter"
+    }
+  ]
+}
+{% endschema %}

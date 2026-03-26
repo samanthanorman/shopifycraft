@@ -13,9 +13,14 @@
       "type": "ingredient-profile-detail",
       "name": "Ingredient Profile",
       "settings": {}
+    },
+    "ingredient-comparison": {
+      "type": "ingredient-comparison",
+      "settings": {}
     }
   },
   "order": [
-    "ingredient_profile_detail"
+    "ingredient_profile_detail",
+    "ingredient-comparison"
   ]
 }

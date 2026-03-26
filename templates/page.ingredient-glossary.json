@@ -111,12 +111,19 @@
           "blocks": {}
         }
       },
-      "block_order": ["radiant_skin_block"],
+      "block_order": [
+        "radiant_skin_block"
+      ],
       "name": "Radiant Skin CTA",
+      "settings": {}
+    },
+    "ingredient-concern-filter": {
+      "type": "ingredient-concern-filter",
       "settings": {}
     }
   },
   "order": [
+    "ingredient-concern-filter",
     "ingredient_carousel",
     "ingredient_glossary_main",
     "featured_collection_haramoon",

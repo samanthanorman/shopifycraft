@@ -1,0 +1,483 @@
+{% doc %}
+  HARAMOON — Results Timeline Section
+  Week 1 / Week 4 / Week 8 expectation-setting block
+  Glassmorphism cards, animated progress bars, fully editable in theme editor
+{% enddoc %}
+
+{% style %}
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+  .hm-timeline-section {
+    background: {{ section.settings.bg_color }};
+    padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+  .hm-timeline-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 10% 80%, rgba(52,152,255,0.07) 0%, transparent 55%),
+      radial-gradient(ellipse at 90% 20%, rgba(168,212,255,0.05) 0%, transparent 55%);
+    pointer-events: none;
+  }
+  .hm-timeline-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+  .hm-timeline-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: {{ section.settings.accent_color }};
+    text-align: center;
+    margin: 0 0 10px;
+  }
+  .hm-timeline-title {
+    font-size: clamp(22px, 3.5vw, 36px);
+    font-weight: 700;
+    color: {{ section.settings.heading_color }};
+    text-align: center;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+  }
+  .hm-timeline-subtitle {
+    font-size: 15px;
+    color: {{ section.settings.subtext_color }};
+    text-align: center;
+    margin: 0 auto 52px;
+    max-width: 560px;
+  }
+
+  /* Cards grid */
+  .hm-timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 640px) {
+    .hm-timeline-grid { grid-template-columns: 1fr; }
+  }
+
+  .hm-timeline-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 28px 24px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .hm-timeline-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, {{ section.settings.accent_color }}80, {{ section.settings.accent_color }});
+    border-radius: 20px 20px 0 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .hm-timeline-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 0 1px {{ section.settings.accent_color }}40;
+    border-color: {{ section.settings.accent_color }}40;
+  }
+  .hm-timeline-card:hover::before { opacity: 1; }
+
+  /* Glow orb */
+  .hm-timeline-card::after {
+    content: '';
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, {{ section.settings.accent_color }}18 0%, transparent 70%);
+    top: -30px; right: -30px;
+    pointer-events: none;
+  }
+
+  .hm-timeline-week {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: {{ section.settings.accent_color }};
+    margin: 0 0 6px;
+  }
+  .hm-timeline-card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: {{ section.settings.heading_color }};
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+  }
+  .hm-timeline-card-sub {
+    font-size: 12px;
+    color: {{ section.settings.subtext_color }};
+    margin: 0 0 20px;
+    font-style: italic;
+  }
+
+  /* Progress bar */
+  .hm-timeline-bar-wrap {
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .hm-timeline-bar {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, {{ section.settings.accent_color }}80, {{ section.settings.accent_color }});
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Benefit list */
+  .hm-timeline-benefits {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .hm-timeline-benefits li {
+    font-size: 13px;
+    color: {{ section.settings.subtext_color }};
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .hm-timeline-benefits li::before {
+    content: '✓';
+    color: {{ section.settings.accent_color }};
+    font-weight: 700;
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* Disclaimer */
+  .hm-timeline-disclaimer {
+    text-align: center;
+    font-size: 11px;
+    color: {{ section.settings.subtext_color }};
+    opacity: 0.6;
+    margin-top: 32px;
+  }
+{% endstyle %}
+
+<section class="hm-timeline-section" id="hm-results-timeline">
+  <div class="hm-timeline-inner">
+
+    <p class="hm-timeline-eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2 class="hm-timeline-title">{{ section.settings.heading }}</h2>
+    <p class="hm-timeline-subtitle">{{ section.settings.subheading }}</p>
+
+    <div class="hm-timeline-grid">
+
+      <!-- Week 1 -->
+      <div class="hm-timeline-card" data-progress="{{ section.settings.week1_progress }}">
+        <p class="hm-timeline-week">{{ section.settings.week1_label }}</p>
+        <h3 class="hm-timeline-card-title">{{ section.settings.week1_title }}</h3>
+        <p class="hm-timeline-card-sub">{{ section.settings.week1_sub }}</p>
+        <div class="hm-timeline-bar-wrap">
+          <div class="hm-timeline-bar" style="width: 0%"></div>
+        </div>
+        <ul class="hm-timeline-benefits">
+          {% assign w1 = section.settings.week1_benefits | split: '|' %}
+          {% for b in w1 %}
+            {% if b != blank %}<li>{{ b | strip }}</li>{% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Week 4 -->
+      <div class="hm-timeline-card" data-progress="{{ section.settings.week4_progress }}">
+        <p class="hm-timeline-week">{{ section.settings.week4_label }}</p>
+        <h3 class="hm-timeline-card-title">{{ section.settings.week4_title }}</h3>
+        <p class="hm-timeline-card-sub">{{ section.settings.week4_sub }}</p>
+        <div class="hm-timeline-bar-wrap">
+          <div class="hm-timeline-bar" style="width: 0%"></div>
+        </div>
+        <ul class="hm-timeline-benefits">
+          {% assign w4 = section.settings.week4_benefits | split: '|' %}
+          {% for b in w4 %}
+            {% if b != blank %}<li>{{ b | strip }}</li>{% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Week 8 -->
+      <div class="hm-timeline-card" data-progress="{{ section.settings.week8_progress }}">
+        <p class="hm-timeline-week">{{ section.settings.week8_label }}</p>
+        <h3 class="hm-timeline-card-title">{{ section.settings.week8_title }}</h3>
+        <p class="hm-timeline-card-sub">{{ section.settings.week8_sub }}</p>
+        <div class="hm-timeline-bar-wrap">
+          <div class="hm-timeline-bar" style="width: 0%"></div>
+        </div>
+        <ul class="hm-timeline-benefits">
+          {% assign w8 = section.settings.week8_benefits | split: '|' %}
+          {% for b in w8 %}
+            {% if b != blank %}<li>{{ b | strip }}</li>{% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+
+    </div>
+
+    {% if section.settings.show_disclaimer %}
+    <p class="hm-timeline-disclaimer">{{ section.settings.disclaimer_text }}</p>
+    {% endif %}
+
+  </div>
+</section>
+
+<script>
+(function() {
+  function animateBars() {
+    var cards = document.querySelectorAll('.hm-timeline-card');
+    cards.forEach(function(card) {
+      var rect = card.getBoundingClientRect();
+      if (rect.top < window.innerHeight - 60) {
+        var bar = card.querySelector('.hm-timeline-bar');
+        var progress = card.getAttribute('data-progress') || '33';
+        if (bar && bar.style.width === '0%') {
+          setTimeout(function() {
+            bar.style.width = progress + '%';
+          }, 200);
+        }
+      }
+    });
+  }
+  window.addEventListener('scroll', animateBars, { passive: true });
+  animateBars();
+})();
+</script>
+
+{% schema %}
+{
+  "name": "HM Results Timeline",
+  "tag": "section",
+  "class": "hm-results-timeline",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Text"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Label",
+      "default": "Real Results"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What to Expect, Week by Week"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Consistency is the secret. Here's what most customers experience on the full 4-step routine."
+    },
+    {
+      "type": "header",
+      "content": "Week 1 Card"
+    },
+    {
+      "type": "text",
+      "id": "week1_label",
+      "label": "Week Label",
+      "default": "Week 1"
+    },
+    {
+      "type": "text",
+      "id": "week1_title",
+      "label": "Card Title",
+      "default": "First Impressions"
+    },
+    {
+      "type": "text",
+      "id": "week1_sub",
+      "label": "Subtitle",
+      "default": "Immediate comfort, visible softness"
+    },
+    {
+      "type": "range",
+      "id": "week1_progress",
+      "min": 5,
+      "max": 100,
+      "step": 5,
+      "label": "Progress Bar %",
+      "default": 30
+    },
+    {
+      "type": "textarea",
+      "id": "week1_benefits",
+      "label": "Benefits (separate with |)",
+      "default": "Skin feels softer after first cleanse | Less tightness post-wash | Makeup sits more smoothly | Redness visibly calmer"
+    },
+    {
+      "type": "header",
+      "content": "Week 4 Card"
+    },
+    {
+      "type": "text",
+      "id": "week4_label",
+      "label": "Week Label",
+      "default": "Week 4"
+    },
+    {
+      "type": "text",
+      "id": "week4_title",
+      "label": "Card Title",
+      "default": "The Shift"
+    },
+    {
+      "type": "text",
+      "id": "week4_sub",
+      "label": "Subtitle",
+      "default": "Barrier strengthening, tone evening"
+    },
+    {
+      "type": "range",
+      "id": "week4_progress",
+      "min": 5,
+      "max": 100,
+      "step": 5,
+      "label": "Progress Bar %",
+      "default": 65
+    },
+    {
+      "type": "textarea",
+      "id": "week4_benefits",
+      "label": "Benefits (separate with |)",
+      "default": "Smaller-looking pores by end of day | Blemishes healing faster | More even skin tone | Dewy, glass-skin quality emerging"
+    },
+    {
+      "type": "header",
+      "content": "Week 8 Card"
+    },
+    {
+      "type": "text",
+      "id": "week8_label",
+      "label": "Week Label",
+      "default": "Week 8"
+    },
+    {
+      "type": "text",
+      "id": "week8_title",
+      "label": "Card Title",
+      "default": "Glass Skin"
+    },
+    {
+      "type": "text",
+      "id": "week8_sub",
+      "label": "Subtitle",
+      "default": "Barrier rebuilt, results compounding"
+    },
+    {
+      "type": "range",
+      "id": "week8_progress",
+      "min": 5,
+      "max": 100,
+      "step": 5,
+      "label": "Progress Bar %",
+      "default": 95
+    },
+    {
+      "type": "textarea",
+      "id": "week8_benefits",
+      "label": "Benefits (separate with |)",
+      "default": "Luminous, healthy glow | Fine lines appear softer | Skin tolerates actives better | Consistent hydration all day"
+    },
+    {
+      "type": "header",
+      "content": "Disclaimer"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_disclaimer",
+      "label": "Show Disclaimer",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "disclaimer_text",
+      "label": "Disclaimer Text",
+      "default": "Individual results vary. Based on customer feedback and typical outcomes with consistent use of the full 4-step HARAMOON routine."
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#0a1628"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "subtext_color",
+      "label": "Body / Subtext Color",
+      "default": "#8fa8c0"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#3498ff"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 72
+    }
+  ],
+  "presets": [
+    {
+      "name": "HM Results Timeline"
+    }
+  ]
+}
+{% endschema %}
