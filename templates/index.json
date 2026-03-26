@@ -189,7 +189,7 @@
       "settings": {
         "desktop_content_position": "center",
         "content_alignment": "center",
-        "color_scheme": "scheme-4",
+        "color_scheme": "scheme-3",
         "full_width": true,
         "padding_top": 16,
         "padding_bottom": 16
@@ -204,7 +204,7 @@
             "image": "shopify://shop_images/HARAMOON_Cream_Open_Jar_with_Texture_1846ea6d-f2ea-41c2-bc1f-a33a356dc2c9.jpg",
             "caption": "our Premium korean skincare brand",
             "heading": "HARAMOON Cosmetics",
-            "text": "<p>Our exclusive global partner, HARAMOON Cosmetics, is a Korean skincare brand rooted in foundational formulas that South Korean skincare is famous for. </p><p><strong>Made for sensitive, clog prone, and fatigued skin.</strong></p><p>These are lab-backed, skin-respecting formulas from Korea’s cosmeceutical tradition. We believe conventional beauty brands just can't compete with this growing trend.</p>",
+            "text": "<p>Obelisks, spheres, pyramids, and more — each piece chosen for its cultural significance, mineral composition, and visual weight. Sourced from regions known for geological richness and spiritual tradition, these are not decorative afterthoughts — they are objects of meaning. Whether you're drawn to obsidian, quartz, or black tourmaline, every form serves a function. Form and Function.</p>",
             "button_label": "Shop HARAMOON →",
             "button_link": "shopify://collections/haramoon-korean-skincare"
           }
@@ -215,7 +215,7 @@
             "image": "shopify://shop_images/Clear_Quartz_Crystal_Pyramids.jpg",
             "caption": "meaningful decor",
             "heading": "Crystals & Gemstones",
-            "text": "<p>Obelisks, spheres, pyramids and more  — each chosen for its cultural, mineral, and visual weight. </p><p>Symbolic and striking. Form and Function.</p>",
+            "text": "<p>Obelisks, spheres, pyramids, and more — each piece chosen for its cultural significance, mineral composition, and visual weight. Our crystals are sourced with intention, selected from regions known for their geological richness and spiritual tradition. Symbolic and striking, these are not decorative afterthoughts — they are objects of meaning. Whether you're drawn to the grounding energy of obsidian, the clarity of quartz, or the protective lore of black tourmaline, every form serves a function. Form and Function.</p>",
             "button_label": "Shop Crystals →",
             "button_link": "shopify://collections/natural-crystals-gemstones"
           }
@@ -226,7 +226,7 @@
             "image": "shopify://shop_images/Faraday-EMF-Shielding-Blanket-for-Laptop-Use_-18x18inch-edited_3_ec434336-4fc7-4b81-bad7-8ff53522f750.png",
             "caption": "reduce your exposure",
             "heading": "EMF Shielding",
-            "text": "<p>Engineered to reduce exposure to harmful EMF radiation from modern devices like cellphones, laptops, and 5G towers.</p>",
+            "text": "<p>Engineered to reduce exposure to EMF radiation from cellphones, laptops, and 5G towers. As our world becomes increasingly wireless, personal protection has moved from fringe to frontier. Our EMF shielding products are designed for daily life — wearable, portable, and built for the environments you actually live in. Rooted in materials science. Built for people who take their bioelectric environment seriously.</p>",
             "button_label": "Shop EMF →",
             "button_link": "shopify://collections/emf-shielding-faraday-protection"
           }
@@ -249,9 +249,52 @@
         "desktop_content_alignment": "center",
         "mobile_content_alignment": "center",
         "section_color_scheme": "scheme-2",
-        "row_color_scheme": "scheme-3",
+        "row_color_scheme": "scheme-5a71830d-bb14-4361-a5f4-6672bdde5b1f",
         "padding_top": 16,
         "padding_bottom": 16
+      }
+    },
+    "rich_text_e4bEaM": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_DW3dL8": {
+          "type": "heading",
+          "settings": {
+            "heading": "Why Wax | Wane?",
+            "heading_size": "h1"
+          }
+        },
+        "text_ewBnHk": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>Woman-owned. Lincoln, Nebraska. Quietly brilliant.</strong></p><p>We return the favor.</p><p>Wax | Wane is a woman-owned shop rooted in the belief that the best products don't shout — they deliver. Our collections are chosen with forethought: not only for beauty, but for longevity, function, and understated, underrated excellence.</p><p>Science-backed Korean skincare. Authentic natural crystals. Functional EMF shielding for modern life. Three worlds, one standard: considered, tested, and quietly brilliant.</p><p>Ancestors looked to the gods. Today, we look inward. We believe the right objects — worn, used, or placed with intention — can fine-tune your mental state, reduce stress, and create space in a world that rarely does. When your mood shifts, so does everything around you.</p><p>Using science to refine the magic. Innovation built for longevity. Products that return the favor.</p>"
+          }
+        },
+        "button_NeWhjG": {
+          "type": "button",
+          "settings": {
+            "button_label": "Shop All Products",
+            "button_link": "shopify://collections/all-products",
+            "button_style_secondary": false,
+            "button_label_2": "Shop on Amazon",
+            "button_link_2": "https://www.amazon.com/shops/nichewellness",
+            "button_style_secondary_2": false
+          }
+        }
+      },
+      "block_order": [
+        "heading_DW3dL8",
+        "text_ewBnHk",
+        "button_NeWhjG"
+      ],
+      "name": "t:sections.rich-text.presets.name",
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "scheme-1",
+        "full_width": true,
+        "padding_top": 60,
+        "padding_bottom": 60
       }
     },
     "collage_rjbxCk": {
@@ -386,7 +429,7 @@
       ],
       "name": "t:sections.newsletter.presets.name",
       "settings": {
-        "color_scheme": "",
+        "color_scheme": "scheme-5",
         "full_width": true,
         "padding_top": 40,
         "padding_bottom": 52
@@ -399,6 +442,7 @@
     "collection_list_zK6tVp",
     "rich_text",
     "multirow_46HGgx",
+    "rich_text_e4bEaM",
     "collage_rjbxCk",
     "rich_text_fpDcyR",
     "featured_blog_4mHUQR",
