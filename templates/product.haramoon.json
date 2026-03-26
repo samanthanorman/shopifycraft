@@ -15,22 +15,22 @@
         "hm4step_main": {
           "type": "hm_routine_step_indicator_4step",
           "settings": {
-            "heading": "Step {step} of 4 — Your HARAMOON Routine",
-            "emoji_before": "✨",
-            "emoji_after": "💧",
+            "heading": "Step {step} of 4 \u2014 Your HARAMOON Routine",
+            "emoji_before": "\u2728",
+            "emoji_after": "\ud83d\udca7",
             "heading_size": 20,
             "step_1_label": "Cleanser",
             "step_1_benefit": "Deep cleanse & prep",
-            "step_1_emoji": "🫧",
+            "step_1_emoji": "\ud83e\udee7",
             "step_2_label": "Toner",
             "step_2_benefit": "Balance pH & hydrate",
-            "step_2_emoji": "💧",
+            "step_2_emoji": "\ud83d\udca7",
             "step_3_label": "Ampoule",
             "step_3_benefit": "Boost & target concerns",
-            "step_3_emoji": "⚗️",
+            "step_3_emoji": "\u2697\ufe0f",
             "step_4_label": "Cream",
             "step_4_benefit": "Seal & protect",
-            "step_4_emoji": "🌙",
+            "step_4_emoji": "\ud83c\udf19",
             "circle_size": 64,
             "label_size": 12,
             "padding_top": 32,
@@ -352,7 +352,7 @@
           "settings": {
             "heading": "Step {{ metaobjects.haramoon_101[\"immortal-peptide-serum\"].routine_step_number.value }} of 5 in Your Korean Skincare Routine",
             "emoji_before": "",
-            "emoji_after": "💧",
+            "emoji_after": "\ud83d\udca7",
             "heading_size": 28,
             "step_1_label": "Step 1 Cleanser",
             "step_1_benefit": "Deep cleanse",
@@ -420,7 +420,7 @@
           "settings": {
             "image": "shopify://shop_images/HARAMOON_Cleanser_Cream_up_close_3a4b81e6-5743-4142-a99e-23061aae1c6e.jpg",
             "title": "<strong>Skin-Wise, Seoul-Gentle</strong>",
-            "text": "<p>HARAMOON's complete skincare collection guarantees visible, science-backed skin transformation—no filler products, no fluff.</p>",
+            "text": "<p>HARAMOON's complete skincare collection guarantees visible, science-backed skin transformation\u2014no filler products, no fluff.</p>",
             "link_label": "",
             "link": "shopify://collections/haramoon-skincare-premium-k-beauty"
           }
@@ -430,7 +430,7 @@
           "settings": {
             "image": "shopify://shop_images/Silver-Lined-Faraday-Beanie-Cap---Shield-Brain-from-Electronic-Radiation-_One-Size_-edited_1_d9eecab1-d468-4c02-bf9f-88d20fdeb615.png",
             "title": "<strong>Carefully Curated</strong>",
-            "text": "<p>Every item is handpicked to serve a purpose—affordable, sustainable, and thoughtfully designed. We choose quality over clutter, always.</p>",
+            "text": "<p>Every item is handpicked to serve a purpose\u2014affordable, sustainable, and thoughtfully designed. We choose quality over clutter, always.</p>",
             "link_label": "",
             "link": "shopify://collections"
           }
@@ -488,7 +488,7 @@
           "settings": {
             "caption": "in every way",
             "heading": "Practically Perfect",
-            "text": "<p>Beauty isn’t just about aesthetics — it’s about feeling good and functional, too. Our products turn your daily routine into a magical moment. </p><p>Accessorize with intention, nourish with purpose.</p>",
+            "text": "<p>Beauty isn\u2019t just about aesthetics \u2014 it\u2019s about feeling good and functional, too. Our products turn your daily routine into a magical moment. </p><p>Accessorize with intention, nourish with purpose.</p>",
             "button_label": "Browse Now",
             "button_link": "shopify://collections/daily-essentials"
           }
@@ -528,7 +528,7 @@
         "text_y6dkGq": {
           "type": "text",
           "settings": {
-            "text": "<p>At Wax and Wane, we believe in skincare that’s honest, healing, and rooted in nature. HARAMOON stood out as a Korean beauty brand that aligns with our values — minimal, science-backed, and built for real skin challenges.</p><p>Whether you’re dealing with stress, dehydration, or sensitivity, these products offer more than a quick fix — they provide a foundation for long-term skin health.</p><p>Our goal? To empower you to feel radiant and calm in your own skin — every single day.</p>"
+            "text": "<p>At Wax and Wane, we believe in skincare that\u2019s honest, healing, and rooted in nature. HARAMOON stood out as a Korean beauty brand that aligns with our values \u2014 minimal, science-backed, and built for real skin challenges.</p><p>Whether you\u2019re dealing with stress, dehydration, or sensitivity, these products offer more than a quick fix \u2014 they provide a foundation for long-term skin health.</p><p>Our goal? To empower you to feel radiant and calm in your own skin \u2014 every single day.</p>"
           }
         },
         "button_WmxBmj": {
@@ -586,19 +586,19 @@
             "heading_size": 32,
             "heading_color": "#141615",
             "step_1_number": "1",
-            "step_1_emoji": "💧",
+            "step_1_emoji": "\ud83d\udca7",
             "step_1_label": "Cleanser",
             "step_2_number": "2",
-            "step_2_emoji": "🌸",
+            "step_2_emoji": "\ud83c\udf38",
             "step_2_label": "Toner",
             "step_3_number": "3",
-            "step_3_emoji": "✨",
+            "step_3_emoji": "\u2728",
             "step_3_label": "Ampoule",
             "step_4_number": "4",
-            "step_4_emoji": "💫",
+            "step_4_emoji": "\ud83d\udcab",
             "step_4_label": "Serum",
             "step_5_number": "5",
-            "step_5_emoji": "🔥",
+            "step_5_emoji": "\ud83d\udd25",
             "step_5_label": "Cream",
             "circle_size": 120,
             "step_spacing": 60,
@@ -680,6 +680,9 @@
   "order": [
     "1761606515075c8768",
     "main",
+    "hm-how-to-layer",
+    "hm-trust-badges",
+    "hm-results-timeline",
     "hm_ingredient_heroes",
     "hm_faq_product",
     "related-products",
@@ -689,9 +692,6 @@
     "multirow_9kwR94",
     "rich_text_49tBnU",
     "featured_blog_GCgTFE",
-    "1761614538f20cc936",
-    "hm-how-to-layer",
-    "hm-results-timeline",
-    "hm-trust-badges"
+    "1761614538f20cc936"
   ]
 }
