@@ -351,6 +351,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-WKSB8S9H');</script>
 <!-- End Google Tag Manager -->
 
+
+  {%- render 'schema-organization' -%}
+  {%- render 'schema-breadcrumb' -%}
 </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
