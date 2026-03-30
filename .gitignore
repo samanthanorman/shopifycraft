@@ -1,0 +1,31 @@
+# ─────────────────────────────────────────────────────────────────────
+# WAX | WANE — Git Ignore Rules
+# Files listed here will NEVER be committed to GitHub
+# ─────────────────────────────────────────────────────────────────────
+
+# Secret credentials — NEVER commit these
+.env
+*.env
+.env.local
+.env.production
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
