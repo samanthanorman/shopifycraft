@@ -9,21 +9,41 @@
  */
 {
   "sections": {
-    "emf_guide_main": {
-      "type": "emf-guide",
+    "emf_all_about": {
+      "type": "emf-all-about",
       "settings": {
-        "intro_heading": "Complete Guide to EMF Protection",
-        "intro_text": "Electromagnetic frequencies (EMF) are all around us — from Wi-Fi and cell towers to everyday appliances. Understanding what EMF is and how to protect yourself is the first step to a more intentional, health-conscious life.",
-        "concepts_heading": "Understanding EMF",
-        "concepts_subtitle": "Key concepts and terminology for navigating EMF exposure",
-        "types_heading": "Types of EMF Protection",
-        "types_subtitle": "Methods and technologies for shielding against EMF exposure",
-        "cta_heading": "Ready to Protect Yourself?",
-        "cta_text": "Browse our curated collection of EMF shielding products — from Faraday bags to grounding accessories.",
-        "cta_link": "shopify://collections/emf-shielding-faraday-protection",
-        "cta_label": "Shop EMF Protection",
-        "accent_color": "#1a5276",
-        "accent_color_2": "#117a65"
+        "show_hero": true,
+        "show_infographics": true,
+        "show_default_infographics": true,
+        "show_video": true,
+        "show_concepts": true,
+        "show_protection": true,
+        "show_overlay": true,
+        "show_faq": true,
+        "hero_eyebrow": "Wax | Wane — EMF Education",
+        "hero_heading": "All About EMFs",
+        "hero_subtext": "Electromagnetic frequencies are invisible, constant, and everywhere. Here is everything you need to know — no fear-mongering, just science, context, and practical steps.",
+        "hero_cta_label": "Explore the Guide",
+        "hero_padding_top": 96,
+        "hero_padding_bottom": 96,
+        "overlay_cta_label": "Shop EMF Protection",
+        "stat_1_number": "7h",
+        "stat_1_label": "avg daily device exposure",
+        "stat_2_number": ">30",
+        "stat_2_label": "dB shielding effectiveness",
+        "stat_3_number": "40%",
+        "stat_3_label": "signal reduction in tests",
+        "bg_color": "#070d0b",
+        "bg_color_2": "#0c1510",
+        "neon_color": "#00ffb4",
+        "neon_color_2": "#00c8ff",
+        "heading_color": "#e8f5f0",
+        "text_color": "#c8ddd5",
+        "subtext_color": "#7aa898",
+        "card_bg": "#0f1f18",
+        "card_border": "#1e3a2e",
+        "max_width": 1200,
+        "block_padding": 72
       }
     },
     "emf_collection": {
@@ -69,7 +89,7 @@
     }
   },
   "order": [
-    "emf_guide_main",
+    "emf_all_about",
     "emf_collection",
     "emf_blog"
   ]

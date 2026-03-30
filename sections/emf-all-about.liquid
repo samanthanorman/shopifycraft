@@ -1,0 +1,1208 @@
+{%- doc -%}
+  ALL ABOUT EMFs — Educational Page Section
+  Wax | Wane Store — EMF Protection Line
+
+  DESIGN AESTHETIC: Cyber-punk — dark backgrounds, neon electric accents,
+  scanline overlays, circuit board patterns, glitch effects, grid lines.
+  Contrast with HARAMOON's glassmorphism — this is intentionally edgier.
+
+  SECTIONS:
+  1. Hero — animated glitch headline + tagline + CTA
+  2. What Is EMF? — definition + 3 infographic embeds
+  3. Video spotlight — 9:16 video with cyber-punk frame
+  4. EMF Concepts — from emf_concept metaobjects (cyber cards)
+  5. Protection Methods — from emf_protection_method metaobjects
+  6. "Mindful Tech Boundaries" overlay image + shop CTA
+  7. FAQ — from faq_group metaobjects (EMF category)
+
+  FULLY EDITABLE IN THEME EDITOR:
+  - All colors (bg, accent neon, text, card bg, border)
+  - All headings and body text
+  - All image pickers (swap infographics anytime)
+  - Video ID (Shopify video file ID)
+  - Padding / spacing on every section
+  - Toggle each sub-section on/off
+  - CTA button text + link
+
+  STRUCTURED DATA:
+  - schema.org/WebPage + Article
+  - FAQPage for the FAQ block
+  - ItemList for concepts + protection methods
+{%- enddoc -%}
+
+{%- assign emf_concepts = shop.metaobjects.emf_concept.values -%}
+{%- assign emf_types    = shop.metaobjects.emf_protection_method.values -%}
+{%- assign faq_groups   = shop.metaobjects.faq_group.values -%}
+{%- assign emf_faqs     = faq_groups | where: 'category', 'EMF Protection' | first -%}
+
+{%- comment -%} ── STRUCTURED DATA ──────────────────────────────────── {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["WebPage", "Article"],
+  "name": {{ section.settings.hero_heading | default: 'All About EMFs' | json }},
+  "headline": {{ section.settings.hero_heading | default: 'All About EMFs: Understanding Electromagnetic Frequencies' | json }},
+  "description": {{ section.settings.hero_subtext | default: 'A complete guide to understanding EMF exposure, the science of shielding, and practical steps to protect yourself and your family.' | json }},
+  "url": "{{ shop.url }}{{ page.url }}",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Wax | Wane Store",
+    "url": "{{ shop.url }}"
+  },
+  "mainEntity": [
+    {
+      "@type": "ItemList",
+      "name": "EMF Concepts",
+      "itemListElement": [
+        {%- for concept in emf_concepts -%}
+        {
+          "@type": "ListItem",
+          "position": {{ forloop.index }},
+          "name": {{ concept.display_name | json }},
+          "description": {{ concept.simple_explanation | default: concept.concept_name | json }}
+        }{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      ]
+    },
+    {
+      "@type": "ItemList",
+      "name": "EMF Protection Methods",
+      "itemListElement": [
+        {%- for ptype in emf_types -%}
+        {
+          "@type": "ListItem",
+          "position": {{ forloop.index }},
+          "name": {{ ptype.display_name | json }},
+          "description": {{ ptype.simple_description | default: ptype.method_name | json }}
+        }{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      ]
+    }
+    {%- if emf_faqs != blank -%}
+    ,{
+      "@type": "FAQPage",
+      "mainEntity": [
+        {%- for faq in emf_faqs.faqs.value -%}
+        {
+          "@type": "Question",
+          "name": {{ faq.question | json }},
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": {{ faq.answer | json }}
+          }
+        }{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      ]
+    }
+    {%- endif -%}
+  ]
+}
+</script>
+
+{% style %}
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+  /* ── ROOT VARIABLES ─────────────────────────────────────────── */
+  .emf-page {
+    --emf-bg:        {{ section.settings.bg_color }};
+    --emf-bg2:       {{ section.settings.bg_color_2 }};
+    --emf-neon:      {{ section.settings.neon_color }};
+    --emf-neon2:     {{ section.settings.neon_color_2 }};
+    --emf-text:      {{ section.settings.text_color }};
+    --emf-subtext:   {{ section.settings.subtext_color }};
+    --emf-card:      {{ section.settings.card_bg }};
+    --emf-border:    {{ section.settings.card_border }};
+    --emf-heading:   {{ section.settings.heading_color }};
+    --ff-mono:       'Share Tech Mono', monospace;
+    --ff-display:    'Rajdhani', sans-serif;
+    --ff-body:       'Poppins', sans-serif;
+    background: var(--emf-bg);
+    color: var(--emf-text);
+    font-family: var(--ff-body);
+    overflow-x: hidden;
+  }
+
+  /* ── SCANLINE OVERLAY (global) ──────────────────────────────── */
+  .emf-page::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,255,180,0.015) 2px,
+      rgba(0,255,180,0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── GRID BACKGROUND ────────────────────────────────────────── */
+  .emf-grid-bg {
+    position: relative;
+    background-image:
+      linear-gradient(rgba(0,255,180,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,180,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* ── SECTION WRAPPER ────────────────────────────────────────── */
+  .emf-section {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ── HERO ───────────────────────────────────────────────────── */
+  .emf-hero {
+    background: var(--emf-bg);
+    padding: {{ section.settings.hero_padding_top }}px 20px {{ section.settings.hero_padding_bottom }}px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .emf-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--emf-neon), transparent);
+  }
+  .emf-hero__eyebrow {
+    font-family: var(--ff-mono);
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--emf-neon);
+    margin: 0 0 16px;
+    opacity: 0.8;
+  }
+  .emf-hero__eyebrow::before { content: '> '; }
+  .emf-hero__eyebrow::after  { content: ' _'; animation: blink 1s step-end infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  .emf-hero__heading {
+    font-family: var(--ff-display);
+    font-size: clamp(2.4rem, 7vw, 5.5rem);
+    font-weight: 700;
+    color: var(--emf-heading);
+    line-height: 1.05;
+    margin: 0 0 20px;
+    letter-spacing: -0.01em;
+    text-shadow: 0 0 40px rgba(0,255,180,0.3), 0 0 80px rgba(0,255,180,0.1);
+    position: relative;
+  }
+  /* Glitch effect */
+  .emf-hero__heading::before,
+  .emf-hero__heading::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+  }
+  .emf-hero__heading::before {
+    color: var(--emf-neon);
+    clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
+    transform: translateX(-3px);
+    animation: glitch1 4s infinite;
+    opacity: 0.5;
+  }
+  .emf-hero__heading::after {
+    color: var(--emf-neon2);
+    clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+    transform: translateX(3px);
+    animation: glitch2 4s infinite;
+    opacity: 0.4;
+  }
+  @keyframes glitch1 {
+    0%,90%,100% { transform: translateX(0); opacity: 0; }
+    92% { transform: translateX(-4px); opacity: 0.5; }
+    94% { transform: translateX(4px); opacity: 0.5; }
+    96% { transform: translateX(0); opacity: 0; }
+  }
+  @keyframes glitch2 {
+    0%,88%,100% { transform: translateX(0); opacity: 0; }
+    90% { transform: translateX(4px); opacity: 0.4; }
+    92% { transform: translateX(-4px); opacity: 0.4; }
+    94% { transform: translateX(0); opacity: 0; }
+  }
+
+  .emf-hero__subtext {
+    font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+    color: var(--emf-subtext);
+    max-width: 600px;
+    margin: 0 auto 36px;
+    line-height: 1.75;
+  }
+  .emf-hero__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    background: transparent;
+    border: 2px solid var(--emf-neon);
+    color: var(--emf-neon);
+    font-family: var(--ff-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .emf-hero__cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--emf-neon);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: -1;
+  }
+  .emf-hero__cta:hover::before { transform: translateX(0); }
+  .emf-hero__cta:hover { color: var(--emf-bg); }
+
+  /* ── SECTION DIVIDERS ───────────────────────────────────────── */
+  .emf-divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--emf-border), transparent);
+    margin: 0;
+  }
+
+  /* ── SECTION HEADERS ────────────────────────────────────────── */
+  .emf-block {
+    padding: {{ section.settings.block_padding }}px 20px;
+    position: relative;
+  }
+  .emf-block--alt { background: var(--emf-bg2); }
+
+  .emf-block__header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .emf-block__eyebrow {
+    font-family: var(--ff-mono);
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--emf-neon);
+    margin: 0 0 10px;
+    opacity: 0.7;
+  }
+  .emf-block__title {
+    font-family: var(--ff-display);
+    font-size: clamp(1.5rem, 3vw, 2.4rem);
+    font-weight: 700;
+    color: var(--emf-heading);
+    margin: 0 0 12px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .emf-block__subtitle {
+    font-size: 0.95rem;
+    color: var(--emf-subtext);
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ── INFOGRAPHIC GRID ───────────────────────────────────────── */
+  .emf-infographic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 16px;
+  }
+  .emf-infographic-card {
+    position: relative;
+    border: 1px solid var(--emf-border);
+    overflow: hidden;
+    background: var(--emf-card);
+    transition: all 0.3s ease;
+  }
+  .emf-infographic-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--emf-neon), var(--emf-neon2));
+    z-index: 2;
+  }
+  .emf-infographic-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 0 1px rgba(0,255,180,0);
+    transition: box-shadow 0.3s ease;
+    pointer-events: none;
+    z-index: 3;
+  }
+  .emf-infographic-card:hover::after {
+    box-shadow: inset 0 0 0 1px var(--emf-neon);
+  }
+  .emf-infographic-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 40px rgba(0,255,180,0.15);
+  }
+  .emf-infographic-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: saturate(0.9) contrast(1.05);
+    transition: filter 0.3s ease;
+  }
+  .emf-infographic-card:hover img { filter: saturate(1.1) contrast(1.1); }
+  .emf-infographic-card__caption {
+    padding: 14px 18px;
+    font-family: var(--ff-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    color: var(--emf-neon);
+    opacity: 0.7;
+    border-top: 1px solid var(--emf-border);
+  }
+  .emf-infographic-card__caption::before { content: '// '; }
+
+  /* ── VIDEO SPOTLIGHT ────────────────────────────────────────── */
+  .emf-video-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  @media (max-width: 720px) {
+    .emf-video-block { grid-template-columns: 1fr; }
+  }
+  .emf-video-frame {
+    position: relative;
+    border: 2px solid var(--emf-border);
+    overflow: hidden;
+    background: #000;
+  }
+  .emf-video-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(0,255,180,0.08) 0%,
+      transparent 50%,
+      rgba(0,200,255,0.05) 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+  .emf-video-frame video,
+  .emf-video-frame iframe {
+    width: 100%;
+    display: block;
+    aspect-ratio: 9/16;
+    object-fit: cover;
+  }
+  .emf-video-corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: var(--emf-neon);
+    border-style: solid;
+    z-index: 3;
+  }
+  .emf-video-corner--tl { top: 8px; left: 8px; border-width: 2px 0 0 2px; }
+  .emf-video-corner--tr { top: 8px; right: 8px; border-width: 2px 2px 0 0; }
+  .emf-video-corner--bl { bottom: 8px; left: 8px; border-width: 0 0 2px 2px; }
+  .emf-video-corner--br { bottom: 8px; right: 8px; border-width: 0 2px 2px 0; }
+
+  .emf-video-text__eyebrow {
+    font-family: var(--ff-mono);
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--emf-neon);
+    text-transform: uppercase;
+    margin: 0 0 14px;
+  }
+  .emf-video-text__heading {
+    font-family: var(--ff-display);
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 700;
+    color: var(--emf-heading);
+    margin: 0 0 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .emf-video-text__body {
+    font-size: 0.95rem;
+    color: var(--emf-subtext);
+    line-height: 1.8;
+    margin: 0 0 24px;
+  }
+  .emf-stat-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .emf-stat {
+    flex: 1;
+    min-width: 100px;
+    padding: 14px;
+    border: 1px solid var(--emf-border);
+    background: var(--emf-card);
+    text-align: center;
+  }
+  .emf-stat__number {
+    font-family: var(--ff-mono);
+    font-size: 1.6rem;
+    color: var(--emf-neon);
+    display: block;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .emf-stat__label {
+    font-size: 0.7rem;
+    color: var(--emf-subtext);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── CONCEPT CARDS ──────────────────────────────────────────── */
+  .emf-concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .emf-cyber-card {
+    background: var(--emf-card);
+    border: 1px solid var(--emf-border);
+    padding: 24px;
+    position: relative;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+  .emf-cyber-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 0;
+    background: linear-gradient(180deg, var(--emf-neon), var(--emf-neon2));
+    transition: height 0.4s ease;
+  }
+  .emf-cyber-card:hover::before { height: 100%; }
+  .emf-cyber-card:hover {
+    border-color: var(--emf-neon);
+    box-shadow: 0 0 20px rgba(0,255,180,0.1), inset 0 0 20px rgba(0,255,180,0.03);
+    transform: translateY(-2px);
+  }
+  .emf-cyber-card__tag {
+    font-family: var(--ff-mono);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--emf-neon);
+    opacity: 0.6;
+    margin: 0 0 10px;
+  }
+  .emf-cyber-card__name {
+    font-family: var(--ff-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--emf-heading);
+    margin: 0 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .emf-cyber-card__definition {
+    font-size: 0.88rem;
+    color: var(--emf-subtext);
+    line-height: 1.7;
+    margin: 0 0 14px;
+  }
+  .emf-cyber-card__toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: none;
+    border-top: 1px solid var(--emf-border);
+    padding: 10px 0 0;
+    cursor: pointer;
+    font-family: var(--ff-mono);
+    font-size: 0.75rem;
+    color: var(--emf-neon);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: left;
+  }
+  .emf-cyber-card__toggle svg {
+    width: 14px; height: 14px;
+    stroke: var(--emf-neon);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+  }
+  .emf-cyber-card__toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .emf-cyber-card__body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+  .emf-cyber-card__body.is-open { max-height: 400px; }
+  .emf-cyber-card__body-inner {
+    padding-top: 14px;
+    font-size: 0.85rem;
+    color: var(--emf-subtext);
+    line-height: 1.75;
+  }
+  .emf-cyber-card__label {
+    font-family: var(--ff-mono);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--emf-neon);
+    opacity: 0.6;
+    margin: 12px 0 4px;
+  }
+
+  /* ── PROTECTION METHODS ─────────────────────────────────────── */
+  .emf-protect-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .emf-protect-card {
+    background: var(--emf-card);
+    border: 1px solid var(--emf-border);
+    padding: 24px;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  .emf-protect-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--emf-neon), var(--emf-neon2));
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+    transform-origin: left;
+  }
+  .emf-protect-card:hover::after { transform: scaleX(1); }
+  .emf-protect-card:hover {
+    border-color: var(--emf-neon);
+    box-shadow: 0 4px 24px rgba(0,255,180,0.08);
+  }
+  .emf-protect-card__icon {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .emf-protect-card__name {
+    font-family: var(--ff-display);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--emf-heading);
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .emf-protect-card__desc {
+    font-size: 0.85rem;
+    color: var(--emf-subtext);
+    line-height: 1.7;
+    margin: 0 0 12px;
+  }
+  .emf-protect-card__effectiveness {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--emf-border);
+  }
+  .emf-protect-card__effectiveness-label {
+    font-family: var(--ff-mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--emf-subtext);
+    opacity: 0.6;
+    flex-shrink: 0;
+  }
+  .emf-protect-card__bar {
+    flex: 1;
+    height: 4px;
+    background: var(--emf-border);
+    position: relative;
+    overflow: hidden;
+  }
+  .emf-protect-card__bar-fill {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--emf-neon), var(--emf-neon2));
+    transform-origin: left;
+    animation: barGrow 1.2s ease forwards;
+    animation-play-state: paused;
+  }
+  .emf-protect-card:hover .emf-protect-card__bar-fill {
+    animation-play-state: running;
+  }
+  @keyframes barGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  /* ── OVERLAY IMAGE BLOCK ────────────────────────────────────── */
+  .emf-overlay-block {
+    position: relative;
+    overflow: hidden;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .emf-overlay-block__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.5) saturate(0.8);
+  }
+  .emf-overlay-block__content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 60px 20px;
+    max-width: 600px;
+  }
+  .emf-overlay-block__eyebrow {
+    font-family: var(--ff-mono);
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--emf-neon);
+    text-transform: uppercase;
+    margin: 0 0 16px;
+  }
+  .emf-overlay-block__heading {
+    font-family: var(--ff-display);
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    text-shadow: 0 0 30px rgba(0,255,180,0.4);
+  }
+  .emf-overlay-block__text {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.75;
+    margin: 0 0 28px;
+  }
+  .emf-overlay-block__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    background: var(--emf-neon);
+    color: #0a0f0d;
+    font-family: var(--ff-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+  }
+  .emf-overlay-block__cta:hover {
+    background: var(--emf-neon2);
+    box-shadow: 0 0 20px rgba(0,255,180,0.4);
+  }
+
+  /* ── FAQ BLOCK ──────────────────────────────────────────────── */
+  .emf-faq-list {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .emf-faq-item {
+    border-bottom: 1px solid var(--emf-border);
+  }
+  .emf-faq-item:first-child { border-top: 1px solid var(--emf-border); }
+  .emf-faq-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 20px 0;
+    cursor: pointer;
+    text-align: left;
+    gap: 16px;
+    transition: color 0.2s ease;
+  }
+  .emf-faq-btn:hover { color: var(--emf-neon); }
+  .emf-faq-btn__q {
+    font-family: var(--ff-display);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--emf-heading);
+    letter-spacing: 0.02em;
+    transition: color 0.2s ease;
+  }
+  .emf-faq-btn:hover .emf-faq-btn__q { color: var(--emf-neon); }
+  .emf-faq-btn svg {
+    width: 18px; height: 18px;
+    stroke: var(--emf-neon);
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+  .emf-faq-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .emf-faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+  .emf-faq-answer.is-open { max-height: 600px; }
+  .emf-faq-answer__inner {
+    padding: 0 0 20px;
+    font-size: 0.92rem;
+    color: var(--emf-subtext);
+    line-height: 1.8;
+  }
+
+  /* ── RESPONSIVE ─────────────────────────────────────────────── */
+  @media (max-width: 600px) {
+    .emf-infographic-grid { grid-template-columns: 1fr; }
+    .emf-concepts-grid    { grid-template-columns: 1fr; }
+    .emf-protect-grid     { grid-template-columns: 1fr; }
+    .emf-stat-row         { gap: 12px; }
+  }
+{% endstyle %}
+
+<div class="emf-page emf-grid-bg">
+
+  {%- comment -%} ── 1. HERO ──────────────────────────────────────── {%- endcomment -%}
+  {%- if section.settings.show_hero -%}
+  <div class="emf-hero">
+    <div class="emf-section">
+      <p class="emf-hero__eyebrow">{{ section.settings.hero_eyebrow | default: 'Wax | Wane — EMF Education' }}</p>
+      <h1 class="emf-hero__heading" data-text="{{ section.settings.hero_heading | default: 'All About EMFs' }}">
+        {{ section.settings.hero_heading | default: 'All About EMFs' }}
+      </h1>
+      <p class="emf-hero__subtext">{{ section.settings.hero_subtext | default: 'Electromagnetic frequencies are invisible, constant, and everywhere. Here is everything you need to know — no fear-mongering, just science, context, and practical steps.' }}</p>
+      {%- if section.settings.hero_cta_label != blank -%}
+      <a href="{{ section.settings.hero_cta_link | default: '#emf-protection' }}" class="emf-hero__cta">
+        {{ section.settings.hero_cta_label }}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      {%- endif -%}
+    </div>
+  </div>
+  <hr class="emf-divider">
+  {%- endif -%}
+
+  {%- comment -%} ── 2. WHAT IS EMF + INFOGRAPHICS ────────────────── {%- endcomment -%}
+  {%- if section.settings.show_infographics -%}
+  <div class="emf-block">
+    <div class="emf-section">
+      <div class="emf-block__header">
+        <p class="emf-block__eyebrow">{{ section.settings.infographic_eyebrow | default: 'The Science' }}</p>
+        <h2 class="emf-block__title">{{ section.settings.infographic_heading | default: 'What Are EMFs?' }}</h2>
+        <p class="emf-block__subtitle">{{ section.settings.infographic_subtext | default: 'Electromagnetic fields are areas of energy that surround electronic devices. From power lines to Wi-Fi routers, they are part of modern life — and understanding them is the first step to managing exposure.' }}</p>
+      </div>
+
+      <div class="emf-infographic-grid">
+        {%- comment -%} Infographic 1 — Science of Shielding {%- endcomment -%}
+        {%- if section.settings.infographic_1 != blank or section.settings.show_default_infographics -%}
+        <div class="emf-infographic-card">
+          {%- if section.settings.infographic_1 != blank -%}
+            {{ section.settings.infographic_1 | image_url: width: 900 | image_tag: alt: section.settings.infographic_1_alt | default: 'EMF Explained: The Science of Shielding Textiles', loading: 'lazy', class: '' }}
+          {%- else -%}
+            <img src="{{ 'emf-infographic-science.webp' | asset_url }}" alt="EMF Explained: The Science of Shielding Textiles" loading="lazy" />
+          {%- endif -%}
+          <p class="emf-infographic-card__caption">{{ section.settings.infographic_1_caption | default: 'EMF Explained: The Science of Shielding Textiles' }}</p>
+        </div>
+        {%- endif -%}
+
+        {%- comment -%} Infographic 2 — Vibe Check {%- endcomment -%}
+        {%- if section.settings.infographic_2 != blank or section.settings.show_default_infographics -%}
+        <div class="emf-infographic-card">
+          {%- if section.settings.infographic_2 != blank -%}
+            {{ section.settings.infographic_2 | image_url: width: 900 | image_tag: alt: section.settings.infographic_2_alt | default: 'EMF Vibe Check: A Guide to Your Digital Glow Up', loading: 'lazy', class: '' }}
+          {%- else -%}
+            <img src="{{ 'emf-infographic-vibe-check.webp' | asset_url }}" alt="EMF Vibe Check: A Guide to Your Digital Glow Up" loading="lazy" />
+          {%- endif -%}
+          <p class="emf-infographic-card__caption">{{ section.settings.infographic_2_caption | default: 'EMF Vibe Check: A Guide to Your Digital Glow Up' }}</p>
+        </div>
+        {%- endif -%}
+
+        {%- comment -%} Infographic 3 — Sources vs Shields {%- endcomment -%}
+        {%- if section.settings.infographic_3 != blank or section.settings.show_default_infographics -%}
+        <div class="emf-infographic-card">
+          {%- if section.settings.infographic_3 != blank -%}
+            {{ section.settings.infographic_3 | image_url: width: 900 | image_tag: alt: section.settings.infographic_3_alt | default: 'Your Digital Aura: EMF Sources vs. Shields', loading: 'lazy', class: '' }}
+          {%- else -%}
+            <img src="{{ 'emf-infographic-sources-shields.webp' | asset_url }}" alt="Your Digital Aura: EMF Sources vs. Shields" loading="lazy" />
+          {%- endif -%}
+          <p class="emf-infographic-card__caption">{{ section.settings.infographic_3_caption | default: 'Your Digital Aura: EMF Sources vs. Shields' }}</p>
+        </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+  <hr class="emf-divider">
+  {%- endif -%}
+
+  {%- comment -%} ── 3. VIDEO SPOTLIGHT ───────────────────────────── {%- endcomment -%}
+  {%- if section.settings.show_video -%}
+  <div class="emf-block emf-block--alt">
+    <div class="emf-section">
+      <div class="emf-video-block">
+        <div class="emf-video-frame">
+          <div class="emf-video-corner emf-video-corner--tl"></div>
+          <div class="emf-video-corner emf-video-corner--tr"></div>
+          <div class="emf-video-corner emf-video-corner--bl"></div>
+          <div class="emf-video-corner emf-video-corner--br"></div>
+          {%- if section.settings.video_url != blank -%}
+            <video src="{{ section.settings.video_url }}" autoplay muted loop playsinline></video>
+          {%- else -%}
+            {%- comment -%} Fallback: embed the uploaded Shopify video by file ID {%- endcomment -%}
+            <video src="{{ 'gid://shopify/Video/50198340469048' | file_url }}" autoplay muted loop playsinline
+                   poster="{{ 'emf-mindful-tech-overlay.png' | asset_url }}">
+              <source src="{{ 'gid://shopify/Video/50198340469048' | file_url }}" type="video/mp4">
+            </video>
+          {%- endif -%}
+        </div>
+        <div class="emf-video-text">
+          <p class="emf-video-text__eyebrow">{{ section.settings.video_eyebrow | default: 'Mindful Tech Boundaries' }}</p>
+          <h2 class="emf-video-text__heading">{{ section.settings.video_heading | default: 'Your Phone. Your Field. Your Choice.' }}</h2>
+          {%- assign video_body_default = 'The average person spends 7+ hours a day within reach of a device emitting radiofrequency EMFs. Faraday shielding is not about fear - it is about intentional boundaries. When you want to disconnect, actually disconnect.' -%}
+          <p class="emf-video-text__body">{{ section.settings.video_body | default: video_body_default }}</p>
+          <div class="emf-stat-row">
+            <div class="emf-stat">
+              <span class="emf-stat__number">{{ section.settings.stat_1_number | default: '7h' }}</span>
+              <span class="emf-stat__label">{{ section.settings.stat_1_label | default: 'avg daily device exposure' }}</span>
+            </div>
+            <div class="emf-stat">
+              <span class="emf-stat__number">{{ section.settings.stat_2_number | default: '>30' }}</span>
+              <span class="emf-stat__label">{{ section.settings.stat_2_label | default: 'dB shielding effectiveness' }}</span>
+            </div>
+            <div class="emf-stat">
+              <span class="emf-stat__number">{{ section.settings.stat_3_number | default: '40%' }}</span>
+              <span class="emf-stat__label">{{ section.settings.stat_3_label | default: 'signal reduction in tests' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr class="emf-divider">
+  {%- endif -%}
+
+  {%- comment -%} ── 4. EMF CONCEPTS (from metaobjects) ───────────── {%- endcomment -%}
+  {%- if section.settings.show_concepts and emf_concepts != empty -%}
+  <div class="emf-block" id="emf-concepts">
+    <div class="emf-section">
+      <div class="emf-block__header">
+        <p class="emf-block__eyebrow">{{ section.settings.concepts_eyebrow | default: 'The Terminology' }}</p>
+        <h2 class="emf-block__title">{{ section.settings.concepts_heading | default: 'Understanding EMF' }}</h2>
+        <p class="emf-block__subtitle">{{ section.settings.concepts_subtitle | default: 'Key concepts, decoded. No physics degree required.' }}</p>
+      </div>
+      <div class="emf-concepts-grid">
+        {%- for concept in emf_concepts -%}
+        <div class="emf-cyber-card">
+          <p class="emf-cyber-card__tag">emf_concept_{{ forloop.index }}</p>
+          <h3 class="emf-cyber-card__name">{{ concept.display_name }}</h3>
+          <p class="emf-cyber-card__definition">{{ concept.simple_explanation | default: concept.concept_name }}</p>
+          {%- if concept.technical_detail != blank or concept.why_it_matters != blank -%}
+          <button class="emf-cyber-card__toggle" aria-expanded="false" aria-controls="concept-body-{{ forloop.index }}">
+            <span>EXPAND_DATA</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="emf-cyber-card__body" id="concept-body-{{ forloop.index }}">
+            <div class="emf-cyber-card__body-inner">
+              {%- if concept.technical_detail != blank -%}
+              <p class="emf-cyber-card__label">TECHNICAL_DETAIL</p>
+              <p>{{ concept.technical_detail }}</p>
+              {%- endif -%}
+              {%- if concept.why_it_matters != blank -%}
+              <p class="emf-cyber-card__label">WHY_IT_MATTERS</p>
+              <p>{{ concept.why_it_matters }}</p>
+              {%- endif -%}
+            </div>
+          </div>
+          {%- endif -%}
+        </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+  <hr class="emf-divider">
+  {%- endif -%}
+
+  {%- comment -%} ── 5. PROTECTION METHODS (from metaobjects) ─────── {%- endcomment -%}
+  {%- if section.settings.show_protection and emf_types != empty -%}
+  <div class="emf-block emf-block--alt" id="emf-protection">
+    <div class="emf-section">
+      <div class="emf-block__header">
+        <p class="emf-block__eyebrow">{{ section.settings.protect_eyebrow | default: 'The Solutions' }}</p>
+        <h2 class="emf-block__title">{{ section.settings.protect_heading | default: 'Types of EMF Protection' }}</h2>
+        <p class="emf-block__subtitle">{{ section.settings.protect_subtitle | default: 'From Faraday bags to grounding accessories — here is how shielding actually works.' }}</p>
+      </div>
+      <div class="emf-protect-grid">
+        {%- for ptype in emf_types -%}
+        <div class="emf-protect-card">
+          <span class="emf-protect-card__icon">{{ ptype.icon | default: '🛡' }}</span>
+          <h3 class="emf-protect-card__name">{{ ptype.display_name }}</h3>
+          <p class="emf-protect-card__desc">{{ ptype.simple_description | default: ptype.method_name }}</p>
+          {%- if ptype.effectiveness_level != blank -%}
+          <div class="emf-protect-card__effectiveness">
+            <span class="emf-protect-card__effectiveness-label">EFFECTIVENESS</span>
+            <div class="emf-protect-card__bar">
+              <div class="emf-protect-card__bar-fill" style="transform: scaleX({{ ptype.effectiveness_level | divided_by: 100.0 }});"></div>
+            </div>
+          </div>
+          {%- endif -%}
+        </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+  <hr class="emf-divider">
+  {%- endif -%}
+
+  {%- comment -%} ── 6. OVERLAY IMAGE + SHOP CTA ──────────────────── {%- endcomment -%}
+  {%- if section.settings.show_overlay -%}
+  <div class="emf-overlay-block">
+    {%- if section.settings.overlay_image != blank -%}
+      {{ section.settings.overlay_image | image_url: width: 1400 | image_tag: alt: 'Mindful Tech Boundaries — EMF Protection', loading: 'lazy', class: 'emf-overlay-block__img' }}
+    {%- else -%}
+      <img src="{{ 'emf-mindful-tech-overlay.png' | asset_url }}" alt="Mindful Tech Boundaries — EMF Protection" loading="lazy" class="emf-overlay-block__img" />
+    {%- endif -%}
+    <div class="emf-overlay-block__content">
+      <p class="emf-overlay-block__eyebrow">{{ section.settings.overlay_eyebrow | default: 'Shop the Collection' }}</p>
+      <h2 class="emf-overlay-block__heading">{{ section.settings.overlay_heading | default: 'Mindful Tech Boundaries' }}</h2>
+      <p class="emf-overlay-block__text">{{ section.settings.overlay_text | default: 'Functional, design-conscious cases that mitigate unseen EMF stress. Faraday bags, phone pouches, and accessories — tested, curated, and ready to ship.' }}</p>
+      {%- if section.settings.overlay_cta_label != blank -%}
+      <a href="{{ section.settings.overlay_cta_link | default: 'shopify://collections/emf-shielding-faraday-protection' }}" class="emf-overlay-block__cta">
+        {{ section.settings.overlay_cta_label }}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      {%- endif -%}
+    </div>
+  </div>
+  <hr class="emf-divider">
+  {%- endif -%}
+
+  {%- comment -%} ── 7. FAQ BLOCK ─────────────────────────────────── {%- endcomment -%}
+  {%- if section.settings.show_faq -%}
+  <div class="emf-block">
+    <div class="emf-section">
+      <div class="emf-block__header">
+        <p class="emf-block__eyebrow">{{ section.settings.faq_eyebrow | default: 'Common Questions' }}</p>
+        <h2 class="emf-block__title">{{ section.settings.faq_heading | default: 'EMF FAQ' }}</h2>
+        <p class="emf-block__subtitle">{{ section.settings.faq_subtitle | default: 'Straight answers to the questions we get asked most.' }}</p>
+      </div>
+      <div class="emf-faq-list" itemscope itemtype="https://schema.org/FAQPage">
+        {%- if emf_faqs != blank -%}
+          {%- for faq in emf_faqs.faqs.value -%}
+          <div class="emf-faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <button class="emf-faq-btn" aria-expanded="false" aria-controls="emf-faq-{{ forloop.index }}" itemprop="name">
+              <span class="emf-faq-btn__q">{{ faq.question }}</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="emf-faq-answer" id="emf-faq-{{ forloop.index }}" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+              <div class="emf-faq-answer__inner" itemprop="text">{{ faq.answer }}</div>
+            </div>
+          </div>
+          {%- endfor -%}
+        {%- else -%}
+          {%- comment -%} Static fallback FAQs if no metaobject data yet {%- endcomment -%}
+          {%- assign static_faqs = "What is EMF?|Electromagnetic fields (EMF) are invisible areas of energy, often referred to as radiation, associated with the use of electrical power and various forms of natural and man-made lighting. They include both electric and magnetic fields.;Is EMF from my phone dangerous?|The scientific consensus is that everyday EMF exposure from consumer devices is low-level and not proven to cause harm. However, the IARC classifies radiofrequency EMFs as 'possibly carcinogenic' (Group 2B), which is why many people choose to apply the precautionary principle — reducing exposure where easy and practical.;How does Faraday shielding work?|A Faraday cage (or bag) is an enclosure made from conductive material that blocks electromagnetic fields. When your phone is inside a Faraday bag, it cannot send or receive signals — meaning zero RF emissions. The conductive mesh reflects and absorbs the electromagnetic waves.;What is the difference between ELF and RF EMF?|ELF (Extremely Low Frequency) EMFs come from power lines and electrical wiring. RF (Radio Frequency) EMFs come from wireless devices like cell phones, Wi-Fi routers, and Bluetooth. Both are types of non-ionizing radiation — they do not have enough energy to break chemical bonds or remove electrons." | split: ';' -%}
+          {%- for faq_item in static_faqs -%}
+            {%- assign parts = faq_item | split: '|' -%}
+            <div class="emf-faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+              <button class="emf-faq-btn" aria-expanded="false" aria-controls="emf-faq-static-{{ forloop.index }}">
+                <span class="emf-faq-btn__q" itemprop="name">{{ parts[0] }}</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div class="emf-faq-answer" id="emf-faq-static-{{ forloop.index }}" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <div class="emf-faq-answer__inner" itemprop="text">{{ parts[1] }}</div>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+  {%- endif -%}
+
+</div>{%- comment -%} end .emf-page {%- endcomment -%}
+
+<script>
+  (function() {
+    // ── Toggle cards (concept expand/collapse) ──────────────────
+    document.querySelectorAll('.emf-cyber-card__toggle').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        var bodyId   = this.getAttribute('aria-controls');
+        var body     = document.getElementById(bodyId);
+        this.setAttribute('aria-expanded', !expanded);
+        if (body) body.classList.toggle('is-open', !expanded);
+      });
+    });
+
+    // ── FAQ accordion ───────────────────────────────────────────
+    document.querySelectorAll('.emf-faq-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        var answerId = this.getAttribute('aria-controls');
+        var answer   = document.getElementById(answerId);
+
+        // Close all others
+        document.querySelectorAll('.emf-faq-btn').forEach(function(b) {
+          b.setAttribute('aria-expanded', 'false');
+        });
+        document.querySelectorAll('.emf-faq-answer').forEach(function(a) {
+          a.classList.remove('is-open');
+        });
+
+        if (!expanded) {
+          this.setAttribute('aria-expanded', 'true');
+          if (answer) answer.classList.add('is-open');
+        }
+      });
+    });
+
+    // ── Animate bars when card enters viewport ──────────────────
+    if ('IntersectionObserver' in window) {
+      var barObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var fill = entry.target.querySelector('.emf-protect-card__bar-fill');
+            if (fill) {
+              fill.style.animationPlayState = 'running';
+            }
+          }
+        });
+      }, { threshold: 0.3 });
+
+      document.querySelectorAll('.emf-protect-card').forEach(function(card) {
+        barObserver.observe(card);
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "All About EMFs",
+  "tag": "section",
+  "class": "emf-all-about-section",
+  "settings": [
+    { "type": "header", "content": "── HERO ──────────────────────────────" },
+    { "type": "checkbox", "id": "show_hero", "label": "Show Hero Section", "default": true },
+    { "type": "text", "id": "hero_eyebrow", "label": "Eyebrow Text", "default": "Wax | Wane — EMF Education" },
+    { "type": "text", "id": "hero_heading", "label": "Main Heading", "default": "All About EMFs" },
+    { "type": "textarea", "id": "hero_subtext", "label": "Subtext", "default": "Electromagnetic frequencies are invisible, constant, and everywhere. Here is everything you need to know — no fear-mongering, just science, context, and practical steps." },
+    { "type": "text", "id": "hero_cta_label", "label": "CTA Button Text", "default": "Explore the Guide" },
+    { "type": "url", "id": "hero_cta_link", "label": "CTA Button Link" },
+    { "type": "range", "id": "hero_padding_top", "label": "Hero Top Padding", "min": 40, "max": 160, "step": 8, "unit": "px", "default": 80 },
+    { "type": "range", "id": "hero_padding_bottom", "label": "Hero Bottom Padding", "min": 40, "max": 160, "step": 8, "unit": "px", "default": 80 },
+
+    { "type": "header", "content": "── INFOGRAPHICS ──────────────────────" },
+    { "type": "checkbox", "id": "show_infographics", "label": "Show Infographics Section", "default": true },
+    { "type": "checkbox", "id": "show_default_infographics", "label": "Show default uploaded infographics (uncheck to hide a slot)", "default": true },
+    { "type": "text", "id": "infographic_eyebrow", "label": "Eyebrow", "default": "The Science" },
+    { "type": "text", "id": "infographic_heading", "label": "Heading", "default": "What Are EMFs?" },
+    { "type": "textarea", "id": "infographic_subtext", "label": "Subtext", "default": "Electromagnetic fields are areas of energy that surround electronic devices." },
+    { "type": "image_picker", "id": "infographic_1", "label": "Infographic 1 (upload to override default)", "info": "Default: EMF Science of Shielding Textiles" },
+    { "type": "text", "id": "infographic_1_alt", "label": "Infographic 1 Alt Text", "default": "EMF Explained: The Science of Shielding Textiles" },
+    { "type": "text", "id": "infographic_1_caption", "label": "Infographic 1 Caption", "default": "EMF Explained: The Science of Shielding Textiles" },
+    { "type": "image_picker", "id": "infographic_2", "label": "Infographic 2 (upload to override default)", "info": "Default: EMF Vibe Check infographic" },
+    { "type": "text", "id": "infographic_2_alt", "label": "Infographic 2 Alt Text", "default": "EMF Vibe Check: A Guide to Your Digital Glow Up" },
+    { "type": "text", "id": "infographic_2_caption", "label": "Infographic 2 Caption", "default": "EMF Vibe Check: A Guide to Your Digital Glow Up" },
+    { "type": "image_picker", "id": "infographic_3", "label": "Infographic 3 (upload to override default)", "info": "Default: EMF Sources vs. Shields infographic" },
+    { "type": "text", "id": "infographic_3_alt", "label": "Infographic 3 Alt Text", "default": "Your Digital Aura: EMF Sources vs. Shields" },
+    { "type": "text", "id": "infographic_3_caption", "label": "Infographic 3 Caption", "default": "Your Digital Aura: EMF Sources vs. Shields" },
+
+    { "type": "header", "content": "── VIDEO SPOTLIGHT ───────────────────" },
+    { "type": "checkbox", "id": "show_video", "label": "Show Video Section", "default": true },
+    { "type": "url", "id": "video_url", "label": "Video URL (paste a direct .mp4 URL to override default)", "info": "Leave blank to use the default uploaded video" },
+    { "type": "text", "id": "video_eyebrow", "label": "Eyebrow", "default": "Mindful Tech Boundaries" },
+    { "type": "text", "id": "video_heading", "label": "Heading", "default": "Your Phone. Your Field. Your Choice." },
+    { "type": "textarea", "id": "video_body", "label": "Body Text", "default": "The average person spends 7+ hours a day within arm reach of a device that emits radiofrequency EMFs. Faraday shielding is not about fear - it is about intentional boundaries." },
+    { "type": "text", "id": "stat_1_number", "label": "Stat 1 Number", "default": "7h" },
+    { "type": "text", "id": "stat_1_label", "label": "Stat 1 Label", "default": "avg daily device exposure" },
+    { "type": "text", "id": "stat_2_number", "label": "Stat 2 Number", "default": ">30" },
+    { "type": "text", "id": "stat_2_label", "label": "Stat 2 Label", "default": "dB shielding effectiveness" },
+    { "type": "text", "id": "stat_3_number", "label": "Stat 3 Number", "default": "40%" },
+    { "type": "text", "id": "stat_3_label", "label": "Stat 3 Label", "default": "signal reduction in tests" },
+
+    { "type": "header", "content": "── EMF CONCEPTS ──────────────────────" },
+    { "type": "checkbox", "id": "show_concepts", "label": "Show EMF Concepts Section", "default": true },
+    { "type": "text", "id": "concepts_eyebrow", "label": "Eyebrow", "default": "The Terminology" },
+    { "type": "text", "id": "concepts_heading", "label": "Heading", "default": "Understanding EMF" },
+    { "type": "text", "id": "concepts_subtitle", "label": "Subtitle", "default": "Key concepts, decoded. No physics degree required." },
+
+    { "type": "header", "content": "── PROTECTION METHODS ────────────────" },
+    { "type": "checkbox", "id": "show_protection", "label": "Show Protection Methods Section", "default": true },
+    { "type": "text", "id": "protect_eyebrow", "label": "Eyebrow", "default": "The Solutions" },
+    { "type": "text", "id": "protect_heading", "label": "Heading", "default": "Types of EMF Protection" },
+    { "type": "text", "id": "protect_subtitle", "label": "Subtitle", "default": "From Faraday bags to grounding accessories — here is how shielding actually works." },
+
+    { "type": "header", "content": "── OVERLAY IMAGE + SHOP CTA ──────────" },
+    { "type": "checkbox", "id": "show_overlay", "label": "Show Overlay Image Section", "default": true },
+    { "type": "image_picker", "id": "overlay_image", "label": "Overlay Image (upload to override default)", "info": "Default: Mindful Tech Boundaries product image" },
+    { "type": "text", "id": "overlay_eyebrow", "label": "Eyebrow", "default": "Shop the Collection" },
+    { "type": "text", "id": "overlay_heading", "label": "Heading", "default": "Mindful Tech Boundaries" },
+    { "type": "textarea", "id": "overlay_text", "label": "Body Text", "default": "Functional, design-conscious cases that mitigate unseen EMF stress." },
+    { "type": "text", "id": "overlay_cta_label", "label": "CTA Button Text", "default": "Shop EMF Protection" },
+    { "type": "url", "id": "overlay_cta_link", "label": "CTA Button Link" },
+
+    { "type": "header", "content": "── FAQ ───────────────────────────────" },
+    { "type": "checkbox", "id": "show_faq", "label": "Show FAQ Section", "default": true },
+    { "type": "text", "id": "faq_eyebrow", "label": "Eyebrow", "default": "Common Questions" },
+    { "type": "text", "id": "faq_heading", "label": "Heading", "default": "EMF FAQ" },
+    { "type": "text", "id": "faq_subtitle", "label": "Subtitle", "default": "Straight answers to the questions we get asked most." },
+
+    { "type": "header", "content": "── COLORS ────────────────────────────" },
+    { "type": "color", "id": "bg_color", "label": "Background (dark)", "default": "#070d0b" },
+    { "type": "color", "id": "bg_color_2", "label": "Background Alt (slightly lighter)", "default": "#0c1510" },
+    { "type": "color", "id": "neon_color", "label": "Neon Accent (primary)", "default": "#00ffb4" },
+    { "type": "color", "id": "neon_color_2", "label": "Neon Accent (secondary)", "default": "#00c8ff" },
+    { "type": "color", "id": "heading_color", "label": "Heading Text Color", "default": "#e8f5f0" },
+    { "type": "color", "id": "text_color", "label": "Body Text Color", "default": "#c8ddd5" },
+    { "type": "color", "id": "subtext_color", "label": "Subtext / Muted Color", "default": "#7aa898" },
+    { "type": "color", "id": "card_bg", "label": "Card Background", "default": "#0f1f18" },
+    { "type": "color", "id": "card_border", "label": "Card Border", "default": "#1e3a2e" },
+
+    { "type": "header", "content": "── LAYOUT ────────────────────────────" },
+    { "type": "range", "id": "max_width", "label": "Max Content Width", "min": 900, "max": 1400, "step": 50, "unit": "px", "default": 1200 },
+    { "type": "range", "id": "block_padding", "label": "Section Block Padding (top & bottom)", "min": 40, "max": 120, "step": 8, "unit": "px", "default": 72 }
+  ],
+  "presets": [
+    {
+      "name": "All About EMFs",
+      "settings": {
+        "show_hero": true,
+        "show_infographics": true,
+        "show_default_infographics": true,
+        "show_video": true,
+        "show_concepts": true,
+        "show_protection": true,
+        "show_overlay": true,
+        "show_faq": true
+      }
+    }
+  ]
+}
+{% endschema %}
