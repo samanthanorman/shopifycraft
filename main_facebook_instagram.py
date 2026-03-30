@@ -142,6 +142,193 @@ def ping_google_after_post(article_url):
     return False
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# PINTEREST MODULE
+# Posts new blog articles as Pins. Each pin uses the blog's og:image,
+# a keyword-rich description, and links directly back to the article.
+# Requires a valid Pinterest access token in .env (refresh every 60 days).
+# ─────────────────────────────────────────────────────────────────────────────
+
+PINTEREST_HASHTAGS = {
+    '119979376952': '#WellnessLifestyle #SelfCare #BeautyRitual #WaxAndWane #SlowLiving',
+    '115858669880': '#KBeauty #KoreanSkincare #GlassSkin #SkincareRoutine #HARAMOON',
+    '115660620088': '#EMFProtection #HealthyHome #5GHealth #EMFShielding #CleanLiving',
+    '115710034232': '#CrystalHealing #Crystals #Gemstones #MineralCollection #CrystalMagic',
+}
+
+
+def post_to_pinterest(article):
+    """Create a Pinterest Pin for a blog article.
+    Token must be refreshed every 60 days via Pinterest Developer Portal.
+    Returns Pin URL on success, None on failure."""
+    if not ENABLE_PINTEREST:
+        print("  Pinterest posting disabled")
+        return "SKIPPED"
+    if not PINTEREST_ACCESS_TOKEN:
+        print("  Pinterest token not configured - skipping")
+        return None
+    try:
+        import re as _re
+        blog_id = article.get('blog_id', '')
+        board_id = PINTEREST_BOARDS.get(blog_id)
+        hashtags = PINTEREST_HASHTAGS.get(blog_id, '#WaxAndWane #Lifestyle')
+        summary_clean = _re.sub(r'<[^>]+>', '', article.get('summary', ''))[:200].strip()
+        description = (article['title'] + "\n\n" + summary_clean + "\n\n" + hashtags)[:500]
+        if not article.get('image_url'):
+            print("  No image found - Pinterest requires an image, skipping")
+            return None
+        pin_data = {
+            "title": article['title'][:100],
+            "description": description,
+            "link": article['url'],
+            "media_source": {"source_type": "image_url", "url": article['image_url']}
+        }
+        if board_id:
+            pin_data["board_id"] = board_id
+        response = requests.post(
+            'https://api.pinterest.com/v5/pins',
+            headers={'Authorization': f'Bearer {PINTEREST_ACCESS_TOKEN}', 'Content-Type': 'application/json'},
+            json=pin_data, timeout=15
+        )
+        if response.status_code in (200, 201):
+            pin_id = response.json().get('id', '')
+            pin_url = f"https://www.pinterest.com/pin/{pin_id}/"
+            print(f"  Pinterest Pin created: {pin_url}")
+            return pin_url
+        elif response.status_code == 401:
+            print("  Pinterest token expired - update PINTEREST_ACCESS_TOKEN in .env")
+            print("  Get a new token: https://developers.pinterest.com/tools/api-explorer/")
+            return None
+        else:
+            print(f"  Pinterest API error {response.status_code}: {response.text[:200]}")
+            return None
+    except Exception as e:
+        print(f"  Error posting to Pinterest: {str(e)}")
+        return None
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# EVERGREEN REPOST MODULE
+# Picks one older blog post per run and reposts it to all platforms.
+# Evergreen = posts older than 30 days, not reposted within 90 days.
+# Rotates across all 4 blogs so each gets equal airtime.
+# Runs Saturday 10am via com.shopify.evergreen.plist (separate scheduler).
+# ─────────────────────────────────────────────────────────────────────────────
+
+EVERGREEN_LOG_FILE = SKILL_DIR / 'evergreen_repost_log.json'
+EVERGREEN_MIN_AGE_DAYS = 30
+EVERGREEN_COOLDOWN_DAYS = 90
+
+
+def load_evergreen_log():
+    """Load the evergreen repost history (URL -> last repost ISO timestamp)."""
+    if EVERGREEN_LOG_FILE.exists():
+        with open(EVERGREEN_LOG_FILE, 'r') as f:
+            return json.load(f)
+    return {}
+
+
+def save_evergreen_log(log):
+    """Save the evergreen repost history."""
+    with open(EVERGREEN_LOG_FILE, 'w') as f:
+        json.dump(log, f, indent=2)
+
+
+def pick_evergreen_article():
+    """Scan all 4 RSS feeds and pick the best candidate for reposting.
+    Prefers articles not reposted recently, rotating across all 4 blogs."""
+    import email.utils
+    from datetime import timezone
+    log = load_evergreen_log()
+    now = datetime.now(timezone.utc)
+    candidates = []
+    for feed_config in SHOPIFY_FEEDS:
+        try:
+            feed = feedparser.parse(feed_config['url'])
+            for entry in feed.entries:
+                url = entry.link
+                published_str = entry.get('published', '')
+                try:
+                    pub_tuple = email.utils.parsedate(published_str)
+                    pub_date = datetime(*pub_tuple[:6], tzinfo=timezone.utc)
+                except Exception:
+                    continue
+                age_days = (now - pub_date).days
+                if age_days < EVERGREEN_MIN_AGE_DAYS:
+                    continue
+                last_repost = log.get(url)
+                if last_repost:
+                    days_since = (now - datetime.fromisoformat(last_repost)).days
+                    if days_since < EVERGREEN_COOLDOWN_DAYS:
+                        continue
+                candidates.append({
+                    'title': entry.title,
+                    'url': url,
+                    'summary': entry.get('summary', ''),
+                    'published': published_str,
+                    'blog_name': feed_config['name'],
+                    'blog_id': feed_config['blog_id'],
+                    'age_days': age_days,
+                    'image_url': None
+                })
+        except Exception as e:
+            print(f"  Could not scan {feed_config['name']} for evergreen: {e}")
+    if not candidates:
+        return None
+    def sort_key(c):
+        last = log.get(c['url'])
+        days_since = (now - datetime.fromisoformat(last)).days if last else 9999
+        return (-days_since, -c['age_days'])
+    candidates.sort(key=sort_key)
+    best = candidates[0]
+    try:
+        import re as _re
+        response = requests.get(best['url'], timeout=10)
+        if response.status_code == 200:
+            og = _re.search(r'<meta\s+property=["\']og:image["\']\s+content=["\']([^"\'>]+)["\']', response.text, _re.IGNORECASE)
+            if og:
+                best['image_url'] = og.group(1)
+    except Exception:
+        pass
+    return best
+
+
+def mark_evergreen_reposted(url):
+    """Record that an evergreen article was just reposted."""
+    log = load_evergreen_log()
+    log[url] = datetime.now().isoformat()
+    save_evergreen_log(log)
+
+
+def run_evergreen_repost():
+    """Entry point for the Saturday evergreen scheduler.
+    Picks one article, posts it to all platforms, logs the repost."""
+    print("=" * 60)
+    print("Shopify Evergreen Reposter - Saturday Rotation")
+    print("=" * 60)
+    article = pick_evergreen_article()
+    if not article:
+        print("No evergreen candidates found today - all posts are too new or recently reposted.")
+        return
+    print(f"Evergreen pick: {article['title']} ({article['age_days']} days old)")
+    print(f"Blog: {article['blog_name']}")
+    print(f"URL: {article['url']}")
+    autoposter = ShopifyAutoposter()
+    autoposter.authenticate_google()
+    fb_url = autoposter.post_to_facebook(article)
+    time.sleep(2)
+    ig_url = autoposter.post_to_instagram(article)
+    time.sleep(2)
+    pin_url = post_to_pinterest(article)
+    time.sleep(2)
+    autoposter.log_to_google_sheets(article, fb_url, ig_url, pin_url)
+    mark_evergreen_reposted(article['url'])
+    ping_google_after_post(article['url'])
+    print("Evergreen repost complete!")
+    print(f"  Facebook:  {fb_url or 'skipped/failed'}")
+    print(f"  Instagram: {ig_url or 'skipped/failed'}")
+    print(f"  Pinterest: {pin_url or 'skipped/failed'}")
+
 
 class ShopifyAutoposter:
     """Main automation class for cross-posting Shopify blog articles."""
@@ -395,6 +582,7 @@ class ShopifyAutoposter:
             # Determine status for each platform
             fb_status = "Disabled" if facebook_url == "SKIPPED" else ("Success" if facebook_url else "Failed")
             ig_status = "Disabled" if instagram_url == "SKIPPED" else ("Success" if instagram_url else "Failed")
+            pin_status = "Disabled" if pinterest_url == "SKIPPED" else ("Success" if pinterest_url else "No image / Failed")
             
             row_data = [
                 timestamp,
@@ -405,14 +593,16 @@ class ShopifyAutoposter:
                 facebook_url if facebook_url and facebook_url != "SKIPPED" else 'N/A',
                 fb_status,
                 instagram_url if instagram_url and instagram_url != "SKIPPED" else 'N/A',
-                ig_status
+                ig_status,
+                pinterest_url if pinterest_url and pinterest_url != "SKIPPED" else 'N/A',
+                pin_status
             ]
             
             # Append to sheet
             body = {'values': [row_data]}
             result = self.sheets_service.spreadsheets().values().append(
                 spreadsheetId=GOOGLE_SHEETS_ID,
-                range='Sheet1!A:I',
+                range='Sheet1!A:K',
                 valueInputOption='RAW',
                 body=body
             ).execute()
@@ -435,6 +625,7 @@ class ShopifyAutoposter:
             # Determine status messages
             fb_msg = "Disabled" if facebook_url == "SKIPPED" else (facebook_url if facebook_url else "Failed")
             ig_msg = "Disabled" if instagram_url == "SKIPPED" else (instagram_url if instagram_url else "Failed")
+            pin_msg = "Disabled" if pinterest_url == "SKIPPED" else (pinterest_url if pinterest_url else "No image / Failed")
             
             body = f"""
 Your blog post has been detected and published to social media!
@@ -446,6 +637,7 @@ Your blog post has been detected and published to social media!
 Social Media Posts:
 📘 Facebook: {fb_msg}
 📷 Instagram: {ig_msg}
+📌 Pinterest: {pin_msg}
 
 Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
@@ -541,5 +733,9 @@ Shopify Social Autoposter - Facebook & Instagram Edition
 
 
 if __name__ == "__main__":
-    autoposter = ShopifyAutoposter()
-    autoposter.run()
+    import sys
+    if '--evergreen' in sys.argv:
+        run_evergreen_repost()
+    else:
+        autoposter = ShopifyAutoposter()
+        autoposter.run()
