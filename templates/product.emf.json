@@ -1,0 +1,36 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "emf_product_main": {
+      "type": "emf-product-detail",
+      "settings": {
+        "bg_color": "#0a0e1a",
+        "card_bg": "#0f1628",
+        "neon_color": "#00ffb4",
+        "cyan_color": "#00d4ff",
+        "heading_color": "#ffffff",
+        "body_color": "#b0bec5",
+        "section_padding_top": 40,
+        "section_padding_bottom": 40,
+        "side_padding": 24,
+        "main_gap": 48,
+        "block_padding": 60,
+        "eyebrow": "WAX | WANE — EMF PROTECTION _",
+        "show_benefits": true,
+        "show_how_it_works": true,
+        "show_concepts": true,
+        "show_faq": true,
+        "show_related": true
+      }
+    }
+  },
+  "order": ["emf_product_main"]
+}

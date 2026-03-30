@@ -1,0 +1,982 @@
+{%- comment -%}
+  crystal-product-detail.liquid
+  Custom product section for Crystal Courtesan products
+  Pulls from: mineral metaobject (matched by product title/handle)
+              custom.key_features, faq_group (category: Crystal Courtesan)
+              shopify--discovery--product_recommendation.related_products
+  Glassmorphism + jewel-tone aesthetic. All settings editable in theme editor.
+{%- endcomment -%}
+
+{%- liquid
+  assign p = product
+  assign key_features = p.metafields.custom.key_features
+  assign related = p.metafields['shopify--discovery--product_recommendation'].related_products
+  assign comp = p.metafields['shopify--discovery--product_recommendation'].complementary_products
+
+  # Try to match a mineral metaobject to this product
+  assign matched_mineral = nil
+  for mineral in shop.metaobjects.mineral.values
+    for linked_product in mineral.product.value
+      if linked_product.id == product.id
+        assign matched_mineral = mineral
+        break
+      endif
+    endfor
+    if matched_mineral != nil
+      break
+    endif
+  endfor
+-%}
+
+<style>
+  :root {
+    --crys-bg:       {{ section.settings.bg_color | default: '#0d0d1a' }};
+    --crys-bg2:      {{ section.settings.card_bg | default: 'rgba(255,255,255,0.04)' }};
+    --crys-glass:    {{ section.settings.glass_bg | default: 'rgba(255,255,255,0.06)' }};
+    --crys-border:   {{ section.settings.border_color | default: 'rgba(255,255,255,0.12)' }};
+    --crys-accent:   {{ section.settings.accent_color | default: '#c084fc' }};
+    --crys-accent2:  {{ section.settings.accent2_color | default: '#67e8f9' }};
+    --crys-gold:     {{ section.settings.gold_color | default: '#fbbf24' }};
+    --crys-heading:  {{ section.settings.heading_color | default: '#f1f5f9' }};
+    --crys-body:     {{ section.settings.body_color | default: '#94a3b8' }};
+    --ff-display:    {{ section.settings.font_display | default: "'Playfair Display', Georgia, serif" }};
+    --ff-body:       {{ section.settings.font_body | default: "'Inter', sans-serif" }};
+    --ff-mono:       {{ section.settings.font_mono | default: "'JetBrains Mono', monospace" }};
+  }
+
+  .crys-wrap {
+    background: var(--crys-bg);
+    color: var(--crys-body);
+    font-family: var(--ff-body);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Ambient glow orbs */
+  .crys-wrap::before {
+    content: '';
+    position: fixed;
+    top: -20%;
+    left: -10%;
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba(192,132,252,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .crys-wrap::after {
+    content: '';
+    position: fixed;
+    bottom: -20%;
+    right: -10%;
+    width: 50vw;
+    height: 50vw;
+    background: radial-gradient(circle, rgba(103,232,249,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .crys-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 {{ section.settings.side_padding | default: 24 }}px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── BREADCRUMB ── */
+  .crys-breadcrumb {
+    padding: 16px 0 8px;
+    font-size: 0.78rem;
+    color: var(--crys-body);
+    letter-spacing: 0.04em;
+  }
+  .crys-breadcrumb a { color: var(--crys-accent); text-decoration: none; transition: opacity 0.2s; }
+  .crys-breadcrumb a:hover { opacity: 0.7; }
+  .crys-breadcrumb span { margin: 0 6px; opacity: 0.4; }
+
+  /* ── MAIN LAYOUT ── */
+  .crys-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ section.settings.main_gap | default: 56 }}px;
+    padding: {{ section.settings.section_padding_top | default: 40 }}px 0 {{ section.settings.section_padding_bottom | default: 40 }}px;
+    align-items: start;
+  }
+  @media (max-width: 768px) { .crys-main { grid-template-columns: 1fr; gap: 32px; } }
+
+  /* ── MEDIA ── */
+  .crys-media { position: sticky; top: 80px; }
+  .crys-media__frame {
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--crys-glass);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--crys-border);
+    position: relative;
+  }
+  .crys-media__frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(192,132,252,0.08) 0%, transparent 50%, rgba(103,232,249,0.05) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .crys-media__img {
+    width: 100%;
+    display: block;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    padding: 24px;
+    position: relative;
+    z-index: 0;
+  }
+  .crys-media__thumbs {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .crys-media__thumb {
+    width: 68px;
+    height: 68px;
+    border-radius: 8px;
+    border: 1px solid var(--crys-border);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: var(--crys-glass);
+  }
+  .crys-media__thumb:hover,
+  .crys-media__thumb.is-active {
+    border-color: var(--crys-accent);
+    box-shadow: 0 0 10px rgba(192,132,252,0.3);
+  }
+  .crys-media__thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ── INFO ── */
+  .crys-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--crys-accent);
+    margin: 0 0 10px;
+    font-family: var(--ff-mono);
+  }
+  .crys-title {
+    font-family: var(--ff-display);
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 700;
+    color: var(--crys-heading);
+    line-height: 1.15;
+    margin: 0 0 10px;
+  }
+  .crys-price {
+    font-family: var(--ff-mono);
+    font-size: 1.4rem;
+    color: var(--crys-gold);
+    margin: 0 0 20px;
+  }
+  .crys-price s { font-size: 1rem; color: var(--crys-body); margin-left: 8px; opacity: 0.6; }
+
+  /* Mineral quick-stats (if matched) */
+  .crys-mineral-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 20px;
+  }
+  .crys-stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: var(--crys-glass);
+    border: 1px solid var(--crys-border);
+    font-size: 0.78rem;
+    color: var(--crys-heading);
+    backdrop-filter: blur(8px);
+  }
+  .crys-stat-pill__label { color: var(--crys-body); font-size: 0.7rem; margin-right: 2px; }
+
+  /* Variant selector */
+  .crys-variants { margin: 0 0 20px; }
+  .crys-variants__label {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--crys-body);
+    margin-bottom: 8px;
+    font-family: var(--ff-mono);
+  }
+  .crys-variants__select {
+    width: 100%;
+    background: var(--crys-glass);
+    border: 1px solid var(--crys-border);
+    color: var(--crys-heading);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: var(--ff-body);
+    font-size: 0.95rem;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c084fc' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+  }
+  .crys-variants__select:focus { outline: none; border-color: var(--crys-accent); box-shadow: 0 0 0 2px rgba(192,132,252,0.15); }
+
+  /* ATC */
+  .crys-atc-row { display: flex; gap: 12px; margin: 0 0 16px; align-items: stretch; }
+  .crys-qty {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--crys-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--crys-glass);
+    backdrop-filter: blur(8px);
+  }
+  .crys-qty__btn { width: 40px; height: 48px; background: none; border: none; color: var(--crys-accent); font-size: 1.2rem; cursor: pointer; transition: background 0.2s; }
+  .crys-qty__btn:hover { background: rgba(192,132,252,0.08); }
+  .crys-qty__input { width: 44px; text-align: center; background: none; border: none; color: var(--crys-heading); font-family: var(--ff-mono); font-size: 1rem; -moz-appearance: textfield; }
+  .crys-qty__input::-webkit-outer-spin-button, .crys-qty__input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .crys-atc-btn {
+    flex: 1;
+    background: linear-gradient(135deg, var(--crys-accent), var(--crys-accent2));
+    color: #0d0d1a;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--ff-display);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s, box-shadow 0.2s;
+    padding: 0 24px;
+    height: 48px;
+    letter-spacing: 0.04em;
+  }
+  .crys-atc-btn:hover { opacity: 0.9; box-shadow: 0 0 24px rgba(192,132,252,0.4); }
+  .crys-atc-btn:disabled { background: var(--crys-border); color: var(--crys-body); cursor: not-allowed; box-shadow: none; }
+
+  /* Trust strip */
+  .crys-trust-strip {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 14px 0 24px;
+    padding: 12px 16px;
+    border: 1px solid var(--crys-border);
+    border-radius: 10px;
+    background: var(--crys-glass);
+    backdrop-filter: blur(8px);
+  }
+  .crys-trust-item { display: flex; align-items: center; gap: 6px; font-size: 0.76rem; color: var(--crys-body); }
+  .crys-trust-item span { font-size: 0.9rem; }
+
+  /* ── MINERAL PROFILE BLOCK ── */
+  .crys-mineral-block {
+    padding: {{ section.settings.block_padding | default: 60 }}px 0;
+    border-top: 1px solid var(--crys-border);
+  }
+  .crys-block-header { text-align: center; margin-bottom: 40px; }
+  .crys-block-eyebrow {
+    font-family: var(--ff-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--crys-accent);
+    margin: 0 0 10px;
+  }
+  .crys-block-title {
+    font-family: var(--ff-display);
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 700;
+    color: var(--crys-heading);
+    margin: 0 0 12px;
+  }
+  .crys-block-subtitle {
+    font-size: 1rem;
+    color: var(--crys-body);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* Mineral data grid */
+  .crys-mineral-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 32px;
+  }
+  @media (max-width: 768px) { .crys-mineral-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .crys-mineral-grid { grid-template-columns: 1fr; } }
+  .crys-mineral-card {
+    background: var(--crys-glass);
+    border: 1px solid var(--crys-border);
+    border-radius: 12px;
+    padding: 20px 18px;
+    backdrop-filter: blur(12px);
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  }
+  .crys-mineral-card:hover {
+    border-color: var(--crys-accent);
+    box-shadow: 0 0 20px rgba(192,132,252,0.12);
+    transform: translateY(-2px);
+  }
+  .crys-mineral-card__label {
+    font-family: var(--ff-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--crys-accent);
+    margin: 0 0 8px;
+  }
+  .crys-mineral-card__value {
+    font-size: 0.95rem;
+    color: var(--crys-heading);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Color swatch */
+  .crys-color-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 6px;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  /* Pair-with pills */
+  .crys-pair-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .crys-pair-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    background: var(--crys-glass);
+    border: 1px solid var(--crys-border);
+    text-decoration: none;
+    font-size: 0.82rem;
+    color: var(--crys-heading);
+    backdrop-filter: blur(8px);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .crys-pair-pill:hover {
+    border-color: var(--crys-accent);
+    box-shadow: 0 0 10px rgba(192,132,252,0.2);
+  }
+
+  /* ── CARE GUIDE ── */
+  .crys-care-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 32px;
+  }
+  @media (max-width: 600px) { .crys-care-grid { grid-template-columns: 1fr; } }
+  .crys-care-card {
+    background: var(--crys-glass);
+    border: 1px solid var(--crys-border);
+    border-radius: 12px;
+    padding: 22px 20px;
+    backdrop-filter: blur(12px);
+  }
+  .crys-care-card__icon { font-size: 1.6rem; margin-bottom: 10px; }
+  .crys-care-card__title {
+    font-family: var(--ff-display);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--crys-heading);
+    margin: 0 0 8px;
+  }
+  .crys-care-card__text { font-size: 0.88rem; color: var(--crys-body); line-height: 1.7; margin: 0; }
+
+  /* ── HISTORY ── */
+  .crys-history {
+    background: var(--crys-glass);
+    border: 1px solid var(--crys-border);
+    border-radius: 16px;
+    padding: 32px;
+    backdrop-filter: blur(12px);
+    margin-top: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .crys-history::before {
+    content: '"';
+    position: absolute;
+    top: -20px;
+    left: 20px;
+    font-family: var(--ff-display);
+    font-size: 10rem;
+    color: var(--crys-accent);
+    opacity: 0.06;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .crys-history__text {
+    font-size: 1rem;
+    color: var(--crys-body);
+    line-height: 1.9;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── FAQ ── */
+  .crys-faq-list { display: flex; flex-direction: column; gap: 10px; margin-top: 32px; }
+  .crys-faq-item {
+    border: 1px solid var(--crys-border);
+    border-radius: 10px;
+    background: var(--crys-glass);
+    backdrop-filter: blur(8px);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .crys-faq-item:hover { border-color: var(--crys-accent); }
+  .crys-faq-q {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--crys-heading);
+    list-style: none;
+    gap: 12px;
+  }
+  .crys-faq-q::marker, .crys-faq-q::-webkit-details-marker { display: none; }
+  .crys-faq-chevron { font-size: 0.7rem; color: var(--crys-accent); transition: transform 0.3s; flex-shrink: 0; }
+  .crys-faq-item[open] .crys-faq-chevron { transform: rotate(90deg); }
+  .crys-faq-a { padding: 0 20px 16px; font-size: 0.9rem; color: var(--crys-body); line-height: 1.8; }
+
+  /* ── RELATED ── */
+  .crys-related-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: 32px;
+  }
+  @media (max-width: 900px) { .crys-related-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .crys-related-grid { grid-template-columns: 1fr; } }
+  .crys-related-card {
+    display: block;
+    text-decoration: none;
+    border: 1px solid var(--crys-border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--crys-glass);
+    backdrop-filter: blur(8px);
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+  }
+  .crys-related-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--crys-accent);
+    box-shadow: 0 0 20px rgba(192,132,252,0.15);
+  }
+  .crys-related-card__img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; }
+  .crys-related-card__info { padding: 12px; }
+  .crys-related-card__title { font-size: 0.82rem; color: var(--crys-heading); font-weight: 600; margin: 0 0 5px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .crys-related-card__price { font-family: var(--ff-mono); font-size: 0.82rem; color: var(--crys-gold); margin: 0; }
+
+  .crys-block { padding: {{ section.settings.block_padding | default: 60 }}px 0; border-top: 1px solid var(--crys-border); }
+
+  /* Glossary link CTA */
+  .crys-glossary-cta {
+    text-align: center;
+    padding: 40px 0;
+    border-top: 1px solid var(--crys-border);
+  }
+  .crys-glossary-cta__text { font-size: 1rem; color: var(--crys-body); margin: 0 0 16px; }
+  .crys-glossary-cta__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    border-radius: 8px;
+    background: var(--crys-glass);
+    border: 1px solid var(--crys-accent);
+    color: var(--crys-accent);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.2s, box-shadow 0.2s;
+    backdrop-filter: blur(8px);
+  }
+  .crys-glossary-cta__btn:hover { background: rgba(192,132,252,0.1); box-shadow: 0 0 16px rgba(192,132,252,0.2); }
+</style>
+
+<div class="crys-wrap" id="crys-{{ section.id }}">
+
+  {%- comment -%} BREADCRUMB {%- endcomment -%}
+  <div class="crys-section">
+    <nav class="crys-breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span>›</span>
+      <a href="/collections/crystal-courtesan">Crystal Courtesan</a>
+      <span>›</span>
+      {{ product.title | truncate: 40 }}
+    </nav>
+  </div>
+
+  {%- comment -%} MAIN PRODUCT {%- endcomment -%}
+  <div class="crys-section">
+    <div class="crys-main">
+
+      {%- comment -%} MEDIA {%- endcomment -%}
+      <div class="crys-media">
+        <div class="crys-media__frame">
+          {%- if product.featured_image -%}
+            <img class="crys-media__img" id="crys-main-img-{{ section.id }}"
+              src="{{ product.featured_image | image_url: width: 800 }}"
+              alt="{{ product.featured_image.alt | default: product.title }}"
+              loading="eager" width="800">
+          {%- else -%}
+            <div class="crys-media__img" style="display:flex;align-items:center;justify-content:center;font-size:4rem;">💎</div>
+          {%- endif -%}
+        </div>
+        {%- if product.images.size > 1 -%}
+        <div class="crys-media__thumbs">
+          {%- for img in product.images limit: 6 -%}
+          <div class="crys-media__thumb {% if forloop.first %}is-active{% endif %}"
+               onclick="document.getElementById('crys-main-img-{{ section.id }}').src='{{ img | image_url: width: 800 }}'; this.parentElement.querySelectorAll('.crys-media__thumb').forEach(t=>t.classList.remove('is-active')); this.classList.add('is-active');">
+            <img src="{{ img | image_url: width: 150 }}" alt="{{ img.alt | default: product.title }}" loading="lazy">
+          </div>
+          {%- endfor -%}
+        </div>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} INFO {%- endcomment -%}
+      <div class="crys-info">
+        <p class="crys-eyebrow">✦ {{ section.settings.eyebrow | default: 'Crystal Courtesan' }}</p>
+        <h1 class="crys-title">{{ product.title }}</h1>
+
+        {%- comment -%} Mineral quick-stats if matched {%- endcomment -%}
+        {%- if matched_mineral -%}
+        <div class="crys-mineral-stats">
+          {%- if matched_mineral.mohs_hardness -%}
+          <div class="crys-stat-pill"><span class="crys-stat-pill__label">Mohs</span> {{ matched_mineral.mohs_hardness }}</div>
+          {%- endif -%}
+          {%- if matched_mineral.chakra -%}
+          <div class="crys-stat-pill"><span class="crys-stat-pill__label">Chakra</span> {{ matched_mineral.chakra }}</div>
+          {%- endif -%}
+          {%- if matched_mineral.element -%}
+          <div class="crys-stat-pill"><span class="crys-stat-pill__label">Element</span> {{ matched_mineral.element }}</div>
+          {%- endif -%}
+          {%- if matched_mineral.zodiac -%}
+          <div class="crys-stat-pill"><span class="crys-stat-pill__label">Zodiac</span> {{ matched_mineral.zodiac }}</div>
+          {%- endif -%}
+          {%- if matched_mineral.chemical_formula -%}
+          <div class="crys-stat-pill"><span class="crys-stat-pill__label">Formula</span> {{ matched_mineral.chemical_formula }}</div>
+          {%- endif -%}
+          {%- if matched_mineral.color -%}
+          <div class="crys-stat-pill">
+            <span class="crys-color-swatch" style="background:{{ matched_mineral.color }};"></span>
+            Color
+          </div>
+          {%- endif -%}
+        </div>
+        {%- endif -%}
+
+        <div class="crys-price">
+          {%- if product.compare_at_price > product.price -%}
+            {{ product.price | money }}<s>{{ product.compare_at_price | money }}</s>
+          {%- else -%}
+            {{ product.price | money }}
+          {%- endif -%}
+        </div>
+
+        {%- if product.variants.size > 1 -%}
+        <div class="crys-variants">
+          <p class="crys-variants__label">Select Option</p>
+          <select class="crys-variants__select" id="crys-variant-select-{{ section.id }}" onchange="crysVariantChange(this, '{{ section.id }}')">
+            {%- for variant in product.variants -%}
+              <option value="{{ variant.id }}" {% unless variant.available %}disabled{% endunless %}>
+                {{ variant.title }}{% unless variant.available %} — Sold Out{% endunless %}
+              </option>
+            {%- endfor -%}
+          </select>
+        </div>
+        {%- endif -%}
+
+        {%- form 'product', product, id: 'crys-form-{{ section.id }}' -%}
+          <input type="hidden" name="id" id="crys-variant-id-{{ section.id }}" value="{{ product.selected_or_first_available_variant.id }}">
+          <div class="crys-atc-row">
+            <div class="crys-qty">
+              <button type="button" class="crys-qty__btn" onclick="crysQty(-1,'{{ section.id }}')">−</button>
+              <input type="number" name="quantity" value="1" min="1" class="crys-qty__input" id="crys-qty-{{ section.id }}">
+              <button type="button" class="crys-qty__btn" onclick="crysQty(1,'{{ section.id }}')">+</button>
+            </div>
+            <button type="submit" name="add" class="crys-atc-btn"
+              {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}>
+              {%- if product.selected_or_first_available_variant.available -%}
+                ✦ Add to Cart
+              {%- else -%}
+                Sold Out
+              {%- endif -%}
+            </button>
+          </div>
+        {%- endform -%}
+
+        <div class="crys-trust-strip">
+          <div class="crys-trust-item"><span>🌍</span> Ethically Sourced</div>
+          <div class="crys-trust-item"><span>🔬</span> Authenticity Verified</div>
+          <div class="crys-trust-item"><span>📦</span> Carefully Packed</div>
+          <div class="crys-trust-item"><span>✨</span> Natural Inclusions</div>
+        </div>
+
+        {%- if matched_mineral and matched_mineral.one_liner -%}
+        <p style="font-style:italic;color:var(--crys-accent);font-size:0.95rem;margin:0;line-height:1.6;">
+          "{{ matched_mineral.one_liner }}"
+        </p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} ── MINERAL PROFILE (if matched) ── {%- endcomment -%}
+  {%- if matched_mineral and section.settings.show_mineral_profile -%}
+  <div class="crys-block">
+    <div class="crys-section">
+      <div class="crys-block-header">
+        <p class="crys-block-eyebrow">{{ section.settings.mineral_eyebrow | default: 'Crystal Profile' }}</p>
+        <h2 class="crys-block-title">{{ section.settings.mineral_heading | default: 'Know Your Stone' }}</h2>
+        <p class="crys-block-subtitle">{{ section.settings.mineral_subtitle | default: 'Every crystal carries its own identity. Here is everything about this one.' }}</p>
+      </div>
+      <div class="crys-mineral-grid">
+        {%- if matched_mineral.origin -%}
+        <div class="crys-mineral-card">
+          <p class="crys-mineral-card__label">🌍 Origin</p>
+          <p class="crys-mineral-card__value">{{ matched_mineral.origin }}</p>
+        </div>
+        {%- endif -%}
+        {%- if matched_mineral.planets -%}
+        <div class="crys-mineral-card">
+          <p class="crys-mineral-card__label">🪐 Ruling Planet</p>
+          <p class="crys-mineral-card__value">{{ matched_mineral.planets }}</p>
+        </div>
+        {%- endif -%}
+        {%- if matched_mineral.number -%}
+        <div class="crys-mineral-card">
+          <p class="crys-mineral-card__label">🔢 Numerology</p>
+          <p class="crys-mineral-card__value">{{ matched_mineral.number }}</p>
+        </div>
+        {%- endif -%}
+        {%- if matched_mineral.archetype -%}
+        <div class="crys-mineral-card">
+          <p class="crys-mineral-card__label">🎭 Archetype</p>
+          <p class="crys-mineral-card__value">{{ matched_mineral.archetype | truncate: 80 }}</p>
+        </div>
+        {%- endif -%}
+        {%- if matched_mineral.musical_chord -%}
+        <div class="crys-mineral-card">
+          <p class="crys-mineral-card__label">🎵 Musical Chord</p>
+          <p class="crys-mineral-card__value">{{ matched_mineral.musical_chord | truncate: 80 }}</p>
+        </div>
+        {%- endif -%}
+        {%- if matched_mineral.underlying_emotion_or_body_association -%}
+        <div class="crys-mineral-card">
+          <p class="crys-mineral-card__label">💫 Associations</p>
+          <p class="crys-mineral-card__value">{{ matched_mineral.underlying_emotion_or_body_association }}</p>
+        </div>
+        {%- endif -%}
+        {%- if matched_mineral.energy_properties -%}
+        <div class="crys-mineral-card">
+          <p class="crys-mineral-card__label">⚡ Energy Properties</p>
+          <p class="crys-mineral-card__value">{{ matched_mineral.energy_properties }}</p>
+        </div>
+        {%- endif -%}
+        {%- if matched_mineral.modern_or_scientific_use -%}
+        <div class="crys-mineral-card">
+          <p class="crys-mineral-card__label">🔬 Modern Use</p>
+          <p class="crys-mineral-card__value">{{ matched_mineral.modern_or_scientific_use | truncate: 100 }}</p>
+        </div>
+        {%- endif -%}
+        {%- if matched_mineral.why_you_need_it -%}
+        <div class="crys-mineral-card">
+          <p class="crys-mineral-card__label">✨ Why You Need It</p>
+          <p class="crys-mineral-card__value">{{ matched_mineral.why_you_need_it | truncate: 120 }}</p>
+        </div>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Pair With {%- endcomment -%}
+      {%- assign pairs = matched_mineral.best_to_pair_with.value -%}
+      {%- if pairs.size > 0 -%}
+      <div style="margin-top:40px;">
+        <p class="crys-block-eyebrow" style="text-align:center;">Best Paired With</p>
+        <div class="crys-pair-grid" style="justify-content:center;">
+          {%- for pair in pairs -%}
+          <a href="/pages/crystal-compendium/{{ pair.handle }}" class="crys-pair-pill">
+            💎 {{ pair.display_name | default: pair.handle | capitalize }}
+          </a>
+          {%- endfor -%}
+        </div>
+      </div>
+      {%- endif -%}
+    </div>
+  </div>
+  {%- endif -%}
+
+  {%- comment -%} ── CARE GUIDE ── {%- endcomment -%}
+  {%- if matched_mineral and section.settings.show_care -%}
+  <div class="crys-block">
+    <div class="crys-section">
+      <div class="crys-block-header">
+        <p class="crys-block-eyebrow">{{ section.settings.care_eyebrow | default: 'Crystal Care' }}</p>
+        <h2 class="crys-block-title">{{ section.settings.care_heading | default: 'How to Care for Your Stone' }}</h2>
+      </div>
+      <div class="crys-care-grid">
+        {%- if matched_mineral.cleanse -%}
+        <div class="crys-care-card">
+          <div class="crys-care-card__icon">🧼</div>
+          <p class="crys-care-card__title">Cleansing</p>
+          <p class="crys-care-card__text">{{ matched_mineral.cleanse }}</p>
+        </div>
+        {%- endif -%}
+        {%- if matched_mineral.recharge -%}
+        <div class="crys-care-card">
+          <div class="crys-care-card__icon">🌙</div>
+          <p class="crys-care-card__title">Recharging</p>
+          <p class="crys-care-card__text">{{ matched_mineral.recharge }}</p>
+        </div>
+        {%- endif -%}
+        {%- if matched_mineral.safety_notes -%}
+        <div class="crys-care-card">
+          <div class="crys-care-card__icon">⚠️</div>
+          <p class="crys-care-card__title">Safety Notes</p>
+          <p class="crys-care-card__text">{{ matched_mineral.safety_notes }}</p>
+        </div>
+        {%- endif -%}
+        {%- if matched_mineral.grid_design_or_feng_shui_setup -%}
+        <div class="crys-care-card">
+          <div class="crys-care-card__icon">🏠</div>
+          <p class="crys-care-card__title">Placement & Feng Shui</p>
+          <p class="crys-care-card__text">{{ matched_mineral.grid_design_or_feng_shui_setup | truncate: 200 }}</p>
+        </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+  {%- endif -%}
+
+  {%- comment -%} ── HISTORY ── {%- endcomment -%}
+  {%- if matched_mineral and matched_mineral.history and section.settings.show_history -%}
+  <div class="crys-block">
+    <div class="crys-section">
+      <div class="crys-block-header">
+        <p class="crys-block-eyebrow">{{ section.settings.history_eyebrow | default: 'Through the Ages' }}</p>
+        <h2 class="crys-block-title">{{ section.settings.history_heading | default: 'The History of This Crystal' }}</h2>
+      </div>
+      <div class="crys-history">
+        <p class="crys-history__text">{{ matched_mineral.history }}</p>
+      </div>
+    </div>
+  </div>
+  {%- endif -%}
+
+  {%- comment -%} ── FAQ ── {%- endcomment -%}
+  {%- if section.settings.show_faq -%}
+  {%- assign crystal_faqs = shop.metaobjects.faq_group.values | where: "category", "Crystal Courtesan" -%}
+  {%- if crystal_faqs.size > 0 -%}
+  <div class="crys-block">
+    <div class="crys-section">
+      <div class="crys-block-header">
+        <p class="crys-block-eyebrow">{{ section.settings.faq_eyebrow | default: 'Questions & Answers' }}</p>
+        <h2 class="crys-block-title">{{ section.settings.faq_heading | default: 'Crystal Courtesan FAQ' }}</h2>
+      </div>
+      <div class="crys-faq-list">
+        {%- for faq in crystal_faqs limit: 8 -%}
+        <details class="crys-faq-item">
+          <summary class="crys-faq-q">
+            {{ faq.question }}
+            <span class="crys-faq-chevron">▶</span>
+          </summary>
+          <div class="crys-faq-a">{{ faq.answer }}</div>
+        </details>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+  {%- endif -%}
+  {%- endif -%}
+
+  {%- comment -%} ── RELATED ── {%- endcomment -%}
+  {%- if section.settings.show_related -%}
+  {%- assign related_products = related.value -%}
+  {%- if related_products.size > 0 -%}
+  <div class="crys-block">
+    <div class="crys-section">
+      <div class="crys-block-header">
+        <p class="crys-block-eyebrow">{{ section.settings.related_eyebrow | default: 'Keep Exploring' }}</p>
+        <h2 class="crys-block-title">{{ section.settings.related_heading | default: 'You Might Also Love' }}</h2>
+      </div>
+      <div class="crys-related-grid">
+        {%- for rp in related_products limit: 4 -%}
+        <a href="{{ rp.url }}" class="crys-related-card">
+          {%- if rp.featured_image -%}
+            <img class="crys-related-card__img" src="{{ rp.featured_image | image_url: width: 400 }}" alt="{{ rp.featured_image.alt | default: rp.title }}" loading="lazy">
+          {%- endif -%}
+          <div class="crys-related-card__info">
+            <p class="crys-related-card__title">{{ rp.title }}</p>
+            <p class="crys-related-card__price">{{ rp.price | money }}</p>
+          </div>
+        </a>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+  {%- endif -%}
+  {%- endif -%}
+
+  {%- comment -%} ── GLOSSARY CTA ── {%- endcomment -%}
+  {%- if section.settings.show_glossary_cta -%}
+  <div class="crys-section">
+    <div class="crys-glossary-cta">
+      <p class="crys-glossary-cta__text">{{ section.settings.glossary_cta_text | default: 'Curious about more crystals? Explore the full Crystal Compendium.' }}</p>
+      <a href="{{ section.settings.glossary_cta_url | default: '/pages/crystal-compendium' }}" class="crys-glossary-cta__btn">
+        💎 Browse the Crystal Compendium →
+      </a>
+    </div>
+  </div>
+  {%- endif -%}
+
+</div>
+
+{%- comment -%} STRUCTURED DATA {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "description": {{ product.description | strip_html | truncate: 500 | json }},
+  "url": "{{ shop.url }}{{ product.url }}",
+  "sku": {{ product.selected_or_first_available_variant.sku | json }},
+  "brand": {
+    "@type": "Brand",
+    "name": "Crystal Courtesan — Wax | Wane"
+  },
+  "image": [
+    {%- for img in product.images limit: 5 -%}
+      "{{ img | image_url: width: 800 }}"{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ],
+  "offers": {
+    "@type": "Offer",
+    "url": "{{ shop.url }}{{ product.url }}",
+    "priceCurrency": "USD",
+    "price": "{{ product.price | money_without_currency }}",
+    "availability": "{% if product.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
+    "seller": { "@type": "Organization", "name": "Wax | Wane" }
+  }
+  {%- if matched_mineral -%}
+  ,"additionalProperty": [
+    {%- if matched_mineral.mohs_hardness -%}
+    { "@type": "PropertyValue", "name": "Mohs Hardness", "value": "{{ matched_mineral.mohs_hardness }}" },
+    {%- endif -%}
+    {%- if matched_mineral.chemical_formula -%}
+    { "@type": "PropertyValue", "name": "Chemical Formula", "value": {{ matched_mineral.chemical_formula | json }} },
+    {%- endif -%}
+    {%- if matched_mineral.origin -%}
+    { "@type": "PropertyValue", "name": "Origin", "value": {{ matched_mineral.origin | json }} },
+    {%- endif -%}
+    {%- if matched_mineral.chakra -%}
+    { "@type": "PropertyValue", "name": "Chakra", "value": {{ matched_mineral.chakra | json }} }
+    {%- endif -%}
+  ]
+  {%- endif -%}
+}
+</script>
+
+<script>
+  function crysQty(delta, id) {
+    var inp = document.getElementById('crys-qty-' + id);
+    inp.value = Math.max(1, parseInt(inp.value) + delta);
+  }
+  function crysVariantChange(sel, id) {
+    document.getElementById('crys-variant-id-' + id).value = sel.value;
+    var btn = document.querySelector('#crys-' + id + ' .crys-atc-btn') || document.querySelector('.crys-atc-btn');
+    if (sel.options[sel.selectedIndex].disabled) {
+      btn.disabled = true; btn.textContent = 'Sold Out';
+    } else {
+      btn.disabled = false; btn.textContent = '✦ Add to Cart';
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Crystal Product Detail",
+  "tag": "section",
+  "class": "crystal-product-section",
+  "settings": [
+    { "type": "header", "content": "── COLORS ─────────────────────────────" },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#0d0d1a" },
+    { "type": "color", "id": "accent_color", "label": "Primary Accent (Purple)", "default": "#c084fc" },
+    { "type": "color", "id": "accent2_color", "label": "Secondary Accent (Cyan)", "default": "#67e8f9" },
+    { "type": "color", "id": "gold_color", "label": "Price / Gold", "default": "#fbbf24" },
+    { "type": "color", "id": "heading_color", "label": "Heading Text", "default": "#f1f5f9" },
+    { "type": "color", "id": "body_color", "label": "Body Text", "default": "#94a3b8" },
+
+    { "type": "header", "content": "── SPACING ─────────────────────────────" },
+    { "type": "range", "id": "section_padding_top", "label": "Top Padding", "min": 0, "max": 120, "step": 8, "unit": "px", "default": 40 },
+    { "type": "range", "id": "section_padding_bottom", "label": "Bottom Padding", "min": 0, "max": 120, "step": 8, "unit": "px", "default": 40 },
+    { "type": "range", "id": "side_padding", "label": "Side Padding", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 24 },
+    { "type": "range", "id": "main_gap", "label": "Media / Info Gap", "min": 16, "max": 100, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "block_padding", "label": "Section Block Padding", "min": 20, "max": 120, "step": 4, "unit": "px", "default": 60 },
+
+    { "type": "header", "content": "── EYEBROW ─────────────────────────────" },
+    { "type": "text", "id": "eyebrow", "label": "Product Eyebrow Text", "default": "Crystal Courtesan" },
+
+    { "type": "header", "content": "── MINERAL PROFILE ─────────────────────" },
+    { "type": "checkbox", "id": "show_mineral_profile", "label": "Show Mineral Profile Section", "default": true },
+    { "type": "text", "id": "mineral_eyebrow", "label": "Eyebrow", "default": "Crystal Profile" },
+    { "type": "text", "id": "mineral_heading", "label": "Heading", "default": "Know Your Stone" },
+    { "type": "textarea", "id": "mineral_subtitle", "label": "Subtitle", "default": "Every crystal carries its own identity. Here is everything about this one." },
+
+    { "type": "header", "content": "── CARE GUIDE ─────────────────────────" },
+    { "type": "checkbox", "id": "show_care", "label": "Show Care Guide Section", "default": true },
+    { "type": "text", "id": "care_eyebrow", "label": "Eyebrow", "default": "Crystal Care" },
+    { "type": "text", "id": "care_heading", "label": "Heading", "default": "How to Care for Your Stone" },
+
+    { "type": "header", "content": "── HISTORY ─────────────────────────────" },
+    { "type": "checkbox", "id": "show_history", "label": "Show History Section", "default": true },
+    { "type": "text", "id": "history_eyebrow", "label": "Eyebrow", "default": "Through the Ages" },
+    { "type": "text", "id": "history_heading", "label": "Heading", "default": "The History of This Crystal" },
+
+    { "type": "header", "content": "── FAQ ─────────────────────────────────" },
+    { "type": "checkbox", "id": "show_faq", "label": "Show FAQ Section", "default": true },
+    { "type": "text", "id": "faq_eyebrow", "label": "Eyebrow", "default": "Questions & Answers" },
+    { "type": "text", "id": "faq_heading", "label": "Heading", "default": "Crystal Courtesan FAQ" },
+
+    { "type": "header", "content": "── RELATED PRODUCTS ─────────────────────" },
+    { "type": "checkbox", "id": "show_related", "label": "Show Related Products", "default": true },
+    { "type": "text", "id": "related_eyebrow", "label": "Eyebrow", "default": "Keep Exploring" },
+    { "type": "text", "id": "related_heading", "label": "Heading", "default": "You Might Also Love" },
+
+    { "type": "header", "content": "── GLOSSARY CTA ─────────────────────────" },
+    { "type": "checkbox", "id": "show_glossary_cta", "label": "Show Glossary Link", "default": true },
+    { "type": "textarea", "id": "glossary_cta_text", "label": "CTA Text", "default": "Curious about more crystals? Explore the full Crystal Compendium." },
+    { "type": "url", "id": "glossary_cta_url", "label": "Glossary URL" }
+  ],
+  "presets": [
+    { "name": "Crystal Product Detail" }
+  ]
+}
+{% endschema %}

@@ -1,5 +1,38 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
+    "crystal_product_main": {
+      "type": "crystal-product-detail",
+      "settings": {
+        "bg_color": "#0d0d1a",
+        "accent_color": "#c084fc",
+        "accent2_color": "#67e8f9",
+        "gold_color": "#fbbf24",
+        "heading_color": "#f1f5f9",
+        "body_color": "#94a3b8",
+        "section_padding_top": 40,
+        "section_padding_bottom": 40,
+        "side_padding": 24,
+        "main_gap": 56,
+        "block_padding": 60,
+        "eyebrow": "Crystal Courtesan",
+        "show_mineral_profile": true,
+        "show_care": true,
+        "show_history": true,
+        "show_faq": true,
+        "show_related": true,
+        "show_glossary_cta": true,
+        "glossary_cta_url": "/pages/crystal-compendium"
+      }
+    },
     "main": {
       "type": "main-product",
       "blocks": {
@@ -58,8 +91,8 @@
       "settings": {
         "enable_sticky_info": true,
         "media_size": "large",
-        "media_position": "left",
         "mobile_thumbnails": "show",
+        "media_position": "left",
         "hide_variants": false,
         "enable_video_looping": false,
         "padding_top": 36,
@@ -79,7 +112,6 @@
         "color_scheme": "",
         "image_ratio": "adapt",
         "show_secondary_image": true,
-        "add_to_cart_button": false,
         "padding_top": 36,
         "padding_bottom": 36
       }
@@ -103,6 +135,7 @@
     }
   },
   "order": [
+    "crystal_product_main",
     "main",
     "mineral_entry",
     "related_crystals",

@@ -1,0 +1,1006 @@
+{%- comment -%}
+  emf-product-detail.liquid
+  Custom product section for EMF products — cyber-punk aesthetic
+  Pulls from: custom.key_features, custom.benefits, custom.key_feature_1–5,
+              emf_concept (metaobject), emf_protection_method (metaobject),
+              faq_group (category: EMF Protection)
+  All colors, fonts, spacing editable in theme editor.
+{%- endcomment -%}
+
+{%- liquid
+  assign p = product
+  assign key_features  = p.metafields.custom.key_features
+  assign benefits      = p.metafields.custom.benefits
+  assign kf1 = p.metafields.custom.key_feature_1
+  assign kf2 = p.metafields.custom.key_feature_2
+  assign kf3 = p.metafields.custom.key_feature_3
+  assign kf4 = p.metafields.custom.key_feature_4
+  assign kf5 = p.metafields.custom.key_feature_5
+  assign asin = p.metafields.custom.asin
+  assign social_caption = p.metafields.custom.social_media_caption
+  assign related = p.metafields['shopify--discovery--product_recommendation'].related_products
+-%}
+
+<style>
+  :root {
+    --emfp-bg:        {{ section.settings.bg_color | default: '#0a0e1a' }};
+    --emfp-bg2:       {{ section.settings.card_bg | default: '#0f1628' }};
+    --emfp-neon:      {{ section.settings.neon_color | default: '#00ffb4' }};
+    --emfp-cyan:      {{ section.settings.cyan_color | default: '#00d4ff' }};
+    --emfp-border:    {{ section.settings.border_color | default: 'rgba(0,255,180,0.2)' }};
+    --emfp-heading:   {{ section.settings.heading_color | default: '#ffffff' }};
+    --emfp-body:      {{ section.settings.body_color | default: '#b0bec5' }};
+    --emfp-accent:    {{ section.settings.accent_color | default: '#1a2744' }};
+    --ff-display:     {{ section.settings.font_display | default: "'Rajdhani', 'Orbitron', sans-serif" }};
+    --ff-body:        {{ section.settings.font_body | default: "'Inter', sans-serif" }};
+    --ff-mono:        {{ section.settings.font_mono | default: "'JetBrains Mono', 'Courier New', monospace" }};
+  }
+
+  .emfp-wrap {
+    background: var(--emfp-bg);
+    color: var(--emfp-body);
+    font-family: var(--ff-body);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── CIRCUIT GRID BACKGROUND ── */
+  .emfp-wrap::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,180,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,180,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .emfp-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 {{ section.settings.side_padding | default: 24 }}px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── BREADCRUMB ── */
+  .emfp-breadcrumb {
+    padding: 16px 0 8px;
+    font-family: var(--ff-mono);
+    font-size: 0.75rem;
+    color: var(--emfp-body);
+    letter-spacing: 0.05em;
+  }
+  .emfp-breadcrumb a {
+    color: var(--emfp-neon);
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .emfp-breadcrumb a:hover { opacity: 0.7; }
+  .emfp-breadcrumb span { margin: 0 6px; opacity: 0.4; }
+
+  /* ── MAIN PRODUCT LAYOUT ── */
+  .emfp-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ section.settings.main_gap | default: 48 }}px;
+    padding: {{ section.settings.section_padding_top | default: 40 }}px 0 {{ section.settings.section_padding_bottom | default: 40 }}px;
+    align-items: start;
+  }
+  @media (max-width: 768px) {
+    .emfp-main { grid-template-columns: 1fr; gap: 32px; }
+  }
+
+  /* ── MEDIA COLUMN ── */
+  .emfp-media {
+    position: sticky;
+    top: 80px;
+  }
+  .emfp-media__img-wrap {
+    border: 1px solid var(--emfp-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--emfp-bg2);
+    position: relative;
+  }
+  .emfp-media__img-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,255,180,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .emfp-media__img {
+    width: 100%;
+    display: block;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    padding: 20px;
+  }
+  .emfp-media__thumbnails {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .emfp-media__thumb {
+    width: 72px;
+    height: 72px;
+    border: 1px solid var(--emfp-border);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    background: var(--emfp-bg2);
+  }
+  .emfp-media__thumb:hover,
+  .emfp-media__thumb.is-active { border-color: var(--emfp-neon); }
+  .emfp-media__thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ── INFO COLUMN ── */
+  .emfp-info {}
+
+  .emfp-eyebrow {
+    font-family: var(--ff-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--emfp-neon);
+    margin: 0 0 10px;
+  }
+
+  .emfp-title {
+    font-family: var(--ff-display);
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 700;
+    color: var(--emfp-heading);
+    line-height: 1.15;
+    margin: 0 0 12px;
+    letter-spacing: 0.02em;
+  }
+
+  .emfp-price {
+    font-family: var(--ff-mono);
+    font-size: 1.5rem;
+    color: var(--emfp-neon);
+    margin: 0 0 20px;
+  }
+  .emfp-price s {
+    font-size: 1rem;
+    color: var(--emfp-body);
+    margin-left: 8px;
+    opacity: 0.6;
+  }
+
+  /* ── VARIANT SELECTOR ── */
+  .emfp-variants {
+    margin: 0 0 20px;
+  }
+  .emfp-variants__label {
+    font-family: var(--ff-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: var(--emfp-body);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .emfp-variants__select {
+    width: 100%;
+    background: var(--emfp-bg2);
+    border: 1px solid var(--emfp-border);
+    color: var(--emfp-heading);
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-family: var(--ff-body);
+    font-size: 0.95rem;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300ffb4' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+  }
+  .emfp-variants__select:focus {
+    outline: none;
+    border-color: var(--emfp-neon);
+    box-shadow: 0 0 0 2px rgba(0,255,180,0.15);
+  }
+
+  /* ── QUANTITY + ATC ── */
+  .emfp-atc-row {
+    display: flex;
+    gap: 12px;
+    margin: 0 0 16px;
+    align-items: stretch;
+  }
+  .emfp-qty {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--emfp-border);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--emfp-bg2);
+  }
+  .emfp-qty__btn {
+    width: 40px;
+    height: 48px;
+    background: none;
+    border: none;
+    color: var(--emfp-neon);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .emfp-qty__btn:hover { background: rgba(0,255,180,0.08); }
+  .emfp-qty__input {
+    width: 48px;
+    text-align: center;
+    background: none;
+    border: none;
+    color: var(--emfp-heading);
+    font-family: var(--ff-mono);
+    font-size: 1rem;
+    -moz-appearance: textfield;
+  }
+  .emfp-qty__input::-webkit-outer-spin-button,
+  .emfp-qty__input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .emfp-atc-btn {
+    flex: 1;
+    background: var(--emfp-neon);
+    color: #0a0e1a;
+    border: none;
+    border-radius: 4px;
+    font-family: var(--ff-display);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s, box-shadow 0.2s;
+    padding: 0 24px;
+    height: 48px;
+  }
+  .emfp-atc-btn:hover {
+    opacity: 0.9;
+    box-shadow: 0 0 20px rgba(0,255,180,0.4);
+  }
+  .emfp-atc-btn:disabled {
+    background: var(--emfp-border);
+    color: var(--emfp-body);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  /* ── TRUST STRIP ── */
+  .emfp-trust-strip {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 16px 0 24px;
+    padding: 14px 16px;
+    border: 1px solid var(--emfp-border);
+    border-radius: 6px;
+    background: var(--emfp-bg2);
+  }
+  .emfp-trust-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: var(--emfp-body);
+    font-family: var(--ff-mono);
+    letter-spacing: 0.04em;
+  }
+  .emfp-trust-item span { font-size: 1rem; }
+
+  /* ── KEY FEATURES ── */
+  .emfp-features {
+    margin: 0 0 28px;
+  }
+  .emfp-features__title {
+    font-family: var(--ff-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--emfp-neon);
+    margin: 0 0 12px;
+  }
+  .emfp-feature-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .emfp-feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--emfp-body);
+  }
+  .emfp-feature-item::before {
+    content: '⚡';
+    font-size: 0.8rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+    color: var(--emfp-neon);
+  }
+
+  /* ── DIVIDER ── */
+  .emfp-divider {
+    border: none;
+    border-top: 1px solid var(--emfp-border);
+    margin: 32px 0;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .emfp-block-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .emfp-block-eyebrow {
+    font-family: var(--ff-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--emfp-neon);
+    margin: 0 0 10px;
+  }
+  .emfp-block-title {
+    font-family: var(--ff-display);
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 700;
+    color: var(--emfp-heading);
+    letter-spacing: 0.04em;
+    margin: 0 0 12px;
+  }
+  .emfp-block-subtitle {
+    font-size: 1rem;
+    color: var(--emfp-body);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ── BENEFITS GRID ── */
+  .emfp-benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 40px;
+  }
+  @media (max-width: 768px) { .emfp-benefits-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .emfp-benefits-grid { grid-template-columns: 1fr; } }
+  .emfp-benefit-card {
+    background: var(--emfp-bg2);
+    border: 1px solid var(--emfp-border);
+    border-radius: 8px;
+    padding: 24px 20px;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  }
+  .emfp-benefit-card:hover {
+    border-color: var(--emfp-neon);
+    box-shadow: 0 0 20px rgba(0,255,180,0.1);
+    transform: translateY(-2px);
+  }
+  .emfp-benefit-card__icon {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+  }
+  .emfp-benefit-card__title {
+    font-family: var(--ff-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--emfp-heading);
+    margin: 0 0 8px;
+    letter-spacing: 0.04em;
+  }
+  .emfp-benefit-card__desc {
+    font-size: 0.85rem;
+    color: var(--emfp-body);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .emfp-hiw-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: 40px;
+    position: relative;
+  }
+  @media (max-width: 768px) { .emfp-hiw-steps { grid-template-columns: repeat(2, 1fr); } }
+  .emfp-hiw-step {
+    text-align: center;
+    padding: 24px 16px;
+    background: var(--emfp-bg2);
+    border: 1px solid var(--emfp-border);
+    border-radius: 8px;
+    position: relative;
+  }
+  .emfp-hiw-step__num {
+    font-family: var(--ff-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--emfp-neon);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .emfp-hiw-step__icon {
+    font-size: 2rem;
+    margin-bottom: 12px;
+  }
+  .emfp-hiw-step__title {
+    font-family: var(--ff-display);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--emfp-heading);
+    margin: 0 0 8px;
+  }
+  .emfp-hiw-step__desc {
+    font-size: 0.8rem;
+    color: var(--emfp-body);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* ── RELATED CONCEPTS ── */
+  .emfp-concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 32px;
+  }
+  @media (max-width: 768px) { .emfp-concepts-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .emfp-concepts-grid { grid-template-columns: 1fr; } }
+  .emfp-concept-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--emfp-bg2);
+    border: 1px solid var(--emfp-border);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .emfp-concept-pill:hover {
+    border-color: var(--emfp-neon);
+    box-shadow: 0 0 12px rgba(0,255,180,0.1);
+  }
+  .emfp-concept-pill__icon { font-size: 1.2rem; }
+  .emfp-concept-pill__text {
+    font-family: var(--ff-mono);
+    font-size: 0.8rem;
+    color: var(--emfp-heading);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── FAQ ── */
+  .emfp-faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 32px;
+  }
+  .emfp-faq-item {
+    border: 1px solid var(--emfp-border);
+    border-radius: 6px;
+    background: var(--emfp-bg2);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .emfp-faq-item:hover { border-color: var(--emfp-neon); }
+  .emfp-faq-q {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    cursor: pointer;
+    font-family: var(--ff-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--emfp-heading);
+    list-style: none;
+    gap: 12px;
+  }
+  .emfp-faq-q::marker, .emfp-faq-q::-webkit-details-marker { display: none; }
+  .emfp-faq-chevron {
+    font-size: 0.7rem;
+    color: var(--emfp-neon);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+    font-family: var(--ff-mono);
+  }
+  .emfp-faq-item[open] .emfp-faq-chevron { transform: rotate(90deg); }
+  .emfp-faq-a {
+    padding: 0 20px 16px;
+    font-size: 0.9rem;
+    color: var(--emfp-body);
+    line-height: 1.8;
+  }
+
+  /* ── RELATED PRODUCTS ── */
+  .emfp-related-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: 32px;
+  }
+  @media (max-width: 900px) { .emfp-related-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .emfp-related-grid { grid-template-columns: 1fr; } }
+  .emfp-related-card {
+    display: block;
+    text-decoration: none;
+    border: 1px solid var(--emfp-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--emfp-bg2);
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+  }
+  .emfp-related-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--emfp-neon);
+    box-shadow: 0 0 16px rgba(0,255,180,0.12);
+  }
+  .emfp-related-card__img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+  }
+  .emfp-related-card__info { padding: 14px; }
+  .emfp-related-card__title {
+    font-size: 0.85rem;
+    color: var(--emfp-heading);
+    font-weight: 600;
+    margin: 0 0 6px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .emfp-related-card__price {
+    font-family: var(--ff-mono);
+    font-size: 0.85rem;
+    color: var(--emfp-neon);
+    margin: 0;
+  }
+
+  /* ── BLOCK PADDING ── */
+  .emfp-block {
+    padding: {{ section.settings.block_padding | default: 60 }}px 0;
+    border-top: 1px solid var(--emfp-border);
+  }
+</style>
+
+<div class="emfp-wrap" id="emfp-{{ section.id }}">
+
+  {%- comment -%} ── BREADCRUMB ── {%- endcomment -%}
+  <div class="emfp-section">
+    <nav class="emfp-breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span>›</span>
+      <a href="/collections/emf-shielding-faraday-protection">EMF Protection</a>
+      <span>›</span>
+      {{ product.title | truncate: 40 }}
+    </nav>
+  </div>
+
+  {%- comment -%} ── MAIN PRODUCT SECTION ── {%- endcomment -%}
+  <div class="emfp-section">
+    <div class="emfp-main">
+
+      {%- comment -%} MEDIA COLUMN {%- endcomment -%}
+      <div class="emfp-media">
+        <div class="emfp-media__img-wrap">
+          {%- if product.featured_image -%}
+            <img
+              class="emfp-media__img"
+              id="emfp-main-img"
+              src="{{ product.featured_image | image_url: width: 800 }}"
+              alt="{{ product.featured_image.alt | default: product.title }}"
+              loading="eager"
+              width="800"
+            >
+          {%- else -%}
+            <div class="emfp-media__img" style="display:flex;align-items:center;justify-content:center;font-size:4rem;color:var(--emfp-neon);">⚡</div>
+          {%- endif -%}
+        </div>
+        {%- if product.images.size > 1 -%}
+        <div class="emfp-media__thumbnails">
+          {%- for img in product.images limit: 6 -%}
+          <div class="emfp-media__thumb {% if forloop.first %}is-active{% endif %}"
+               onclick="document.getElementById('emfp-main-img').src='{{ img | image_url: width: 800 }}'; this.parentElement.querySelectorAll('.emfp-media__thumb').forEach(t=>t.classList.remove('is-active')); this.classList.add('is-active');">
+            <img src="{{ img | image_url: width: 150 }}" alt="{{ img.alt | default: product.title }}" loading="lazy">
+          </div>
+          {%- endfor -%}
+        </div>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} INFO COLUMN {%- endcomment -%}
+      <div class="emfp-info">
+        <p class="emfp-eyebrow">> {{ section.settings.eyebrow | default: 'WAX | WANE — EMF PROTECTION _' }}</p>
+        <h1 class="emfp-title">{{ product.title }}</h1>
+
+        <div class="emfp-price">
+          {%- if product.compare_at_price > product.price -%}
+            {{ product.price | money }}
+            <s>{{ product.compare_at_price | money }}</s>
+          {%- else -%}
+            {{ product.price | money }}
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} Variant selector {%- endcomment -%}
+        {%- if product.variants.size > 1 -%}
+        <div class="emfp-variants">
+          <p class="emfp-variants__label">Select Option</p>
+          <select class="emfp-variants__select" id="emfp-variant-select-{{ section.id }}" onchange="emfpVariantChange(this)">
+            {%- for variant in product.variants -%}
+              <option value="{{ variant.id }}" {% unless variant.available %}disabled{% endunless %}>
+                {{ variant.title }}{% unless variant.available %} — Sold Out{% endunless %}
+              </option>
+            {%- endfor -%}
+          </select>
+        </div>
+        {%- endif -%}
+
+        {%- comment -%} ATC {%- endcomment -%}
+        {%- form 'product', product, id: 'emfp-form', class: 'emfp-form' -%}
+          <input type="hidden" name="id" id="emfp-variant-id-{{ section.id }}" value="{{ product.selected_or_first_available_variant.id }}">
+          <div class="emfp-atc-row">
+            <div class="emfp-qty">
+              <button type="button" class="emfp-qty__btn" onclick="emfpQty(-1)">−</button>
+              <input type="number" name="quantity" value="1" min="1" class="emfp-qty__input" id="emfp-qty-{{ section.id }}">
+              <button type="button" class="emfp-qty__btn" onclick="emfpQty(1)">+</button>
+            </div>
+            <button type="submit" name="add" class="emfp-atc-btn"
+              {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}>
+              {%- if product.selected_or_first_available_variant.available -%}
+                ⚡ Add to Cart
+              {%- else -%}
+                Sold Out
+              {%- endif -%}
+            </button>
+          </div>
+        {%- endform -%}
+
+        {%- comment -%} Trust strip {%- endcomment -%}
+        <div class="emfp-trust-strip">
+          <div class="emfp-trust-item"><span>🛡️</span> Lab-Tested Shielding</div>
+          <div class="emfp-trust-item"><span>📦</span> Free Shipping</div>
+          <div class="emfp-trust-item"><span>↩️</span> Easy Returns</div>
+          <div class="emfp-trust-item"><span>⚡</span> Ships Fast</div>
+        </div>
+
+        {%- comment -%} Key features from metafield {%- endcomment -%}
+        {%- if kf1 or key_features -%}
+        <div class="emfp-features">
+          <p class="emfp-features__title">Key Features</p>
+          <ul class="emfp-feature-list">
+            {%- if kf1 -%}<li class="emfp-feature-item">{{ kf1.value }}</li>{%- endif -%}
+            {%- if kf2 -%}<li class="emfp-feature-item">{{ kf2.value }}</li>{%- endif -%}
+            {%- if kf3 -%}<li class="emfp-feature-item">{{ kf3.value }}</li>{%- endif -%}
+            {%- if kf4 -%}<li class="emfp-feature-item">{{ kf4.value }}</li>{%- endif -%}
+            {%- if kf5 -%}<li class="emfp-feature-item">{{ kf5.value }}</li>{%- endif -%}
+            {%- unless kf1 -%}
+              {%- if key_features -%}
+                {%- for item in key_features.value.children -%}
+                  {%- for li in item.children -%}
+                    {%- for txt in li.children -%}
+                      <li class="emfp-feature-item">{{ txt.value }}</li>
+                    {%- endfor -%}
+                  {%- endfor -%}
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endunless -%}
+          </ul>
+        </div>
+        {%- endif -%}
+
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} ── BENEFITS BLOCK ── {%- endcomment -%}
+  {%- if section.settings.show_benefits -%}
+  <div class="emfp-block">
+    <div class="emfp-section">
+      <div class="emfp-block-header">
+        <p class="emfp-block-eyebrow">{{ section.settings.benefits_eyebrow | default: 'Why It Works' }}</p>
+        <h2 class="emfp-block-title">{{ section.settings.benefits_heading | default: 'Science-Backed Protection' }}</h2>
+        <p class="emfp-block-subtitle">{{ section.settings.benefits_subtitle | default: 'Conductive materials create a measurable barrier between you and electromagnetic radiation.' }}</p>
+      </div>
+      <div class="emfp-benefits-grid">
+        <div class="emfp-benefit-card">
+          <div class="emfp-benefit-card__icon">🌐</div>
+          <p class="emfp-benefit-card__title">{{ section.settings.benefit_1_title | default: 'Faraday Cage Effect' }}</p>
+          <p class="emfp-benefit-card__desc">{{ section.settings.benefit_1_desc | default: 'Conductive silver mesh intercepts and redirects electromagnetic waves before they reach your body.' }}</p>
+        </div>
+        <div class="emfp-benefit-card">
+          <div class="emfp-benefit-card__icon">📡</div>
+          <p class="emfp-benefit-card__title">{{ section.settings.benefit_2_title | default: 'Broad Frequency Coverage' }}</p>
+          <p class="emfp-benefit-card__desc">{{ section.settings.benefit_2_desc | default: 'Rated across RF, WiFi, Bluetooth, and 5G frequency ranges — not just one band.' }}</p>
+        </div>
+        <div class="emfp-benefit-card">
+          <div class="emfp-benefit-card__icon">🔬</div>
+          <p class="emfp-benefit-card__title">{{ section.settings.benefit_3_title | default: 'Third-Party Tested' }}</p>
+          <p class="emfp-benefit-card__desc">{{ section.settings.benefit_3_desc | default: 'Attenuation ratings verified by independent lab testing, not just manufacturer claims.' }}</p>
+        </div>
+        <div class="emfp-benefit-card">
+          <div class="emfp-benefit-card__icon">🧵</div>
+          <p class="emfp-benefit-card__title">{{ section.settings.benefit_4_title | default: 'Premium Silver Fiber' }}</p>
+          <p class="emfp-benefit-card__desc">{{ section.settings.benefit_4_desc | default: 'High silver content percentage for maximum conductivity and long-lasting effectiveness.' }}</p>
+        </div>
+        <div class="emfp-benefit-card">
+          <div class="emfp-benefit-card__icon">♻️</div>
+          <p class="emfp-benefit-card__title">{{ section.settings.benefit_5_title | default: 'Wash-Durable' }}</p>
+          <p class="emfp-benefit-card__desc">{{ section.settings.benefit_5_desc | default: 'Maintains shielding effectiveness for hundreds of gentle washes with proper care.' }}</p>
+        </div>
+        <div class="emfp-benefit-card">
+          <div class="emfp-benefit-card__icon">🛡️</div>
+          <p class="emfp-benefit-card__title">{{ section.settings.benefit_6_title | default: 'Precautionary Principle' }}</p>
+          <p class="emfp-benefit-card__desc">{{ section.settings.benefit_6_desc | default: 'Measurable, physics-based reduction in radiation — without waiting for regulatory consensus.' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {%- endif -%}
+
+  {%- comment -%} ── HOW IT WORKS ── {%- endcomment -%}
+  {%- if section.settings.show_how_it_works -%}
+  <div class="emfp-block">
+    <div class="emfp-section">
+      <div class="emfp-block-header">
+        <p class="emfp-block-eyebrow">{{ section.settings.hiw_eyebrow | default: 'The Science' }}</p>
+        <h2 class="emfp-block-title">{{ section.settings.hiw_heading | default: 'How EMF Shielding Works' }}</h2>
+        <p class="emfp-block-subtitle">{{ section.settings.hiw_subtitle | default: 'Four steps from emission to protection.' }}</p>
+      </div>
+      <div class="emfp-hiw-steps">
+        <div class="emfp-hiw-step">
+          <p class="emfp-hiw-step__num">Step 01</p>
+          <div class="emfp-hiw-step__icon">📱</div>
+          <p class="emfp-hiw-step__title">{{ section.settings.hiw_step1_title | default: 'Device Emits' }}</p>
+          <p class="emfp-hiw-step__desc">{{ section.settings.hiw_step1_desc | default: 'Electronic devices emit radiofrequency electromagnetic fields during normal operation.' }}</p>
+        </div>
+        <div class="emfp-hiw-step">
+          <p class="emfp-hiw-step__num">Step 02</p>
+          <div class="emfp-hiw-step__icon">〰️</div>
+          <p class="emfp-hiw-step__title">{{ section.settings.hiw_step2_title | default: 'Waves Travel' }}</p>
+          <p class="emfp-hiw-step__desc">{{ section.settings.hiw_step2_desc | default: 'EMF waves radiate outward in all directions, penetrating most materials.' }}</p>
+        </div>
+        <div class="emfp-hiw-step">
+          <p class="emfp-hiw-step__num">Step 03</p>
+          <div class="emfp-hiw-step__icon">🧵</div>
+          <p class="emfp-hiw-step__title">{{ section.settings.hiw_step3_title | default: 'Silver Intercepts' }}</p>
+          <p class="emfp-hiw-step__desc">{{ section.settings.hiw_step3_desc | default: 'Conductive silver fiber mesh intercepts and redirects the electromagnetic energy.' }}</p>
+        </div>
+        <div class="emfp-hiw-step">
+          <p class="emfp-hiw-step__num">Step 04</p>
+          <div class="emfp-hiw-step__icon">🛡️</div>
+          <p class="emfp-hiw-step__title">{{ section.settings.hiw_step4_title | default: 'You Are Protected' }}</p>
+          <p class="emfp-hiw-step__desc">{{ section.settings.hiw_step4_desc | default: 'Measurably less radiation reaches your body — verified by attenuation rating in dB.' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {%- endif -%}
+
+  {%- comment -%} ── RELATED EMF CONCEPTS ── {%- endcomment -%}
+  {%- if section.settings.show_concepts -%}
+  {%- assign all_concepts = shop.metaobjects.emf_concept.values -%}
+  {%- if all_concepts.size > 0 -%}
+  <div class="emfp-block">
+    <div class="emfp-section">
+      <div class="emfp-block-header">
+        <p class="emfp-block-eyebrow">{{ section.settings.concepts_eyebrow | default: 'Learn More' }}</p>
+        <h2 class="emfp-block-title">{{ section.settings.concepts_heading | default: 'Related EMF Concepts' }}</h2>
+        <p class="emfp-block-subtitle">{{ section.settings.concepts_subtitle | default: 'Understand the science behind what this product protects against.' }}</p>
+      </div>
+      <div class="emfp-concepts-grid">
+        {%- for concept in all_concepts limit: 6 -%}
+        <a href="/pages/complete-guide-to-emf-protection#concepts" class="emfp-concept-pill">
+          <span class="emfp-concept-pill__icon">⚡</span>
+          <span class="emfp-concept-pill__text">{{ concept.concept_name | default: concept.title }}</span>
+        </a>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+  {%- endif -%}
+  {%- endif -%}
+
+  {%- comment -%} ── FAQ ── {%- endcomment -%}
+  {%- if section.settings.show_faq -%}
+  {%- assign emf_faqs = shop.metaobjects.faq_group.values | where: "category", "EMF Protection" -%}
+  {%- if emf_faqs.size > 0 -%}
+  <div class="emfp-block">
+    <div class="emfp-section">
+      <div class="emfp-block-header">
+        <p class="emfp-block-eyebrow">{{ section.settings.faq_eyebrow | default: 'Common Questions' }}</p>
+        <h2 class="emfp-block-title">{{ section.settings.faq_heading | default: 'EMF Protection FAQ' }}</h2>
+        <p class="emfp-block-subtitle">{{ section.settings.faq_subtitle | default: 'Straight answers to the questions we get asked most.' }}</p>
+      </div>
+      <div class="emfp-faq-list">
+        {%- for faq in emf_faqs limit: 8 -%}
+        <details class="emfp-faq-item">
+          <summary class="emfp-faq-q">
+            {{ faq.question }}
+            <span class="emfp-faq-chevron">▶</span>
+          </summary>
+          <div class="emfp-faq-a">{{ faq.answer }}</div>
+        </details>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+  {%- endif -%}
+  {%- endif -%}
+
+  {%- comment -%} ── RELATED PRODUCTS ── {%- endcomment -%}
+  {%- if section.settings.show_related -%}
+  {%- assign related_products = related.value -%}
+  {%- if related_products.size > 0 -%}
+  <div class="emfp-block">
+    <div class="emfp-section">
+      <div class="emfp-block-header">
+        <p class="emfp-block-eyebrow">{{ section.settings.related_eyebrow | default: 'Complete Your Shield' }}</p>
+        <h2 class="emfp-block-title">{{ section.settings.related_heading | default: 'You May Also Need' }}</h2>
+      </div>
+      <div class="emfp-related-grid">
+        {%- for rp in related_products limit: 4 -%}
+        <a href="{{ rp.url }}" class="emfp-related-card">
+          {%- if rp.featured_image -%}
+            <img class="emfp-related-card__img" src="{{ rp.featured_image | image_url: width: 400 }}" alt="{{ rp.featured_image.alt | default: rp.title }}" loading="lazy">
+          {%- endif -%}
+          <div class="emfp-related-card__info">
+            <p class="emfp-related-card__title">{{ rp.title }}</p>
+            <p class="emfp-related-card__price">{{ rp.price | money }}</p>
+          </div>
+        </a>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+  {%- endif -%}
+  {%- endif -%}
+
+</div>
+
+{%- comment -%} ── STRUCTURED DATA ── {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "description": {{ product.description | strip_html | truncate: 500 | json }},
+  "url": "{{ shop.url }}{{ product.url }}",
+  "sku": {{ product.selected_or_first_available_variant.sku | json }},
+  "brand": {
+    "@type": "Brand",
+    "name": "Wax | Wane"
+  },
+  "image": [
+    {%- for img in product.images limit: 5 -%}
+      "{{ img | image_url: width: 800 }}"{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ],
+  "offers": {
+    "@type": "Offer",
+    "url": "{{ shop.url }}{{ product.url }}",
+    "priceCurrency": "USD",
+    "price": "{{ product.price | money_without_currency }}",
+    "availability": "{% if product.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
+    "seller": {
+      "@type": "Organization",
+      "name": "Wax | Wane"
+    }
+  }
+}
+</script>
+
+<script>
+  function emfpQty(delta) {
+    var inp = document.getElementById('emfp-qty-{{ section.id }}');
+    var val = parseInt(inp.value) + delta;
+    inp.value = Math.max(1, val);
+  }
+  function emfpVariantChange(sel) {
+    document.getElementById('emfp-variant-id-{{ section.id }}').value = sel.value;
+    var opt = sel.options[sel.selectedIndex];
+    var btn = document.querySelector('.emfp-atc-btn');
+    if (opt.disabled) {
+      btn.disabled = true;
+      btn.textContent = 'Sold Out';
+    } else {
+      btn.disabled = false;
+      btn.textContent = '⚡ Add to Cart';
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "EMF Product Detail",
+  "tag": "section",
+  "class": "emf-product-section",
+  "settings": [
+    { "type": "header", "content": "── COLORS ─────────────────────────────" },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#0a0e1a" },
+    { "type": "color", "id": "card_bg", "label": "Card Background", "default": "#0f1628" },
+    { "type": "color", "id": "neon_color", "label": "Neon Accent", "default": "#00ffb4" },
+    { "type": "color", "id": "cyan_color", "label": "Cyan Accent", "default": "#00d4ff" },
+    { "type": "color", "id": "heading_color", "label": "Heading Text", "default": "#ffffff" },
+    { "type": "color", "id": "body_color", "label": "Body Text", "default": "#b0bec5" },
+
+    { "type": "header", "content": "── SPACING ─────────────────────────────" },
+    { "type": "range", "id": "section_padding_top", "label": "Top Padding", "min": 0, "max": 120, "step": 8, "unit": "px", "default": 40 },
+    { "type": "range", "id": "section_padding_bottom", "label": "Bottom Padding", "min": 0, "max": 120, "step": 8, "unit": "px", "default": 40 },
+    { "type": "range", "id": "side_padding", "label": "Side Padding", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 24 },
+    { "type": "range", "id": "main_gap", "label": "Media / Info Gap", "min": 16, "max": 100, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "block_padding", "label": "Section Block Padding", "min": 20, "max": 120, "step": 4, "unit": "px", "default": 60 },
+
+    { "type": "header", "content": "── EYEBROW ─────────────────────────────" },
+    { "type": "text", "id": "eyebrow", "label": "Product Eyebrow Text", "default": "WAX | WANE — EMF PROTECTION _" },
+
+    { "type": "header", "content": "── BENEFITS ─────────────────────────────" },
+    { "type": "checkbox", "id": "show_benefits", "label": "Show Benefits Section", "default": true },
+    { "type": "text", "id": "benefits_eyebrow", "label": "Eyebrow", "default": "Why It Works" },
+    { "type": "text", "id": "benefits_heading", "label": "Heading", "default": "Science-Backed Protection" },
+    { "type": "textarea", "id": "benefits_subtitle", "label": "Subtitle", "default": "Conductive materials create a measurable barrier between you and electromagnetic radiation." },
+    { "type": "text", "id": "benefit_1_title", "label": "Benefit 1 Title", "default": "Faraday Cage Effect" },
+    { "type": "textarea", "id": "benefit_1_desc", "label": "Benefit 1 Description", "default": "Conductive silver mesh intercepts and redirects electromagnetic waves before they reach your body." },
+    { "type": "text", "id": "benefit_2_title", "label": "Benefit 2 Title", "default": "Broad Frequency Coverage" },
+    { "type": "textarea", "id": "benefit_2_desc", "label": "Benefit 2 Description", "default": "Rated across RF, WiFi, Bluetooth, and 5G frequency ranges — not just one band." },
+    { "type": "text", "id": "benefit_3_title", "label": "Benefit 3 Title", "default": "Third-Party Tested" },
+    { "type": "textarea", "id": "benefit_3_desc", "label": "Benefit 3 Description", "default": "Attenuation ratings verified by independent lab testing, not just manufacturer claims." },
+    { "type": "text", "id": "benefit_4_title", "label": "Benefit 4 Title", "default": "Premium Silver Fiber" },
+    { "type": "textarea", "id": "benefit_4_desc", "label": "Benefit 4 Description", "default": "High silver content percentage for maximum conductivity and long-lasting effectiveness." },
+    { "type": "text", "id": "benefit_5_title", "label": "Benefit 5 Title", "default": "Wash-Durable" },
+    { "type": "textarea", "id": "benefit_5_desc", "label": "Benefit 5 Description", "default": "Maintains shielding effectiveness for hundreds of gentle washes with proper care." },
+    { "type": "text", "id": "benefit_6_title", "label": "Benefit 6 Title", "default": "Precautionary Principle" },
+    { "type": "textarea", "id": "benefit_6_desc", "label": "Benefit 6 Description", "default": "Measurable, physics-based reduction in radiation — without waiting for regulatory consensus." },
+
+    { "type": "header", "content": "── HOW IT WORKS ─────────────────────────" },
+    { "type": "checkbox", "id": "show_how_it_works", "label": "Show How It Works Section", "default": true },
+    { "type": "text", "id": "hiw_eyebrow", "label": "Eyebrow", "default": "The Science" },
+    { "type": "text", "id": "hiw_heading", "label": "Heading", "default": "How EMF Shielding Works" },
+    { "type": "text", "id": "hiw_step1_title", "label": "Step 1 Title", "default": "Device Emits" },
+    { "type": "textarea", "id": "hiw_step1_desc", "label": "Step 1 Description", "default": "Electronic devices emit radiofrequency electromagnetic fields during normal operation." },
+    { "type": "text", "id": "hiw_step2_title", "label": "Step 2 Title", "default": "Waves Travel" },
+    { "type": "textarea", "id": "hiw_step2_desc", "label": "Step 2 Description", "default": "EMF waves radiate outward in all directions, penetrating most materials." },
+    { "type": "text", "id": "hiw_step3_title", "label": "Step 3 Title", "default": "Silver Intercepts" },
+    { "type": "textarea", "id": "hiw_step3_desc", "label": "Step 3 Description", "default": "Conductive silver fiber mesh intercepts and redirects the electromagnetic energy." },
+    { "type": "text", "id": "hiw_step4_title", "label": "Step 4 Title", "default": "You Are Protected" },
+    { "type": "textarea", "id": "hiw_step4_desc", "label": "Step 4 Description", "default": "Measurably less radiation reaches your body — verified by attenuation rating in dB." },
+
+    { "type": "header", "content": "── RELATED CONCEPTS ─────────────────────" },
+    { "type": "checkbox", "id": "show_concepts", "label": "Show Related EMF Concepts", "default": true },
+    { "type": "text", "id": "concepts_eyebrow", "label": "Eyebrow", "default": "Learn More" },
+    { "type": "text", "id": "concepts_heading", "label": "Heading", "default": "Related EMF Concepts" },
+
+    { "type": "header", "content": "── FAQ ─────────────────────────────────" },
+    { "type": "checkbox", "id": "show_faq", "label": "Show FAQ Section", "default": true },
+    { "type": "text", "id": "faq_eyebrow", "label": "Eyebrow", "default": "Common Questions" },
+    { "type": "text", "id": "faq_heading", "label": "Heading", "default": "EMF Protection FAQ" },
+    { "type": "textarea", "id": "faq_subtitle", "label": "Subtitle", "default": "Straight answers to the questions we get asked most." },
+
+    { "type": "header", "content": "── RELATED PRODUCTS ─────────────────────" },
+    { "type": "checkbox", "id": "show_related", "label": "Show Related Products", "default": true },
+    { "type": "text", "id": "related_eyebrow", "label": "Eyebrow", "default": "Complete Your Shield" },
+    { "type": "text", "id": "related_heading", "label": "Heading", "default": "You May Also Need" }
+  ],
+  "presets": [
+    { "name": "EMF Product Detail" }
+  ]
+}
+{% endschema %}
