@@ -20,9 +20,9 @@
         "show_protection": true,
         "show_overlay": true,
         "show_faq": true,
-        "hero_eyebrow": "Wax | Wane — EMF Education",
+        "hero_eyebrow": "Wax | Wane \u2014 EMF Education",
         "hero_heading": "All About EMFs",
-        "hero_subtext": "Electromagnetic frequencies are invisible, constant, and everywhere. Here is everything you need to know — no fear-mongering, just science, context, and practical steps.",
+        "hero_subtext": "Electromagnetic frequencies are invisible, constant, and everywhere. Here is everything you need to know \u2014 no fear-mongering, just science, context, and practical steps.",
         "hero_cta_label": "Explore the Guide",
         "hero_padding_top": 96,
         "hero_padding_bottom": 96,
@@ -43,7 +43,9 @@
         "card_bg": "#0f1f18",
         "card_border": "#1e3a2e",
         "max_width": 1200,
-        "block_padding": 72
+        "block_padding": 72,
+        "shop_emf_collection": "emf-shielding-faraday-protection",
+        "show_shop_emf": true
       }
     },
     "emf_collection": {

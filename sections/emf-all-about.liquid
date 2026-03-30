@@ -32,8 +32,8 @@
 
 {%- assign emf_concepts = shop.metaobjects.emf_concept.values -%}
 {%- assign emf_types    = shop.metaobjects.emf_protection_method.values -%}
-{%- assign faq_groups   = shop.metaobjects.faq_group.values -%}
-{%- assign emf_faqs     = faq_groups | where: 'category', 'EMF Protection' | first -%}
+{%- assign all_faq_entries = shop.metaobjects.faq_group.values -%}
+{%- assign emf_faqs       = all_faq_entries | where: 'category', 'EMF Protection' -%}
 
 {%- comment -%} ── STRUCTURED DATA ──────────────────────────────────── {%- endcomment -%}
 <script type="application/ld+json">
@@ -78,11 +78,11 @@
         {%- endfor -%}
       ]
     }
-    {%- if emf_faqs != blank -%}
+    {%- if emf_faqs.size > 0 -%}
     ,{
       "@type": "FAQPage",
       "mainEntity": [
-        {%- for faq in emf_faqs.faqs.value -%}
+        {%- for faq in emf_faqs -%}
         {
           "@type": "Question",
           "name": {{ faq.question | json }},
@@ -770,10 +770,88 @@
     overflow: hidden;
     transition: max-height 0.4s ease;
   }
+  /* ── SHOP EMF GRID ─────────────────────────────────────── */
+  .emf-shop-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 40px;
+  }
+  @media (max-width: 768px) { .emf-shop-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+  @media (max-width: 480px) { .emf-shop-grid { grid-template-columns: 1fr; } }
+  .emf-shop-card {
+    display: block;
+    text-decoration: none;
+    border: 1px solid var(--emf-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--emf-card);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    position: relative;
+  }
+  .emf-shop-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--emf-neon);
+    box-shadow: 0 0 20px rgba(0,255,180,0.15);
+  }
+  .emf-shop-card__img-wrap {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: var(--emf-bg2);
+  }
+  .emf-shop-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .emf-shop-card:hover .emf-shop-card__img { transform: scale(1.04); }
+  .emf-shop-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .emf-shop-card__img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--emf-neon);
+  }
+  .emf-shop-card__info {
+    padding: 16px;
+  }
+  .emf-shop-card__title {
+    font-family: var(--ff-display);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--emf-heading);
+    margin: 0 0 6px;
+    line-height: 1.3;
+  }
+  .emf-shop-card__price {
+    font-family: var(--ff-mono);
+    font-size: 0.9rem;
+    color: var(--emf-neon);
+    margin: 0 0 10px;
+  }
+  .emf-shop-card__cta {
+    font-size: 0.8rem;
+    color: var(--emf-subtext);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .emf-shop-card:hover .emf-shop-card__cta { color: var(--emf-neon); }
+
   .emf-faq-answer.is-open { max-height: 600px; }
   .emf-faq-answer__inner {
     padding: 0 0 20px;
-    font-size: 0.92rem;
+    font-size: 1.0rem;
     color: var(--emf-subtext);
     line-height: 1.8;
   }
@@ -1002,7 +1080,48 @@
   <hr class="emf-divider">
   {%- endif -%}
 
-  {%- comment -%} ── 7. FAQ BLOCK ─────────────────────────────────── {%- endcomment -%}
+  {%- comment -%} ── 7. SHOP EMF PRODUCTS ──────────────────────────── {%- endcomment -%}
+  {%- if section.settings.show_shop_emf -%}
+  {%- assign emf_collection = collections[section.settings.shop_emf_collection] -%}
+  <div class="emf-block emf-grid-bg">
+    <div class="emf-section">
+      <div class="emf-block__header">
+        <p class="emf-block__eyebrow">{{ section.settings.shop_emf_eyebrow | default: 'Shop the Collection' }}</p>
+        <h2 class="emf-block__title">{{ section.settings.shop_emf_heading | default: 'Mindful Tech Boundaries' }}</h2>
+        <p class="emf-block__subtitle">{{ section.settings.shop_emf_subtitle | default: 'Functional, design-conscious EMF shielding for everyday life.' }}</p>
+      </div>
+      {%- if emf_collection != blank -%}
+      <div class="emf-shop-grid">
+        {%- for product in emf_collection.products limit: 6 -%}
+        <a href="{{ product.url }}" class="emf-shop-card" aria-label="{{ product.title }}">
+          <div class="emf-shop-card__img-wrap">
+            {%- if product.featured_image -%}
+              {{ product.featured_image | image_url: width: 600 | image_tag: alt: product.featured_image.alt | default: product.title, loading: 'lazy', class: 'emf-shop-card__img' }}
+            {%- else -%}
+              <div class="emf-shop-card__img-placeholder">⚡</div>
+            {%- endif -%}
+            <div class="emf-shop-card__overlay"></div>
+          </div>
+          <div class="emf-shop-card__info">
+            <p class="emf-shop-card__title">{{ product.title }}</p>
+            <p class="emf-shop-card__price">{{ product.price_min | money }}</p>
+            <span class="emf-shop-card__cta">View Product →</span>
+          </div>
+        </a>
+        {%- endfor -%}
+      </div>
+      <div style="text-align:center; margin-top: 40px;">
+        <a href="{{ emf_collection.url }}" class="emf-hero__cta" style="display:inline-block;">{{ section.settings.shop_emf_cta | default: 'Shop All EMF Protection' }}</a>
+      </div>
+      {%- else -%}
+      <p style="text-align:center; color: var(--emf-subtext);">Collection not found. Set the collection handle in the theme editor.</p>
+      {%- endif -%}
+    </div>
+  </div>
+  <hr class="emf-divider">
+  {%- endif -%}
+
+  {%- comment -%} ── 8. FAQ BLOCK ─────────────────────────────────── {%- endcomment -%}
   {%- if section.settings.show_faq -%}
   <div class="emf-block">
     <div class="emf-section">
@@ -1012,8 +1131,8 @@
         <p class="emf-block__subtitle">{{ section.settings.faq_subtitle | default: 'Straight answers to the questions we get asked most.' }}</p>
       </div>
       <div class="emf-faq-list" itemscope itemtype="https://schema.org/FAQPage">
-        {%- if emf_faqs != blank -%}
-          {%- for faq in emf_faqs.faqs.value -%}
+        {%- if emf_faqs.size > 0 -%}
+          {%- for faq in emf_faqs -%}
           <div class="emf-faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <button class="emf-faq-btn" aria-expanded="false" aria-controls="emf-faq-{{ forloop.index }}" itemprop="name">
               <span class="emf-faq-btn__q">{{ faq.question }}</span>
@@ -1168,6 +1287,14 @@
     { "type": "text", "id": "overlay_cta_label", "label": "CTA Button Text", "default": "Shop EMF Protection" },
     { "type": "url", "id": "overlay_cta_link", "label": "CTA Button Link" },
 
+    { "type": "header", "content": "── SHOP EMF PRODUCTS ─────────────────" },
+    { "type": "checkbox", "id": "show_shop_emf", "label": "Show Shop EMF Products Section", "default": true },
+    { "type": "collection", "id": "shop_emf_collection", "label": "EMF Collection", "info": "Select the EMF collection to display products from" },
+    { "type": "text", "id": "shop_emf_eyebrow", "label": "Eyebrow", "default": "Shop the Collection" },
+    { "type": "text", "id": "shop_emf_heading", "label": "Heading", "default": "Mindful Tech Boundaries" },
+    { "type": "text", "id": "shop_emf_subtitle", "label": "Subtitle", "default": "Functional, design-conscious EMF shielding for everyday life." },
+    { "type": "text", "id": "shop_emf_cta", "label": "CTA Button Text", "default": "Shop All EMF Protection" },
+
     { "type": "header", "content": "── FAQ ───────────────────────────────" },
     { "type": "checkbox", "id": "show_faq", "label": "Show FAQ Section", "default": true },
     { "type": "text", "id": "faq_eyebrow", "label": "Eyebrow", "default": "Common Questions" },
@@ -1175,15 +1302,15 @@
     { "type": "text", "id": "faq_subtitle", "label": "Subtitle", "default": "Straight answers to the questions we get asked most." },
 
     { "type": "header", "content": "── COLORS ────────────────────────────" },
-    { "type": "color", "id": "bg_color", "label": "Background (dark)", "default": "#070d0b" },
-    { "type": "color", "id": "bg_color_2", "label": "Background Alt (slightly lighter)", "default": "#0c1510" },
+    { "type": "color", "id": "bg_color", "label": "Background (dark)", "default": "#0d1f1a" },
+    { "type": "color", "id": "bg_color_2", "label": "Background Alt (slightly lighter)", "default": "#152b24" },
     { "type": "color", "id": "neon_color", "label": "Neon Accent (primary)", "default": "#00ffb4" },
     { "type": "color", "id": "neon_color_2", "label": "Neon Accent (secondary)", "default": "#00c8ff" },
     { "type": "color", "id": "heading_color", "label": "Heading Text Color", "default": "#e8f5f0" },
-    { "type": "color", "id": "text_color", "label": "Body Text Color", "default": "#c8ddd5" },
-    { "type": "color", "id": "subtext_color", "label": "Subtext / Muted Color", "default": "#7aa898" },
-    { "type": "color", "id": "card_bg", "label": "Card Background", "default": "#0f1f18" },
-    { "type": "color", "id": "card_border", "label": "Card Border", "default": "#1e3a2e" },
+    { "type": "color", "id": "text_color", "label": "Body Text Color", "default": "#e0f0ea" },
+    { "type": "color", "id": "subtext_color", "label": "Subtext / Muted Color", "default": "#9ec4b5" },
+    { "type": "color", "id": "card_bg", "label": "Card Background", "default": "#1a3028" },
+    { "type": "color", "id": "card_border", "label": "Card Border", "default": "#2a5040" },
 
     { "type": "header", "content": "── LAYOUT ────────────────────────────" },
     { "type": "range", "id": "max_width", "label": "Max Content Width", "min": 900, "max": 1400, "step": 50, "unit": "px", "default": 1200 },
