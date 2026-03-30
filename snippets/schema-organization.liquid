@@ -1,0 +1,86 @@
+{% comment %}
+  schema-organization.liquid
+  Injects schema.org/Organization structured data on the homepage.
+  Google uses this to understand who Wax | Wane is as a business entity.
+  Renders only on the homepage (index template).
+{% endcomment %}
+
+{% if template == 'index' %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Wax | Wane",
+  "legalName": "The Happiest Hour LLC",
+  "url": "https://waxandwane.store",
+  "logo": {
+    "@type": "ImageObject",
+    "url": "https://waxandwane.store/cdn/shop/files/waxandwane-logo.png",
+    "width": 400,
+    "height": 400
+  },
+  "description": "Wax | Wane is a woman-owned niche wellness shop based in Lincoln, Nebraska, curating Korean skincare, natural crystals and minerals, and EMF protection products. Exclusive US partner of HARAMOON Korean skincare.",
+  "foundingDate": "2023",
+  "founder": {
+    "@type": "Person",
+    "name": "Samantha Norman"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Lincoln",
+    "addressRegion": "Nebraska",
+    "addressCountry": "US"
+  },
+  "contactPoint": [
+    {
+      "@type": "ContactPoint",
+      "contactType": "customer service",
+      "email": "Support@thehappiesthourcompany.com",
+      "telephone": "+14026130299",
+      "availableLanguage": "English"
+    }
+  ],
+  "sameAs": [
+    "https://www.instagram.com/waxandwane.store",
+    "https://www.facebook.com/profile.php?id=61554159014879",
+    "https://www.tiktok.com/@waxandwane.store",
+    "https://www.pinterest.com/SamanthaRaeNorman/niche-wellness-shop/"
+  ],
+  "brand": [
+    {
+      "@type": "Brand",
+      "name": "HARAMOON",
+      "description": "EWG Verified Korean skincare brand. Wax | Wane is the exclusive authorized US retail partner.",
+      "url": "https://waxandwane.store/collections/haramoon-korean-skincare"
+    },
+    {
+      "@type": "Brand",
+      "name": "Crystal Courtesan",
+      "description": "Curated natural mineral specimens with full geological and metaphysical profiles.",
+      "url": "https://waxandwane.store/collections/natural-crystals-gemstones"
+    }
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Wax | Wane Product Catalog",
+    "itemListElement": [
+      {
+        "@type": "OfferCatalog",
+        "name": "HARAMOON Korean Skincare",
+        "url": "https://waxandwane.store/collections/haramoon-korean-skincare"
+      },
+      {
+        "@type": "OfferCatalog",
+        "name": "Crystals & Minerals",
+        "url": "https://waxandwane.store/collections/natural-crystals-gemstones"
+      },
+      {
+        "@type": "OfferCatalog",
+        "name": "EMF Protection",
+        "url": "https://waxandwane.store/collections/emf-shielding"
+      }
+    ]
+  }
+}
+</script>
+{% endif %}

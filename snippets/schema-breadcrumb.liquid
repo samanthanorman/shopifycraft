@@ -1,0 +1,140 @@
+{% comment %}
+  schema-breadcrumb.liquid
+  Injects schema.org/BreadcrumbList structured data on collection and product pages.
+  Google uses this to show breadcrumb navigation in search results.
+  Usage: {% render 'schema-breadcrumb' %}
+{% endcomment %}
+
+{% assign breadcrumb_items = "" %}
+
+{% if template contains 'collection' %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://{{ shop.domain }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ collection.title | json }},
+        "item": "https://{{ shop.domain }}/collections/{{ collection.handle }}"
+      }
+    ]
+  }
+  </script>
+
+{% elsif template contains 'product' %}
+  {% assign collection_for_breadcrumb = nil %}
+  {% for c in product.collections %}
+    {% unless c.handle == 'all' or c.handle == 'frontpage' %}
+      {% assign collection_for_breadcrumb = c %}
+      {% break %}
+    {% endunless %}
+  {% endfor %}
+
+  {% if collection_for_breadcrumb %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://{{ shop.domain }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ collection_for_breadcrumb.title | json }},
+        "item": "https://{{ shop.domain }}/collections/{{ collection_for_breadcrumb.handle }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": {{ product.title | json }},
+        "item": "https://{{ shop.domain }}/products/{{ product.handle }}"
+      }
+    ]
+  }
+  </script>
+  {% else %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://{{ shop.domain }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ product.title | json }},
+        "item": "https://{{ shop.domain }}/products/{{ product.handle }}"
+      }
+    ]
+  }
+  </script>
+  {% endif %}
+
+{% elsif template contains 'page' %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://{{ shop.domain }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ page.title | json }},
+        "item": "https://{{ shop.domain }}/pages/{{ page.handle }}"
+      }
+    ]
+  }
+  </script>
+
+{% elsif template contains 'article' %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://{{ shop.domain }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ blog.title | json }},
+        "item": "https://{{ shop.domain }}/blogs/{{ blog.handle }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": {{ article.title | json }},
+        "item": "https://{{ shop.domain }}/blogs/{{ blog.handle }}/{{ article.handle }}"
+      }
+    ]
+  }
+  </script>
+{% endif %}
