@@ -298,7 +298,12 @@
       }
     </script>
 
-   <!-- Pinterest Tag -->
+   <!-- ═══════════════════════════════════════════════════════════════ -->
+   <!-- PINTEREST TAG — Enhanced Match + Event Quality v2             -->
+   <!-- Tag ID: 2614400470770                                         -->
+   <!-- Fixes: Customer Info (email, external_id), Product ID,        -->
+   <!--        Order Value, User Agent (auto via core.js)             -->
+   <!-- ═══════════════════════════════════════════════════════════════ -->
 <script>
 !function(e){if(!window.pintrk){window.pintrk=function(){
 window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var
@@ -306,8 +311,27 @@ n=window.pintrk;n.queue=[],n.version="3.0";var
 t=document.createElement("script");t.async=!0,t.src=e;var
 r=document.getElementsByTagName("script")[0];
 r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js");
-pintrk('load', '2614400470770');
+
+// Enhanced Match on load: hashed email + external_id for customer matching
+// Fixes Pinterest "Customer Information" quality score (Email + External ID)
+pintrk('load', '2614400470770', {
+  em: '{{ customer.email | downcase | sha256 }}',
+  external_id: '{{ customer.id | append: "" | sha256 }}'
+});
+
+// Page Visit with product data on product pages
+// Fixes Pinterest "Event Insights: Product ID" for Page Visit events
+{% if product %}
+pintrk('page', {
+  product_id: '{{ product.id }}',
+  product_name: '{{ product.title | escape }}',
+  product_category: '{{ product.type | escape }}',
+  value: {{ product.price | money_without_currency | remove: ',' }},
+  currency: '{{ cart.currency.iso_code }}'
+});
+{% else %}
 pintrk('page');
+{% endif %}
 </script>
 <noscript>
   <img height="1" width="1" style="display:none;" alt=""
@@ -316,34 +340,70 @@ pintrk('page');
 <!-- End Pinterest Tag -->
 
 <script>
-  {% if customer %}
-  window.addEventListener('load', function() {
-    pintrk('set', { em: '{{ customer.email | downcase | sha256 }}' });
-  });
-  {% endif %}
-
+// Add to Cart tracking with full product + value data
+// Fixes Pinterest "Event Insights: Product ID + Order Value" for Add to Cart
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('form[action="/cart/add"]').forEach(function(form) {
-      form.addEventListener('submit', function() {
-        var eventId = 'atc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        pintrk('track', 'addtocart', { event_id: eventId });
+
+  // Helper: extract price from page
+  function getPintrkPrice(form) {
+    var container = form.closest('.product') || form.closest('[data-product-id]') || document;
+    var priceEl = container.querySelector('.price__regular .price-item--regular, .price .price-item--regular, [data-product-price]');
+    if (priceEl) {
+      return parseFloat(priceEl.textContent.replace(/[^0-9.]/g, '')) || 0;
+    }
+    return 0;
+  }
+
+  // Standard form submit (non-AJAX add to cart)
+  document.querySelectorAll('form[action="/cart/add"]').forEach(function(form) {
+    form.addEventListener('submit', function() {
+      var variantIdEl = form.querySelector('[name="id"]');
+      var productId = variantIdEl ? variantIdEl.value : '';
+      var price = getPintrkPrice(form);
+      var eventId = 'atc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      pintrk('track', 'addtocart', {
+        event_id: eventId,
+        product_id: productId,
+        value: price,
+        currency: '{{ cart.currency.iso_code }}',
+        em: '{{ customer.email | downcase | sha256 }}',
+        external_id: '{{ customer.id | append: "" | sha256 }}'
       });
     });
   });
 
+  // AJAX add-to-cart (Shopify theme pubsub / cart:add events)
+  document.addEventListener('cart:add', function(e) {
+    var item = (e.detail && e.detail.item) ? e.detail.item : {};
+    var eventId = 'atc_ajax_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    pintrk('track', 'addtocart', {
+      event_id: eventId,
+      product_id: String(item.variant_id || item.id || ''),
+      value: item.price ? (item.price / 100) : 0,
+      currency: '{{ cart.currency.iso_code }}',
+      em: '{{ customer.email | downcase | sha256 }}',
+      external_id: '{{ customer.id | append: "" | sha256 }}'
+    });
+  });
+
+});
 </script>
 
-<!-- Google tag (gtag.js) -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- GOOGLE TAG MANAGER — GTM-WKSB8S9H (head snippet)              -->
+<!-- Fires on ALL pages via theme.liquid                            -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+<!-- Google tag (gtag.js) — GT-WVGDC7TL -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=GT-WVGDC7TL"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'GT-WVGDC7TL');
 </script>
 
-<!-- Google Tag Manager -->
+<!-- Google Tag Manager — GTM-WKSB8S9H -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -357,6 +417,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WKSB8S9H"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
 
 
 
