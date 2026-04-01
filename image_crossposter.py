@@ -24,7 +24,7 @@ CHANNEL ROUTING BY ASPECT RATIO:
   4:3 landscape       -> Pinterest + Facebook + LinkedIn
 """
 
-import os, sys, json, time, logging, argparse, textwrap, requests
+import os, sys, json, time, logging, argparse, textwrap, requests, base64
 from pathlib import Path
 from PIL import Image
 from dotenv import load_dotenv
@@ -200,6 +200,58 @@ DEFAULT_LINKS = {
     "haramoon": "https://waxandwane.store/collections/haramoon",
     "wax":      "https://waxandwane.store",
 }
+
+# ─── Smart Title + Alt Text Helpers ─────────────────────────────────────────
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+
+def _read_image_title(path, topic):
+    """Use Gemini vision to extract the headline/title text from the image.
+    Falls back to a clean filename-based title if Gemini is unavailable."""
+    fallback = str(path.stem).replace("_", " ").replace("-", " ").title()
+    if not GEMINI_API_KEY:
+        return fallback
+    try:
+        with open(str(path), "rb") as f:
+            img_b64 = base64.b64encode(f.read()).decode()
+        # Detect mime type
+        suffix = path.suffix.lower()
+        mime = {'.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
+                '.webp': 'image/webp', '.gif': 'image/gif'}.get(suffix, 'image/jpeg')
+        payload = {
+            "contents": [{
+                "parts": [
+                    {"text": "Read the main headline or title text from this image. Return ONLY the title text, nothing else. If there is no clear title, return a 5-7 word description of what the image is about."},
+                    {"inline_data": {"mime_type": mime, "data": img_b64}}
+                ]
+            }]
+        }
+        r = requests.post(
+            f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}",
+            json=payload, timeout=20
+        )
+        if r.status_code == 200:
+            text = r.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
+            # Clean up: remove quotes, limit length
+            text = text.strip('"\' \n').split('\n')[0][:120]
+            log.info(f"Gemini title: {text}")
+            return text
+    except Exception as e:
+        log.warning(f"Gemini title extraction failed: {e}")
+    return fallback
+
+
+ALT_TEXT_TEMPLATES = {
+    "emf":      "{title} — EMF shielding and protection products from Wax and Wane",
+    "crystals": "{title} — ethically sourced crystals and minerals from Wax and Wane",
+    "haramoon": "{title} — HARAMOON Korean derma skincare from Wax and Wane",
+    "wax":      "{title} — Wax and Wane wellness store",
+}
+
+def _build_alt_text(title, topic, filename):
+    """Build descriptive, SEO-rich alt text for the image."""
+    template = ALT_TEXT_TEMPLATES.get(topic, ALT_TEXT_TEMPLATES["wax"])
+    return template.format(title=title)[:500]
+
 
 # ─── Routing Rules ────────────────────────────────────────────────────────────
 def detect_ratio(path):
@@ -389,8 +441,9 @@ def process_image(path, topic, link, title=""):
     board_id = PINTEREST_BOARDS.get(topic, PINTEREST_BOARDS["wax"])
     link = link or DEFAULT_LINKS.get(topic, "https://waxandwane.store")
     caps = CAPTIONS.get(topic, CAPTIONS["wax"])
-    title = title or path.stem.replace("_", " ").replace("-", " ").title()
-    alt_text = f"{title} — {topic.upper()} protection from Wax and Wane"
+    if not title:
+        title = _read_image_title(path, topic)
+    alt_text = _build_alt_text(title, topic, path.name)
 
     print(f"\n  [{path.name}]  ratio={ratio}")
     print(f"  Routing -> Pinterest:{do_pin} | Instagram:{do_ig} | Facebook:{do_fb} | LinkedIn:{do_li}")
