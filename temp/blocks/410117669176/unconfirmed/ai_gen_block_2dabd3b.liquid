@@ -1,6 +1,828 @@
+{% doc %}
+  @prompt
+    --- Create a premium ingredient spotlight section for a K-beauty skincare product page. Display 5-6 key active ingredients as large editorial cards in a 2-column grid on desktop, single column on mobile. Each card contains: an oversized ingredient name in a thin elegant serif display font (e.g. "Niacinamide", "Hyaluronic Acid", "Madecassoside", "Sea Buckthorn Oil", "Ceramides", "Palmitoyl Tripeptide-5"), a one-line benefit subtitle in small caps accent color (e.g. "Brightening + Pore Refining"), and a 2-3 sentence description of what the ingredient does for skin. Add an optional small uploadable image or botanical icon per card. Cards should have a soft hover lift with a very subtle shadow. Use a warm cream or soft sage green background. Include an editable bold editorial section title (e.g. "What's Inside") and a short subtitle. All ingredient names, subtitles, descriptions, and images must be editable in theme settings as repeatable blocks — minimum 6 blocks. Add ChemicalSubstance schema JSON-LD in a script tag for each ingredient with "name" and "description" properties, nested inside the parent Product schema context. Animate cards in on scroll with a gentle staggered fade-up. Premium Mamonde-level aesthetic — generous whitespace, no clutter.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-ingredient-spotlight-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding_top }}px 20px {{ block.settings.section_padding_bottom }}px;
+  }
+
+  .ai-ingredient-spotlight-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-ingredient-spotlight-header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: {{ block.settings.header_spacing }}px;
+  }
+
+  .ai-ingredient-spotlight-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.title_font.family }}, {{ block.settings.title_font.fallback_families }};
+    font-weight: {{ block.settings.title_font.weight }};
+    font-size: {{ block.settings.title_size }}px;
+    line-height: 1.2;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 {{ block.settings.title_spacing }}px;
+    letter-spacing: -0.02em;
+  }
+
+  .ai-ingredient-spotlight-subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    line-height: 1.6;
+    color: {{ block.settings.subtitle_color }};
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .ai-ingredient-spotlight-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: {{ block.settings.card_gap }}px;
+    margin-top: {{ block.settings.grid_top_spacing }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ai-ingredient-spotlight-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .ai-ingredient-card-{{ ai_gen_id }} {
+    background-color: {{ block.settings.card_background }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    padding: {{ block.settings.card_padding }}px;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  .ai-ingredient-card-{{ ai_gen_id }}.ai-ingredient-card-visible-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-ingredient-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  }
+
+  .ai-ingredient-card-image-wrapper-{{ ai_gen_id }} {
+    width: {{ block.settings.image_size }}px;
+    height: {{ block.settings.image_size }}px;
+    margin: 0 auto {{ block.settings.image_spacing }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-ingredient-card-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .ai-ingredient-card-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.3;
+  }
+
+  .ai-ingredient-card-image-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+  }
+
+  .ai-ingredient-card-name-{{ ai_gen_id }} {
+    font-family: {{ block.settings.ingredient_font.family }}, {{ block.settings.ingredient_font.fallback_families }};
+    font-weight: {{ block.settings.ingredient_font.weight }};
+    font-size: {{ block.settings.ingredient_name_size }}px;
+    line-height: 1.2;
+    color: {{ block.settings.ingredient_name_color }};
+    margin: 0 0 {{ block.settings.name_spacing }}px;
+    text-align: center;
+    letter-spacing: -0.01em;
+  }
+
+  .ai-ingredient-card-benefit-{{ ai_gen_id }} {
+    font-size: {{ block.settings.benefit_size }}px;
+    line-height: 1.4;
+    color: {{ block.settings.accent_color }};
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    margin: 0 0 {{ block.settings.benefit_spacing }}px;
+    text-align: center;
+  }
+
+  .ai-ingredient-card-description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.description_size }}px;
+    line-height: 1.7;
+    color: {{ block.settings.description_color }};
+    text-align: center;
+    margin: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-ingredient-spotlight-title-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.title_size }}px * 0.7);
+    }
+
+    .ai-ingredient-card-name-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.ingredient_name_size }}px * 0.75);
+    }
+
+    .ai-ingredient-card-{{ ai_gen_id }} {
+      padding: {{ block.settings.card_padding | times: 0.7 }}px;
+    }
+  }
+{% endstyle %}
+
+<ingredient-spotlight-{{ ai_gen_id }}
+  class="ai-ingredient-spotlight-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-ingredient-spotlight-container-{{ ai_gen_id }}">
+    {% if block.settings.section_title != blank or block.settings.section_subtitle != blank %}
+      <div class="ai-ingredient-spotlight-header-{{ ai_gen_id }}">
+        {% if block.settings.section_title != blank %}
+          <h2 class="ai-ingredient-spotlight-title-{{ ai_gen_id }}">
+            {{ block.settings.section_title }}
+          </h2>
+        {% endif %}
+        {% if block.settings.section_subtitle != blank %}
+          <div class="ai-ingredient-spotlight-subtitle-{{ ai_gen_id }}">
+            {{ block.settings.section_subtitle }}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="ai-ingredient-spotlight-grid-{{ ai_gen_id }}">
+      {% liquid
+        assign ingredient_1_name = block.settings.ingredient_1_name
+        assign ingredient_1_benefit = block.settings.ingredient_1_benefit
+        assign ingredient_1_description = block.settings.ingredient_1_description
+        assign ingredient_1_image = block.settings.ingredient_1_image
+
+        assign ingredient_2_name = block.settings.ingredient_2_name
+        assign ingredient_2_benefit = block.settings.ingredient_2_benefit
+        assign ingredient_2_description = block.settings.ingredient_2_description
+        assign ingredient_2_image = block.settings.ingredient_2_image
+
+        assign ingredient_3_name = block.settings.ingredient_3_name
+        assign ingredient_3_benefit = block.settings.ingredient_3_benefit
+        assign ingredient_3_description = block.settings.ingredient_3_description
+        assign ingredient_3_image = block.settings.ingredient_3_image
+
+        assign ingredient_4_name = block.settings.ingredient_4_name
+        assign ingredient_4_benefit = block.settings.ingredient_4_benefit
+        assign ingredient_4_description = block.settings.ingredient_4_description
+        assign ingredient_4_image = block.settings.ingredient_4_image
+
+        assign ingredient_5_name = block.settings.ingredient_5_name
+        assign ingredient_5_benefit = block.settings.ingredient_5_benefit
+        assign ingredient_5_description = block.settings.ingredient_5_description
+        assign ingredient_5_image = block.settings.ingredient_5_image
+
+        assign ingredient_6_name = block.settings.ingredient_6_name
+        assign ingredient_6_benefit = block.settings.ingredient_6_benefit
+        assign ingredient_6_description = block.settings.ingredient_6_description
+        assign ingredient_6_image = block.settings.ingredient_6_image
+      %}
+
+      {% for i in (1..6) %}
+        {% liquid
+          case i
+            when 1
+              assign name = ingredient_1_name
+              assign benefit = ingredient_1_benefit
+              assign description = ingredient_1_description
+              assign image = ingredient_1_image
+            when 2
+              assign name = ingredient_2_name
+              assign benefit = ingredient_2_benefit
+              assign description = ingredient_2_description
+              assign image = ingredient_2_image
+            when 3
+              assign name = ingredient_3_name
+              assign benefit = ingredient_3_benefit
+              assign description = ingredient_3_description
+              assign image = ingredient_3_image
+            when 4
+              assign name = ingredient_4_name
+              assign benefit = ingredient_4_benefit
+              assign description = ingredient_4_description
+              assign image = ingredient_4_image
+            when 5
+              assign name = ingredient_5_name
+              assign benefit = ingredient_5_benefit
+              assign description = ingredient_5_description
+              assign image = ingredient_5_image
+            when 6
+              assign name = ingredient_6_name
+              assign benefit = ingredient_6_benefit
+              assign description = ingredient_6_description
+              assign image = ingredient_6_image
+          endcase
+        %}
+
+        {% if name != blank %}
+          <div
+            class="ai-ingredient-card-{{ ai_gen_id }}"
+            data-ingredient-card
+            data-ingredient-name="{{ name | escape }}"
+            data-ingredient-description="{{ description | escape }}"
+            style="transition-delay: {{ forloop.index | times: 0.1 }}s;"
+          >
+            {% if image != blank %}
+              <div class="ai-ingredient-card-image-wrapper-{{ ai_gen_id }}">
+                <img
+                  src="{{ image | image_url: width: 200 }}"
+                  alt="{{ name | escape }}"
+                  class="ai-ingredient-card-image-{{ ai_gen_id }}"
+                  loading="lazy"
+                  width="200"
+                  height="200"
+                >
+              </div>
+            {% elsif block.settings.show_placeholder_icon %}
+              <div class="ai-ingredient-card-image-wrapper-{{ ai_gen_id }}">
+                <div class="ai-ingredient-card-image-placeholder-{{ ai_gen_id }}">
+                  {{ 'product-1' | placeholder_svg_tag }}
+                </div>
+              </div>
+            {% endif %}
+
+            <h3 class="ai-ingredient-card-name-{{ ai_gen_id }}">
+              {{ name }}
+            </h3>
+
+            {% if benefit != blank %}
+              <div class="ai-ingredient-card-benefit-{{ ai_gen_id }}">
+                {{ benefit }}
+              </div>
+            {% endif %}
+
+            {% if description != blank %}
+              <div class="ai-ingredient-card-description-{{ ai_gen_id }}">
+                {{ description }}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</ingredient-spotlight-{{ ai_gen_id }}>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": [
+    {% assign ingredient_count = 0 %}
+    {% for i in (1..6) %}
+      {% liquid
+        case i
+          when 1
+            assign name = block.settings.ingredient_1_name
+            assign description = block.settings.ingredient_1_description
+          when 2
+            assign name = block.settings.ingredient_2_name
+            assign description = block.settings.ingredient_2_description
+          when 3
+            assign name = block.settings.ingredient_3_name
+            assign description = block.settings.ingredient_3_description
+          when 4
+            assign name = block.settings.ingredient_4_name
+            assign description = block.settings.ingredient_4_description
+          when 5
+            assign name = block.settings.ingredient_5_name
+            assign description = block.settings.ingredient_5_description
+          when 6
+            assign name = block.settings.ingredient_6_name
+            assign description = block.settings.ingredient_6_description
+        endcase
+      %}
+      {% if name != blank %}
+        {% if ingredient_count > 0 %},{% endif %}
+        {
+          "@type": "ChemicalSubstance",
+          "name": {{ name | json }},
+          "description": {{ description | json }}
+        }
+        {% assign ingredient_count = ingredient_count | plus: 1 %}
+      {% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+
+<script>
+  (function() {
+    class IngredientSpotlight{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.cards = this.querySelectorAll('[data-ingredient-card]');
+        this.observer = null;
+      }
+
+      connectedCallback() {
+        this.setupIntersectionObserver();
+      }
+
+      setupIntersectionObserver() {
+        const options = {
+          root: null,
+          rootMargin: '0px 0px -100px 0px',
+          threshold: 0.1
+        };
+
+        this.observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('ai-ingredient-card-visible-{{ ai_gen_id }}');
+              this.observer.unobserve(entry.target);
+            }
+          });
+        }, options);
+
+        this.cards.forEach((card) => {
+          this.observer.observe(card);
+        });
+      }
+
+      disconnectedCallback() {
+        if (this.observer) {
+          this.observer.disconnect();
+        }
+      }
+    }
+
+    customElements.define('ingredient-spotlight-{{ ai_gen_id }}', IngredientSpotlight{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Ingredient spotlight",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_title",
+      "label": "Title",
+      "default": "What's Inside"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_subtitle",
+      "label": "Subtitle",
+      "default": "Premium active ingredients chosen for their proven efficacy and skin compatibility"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Title font",
+      "default": "serif"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#5a5a5a"
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "label": "Header bottom spacing",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "title_spacing",
+      "label": "Title bottom spacing",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Top padding",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Bottom padding",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "grid_top_spacing",
+      "label": "Grid top spacing",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "label": "Card gap",
+      "min": 16,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section background",
+      "default": "#f5f0e8"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Card padding",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Ingredient card content"
+    },
+    {
+      "type": "range",
+      "id": "image_size",
+      "label": "Image size",
+      "min": 40,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "image_spacing",
+      "label": "Image bottom spacing",
+      "min": 12,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "checkbox",
+      "id": "show_placeholder_icon",
+      "label": "Show placeholder icon if no image",
+      "default": false
+    },
+    {
+      "type": "font_picker",
+      "id": "ingredient_font",
+      "label": "Ingredient name font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "ingredient_name_size",
+      "label": "Ingredient name size",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "ingredient_name_color",
+      "label": "Ingredient name color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "range",
+      "id": "name_spacing",
+      "label": "Name bottom spacing",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "benefit_size",
+      "label": "Benefit text size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Benefit text color",
+      "default": "#e2c84b"
+    },
+    {
+      "type": "range",
+      "id": "benefit_spacing",
+      "label": "Benefit bottom spacing",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Description size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#5a5a5a"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 1"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_1_name",
+      "label": "Name",
+      "default": "Niacinamide"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_1_benefit",
+      "label": "Benefit",
+      "default": "Brightening + Pore Refining"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_1_description",
+      "label": "Description",
+      "default": "A powerhouse vitamin B3 derivative that visibly reduces pore appearance, evens skin tone, and strengthens the moisture barrier for smoother, more radiant skin."
+    },
+    {
+      "type": "image_picker",
+      "id": "ingredient_1_image",
+      "label": "Image or icon"
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 2"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_2_name",
+      "label": "Name",
+      "default": "Hyaluronic Acid"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_2_benefit",
+      "label": "Benefit",
+      "default": "Deep Hydration"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_2_description",
+      "label": "Description",
+      "default": "Multi-molecular weight hyaluronic acid penetrates multiple skin layers to deliver intense, long-lasting moisture and plump fine lines from within."
+    },
+    {
+      "type": "image_picker",
+      "id": "ingredient_2_image",
+      "label": "Image or icon"
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 3"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_3_name",
+      "label": "Name",
+      "default": "Madecassoside"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_3_benefit",
+      "label": "Benefit",
+      "default": "Soothing + Repair"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_3_description",
+      "label": "Description",
+      "default": "Derived from Centella Asiatica, this calming compound reduces redness, accelerates healing, and fortifies sensitive skin against environmental stressors."
+    },
+    {
+      "type": "image_picker",
+      "id": "ingredient_3_image",
+      "label": "Image or icon"
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 4"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_4_name",
+      "label": "Name",
+      "default": "Sea Buckthorn Oil"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_4_benefit",
+      "label": "Benefit",
+      "default": "Antioxidant Protection"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_4_description",
+      "label": "Description",
+      "default": "Rich in vitamins C and E, this botanical oil shields skin from free radical damage while nourishing with essential fatty acids for a healthy glow."
+    },
+    {
+      "type": "image_picker",
+      "id": "ingredient_4_image",
+      "label": "Image or icon"
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 5"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_5_name",
+      "label": "Name",
+      "default": "Ceramides"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_5_benefit",
+      "label": "Benefit",
+      "default": "Barrier Restoration"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_5_description",
+      "label": "Description",
+      "default": "Lipid molecules identical to those naturally found in skin, ceramides seal in moisture and repair the protective barrier to prevent dehydration and irritation."
+    },
+    {
+      "type": "image_picker",
+      "id": "ingredient_5_image",
+      "label": "Image or icon"
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 6"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_6_name",
+      "label": "Name",
+      "default": "Palmitoyl Tripeptide-5"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_6_benefit",
+      "label": "Benefit",
+      "default": "Collagen Boost"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_6_description",
+      "label": "Description",
+      "default": "A biomimetic peptide that signals skin to produce more collagen, improving firmness, elasticity, and the appearance of fine lines over time."
+    },
+    {
+      "type": "image_picker",
+      "id": "ingredient_6_image",
+      "label": "Image or icon"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredient spotlight"
+    }
+  ]
+}
 {% endschema %}
