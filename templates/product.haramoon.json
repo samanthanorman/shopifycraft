@@ -15,35 +15,47 @@
         "hm4step_main": {
           "type": "hm_routine_step_indicator_4step",
           "settings": {
-            "heading": "Step {step} of 4 \u2014 Your HARAMOON Routine",
-            "emoji_before": "\u2728",
-            "emoji_after": "\ud83d\udca7",
-            "heading_size": 20,
+            "heading": "Step {{ metaobjects.haramoon_101[\"immortal-peptide-serum\"].routine_step_number.value }} of 4 — Your HARAMOON Routine",
+            "emoji_before": "",
+            "emoji_after": "",
+            "heading_size": 28,
+            "heading_margin_bottom": 28,
             "step_1_label": "Cleanser",
             "step_1_benefit": "Deep cleanse & prep",
-            "step_1_emoji": "\ud83e\udee7",
+            "step_1_emoji": "🫧",
             "step_2_label": "Toner",
             "step_2_benefit": "Balance pH & hydrate",
-            "step_2_emoji": "\ud83d\udca7",
+            "step_2_emoji": "💧",
             "step_3_label": "Ampoule",
             "step_3_benefit": "Boost & target concerns",
-            "step_3_emoji": "\u2697\ufe0f",
+            "step_3_emoji": "⚗️",
             "step_4_label": "Cream",
             "step_4_benefit": "Seal & protect",
-            "step_4_emoji": "\ud83c\udf19",
+            "step_4_emoji": "🌙",
             "circle_size": 64,
             "label_size": 12,
             "padding_top": 32,
             "padding_bottom": 32,
             "bg_color_start": "#f0f6ff",
             "bg_color_end": "#ffffff",
+            "text_color": "#141615",
+            "inactive_text_color": "#d4f4ff",
+            "active_text_color": "#3c4b73",
             "active_color": "#3498ff",
             "active_color_end": "#1a6fd4",
-            "completed_color": "#53585a",
-            "completed_color_end": "#3d4143",
-            "accent_1": "#3498ff",
-            "accent_2": "#a78bfa"
-          }
+            "completed_color": "#f7ffe8",
+            "completed_color_end": "#b1eaff",
+            "glass_bg": "#ffffff",
+            "glass_highlight": "#ffffff",
+            "shadow_color": "#141615",
+            "accent_1": "#b1f1ff",
+            "accent_2": "#f7ffe8",
+            "connector_color": "#53585a",
+            "tooltip_bg": "#037fff",
+            "tooltip_text": "#0d1b3e",
+            "border_radius": 4
+          },
+          "blocks": {}
         }
       },
       "block_order": [
@@ -176,7 +188,9 @@
           "source": "{{ metaobjects.haramoon_101[\"immortal-peptide-serum\"] }}",
           "settings": {
             "heading": "Full Ingredient List",
-            "content": "<p>{{ metaobjects.haramoon_101[\"immortal-peptide-serum\"].full_ingredient_list | metafield_tag }}</p>"
+            "icon": "check_mark",
+            "content": "<p>{{ metaobjects.haramoon_101[\"immortal-peptide-serum\"].full_ingredient_list | metafield_tag }}</p>",
+            "page": ""
           }
         },
         "collapsible_tab_jTnw3Y": {
@@ -222,6 +236,183 @@
         "enable_video_looping": true,
         "padding_top": 36,
         "padding_bottom": 40
+      }
+    },
+    "hm-how-to-layer": {
+      "type": "hm-how-to-layer",
+      "settings": {
+        "eyebrow": "The HARAMOON Method",
+        "heading": "How to Layer Your Routine",
+        "subheading": "Apply each step on damp skin, in order. Each layer prepares your skin to absorb the next.",
+        "step1_emoji": "🫧",
+        "step1_name": "Cleanser",
+        "step1_timing": "AM + PM",
+        "step1_tip": "Massage for 60 seconds on damp skin. Rinse with lukewarm water.",
+        "wait1": "30 sec",
+        "step2_emoji": "💧",
+        "step2_name": "Toner",
+        "step2_timing": "AM + PM",
+        "step2_tip": "Pat gently into skin — don't rub. Apply while skin is still slightly damp.",
+        "wait2": "60 sec",
+        "step3_emoji": "⚗️",
+        "step3_name": "Ampoule",
+        "step3_timing": "AM + PM",
+        "step3_tip": "Press 2–3 drops between palms, then press onto face. Do not rub.",
+        "wait3": "60–90 sec",
+        "step4_emoji": "🌙",
+        "step4_name": "Cream",
+        "step4_timing": "AM + PM",
+        "step4_tip": "Seal everything in. Use upward strokes. SPF on top in the morning.",
+        "show_ampm": true,
+        "am_tip": "<strong>Morning:</strong> Focus on hydration and protection. After your 4 steps, always finish with SPF 30+. HARAMOON's lightweight formula layers perfectly under sunscreen without pilling. Your skin is prepped for the day — barrier strong, moisture locked.",
+        "pm_tip": "<strong>Evening:</strong> This is when your skin repairs itself. The ampoule's peptides and the cream's Centella work while you sleep. No SPF needed at night — let the actives do their job. For best results, apply to slightly damp skin right after cleansing.",
+        "bg_color": "#0d1b2a",
+        "heading_color": "#ffffff",
+        "subtext_color": "#a0b4c8",
+        "accent_color": "#3498ff",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "hm-trust-badges": {
+      "type": "hm-trust-badges",
+      "settings": {
+        "eyebrow": "Clean Beauty Standards",
+        "heading": "What We Stand For",
+        "subheading": "Every HARAMOON product meets the highest standards for safety, transparency, and skin health.",
+        "badge1_show": true,
+        "badge1_icon": "✅",
+        "badge1_name": "EWG Verified",
+        "badge1_desc": "Every ingredient reviewed",
+        "badge2_show": true,
+        "badge2_icon": "🌱",
+        "badge2_name": "100% Vegan",
+        "badge2_desc": "No animal-derived ingredients",
+        "badge3_show": true,
+        "badge3_icon": "🐰",
+        "badge3_name": "Cruelty-Free",
+        "badge3_desc": "Never tested on animals",
+        "badge4_show": true,
+        "badge4_icon": "⚗️",
+        "badge4_name": "pH 5.5 Balanced",
+        "badge4_desc": "Matches your skin's acid mantle",
+        "badge5_show": true,
+        "badge5_icon": "🚫",
+        "badge5_name": "Fragrance-Free",
+        "badge5_desc": "No synthetic parfum",
+        "badge6_show": true,
+        "badge6_icon": "🇰🇷",
+        "badge6_name": "Korean R&D",
+        "badge6_desc": "Formulated in South Korea",
+        "show_ewg_callout": true,
+        "ewg_title": "What Does EWG Verified Mean?",
+        "ewg_body": "EWG Verified is the gold standard in clean beauty. It means every ingredient in this product has been independently reviewed by the Environmental Working Group for safety, transparency, and full disclosure. No hidden ingredients, no greenwashing.",
+        "ewg_link": "",
+        "ewg_link_text": "Learn more about EWG Verified",
+        "bg_color": "#111827",
+        "heading_color": "#ffffff",
+        "subtext_color": "#8fa8c0",
+        "accent_color": "#3498ff",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    },
+    "hm-results-timeline": {
+      "type": "hm-results-timeline",
+      "settings": {
+        "eyebrow": "Real Results",
+        "heading": "What to Expect, Week by Week",
+        "subheading": "Consistency is the secret. Here's what most customers experience on the full 4-step routine.",
+        "week1_label": "Week 1",
+        "week1_title": "First Impressions",
+        "week1_sub": "Immediate comfort, visible softness",
+        "week1_progress": 30,
+        "week1_benefits": "Skin feels softer after first cleanse | Less tightness post-wash | Makeup sits more smoothly | Redness visibly calmer",
+        "week4_label": "Week 4",
+        "week4_title": "The Shift",
+        "week4_sub": "Barrier strengthening, tone evening",
+        "week4_progress": 65,
+        "week4_benefits": "Smaller-looking pores by end of day | Blemishes healing faster | More even skin tone | Dewy, glass-skin quality emerging",
+        "week8_label": "Week 8",
+        "week8_title": "Glass Skin",
+        "week8_sub": "Barrier rebuilt, results compounding",
+        "week8_progress": 95,
+        "week8_benefits": "Luminous, healthy glow | Fine lines appear softer | Skin tolerates actives better | Consistent hydration all day",
+        "show_disclaimer": true,
+        "disclaimer_text": "Individual results vary. Based on customer feedback and typical outcomes with consistent use of the full 4-step HARAMOON routine.",
+        "bg_color": "#d4f4ff",
+        "heading_color": "#0d1b3e",
+        "subtext_color": "#6377a7",
+        "accent_color": "#037fff",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "hm_ingredient_heroes": {
+      "type": "hm-ingredient-heroes",
+      "settings": {
+        "eyebrow": "What's Inside",
+        "title": "Ingredient Heroes in This Formula",
+        "subtitle": "Tap any ingredient to explore its full science-backed profile.",
+        "header_align": "center",
+        "header_gap": 28,
+        "title_size": 24,
+        "subtitle_size": 14,
+        "pill_font_size": 13,
+        "max_width": 900,
+        "padding_top": 48,
+        "padding_bottom": 48,
+        "side_padding": 20,
+        "pill_gap": 12,
+        "pill_padding_v": 14,
+        "pill_padding_h": 16,
+        "pill_radius": 40,
+        "pill_min_height": 52,
+        "bg_color": "#f8faff",
+        "title_color": "#141615",
+        "subtitle_color": "#53585a",
+        "accent_color": "#3498ff",
+        "accent_color_2": "#a78bfa",
+        "pill_bg": "#ffffff",
+        "pill_hover_bg": "#eff6ff",
+        "pill_border": "#dbeafe",
+        "pill_text_color": "#1e3a8a",
+        "glass_highlight": "#ffffff",
+        "shadow_color": "#141615"
+      }
+    },
+    "hm_faq_product": {
+      "type": "hm-faq-metaobject",
+      "settings": {
+        "eyebrow": "Got Questions?",
+        "title": "Frequently Asked Questions",
+        "subtitle": "Everything you need to know about this product.",
+        "header_align": "center",
+        "header_gap": 32,
+        "filter_category": "HARAMOON Korean Skincare",
+        "max_items": 8,
+        "show_categories": false,
+        "allow_multiple": true,
+        "title_size": 26,
+        "q_size": 16,
+        "a_size": 14,
+        "max_width": 800,
+        "padding_top": 48,
+        "padding_bottom": 48,
+        "side_padding": 20,
+        "item_gap": 10,
+        "q_padding": 20,
+        "bg_color": "#ffffff",
+        "title_color": "#141615",
+        "subtitle_color": "#53585a",
+        "accent_color": "#3498ff",
+        "item_bg": "#ffffff",
+        "item_border_color": "#e5e7eb",
+        "item_border_width": 1,
+        "item_radius": 12,
+        "answer_bg": "#f8faff",
+        "q_color": "#141615",
+        "a_color": "#53585a"
       }
     },
     "related-products": {
@@ -352,7 +543,7 @@
           "settings": {
             "heading": "Step {{ metaobjects.haramoon_101[\"immortal-peptide-serum\"].routine_step_number.value }} of 5 in Your Korean Skincare Routine",
             "emoji_before": "",
-            "emoji_after": "\ud83d\udca7",
+            "emoji_after": "💧",
             "heading_size": 28,
             "step_1_label": "Step 1 Cleanser",
             "step_1_benefit": "Deep cleanse",
@@ -420,7 +611,7 @@
           "settings": {
             "image": "shopify://shop_images/HARAMOON_Cleanser_Cream_up_close_3a4b81e6-5743-4142-a99e-23061aae1c6e.jpg",
             "title": "<strong>Skin-Wise, Seoul-Gentle</strong>",
-            "text": "<p>HARAMOON's complete skincare collection guarantees visible, science-backed skin transformation\u2014no filler products, no fluff.</p>",
+            "text": "<p>HARAMOON's complete skincare collection guarantees visible, science-backed skin transformation—no filler products, no fluff.</p>",
             "link_label": "",
             "link": "shopify://collections/haramoon-skincare-premium-k-beauty"
           }
@@ -430,7 +621,7 @@
           "settings": {
             "image": "shopify://shop_images/Silver-Lined-Faraday-Beanie-Cap---Shield-Brain-from-Electronic-Radiation-_One-Size_-edited_1_d9eecab1-d468-4c02-bf9f-88d20fdeb615.png",
             "title": "<strong>Carefully Curated</strong>",
-            "text": "<p>Every item is handpicked to serve a purpose\u2014affordable, sustainable, and thoughtfully designed. We choose quality over clutter, always.</p>",
+            "text": "<p>Every item is handpicked to serve a purpose—affordable, sustainable, and thoughtfully designed. We choose quality over clutter, always.</p>",
             "link_label": "",
             "link": "shopify://collections"
           }
@@ -488,7 +679,7 @@
           "settings": {
             "caption": "in every way",
             "heading": "Practically Perfect",
-            "text": "<p>Beauty isn\u2019t just about aesthetics \u2014 it\u2019s about feeling good and functional, too. Our products turn your daily routine into a magical moment. </p><p>Accessorize with intention, nourish with purpose.</p>",
+            "text": "<p>Beauty isn’t just about aesthetics — it’s about feeling good and functional, too. Our products turn your daily routine into a magical moment. </p><p>Accessorize with intention, nourish with purpose.</p>",
             "button_label": "Browse Now",
             "button_link": "shopify://collections/daily-essentials"
           }
@@ -528,7 +719,7 @@
         "text_y6dkGq": {
           "type": "text",
           "settings": {
-            "text": "<p>At Wax and Wane, we believe in skincare that\u2019s honest, healing, and rooted in nature. HARAMOON stood out as a Korean beauty brand that aligns with our values \u2014 minimal, science-backed, and built for real skin challenges.</p><p>Whether you\u2019re dealing with stress, dehydration, or sensitivity, these products offer more than a quick fix \u2014 they provide a foundation for long-term skin health.</p><p>Our goal? To empower you to feel radiant and calm in your own skin \u2014 every single day.</p>"
+            "text": "<p>At Wax and Wane, we believe in skincare that’s honest, healing, and rooted in nature. HARAMOON stood out as a Korean beauty brand that aligns with our values — minimal, science-backed, and built for real skin challenges.</p><p>Whether you’re dealing with stress, dehydration, or sensitivity, these products offer more than a quick fix — they provide a foundation for long-term skin health.</p><p>Our goal? To empower you to feel radiant and calm in your own skin — every single day.</p>"
           }
         },
         "button_WmxBmj": {
@@ -586,19 +777,19 @@
             "heading_size": 32,
             "heading_color": "#141615",
             "step_1_number": "1",
-            "step_1_emoji": "\ud83d\udca7",
+            "step_1_emoji": "💧",
             "step_1_label": "Cleanser",
             "step_2_number": "2",
-            "step_2_emoji": "\ud83c\udf38",
+            "step_2_emoji": "🌸",
             "step_2_label": "Toner",
             "step_3_number": "3",
-            "step_3_emoji": "\u2728",
+            "step_3_emoji": "✨",
             "step_3_label": "Ampoule",
             "step_4_number": "4",
-            "step_4_emoji": "\ud83d\udcab",
+            "step_4_emoji": "💫",
             "step_4_label": "Serum",
             "step_5_number": "5",
-            "step_5_emoji": "\ud83d\udd25",
+            "step_5_emoji": "🔥",
             "step_5_label": "Cream",
             "circle_size": 120,
             "step_spacing": 60,
@@ -619,61 +810,6 @@
         "ai_gen_block_5611c6b_txMQPU"
       ],
       "disabled": true,
-      "settings": {}
-    },
-    "hm_ingredient_heroes": {
-      "type": "hm-ingredient-heroes",
-      "settings": {
-        "eyebrow": "What's Inside",
-        "title": "Ingredient Heroes in This Formula",
-        "subtitle": "Tap any ingredient to explore its full science-backed profile.",
-        "header_align": "center",
-        "max_width": 900,
-        "padding_top": 48,
-        "padding_bottom": 48,
-        "bg_color": "#f8faff",
-        "accent_color": "#3498ff",
-        "accent_color_2": "#a78bfa",
-        "pill_bg": "#ffffff",
-        "pill_hover_bg": "#eff6ff",
-        "pill_border": "#dbeafe",
-        "pill_text_color": "#1e3a8a"
-      }
-    },
-    "hm_faq_product": {
-      "type": "hm-faq-metaobject",
-      "settings": {
-        "eyebrow": "Got Questions?",
-        "title": "Frequently Asked Questions",
-        "subtitle": "Everything you need to know about this product.",
-        "header_align": "center",
-        "filter_category": "HARAMOON Korean Skincare",
-        "max_items": 8,
-        "show_categories": false,
-        "allow_multiple": true,
-        "max_width": 800,
-        "padding_top": 48,
-        "padding_bottom": 48,
-        "bg_color": "#ffffff",
-        "accent_color": "#3498ff",
-        "item_bg": "#ffffff",
-        "item_border_color": "#e5e7eb",
-        "item_radius": 12,
-        "answer_bg": "#f8faff",
-        "q_color": "#141615",
-        "a_color": "#53585a"
-      }
-    },
-    "hm-how-to-layer": {
-      "type": "hm-how-to-layer",
-      "settings": {}
-    },
-    "hm-results-timeline": {
-      "type": "hm-results-timeline",
-      "settings": {}
-    },
-    "hm-trust-badges": {
-      "type": "hm-trust-badges",
       "settings": {}
     }
   },
