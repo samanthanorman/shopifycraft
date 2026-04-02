@@ -195,9 +195,9 @@ CAPTIONS = {
 
 # ─── Default product links per topic ──────────────────────────────────────────
 DEFAULT_LINKS = {
-    "emf":      "https://waxandwane.store/collections/emf-protection",
-    "crystals": "https://waxandwane.store/collections/crystals",
-    "haramoon": "https://waxandwane.store/collections/haramoon",
+    "emf":      "https://waxandwane.store/collections/emf-shielding-faraday-protection",
+    "crystals": "https://waxandwane.store/collections/natural-crystals-gemstones",
+    "haramoon": "https://waxandwane.store/collections/haramoon-korean-skincare",
     "wax":      "https://waxandwane.store",
 }
 
