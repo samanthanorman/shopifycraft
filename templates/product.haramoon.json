@@ -30,7 +30,7 @@
             "vertical_padding": 16,
             "horizontal_padding": 24,
             "background_color": "#edf8ff",
-            "border_color": "rgba(13, 27, 62, 0.1)",
+            "border_color": "#0d1b3e1a",
             "text_color": "#0d1b3e",
             "icon_color": "#0679ff",
             "hover_background": "#cfedff",
@@ -48,6 +48,66 @@
       },
       "block_order": [
         "ai_gen_block_d8bbf7b_g4jbxb"
+      ],
+      "settings": {}
+    },
+    "17751124487d8adcd6": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_b06f563_gY8UPc": {
+          "type": "ai_gen_block_b06f563",
+          "settings": {
+            "nav_height": 60,
+            "background_color": "rgba(255, 255, 255, 0.95)",
+            "blur_amount": 10,
+            "border_thickness": 1,
+            "border_color": "#0d1b3e",
+            "shadow_vertical": 2,
+            "shadow_blur": 8,
+            "shadow_opacity": 0.1,
+            "tab_spacing": 16,
+            "tab_font_size": 15,
+            "icon_size": 22,
+            "tab_text_color": "#0d1b3e",
+            "tab_hover_color": "#4ab2f0",
+            "tab_active_color": "#4ab2f0",
+            "tab_1_enabled": true,
+            "tab_1_label": "Overview",
+            "tab_1_anchor": "overview",
+            "tab_1_icon": "overview",
+            "tab_2_enabled": true,
+            "tab_2_label": "Ingredients",
+            "tab_2_anchor": "ingredients",
+            "tab_2_icon": "ingredients",
+            "tab_3_enabled": true,
+            "tab_3_label": "Benefits",
+            "tab_3_anchor": "benefits",
+            "tab_3_icon": "benefits",
+            "tab_4_enabled": true,
+            "tab_4_label": "How to use",
+            "tab_4_anchor": "how-to-use",
+            "tab_4_icon": "how-to-use",
+            "tab_5_enabled": true,
+            "tab_5_label": "FAQ",
+            "tab_5_anchor": "faq",
+            "tab_5_icon": "faq",
+            "tab_6_enabled": false,
+            "tab_6_label": "Shop on Amazon",
+            "tab_6_anchor": "reviews",
+            "tab_6_icon": "reviews",
+            "cta_enabled": false,
+            "cta_label": "Shop on Amazon",
+            "cta_link": "",
+            "cta_bg_color": "#4ab2f0",
+            "cta_text_color": "#0d1b3e",
+            "cta_hover_bg_color": "#4ab2f0",
+            "cta_border_radius": 20
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_b06f563_gY8UPc"
       ],
       "settings": {}
     },
@@ -94,7 +154,7 @@
         "text_rciagC": {
           "type": "text",
           "settings": {
-            "text": "{{ product.metafields.shopify[\"skin-care-effect\"] | metafield_text: field: 'label' }}",
+            "text": "{{ product.metafields.custom.skin_care_features | metafield_text: field: 'label' }}",
             "text_style": "uppercase"
           }
         },
@@ -209,6 +269,38 @@
         "padding_bottom": 40
       }
     },
+    "1775114978c36d3c55": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_a00323c_4GBffT": {
+          "type": "ai_gen_block_a00323c",
+          "settings": {
+            "font": "poppins_n4",
+            "font_size": 16,
+            "letter_spacing": 1,
+            "text_color": "#ffffff",
+            "dot_size": 8,
+            "dot_color": "#f0d84a",
+            "enable_glow": true,
+            "glow_color": "#f0d84a",
+            "glow_intensity": 8,
+            "pulse_speed": 2,
+            "desktop_width_percent": 70,
+            "item_spacing": 40,
+            "vertical_padding": 16,
+            "animation_speed": 35,
+            "background_color": "#0d1b3e",
+            "border_thickness": 1,
+            "border_color": "#f0d84a"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_a00323c_4GBffT"
+      ],
+      "settings": {}
+    },
     "hm_ingredient_heroes": {
       "type": "hm-ingredient-heroes",
       "settings": {
@@ -262,8 +354,92 @@
     },
     "1775110754f9cd7909": {
       "type": "_blocks",
+      "settings": {}
+    },
+    "hm-results-timeline": {
+      "type": "hm-results-timeline",
+      "disabled": true,
+      "settings": {
+        "eyebrow": "Real Results",
+        "heading": "What to Expect, Week by Week",
+        "subheading": "Consistency is the secret. Here's what most customers experience on the full 4-step routine.",
+        "week1_label": "Week 1",
+        "week1_title": "First Impressions",
+        "week1_sub": "Immediate comfort, visible softness",
+        "week1_progress": 30,
+        "week1_benefits": "Skin feels softer after first cleanse | Less tightness post-wash | Makeup sits more smoothly | Redness visibly calmer",
+        "week4_label": "Week 4",
+        "week4_title": "The Shift",
+        "week4_sub": "Barrier strengthening, tone evening",
+        "week4_progress": 65,
+        "week4_benefits": "Smaller-looking pores by end of day | Blemishes healing faster | More even skin tone | Dewy, glass-skin quality emerging",
+        "week8_label": "Week 8",
+        "week8_title": "Glass Skin",
+        "week8_sub": "Barrier rebuilt, results compounding",
+        "week8_progress": 95,
+        "week8_benefits": "Luminous, healthy glow | Fine lines appear softer | Skin tolerates actives better | Consistent hydration all day",
+        "show_disclaimer": true,
+        "disclaimer_text": "Individual results vary. Based on customer feedback and typical outcomes with consistent use of the full 4-step HARAMOON routine.",
+        "bg_color": "#54a8ff",
+        "heading_color": "#ffffff",
+        "subtext_color": "#000000",
+        "accent_color": "#ffffff",
+        "padding_top": 36,
+        "padding_bottom": 32
+      }
+    },
+    "1775113417ff4f0d38": {
+      "type": "_blocks",
       "blocks": {
-        "ai_gen_block_fcf304b_ggbnDB": {
+        "ai_gen_block_f5c708d_RiNANp": {
+          "type": "ai_gen_block_f5c708d",
+          "settings": {
+            "section_title": "Your Skin's Journey",
+            "section_subtitle": "Visible transformation, week by week",
+            "title_size": 48,
+            "subtitle_size": 16,
+            "title_color": "#0d1b3e",
+            "subtitle_color": "#0d1b3e",
+            "header_spacing": 80,
+            "week_1_label": "Week 1",
+            "week_1_headline": "Skin barrier restored.",
+            "week_1_description": "Immediate hydration and soothing. Redness begins to calm as peptides start their repair work.",
+            "week_1_image": "shopify://shop_images/cleanser6_453b30c6-d433-4347-9198-625a5a1eefcd.png",
+            "week_2_label": "Week 2",
+            "week_2_headline": "Texture refined.",
+            "week_2_description": "Skin feels smoother and more supple. Fine lines appear softened as cellular turnover accelerates.",
+            "week_2_image": "shopify://shop_images/allfour5.png",
+            "week_3_label": "Week 4",
+            "week_3_headline": "Radiance unlocked.",
+            "week_3_description": "A visible glow emerges. Skin tone appears more even, and elasticity noticeably improves.",
+            "week_3_image": "shopify://shop_images/cleanser0_9211e3c2-2601-4a59-a81e-acc3f3803527.png",
+            "week_4_label": "Week 8",
+            "week_4_headline": "Transformation complete.",
+            "week_4_description": "Skin looks visibly younger, firmer, and deeply nourished. The full power of peptides revealed.",
+            "week_4_image": "shopify://shop_images/allfour6.png",
+            "week_label_size": 14,
+            "headline_size": 32,
+            "description_size": 15,
+            "headline_color": "#0d1b3e",
+            "description_color": "#0d1b3e",
+            "accent_color": "#4a6ff0",
+            "desktop_width_percent": 100,
+            "max_width": 1200,
+            "entry_gap": 80,
+            "entry_spacing": 100,
+            "content_padding": 20,
+            "section_padding_top": 80,
+            "section_padding_bottom": 80,
+            "image_aspect_ratio": "0.75",
+            "image_border_radius": 20,
+            "show_connector": false,
+            "connector_color": "#0d1b3e",
+            "dot_color": "#4a6ff0",
+            "background_color": "#ffffff"
+          },
+          "blocks": {}
+        },
+        "ai_gen_block_fcf304b_emJ8Hg": {
           "type": "ai_gen_block_fcf304b",
           "settings": {
             "max_width": 1400,
@@ -309,40 +485,10 @@
         }
       },
       "block_order": [
-        "ai_gen_block_fcf304b_ggbnDB"
+        "ai_gen_block_f5c708d_RiNANp",
+        "ai_gen_block_fcf304b_emJ8Hg"
       ],
       "settings": {}
-    },
-    "hm-results-timeline": {
-      "type": "hm-results-timeline",
-      "settings": {
-        "eyebrow": "Real Results",
-        "heading": "What to Expect, Week by Week",
-        "subheading": "Consistency is the secret. Here's what most customers experience on the full 4-step routine.",
-        "week1_label": "Week 1",
-        "week1_title": "First Impressions",
-        "week1_sub": "Immediate comfort, visible softness",
-        "week1_progress": 30,
-        "week1_benefits": "Skin feels softer after first cleanse | Less tightness post-wash | Makeup sits more smoothly | Redness visibly calmer",
-        "week4_label": "Week 4",
-        "week4_title": "The Shift",
-        "week4_sub": "Barrier strengthening, tone evening",
-        "week4_progress": 65,
-        "week4_benefits": "Smaller-looking pores by end of day | Blemishes healing faster | More even skin tone | Dewy, glass-skin quality emerging",
-        "week8_label": "Week 8",
-        "week8_title": "Glass Skin",
-        "week8_sub": "Barrier rebuilt, results compounding",
-        "week8_progress": 95,
-        "week8_benefits": "Luminous, healthy glow | Fine lines appear softer | Skin tolerates actives better | Consistent hydration all day",
-        "show_disclaimer": true,
-        "disclaimer_text": "Individual results vary. Based on customer feedback and typical outcomes with consistent use of the full 4-step HARAMOON routine.",
-        "bg_color": "#54a8ff",
-        "heading_color": "#ffffff",
-        "subtext_color": "#000000",
-        "accent_color": "#ffffff",
-        "padding_top": 36,
-        "padding_bottom": 32
-      }
     },
     "hm-how-to-layer": {
       "type": "hm-how-to-layer",
@@ -754,40 +900,6 @@
         "padding_bottom": 36
       }
     },
-    "hm_faq_product": {
-      "type": "hm-faq-metaobject",
-      "settings": {
-        "eyebrow": "Got Questions?",
-        "title": "Frequently Asked Questions",
-        "subtitle": "Everything you need to know about this product.",
-        "header_align": "center",
-        "header_gap": 32,
-        "filter_category": "HARAMOON Korean Skincare",
-        "max_items": 5,
-        "show_categories": false,
-        "allow_multiple": true,
-        "title_size": 26,
-        "q_size": 16,
-        "a_size": 14,
-        "max_width": 800,
-        "padding_top": 32,
-        "padding_bottom": 32,
-        "side_padding": 20,
-        "item_gap": 12,
-        "q_padding": 20,
-        "bg_color": "#e8eaec",
-        "title_color": "#0d1b3e",
-        "subtitle_color": "#0d1b3e",
-        "accent_color": "#3498ff",
-        "item_bg": "#ffffff",
-        "item_border_color": "#005bbb",
-        "item_border_width": 1,
-        "item_radius": 12,
-        "answer_bg": "#03060e",
-        "q_color": "#037fff",
-        "a_color": "#ffffff"
-      }
-    },
     "rich_text_49tBnU": {
       "type": "rich-text",
       "blocks": {
@@ -849,59 +961,51 @@
         "padding_bottom": 24
       }
     },
-    "1761614538f20cc936": {
-      "type": "_blocks",
-      "blocks": {
-        "ai_gen_block_5611c6b_txMQPU": {
-          "type": "ai_gen_block_5611c6b",
-          "settings": {
-            "heading_text": "Your Glass Skin Journey",
-            "heading_size": 32,
-            "heading_color": "#141615",
-            "step_1_number": "1",
-            "step_1_emoji": "💧",
-            "step_1_label": "Cleanser",
-            "step_2_number": "2",
-            "step_2_emoji": "🌸",
-            "step_2_label": "Toner",
-            "step_3_number": "3",
-            "step_3_emoji": "✨",
-            "step_3_label": "Ampoule",
-            "step_4_number": "4",
-            "step_4_emoji": "💫",
-            "step_4_label": "Serum",
-            "step_5_number": "5",
-            "step_5_emoji": "🔥",
-            "step_5_label": "Cream",
-            "circle_size": 120,
-            "step_spacing": 60,
-            "step_number_size": 24,
-            "emoji_size": 32,
-            "label_size": 14,
-            "active_color": "#3498ff",
-            "inactive_color": "#53585a",
-            "text_color": "#141615",
-            "background_color": "#ffffff",
-            "blur_amount": 10,
-            "section_padding": 60
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_5611c6b_txMQPU"
-      ],
-      "disabled": true,
-      "settings": {}
+    "hm_faq_product": {
+      "type": "hm-faq-metaobject",
+      "settings": {
+        "eyebrow": "Got Questions?",
+        "title": "Frequently Asked Questions",
+        "subtitle": "Everything you need to know about this product.",
+        "header_align": "center",
+        "header_gap": 32,
+        "filter_category": "HARAMOON Korean Skincare",
+        "max_items": 5,
+        "show_categories": false,
+        "allow_multiple": true,
+        "title_size": 26,
+        "q_size": 16,
+        "a_size": 14,
+        "max_width": 800,
+        "padding_top": 32,
+        "padding_bottom": 32,
+        "side_padding": 20,
+        "item_gap": 12,
+        "q_padding": 20,
+        "bg_color": "#e8eaec",
+        "title_color": "#0d1b3e",
+        "subtitle_color": "#0d1b3e",
+        "accent_color": "#3498ff",
+        "item_bg": "#ffffff",
+        "item_border_color": "#005bbb",
+        "item_border_width": 1,
+        "item_radius": 12,
+        "answer_bg": "#03060e",
+        "q_color": "#037fff",
+        "a_color": "#ffffff"
+      }
     }
   },
   "order": [
     "17751094968add2892",
+    "17751124487d8adcd6",
     "main",
+    "1775114978c36d3c55",
     "hm_ingredient_heroes",
     "related-products",
     "1775110754f9cd7909",
     "hm-results-timeline",
+    "1775113417ff4f0d38",
     "hm-how-to-layer",
     "1761606515075c8768",
     "hm-trust-badges",
@@ -909,9 +1013,8 @@
     "video_jPKMty",
     "multicolumn_cW6eAw",
     "multirow_9kwR94",
-    "hm_faq_product",
     "rich_text_49tBnU",
     "featured_blog_GCgTFE",
-    "1761614538f20cc936"
+    "hm_faq_product"
   ]
 }
