@@ -1,6 +1,315 @@
+{% doc %}
+  @prompt
+    Redesign a FAQ accordion section for a K-beauty skincare product page. This section must keep its exact existing functionality: it dynamically pulls from Shopify metaobjects of type faq_group, querying all entries where the category field equals "HARAMOON Korean Skincare", ordered by the sort_order integer field ascending, displaying the question field as the accordion row label and the answer field as the expanded content, up to 10 entries. Do not change any of this data logic — only redesign the visual appearance.  Style to match this exact aesthetic: crisp white or very soft cool-white background, bright medical blue (#0066FF) as the sole accent color, Poppins font for question labels (medium weight, dark charcoal), Raleway font for answer body copy (light weight, soft grey). Add a thin bright medical blue top border across the full width of the section. Each accordion row should have a rotating chevron icon on the right in medical blue that animates open and closed. Only one item open at a time. On hover each row gets a very subtle cool blue tint background shift. The active open row gets a soft medical blue left border accent. Generous row padding (24px+), thin cool-grey divider lines between rows. Include an editable section title in Raleway light weight centered above the accordion. Add smooth staggered fade-up animation on scroll for the section entrance, and smooth CSS height transition for accordion open/close — no layout jumps. Add FAQPage schema JSON-LD in a script tag with every question and answer pair correctly marked up using Question and acceptedAnswer types for Google FAQ rich results. Sharp, minimal, clinical-premium — no gradients, no rounded pill shapes. Same Gen Z K-beauty energy as the trust badges section.
+    
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% assign faq_entries = shop.metaobjects.faq_group.values | where: 'category', 'HARAMOON Korean Skincare' | sort: 'sort_order' | slice: 0, 10 %}
+
+{% style %}
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&family=Raleway:wght@300&display=swap');
+
+  .ai-faq-section-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: #fafbfc;
+    padding: 60px 20px;
+    border-top: 2px solid #0066FF;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .ai-faq-section-{{ ai_gen_id }}.ai-faq-visible-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-faq-container-{{ ai_gen_id }} {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .ai-faq-title-{{ ai_gen_id }} {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: 32px;
+    color: #2d3748;
+    text-align: center;
+    margin: 0 0 48px;
+    letter-spacing: 0.5px;
+  }
+
+  .ai-faq-accordion-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ai-faq-item-{{ ai_gen_id }} {
+    border-bottom: 1px solid #e2e8f0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .ai-faq-section-{{ ai_gen_id }}.ai-faq-visible-{{ ai_gen_id }} .ai-faq-item-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  {% for i in (1..10) %}
+    .ai-faq-section-{{ ai_gen_id }}.ai-faq-visible-{{ ai_gen_id }} .ai-faq-item-{{ ai_gen_id }}:nth-child({{ i }}) {
+      transition-delay: {{ i | times: 0.1 }}s;
+    }
+  {% endfor %}
+
+  .ai-faq-question-button-{{ ai_gen_id }} {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.3s ease;
+    border-left: 3px solid transparent;
+    padding-left: 20px;
+  }
+
+  .ai-faq-question-button-{{ ai_gen_id }}:hover {
+    background-color: #f0f7ff;
+  }
+
+  .ai-faq-item-{{ ai_gen_id }}.ai-faq-active-{{ ai_gen_id }} .ai-faq-question-button-{{ ai_gen_id }} {
+    border-left-color: #0066FF;
+  }
+
+  .ai-faq-question-text-{{ ai_gen_id }} {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    color: #2d3748;
+    line-height: 1.5;
+    padding-right: 20px;
+  }
+
+  .ai-faq-chevron-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    transition: transform 0.3s ease;
+    color: #0066FF;
+  }
+
+  .ai-faq-item-{{ ai_gen_id }}.ai-faq-active-{{ ai_gen_id }} .ai-faq-chevron-{{ ai_gen_id }} {
+    transform: rotate(180deg);
+  }
+
+  .ai-faq-answer-wrapper-{{ ai_gen_id }} {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .ai-faq-answer-content-{{ ai_gen_id }} {
+    padding: 0 20px 24px 20px;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    color: #718096;
+    line-height: 1.7;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-faq-section-{{ ai_gen_id }} {
+      padding: 40px 16px;
+    }
+
+    .ai-faq-title-{{ ai_gen_id }} {
+      font-size: 24px;
+      margin-bottom: 32px;
+    }
+
+    .ai-faq-question-button-{{ ai_gen_id }} {
+      padding: 20px 0;
+      padding-left: 16px;
+    }
+
+    .ai-faq-question-text-{{ ai_gen_id }} {
+      font-size: 15px;
+    }
+
+    .ai-faq-answer-content-{{ ai_gen_id }} {
+      padding: 0 16px 20px 16px;
+      font-size: 14px;
+    }
+  }
+{% endstyle %}
+
+<faq-accordion-{{ ai_gen_id }} class="ai-faq-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-faq-container-{{ ai_gen_id }}">
+    {% if block.settings.section_title != blank %}
+      <h2 class="ai-faq-title-{{ ai_gen_id }}">{{ block.settings.section_title }}</h2>
+    {% endif %}
+
+    <div class="ai-faq-accordion-{{ ai_gen_id }}">
+      {% for entry in faq_entries %}
+        <div class="ai-faq-item-{{ ai_gen_id }}" data-faq-item>
+          <button
+            class="ai-faq-question-button-{{ ai_gen_id }}"
+            aria-expanded="false"
+            data-faq-button
+          >
+            <span class="ai-faq-question-text-{{ ai_gen_id }}">{{ entry.question.value }}</span>
+            <svg class="ai-faq-chevron-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="ai-faq-answer-wrapper-{{ ai_gen_id }}" data-faq-answer>
+            <div class="ai-faq-answer-content-{{ ai_gen_id }}">
+              {{ entry.answer.value }}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</faq-accordion-{{ ai_gen_id }}>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {% for entry in faq_entries %}
+      {
+        "@type": "Question",
+        "name": {{ entry.question.value | json }},
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": {{ entry.answer.value | strip_html | json }}
+        }
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ]
+}
+</script>
+
+<script>
+  (function() {
+    class FaqAccordion{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.items = [];
+        this.observer = null;
+      }
+
+      connectedCallback() {
+        this.items = Array.from(this.querySelectorAll('[data-faq-item]'));
+        this.setupAccordion();
+        this.setupScrollAnimation();
+      }
+
+      setupAccordion() {
+        this.items.forEach((item) => {
+          const button = item.querySelector('[data-faq-button]');
+          const answer = item.querySelector('[data-faq-answer]');
+
+          button.addEventListener('click', () => {
+            const isActive = item.classList.contains('ai-faq-active-{{ ai_gen_id }}');
+
+            this.items.forEach((otherItem) => {
+              if (otherItem !== item) {
+                this.closeItem(otherItem);
+              }
+            });
+
+            if (isActive) {
+              this.closeItem(item);
+            } else {
+              this.openItem(item);
+            }
+          });
+        });
+      }
+
+      openItem(item) {
+        const button = item.querySelector('[data-faq-button]');
+        const answer = item.querySelector('[data-faq-answer]');
+        const content = answer.querySelector('.ai-faq-answer-content-{{ ai_gen_id }}');
+
+        item.classList.add('ai-faq-active-{{ ai_gen_id }}');
+        button.setAttribute('aria-expanded', 'true');
+        answer.style.maxHeight = content.scrollHeight + 'px';
+      }
+
+      closeItem(item) {
+        const button = item.querySelector('[data-faq-button]');
+        const answer = item.querySelector('[data-faq-answer]');
+
+        item.classList.remove('ai-faq-active-{{ ai_gen_id }}');
+        button.setAttribute('aria-expanded', 'false');
+        answer.style.maxHeight = '0';
+      }
+
+      setupScrollAnimation() {
+        this.observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('ai-faq-visible-{{ ai_gen_id }}');
+                this.observer.unobserve(entry.target);
+              }
+            });
+          },
+          {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+          }
+        );
+
+        this.observer.observe(this);
+      }
+
+      disconnectedCallback() {
+        if (this.observer) {
+          this.observer.disconnect();
+        }
+      }
+    }
+
+    customElements.define('faq-accordion-{{ ai_gen_id }}', FaqAccordion{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "HARAMOON FAQ accordion",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section title",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "HARAMOON FAQ accordion"
+    }
+  ]
+}
 {% endschema %}
