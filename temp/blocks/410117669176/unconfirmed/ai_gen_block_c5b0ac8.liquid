@@ -1,6 +1,526 @@
+{% doc %}
+  @prompt
+    custom cute animated button for this page matching it link it to a metaobject template for a deeper dive into this product. include toggle buttons to cta to "also available at" for other storefronts i can link people to visiting. please make modern clean and matching the page now for aesthetic. mobile optimized 
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-product-cta-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: 24px;
+    background: {{ block.settings.background_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+    box-shadow: 0 2px 8px rgba(13, 27, 62, 0.08);
+  }
+
+  .ai-product-cta__container-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .ai-product-cta__main-button-{{ ai_gen_id }} {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 32px;
+    background: {{ block.settings.button_color }};
+    color: {{ block.settings.button_text_color }};
+    border: none;
+    border-radius: {{ block.settings.button_radius }}px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(13, 27, 62, 0.15);
+  }
+
+  .ai-product-cta__main-button-{{ ai_gen_id }}:hover {
+    background: {{ block.settings.button_hover_color }};
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(13, 27, 62, 0.2);
+  }
+
+  .ai-product-cta__main-button-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  .ai-product-cta__main-button-{{ ai_gen_id }}:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  .ai-product-cta__button-text-{{ ai_gen_id }} {
+    position: relative;
+    z-index: 1;
+  }
+
+  .ai-product-cta__icon-{{ ai_gen_id }} {
+    position: relative;
+    z-index: 1;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-product-cta__main-button-{{ ai_gen_id }}:hover .ai-product-cta__icon-{{ ai_gen_id }} {
+    transform: translateX(4px);
+  }
+
+  .ai-product-cta__toggle-section-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ai-product-cta__toggle-header-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: transparent;
+    border: 1px solid {{ block.settings.toggle_border_color }};
+    border-radius: {{ block.settings.button_radius }}px;
+    color: {{ block.settings.toggle_text_color }};
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .ai-product-cta__toggle-header-{{ ai_gen_id }}:hover {
+    background: {{ block.settings.toggle_hover_bg }};
+    border-color: {{ block.settings.button_color }};
+  }
+
+  .ai-product-cta__toggle-icon-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-product-cta__toggle-header-{{ ai_gen_id }}.active .ai-product-cta__toggle-icon-{{ ai_gen_id }} {
+    transform: rotate(180deg);
+  }
+
+  .ai-product-cta__storefront-links-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  }
+
+  .ai-product-cta__storefront-links-{{ ai_gen_id }}.active {
+    max-height: 500px;
+    opacity: 1;
+  }
+
+  .ai-product-cta__storefront-link-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: {{ block.settings.link_bg_color }};
+    border: 1px solid {{ block.settings.link_border_color }};
+    border-radius: {{ block.settings.link_radius }}px;
+    color: {{ block.settings.link_text_color }};
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+  }
+
+  .ai-product-cta__storefront-link-{{ ai_gen_id }}:hover {
+    background: {{ block.settings.link_hover_bg }};
+    border-color: {{ block.settings.button_color }};
+    transform: translateX(4px);
+  }
+
+  .ai-product-cta__link-arrow-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+    opacity: 0.6;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .ai-product-cta__storefront-link-{{ ai_gen_id }}:hover .ai-product-cta__link-arrow-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateX(2px);
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-product-cta-{{ ai_gen_id }} {
+      padding: 20px 16px;
+    }
+
+    .ai-product-cta__main-button-{{ ai_gen_id }} {
+      padding: 14px 24px;
+      font-size: 15px;
+    }
+
+    .ai-product-cta__toggle-header-{{ ai_gen_id }} {
+      font-size: 13px;
+    }
+
+    .ai-product-cta__storefront-link-{{ ai_gen_id }} {
+      font-size: 13px;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .ai-product-cta-{{ ai_gen_id }} {
+      width: {{ block.settings.desktop_width_percent }}%;
+    }
+
+    .ai-product-cta__storefront-links-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+{% endstyle %}
+
+<product-cta-{{ ai_gen_id }} class="ai-product-cta-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-product-cta__container-{{ ai_gen_id }}">
+    {% if block.settings.metaobject_link != blank %}
+      <a 
+        href="{{ block.settings.metaobject_link }}" 
+        class="ai-product-cta__main-button-{{ ai_gen_id }}"
+      >
+        <span class="ai-product-cta__button-text-{{ ai_gen_id }}">
+          {{ block.settings.button_text }}
+        </span>
+        <svg class="ai-product-cta__icon-{{ ai_gen_id }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+        </svg>
+      </a>
+    {% else %}
+      <div class="ai-product-cta__main-button-{{ ai_gen_id }}" style="opacity: 0.5; cursor: not-allowed;">
+        <span class="ai-product-cta__button-text-{{ ai_gen_id }}">
+          {{ block.settings.button_text }}
+        </span>
+        <svg class="ai-product-cta__icon-{{ ai_gen_id }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+        </svg>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_storefronts %}
+      <div class="ai-product-cta__toggle-section-{{ ai_gen_id }}">
+        <button 
+          class="ai-product-cta__toggle-header-{{ ai_gen_id }}"
+          aria-expanded="false"
+          aria-controls="storefront-links-{{ ai_gen_id }}"
+        >
+          <span>{{ block.settings.toggle_text }}</span>
+          <svg class="ai-product-cta__toggle-icon-{{ ai_gen_id }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+
+        <div 
+          class="ai-product-cta__storefront-links-{{ ai_gen_id }}"
+          id="storefront-links-{{ ai_gen_id }}"
+        >
+          {% if block.settings.storefront_1_url != blank and block.settings.storefront_1_name != blank %}
+            <a 
+              href="{{ block.settings.storefront_1_url }}" 
+              class="ai-product-cta__storefront-link-{{ ai_gen_id }}"
+              target="_blank"
+              rel="noopener"
+            >
+              <span>{{ block.settings.storefront_1_name }}</span>
+              <svg class="ai-product-cta__link-arrow-{{ ai_gen_id }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+              </svg>
+            </a>
+          {% endif %}
+
+          {% if block.settings.storefront_2_url != blank and block.settings.storefront_2_name != blank %}
+            <a 
+              href="{{ block.settings.storefront_2_url }}" 
+              class="ai-product-cta__storefront-link-{{ ai_gen_id }}"
+              target="_blank"
+              rel="noopener"
+            >
+              <span>{{ block.settings.storefront_2_name }}</span>
+              <svg class="ai-product-cta__link-arrow-{{ ai_gen_id }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+              </svg>
+            </a>
+          {% endif %}
+
+          {% if block.settings.storefront_3_url != blank and block.settings.storefront_3_name != blank %}
+            <a 
+              href="{{ block.settings.storefront_3_url }}" 
+              class="ai-product-cta__storefront-link-{{ ai_gen_id }}"
+              target="_blank"
+              rel="noopener"
+            >
+              <span>{{ block.settings.storefront_3_name }}</span>
+              <svg class="ai-product-cta__link-arrow-{{ ai_gen_id }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+              </svg>
+            </a>
+          {% endif %}
+
+          {% if block.settings.storefront_4_url != blank and block.settings.storefront_4_name != blank %}
+            <a 
+              href="{{ block.settings.storefront_4_url }}" 
+              class="ai-product-cta__storefront-link-{{ ai_gen_id }}"
+              target="_blank"
+              rel="noopener"
+            >
+              <span>{{ block.settings.storefront_4_name }}</span>
+              <svg class="ai-product-cta__link-arrow-{{ ai_gen_id }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+              </svg>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</product-cta-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ProductCta{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.toggleButton = this.querySelector('.ai-product-cta__toggle-header-{{ ai_gen_id }}');
+        this.linksContainer = this.querySelector('.ai-product-cta__storefront-links-{{ ai_gen_id }}');
+        
+        if (this.toggleButton && this.linksContainer) {
+          this.setupToggle();
+        }
+      }
+
+      setupToggle() {
+        this.toggleButton.addEventListener('click', () => {
+          const isExpanded = this.toggleButton.getAttribute('aria-expanded') === 'true';
+          
+          this.toggleButton.setAttribute('aria-expanded', !isExpanded);
+          this.toggleButton.classList.toggle('active');
+          this.linksContainer.classList.toggle('active');
+        });
+      }
+    }
+
+    customElements.define('product-cta-{{ ai_gen_id }}', ProductCta{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Product deep dive CTA",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Main button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Explore the full story"
+    },
+    {
+      "type": "url",
+      "id": "metaobject_link",
+      "label": "Metaobject page link"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button color",
+      "default": "#f0d84a"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Button hover color",
+      "default": "#e2c84b"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "label": "Button corner radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Also available at"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_storefronts",
+      "label": "Show storefront links",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "toggle_text",
+      "label": "Toggle button text",
+      "default": "Also available at"
+    },
+    {
+      "type": "text",
+      "id": "storefront_1_name",
+      "label": "Storefront 1 name"
+    },
+    {
+      "type": "url",
+      "id": "storefront_1_url",
+      "label": "Storefront 1 URL"
+    },
+    {
+      "type": "text",
+      "id": "storefront_2_name",
+      "label": "Storefront 2 name"
+    },
+    {
+      "type": "url",
+      "id": "storefront_2_url",
+      "label": "Storefront 2 URL"
+    },
+    {
+      "type": "text",
+      "id": "storefront_3_name",
+      "label": "Storefront 3 name"
+    },
+    {
+      "type": "url",
+      "id": "storefront_3_url",
+      "label": "Storefront 3 URL"
+    },
+    {
+      "type": "text",
+      "id": "storefront_4_name",
+      "label": "Storefront 4 name"
+    },
+    {
+      "type": "url",
+      "id": "storefront_4_url",
+      "label": "Storefront 4 URL"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#fdfaf0"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Container corner radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "color",
+      "id": "toggle_text_color",
+      "label": "Toggle text color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "toggle_border_color",
+      "label": "Toggle border color",
+      "default": "#e2c84b"
+    },
+    {
+      "type": "color",
+      "id": "toggle_hover_bg",
+      "label": "Toggle hover background",
+      "default": "#fdfaf0"
+    },
+    {
+      "type": "color",
+      "id": "link_bg_color",
+      "label": "Link background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_bg",
+      "label": "Link hover background",
+      "default": "#fdfaf0"
+    },
+    {
+      "type": "color",
+      "id": "link_border_color",
+      "label": "Link border color",
+      "default": "#e8d5d0"
+    },
+    {
+      "type": "color",
+      "id": "link_text_color",
+      "label": "Link text color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "range",
+      "id": "link_radius",
+      "label": "Link corner radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 6
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product deep dive CTA"
+    }
+  ]
+}
 {% endschema %}
