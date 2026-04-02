@@ -1,6 +1,560 @@
+{% doc %}
+  @prompt
+    --- Create a slim, premium announcement bar that sits at the very top of the page above the header. Display a rotating carousel of 3-5 short announcement messages that auto-advance every 4 seconds with a smooth fade or slide transition. Each message can include an optional small icon or emoji on the left and an optional inline text link on the right (e.g. "Shop Now" or "Learn More"). Include left and right arrow controls for manual navigation and small dot indicators centered below or within the bar. The bar should be very slim (around 40px tall), with an elegant single background color editable in settings — default to a deep navy or soft black for contrast. All text should be centered, in a clean small caps or light-weight sans-serif font in white or cream. All announcement messages, icons, link text, link URLs, background color, and text color must be editable in theme settings as repeatable blocks. Add a close/dismiss button on the far right that hides the bar for the session. The overall feel should be editorial and premium — like a luxury fashion or K-beauty brand announcement bar, not a generic Shopify bar.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-announcement-bar-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    height: 40px;
+    background-color: {{ block.settings.background_color }};
+    color: {{ block.settings.text_color }};
+    overflow: hidden;
+    z-index: 1000;
+    display: block;
+  }
+
+  .ai-announcement-bar-{{ ai_gen_id }}.hidden {
+    display: none;
+  }
+
+  .ai-announcement-bar__container-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-announcement-bar__carousel-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-announcement-bar__slide-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    padding: 0 60px;
+  }
+
+  .ai-announcement-bar__slide-{{ ai_gen_id }}.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .ai-announcement-bar__icon-{{ ai_gen_id }} {
+    font-size: 16px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .ai-announcement-bar__message-{{ ai_gen_id }} {
+    font-size: 12px;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.4;
+    font-family: {{ block.settings.font.family }}, {{ block.settings.font.fallback_families }};
+    font-weight: {{ block.settings.font.weight }};
+  }
+
+  .ai-announcement-bar__link-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 400;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .ai-announcement-bar__link-{{ ai_gen_id }}:hover {
+    opacity: 0.7;
+  }
+
+  .ai-announcement-bar__nav-{{ ai_gen_id }} {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: {{ block.settings.text_color }};
+    cursor: pointer;
+    padding: 8px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    z-index: 2;
+  }
+
+  .ai-announcement-bar__nav-{{ ai_gen_id }}:hover {
+    opacity: 1;
+  }
+
+  .ai-announcement-bar__nav-{{ ai_gen_id }}--prev {
+    left: 12px;
+  }
+
+  .ai-announcement-bar__nav-{{ ai_gen_id }}--next {
+    right: 50px;
+  }
+
+  .ai-announcement-bar__nav-{{ ai_gen_id }} svg {
+    width: 14px;
+    height: 14px;
+    display: block;
+  }
+
+  .ai-announcement-bar__dots-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 2;
+  }
+
+  .ai-announcement-bar__dot-{{ ai_gen_id }} {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: {{ block.settings.text_color }};
+    opacity: 0.3;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    border: none;
+    padding: 0;
+  }
+
+  .ai-announcement-bar__dot-{{ ai_gen_id }}.active {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+
+  .ai-announcement-bar__close-{{ ai_gen_id }} {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: {{ block.settings.text_color }};
+    cursor: pointer;
+    padding: 8px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    z-index: 2;
+  }
+
+  .ai-announcement-bar__close-{{ ai_gen_id }}:hover {
+    opacity: 1;
+  }
+
+  .ai-announcement-bar__close-{{ ai_gen_id }} svg {
+    width: 14px;
+    height: 14px;
+    display: block;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-announcement-bar__message-{{ ai_gen_id }} {
+      font-size: 10px;
+    }
+
+    .ai-announcement-bar__link-{{ ai_gen_id }} {
+      font-size: 10px;
+    }
+
+    .ai-announcement-bar__slide-{{ ai_gen_id }} {
+      padding: 0 40px;
+    }
+
+    .ai-announcement-bar__nav-{{ ai_gen_id }}--next {
+      right: 40px;
+    }
+  }
+{% endstyle %}
+
+<announcement-bar-{{ ai_gen_id }} class="ai-announcement-bar-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-announcement-bar__container-{{ ai_gen_id }}">
+    <div class="ai-announcement-bar__carousel-{{ ai_gen_id }}">
+      {% assign announcements = '' | split: '' %}
+      
+      {% if block.settings.message_1 != blank %}
+        {% assign announcements = announcements | push: 1 %}
+      {% endif %}
+      {% if block.settings.message_2 != blank %}
+        {% assign announcements = announcements | push: 2 %}
+      {% endif %}
+      {% if block.settings.message_3 != blank %}
+        {% assign announcements = announcements | push: 3 %}
+      {% endif %}
+      {% if block.settings.message_4 != blank %}
+        {% assign announcements = announcements | push: 4 %}
+      {% endif %}
+      {% if block.settings.message_5 != blank %}
+        {% assign announcements = announcements | push: 5 %}
+      {% endif %}
+
+      {% for i in announcements %}
+        {% assign message_key = 'message_' | append: i %}
+        {% assign icon_key = 'icon_' | append: i %}
+        {% assign link_text_key = 'link_text_' | append: i %}
+        {% assign link_url_key = 'link_url_' | append: i %}
+        
+        {% assign message = block.settings[message_key] %}
+        {% assign icon = block.settings[icon_key] %}
+        {% assign link_text = block.settings[link_text_key] %}
+        {% assign link_url = block.settings[link_url_key] %}
+
+        <div class="ai-announcement-bar__slide-{{ ai_gen_id }}" data-slide-index="{{ forloop.index0 }}">
+          {% if icon != blank %}
+            <span class="ai-announcement-bar__icon-{{ ai_gen_id }}">{{ icon }}</span>
+          {% endif %}
+          <span class="ai-announcement-bar__message-{{ ai_gen_id }}">{{ message }}</span>
+          {% if link_text != blank and link_url != blank %}
+            <a href="{{ link_url }}" class="ai-announcement-bar__link-{{ ai_gen_id }}">{{ link_text }}</a>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if announcements.size > 1 %}
+      <button class="ai-announcement-bar__nav-{{ ai_gen_id }} ai-announcement-bar__nav-{{ ai_gen_id }}--prev" aria-label="Previous announcement">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <button class="ai-announcement-bar__nav-{{ ai_gen_id }} ai-announcement-bar__nav-{{ ai_gen_id }}--next" aria-label="Next announcement">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+
+      <div class="ai-announcement-bar__dots-{{ ai_gen_id }}">
+        {% for i in announcements %}
+          <button class="ai-announcement-bar__dot-{{ ai_gen_id }}" data-dot-index="{{ forloop.index0 }}" aria-label="Go to announcement {{ forloop.index }}"></button>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <button class="ai-announcement-bar__close-{{ ai_gen_id }}" aria-label="Close announcement bar">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+</announcement-bar-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class AnnouncementBar{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.currentSlide = 0;
+        this.autoplayInterval = null;
+        this.autoplayDelay = 4000;
+      }
+
+      connectedCallback() {
+        this.slides = this.querySelectorAll('.ai-announcement-bar__slide-{{ ai_gen_id }}');
+        this.dots = this.querySelectorAll('.ai-announcement-bar__dot-{{ ai_gen_id }}');
+        this.prevButton = this.querySelector('.ai-announcement-bar__nav-{{ ai_gen_id }}--prev');
+        this.nextButton = this.querySelector('.ai-announcement-bar__nav-{{ ai_gen_id }}--next');
+        this.closeButton = this.querySelector('.ai-announcement-bar__close-{{ ai_gen_id }}');
+
+        if (this.slides.length === 0) return;
+
+        this.checkDismissed();
+        this.showSlide(0);
+        this.setupEventListeners();
+        this.startAutoplay();
+      }
+
+      checkDismissed() {
+        const dismissed = sessionStorage.getItem('announcement-bar-dismissed-{{ ai_gen_id }}');
+        if (dismissed === 'true') {
+          this.classList.add('hidden');
+        }
+      }
+
+      setupEventListeners() {
+        if (this.prevButton) {
+          this.prevButton.addEventListener('click', () => {
+            this.stopAutoplay();
+            this.previousSlide();
+            this.startAutoplay();
+          });
+        }
+
+        if (this.nextButton) {
+          this.nextButton.addEventListener('click', () => {
+            this.stopAutoplay();
+            this.nextSlide();
+            this.startAutoplay();
+          });
+        }
+
+        this.dots.forEach((dot, index) => {
+          dot.addEventListener('click', () => {
+            this.stopAutoplay();
+            this.showSlide(index);
+            this.startAutoplay();
+          });
+        });
+
+        if (this.closeButton) {
+          this.closeButton.addEventListener('click', () => {
+            this.dismiss();
+          });
+        }
+
+        this.addEventListener('mouseenter', () => {
+          this.stopAutoplay();
+        });
+
+        this.addEventListener('mouseleave', () => {
+          this.startAutoplay();
+        });
+      }
+
+      showSlide(index) {
+        this.slides.forEach((slide, i) => {
+          if (i === index) {
+            slide.classList.add('active');
+          } else {
+            slide.classList.remove('active');
+          }
+        });
+
+        this.dots.forEach((dot, i) => {
+          if (i === index) {
+            dot.classList.add('active');
+          } else {
+            dot.classList.remove('active');
+          }
+        });
+
+        this.currentSlide = index;
+      }
+
+      nextSlide() {
+        const nextIndex = (this.currentSlide + 1) % this.slides.length;
+        this.showSlide(nextIndex);
+      }
+
+      previousSlide() {
+        const prevIndex = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+        this.showSlide(prevIndex);
+      }
+
+      startAutoplay() {
+        if (this.slides.length <= 1) return;
+        this.stopAutoplay();
+        this.autoplayInterval = setInterval(() => {
+          this.nextSlide();
+        }, this.autoplayDelay);
+      }
+
+      stopAutoplay() {
+        if (this.autoplayInterval) {
+          clearInterval(this.autoplayInterval);
+          this.autoplayInterval = null;
+        }
+      }
+
+      dismiss() {
+        sessionStorage.setItem('announcement-bar-dismissed-{{ ai_gen_id }}', 'true');
+        this.classList.add('hidden');
+      }
+
+      disconnectedCallback() {
+        this.stopAutoplay();
+      }
+    }
+
+    customElements.define('announcement-bar-{{ ai_gen_id }}', AnnouncementBar{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Premium announcement bar",
+  "tag": null,
+  "class": "announcement-bar-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#f5f0e8"
+    },
+    {
+      "type": "font_picker",
+      "id": "font",
+      "label": "Font",
+      "default": "poppins_n3"
+    },
+    {
+      "type": "header",
+      "content": "Announcement 1"
+    },
+    {
+      "type": "text",
+      "id": "icon_1",
+      "label": "Icon or emoji"
+    },
+    {
+      "type": "text",
+      "id": "message_1",
+      "label": "Message",
+      "default": "Free shipping on orders over $50"
+    },
+    {
+      "type": "text",
+      "id": "link_text_1",
+      "label": "Link text"
+    },
+    {
+      "type": "url",
+      "id": "link_url_1",
+      "label": "Link URL"
+    },
+    {
+      "type": "header",
+      "content": "Announcement 2"
+    },
+    {
+      "type": "text",
+      "id": "icon_2",
+      "label": "Icon or emoji"
+    },
+    {
+      "type": "text",
+      "id": "message_2",
+      "label": "Message",
+      "default": "New arrivals just landed"
+    },
+    {
+      "type": "text",
+      "id": "link_text_2",
+      "label": "Link text"
+    },
+    {
+      "type": "url",
+      "id": "link_url_2",
+      "label": "Link URL"
+    },
+    {
+      "type": "header",
+      "content": "Announcement 3"
+    },
+    {
+      "type": "text",
+      "id": "icon_3",
+      "label": "Icon or emoji"
+    },
+    {
+      "type": "text",
+      "id": "message_3",
+      "label": "Message",
+      "default": "Premium K-beauty for sensitive skin"
+    },
+    {
+      "type": "text",
+      "id": "link_text_3",
+      "label": "Link text"
+    },
+    {
+      "type": "url",
+      "id": "link_url_3",
+      "label": "Link URL"
+    },
+    {
+      "type": "header",
+      "content": "Announcement 4"
+    },
+    {
+      "type": "text",
+      "id": "icon_4",
+      "label": "Icon or emoji"
+    },
+    {
+      "type": "text",
+      "id": "message_4",
+      "label": "Message"
+    },
+    {
+      "type": "text",
+      "id": "link_text_4",
+      "label": "Link text"
+    },
+    {
+      "type": "url",
+      "id": "link_url_4",
+      "label": "Link URL"
+    },
+    {
+      "type": "header",
+      "content": "Announcement 5"
+    },
+    {
+      "type": "text",
+      "id": "icon_5",
+      "label": "Icon or emoji"
+    },
+    {
+      "type": "text",
+      "id": "message_5",
+      "label": "Message"
+    },
+    {
+      "type": "text",
+      "id": "link_text_5",
+      "label": "Link text"
+    },
+    {
+      "type": "url",
+      "id": "link_url_5",
+      "label": "Link URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Premium announcement bar"
+    }
+  ]
+}
 {% endschema %}
