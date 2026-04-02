@@ -1,6 +1,343 @@
+{% doc %}
+  @prompt
+     Crystal Identity Card (Hero data block: chakra, zodiac, element, hardness, origin, chemical formula)
+    Create a custom Liquid section called crystal_identity_card for a Shopify product page. Pull the linked mineral metaobject using product.metafields.custom.crystal.value. Display the following fields from that metaobject entry: display_name as the section heading, one_liner (Caption) as a subtitle, chakra, zodiac, element, origin, chemical_formula, and mohs_hardness as a clean data grid. Style: crisp white background, medical blue (#0066FF) accent, Poppins medium for labels (dark charcoal #1A1A1A), Raleway light for values (soft grey #666666), thin medical blue top border across full section width, no rounded corners, no gradients. Each data point displayed as a label/value pair in a responsive CSS grid (2 columns on mobile, 3–4 on desktop). Add staggered fade-up scroll entrance animation. Include ItemPage + Product JSON-LD schema in a script tag using the metaobject field values. Section must be dynamic — it reads whatever mineral metaobject is linked to the current product via product.metafields.custom.crystal.value. Include an editable section title setting in schema.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{% assign mineral = product.metafields.custom.crystal.value %}
+
+{% style %}
+  .ai-crystal-identity-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    background-color: #ffffff;
+    border-top: 2px solid #0066FF;
+    padding: 48px 32px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .ai-crystal-identity-{{ ai_gen_id }}.ai-crystal-identity-visible-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-crystal-identity-header-{{ ai_gen_id }} {
+    margin-bottom: 32px;
+  }
+
+  .ai-crystal-identity-section-title-{{ ai_gen_id }} {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #1A1A1A;
+    margin: 0 0 8px 0;
+  }
+
+  .ai-crystal-identity-name-{{ ai_gen_id }} {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: 32px;
+    color: #1A1A1A;
+    margin: 0 0 12px 0;
+  }
+
+  .ai-crystal-identity-caption-{{ ai_gen_id }} {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    color: #666666;
+    margin: 0;
+  }
+
+  .ai-crystal-identity-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ai-crystal-identity-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .ai-crystal-identity-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .ai-crystal-identity-item-{{ ai_gen_id }} {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .ai-crystal-identity-visible-{{ ai_gen_id }} .ai-crystal-identity-item-{{ ai_gen_id }}:nth-child(1) {
+    transition-delay: 0.1s;
+  }
+
+  .ai-crystal-identity-visible-{{ ai_gen_id }} .ai-crystal-identity-item-{{ ai_gen_id }}:nth-child(2) {
+    transition-delay: 0.2s;
+  }
+
+  .ai-crystal-identity-visible-{{ ai_gen_id }} .ai-crystal-identity-item-{{ ai_gen_id }}:nth-child(3) {
+    transition-delay: 0.3s;
+  }
+
+  .ai-crystal-identity-visible-{{ ai_gen_id }} .ai-crystal-identity-item-{{ ai_gen_id }}:nth-child(4) {
+    transition-delay: 0.4s;
+  }
+
+  .ai-crystal-identity-visible-{{ ai_gen_id }} .ai-crystal-identity-item-{{ ai_gen_id }}:nth-child(5) {
+    transition-delay: 0.5s;
+  }
+
+  .ai-crystal-identity-visible-{{ ai_gen_id }} .ai-crystal-identity-item-{{ ai_gen_id }}:nth-child(6) {
+    transition-delay: 0.6s;
+  }
+
+  .ai-crystal-identity-visible-{{ ai_gen_id }} .ai-crystal-identity-item-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-crystal-identity-label-{{ ai_gen_id }} {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #1A1A1A;
+    margin: 0 0 8px 0;
+  }
+
+  .ai-crystal-identity-value-{{ ai_gen_id }} {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    color: #666666;
+    margin: 0;
+  }
+
+  .ai-crystal-identity-empty-{{ ai_gen_id }} {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #999999;
+    font-style: italic;
+    text-align: center;
+    padding: 40px 20px;
+  }
+{% endstyle %}
+
+<crystal-identity-card-{{ ai_gen_id }}
+  class="ai-crystal-identity-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  {% if mineral %}
+    <div class="ai-crystal-identity-header-{{ ai_gen_id }}">
+      {% if block.settings.section_title != blank %}
+        <h2 class="ai-crystal-identity-section-title-{{ ai_gen_id }}">{{ block.settings.section_title }}</h2>
+      {% endif %}
+      {% if mineral.display_name %}
+        <h3 class="ai-crystal-identity-name-{{ ai_gen_id }}">{{ mineral.display_name }}</h3>
+      {% endif %}
+      {% if mineral.one_liner %}
+        <p class="ai-crystal-identity-caption-{{ ai_gen_id }}">{{ mineral.one_liner }}</p>
+      {% endif %}
+    </div>
+
+    <div class="ai-crystal-identity-grid-{{ ai_gen_id }}">
+      {% if mineral.chakra %}
+        <div class="ai-crystal-identity-item-{{ ai_gen_id }}">
+          <div class="ai-crystal-identity-label-{{ ai_gen_id }}">Chakra</div>
+          <div class="ai-crystal-identity-value-{{ ai_gen_id }}">{{ mineral.chakra }}</div>
+        </div>
+      {% endif %}
+
+      {% if mineral.zodiac %}
+        <div class="ai-crystal-identity-item-{{ ai_gen_id }}">
+          <div class="ai-crystal-identity-label-{{ ai_gen_id }}">Zodiac</div>
+          <div class="ai-crystal-identity-value-{{ ai_gen_id }}">{{ mineral.zodiac }}</div>
+        </div>
+      {% endif %}
+
+      {% if mineral.element %}
+        <div class="ai-crystal-identity-item-{{ ai_gen_id }}">
+          <div class="ai-crystal-identity-label-{{ ai_gen_id }}">Element</div>
+          <div class="ai-crystal-identity-value-{{ ai_gen_id }}">{{ mineral.element }}</div>
+        </div>
+      {% endif %}
+
+      {% if mineral.origin %}
+        <div class="ai-crystal-identity-item-{{ ai_gen_id }}">
+          <div class="ai-crystal-identity-label-{{ ai_gen_id }}">Origin</div>
+          <div class="ai-crystal-identity-value-{{ ai_gen_id }}">{{ mineral.origin }}</div>
+        </div>
+      {% endif %}
+
+      {% if mineral.chemical_formula %}
+        <div class="ai-crystal-identity-item-{{ ai_gen_id }}">
+          <div class="ai-crystal-identity-label-{{ ai_gen_id }}">Chemical Formula</div>
+          <div class="ai-crystal-identity-value-{{ ai_gen_id }}">{{ mineral.chemical_formula }}</div>
+        </div>
+      {% endif %}
+
+      {% if mineral.mohs_hardness %}
+        <div class="ai-crystal-identity-item-{{ ai_gen_id }}">
+          <div class="ai-crystal-identity-label-{{ ai_gen_id }}">Mohs Hardness</div>
+          <div class="ai-crystal-identity-value-{{ ai_gen_id }}">{{ mineral.mohs_hardness }}</div>
+        </div>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="ai-crystal-identity-empty-{{ ai_gen_id }}">
+      Next, link a mineral metaobject to this product via product.metafields.custom.crystal
+    </div>
+  {% endif %}
+</crystal-identity-card-{{ ai_gen_id }}>
+
+{% if mineral %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemPage",
+    "mainEntity": {
+      "@type": "Product",
+      "name": "{{ product.title | escape }}",
+      "description": "{{ product.description | strip_html | escape }}",
+      {% if product.featured_image %}
+      "image": "{{ product.featured_image | image_url: width: 1200 }}",
+      {% endif %}
+      "brand": {
+        "@type": "Brand",
+        "name": "{{ shop.name | escape }}"
+      },
+      {% if mineral.display_name %}
+      "material": "{{ mineral.display_name | escape }}",
+      {% endif %}
+      "additionalProperty": [
+        {% if mineral.chakra %}
+        {
+          "@type": "PropertyValue",
+          "name": "Chakra",
+          "value": "{{ mineral.chakra | escape }}"
+        }{% if mineral.zodiac or mineral.element or mineral.origin or mineral.chemical_formula or mineral.mohs_hardness %},{% endif %}
+        {% endif %}
+        {% if mineral.zodiac %}
+        {
+          "@type": "PropertyValue",
+          "name": "Zodiac",
+          "value": "{{ mineral.zodiac | escape }}"
+        }{% if mineral.element or mineral.origin or mineral.chemical_formula or mineral.mohs_hardness %},{% endif %}
+        {% endif %}
+        {% if mineral.element %}
+        {
+          "@type": "PropertyValue",
+          "name": "Element",
+          "value": "{{ mineral.element | escape }}"
+        }{% if mineral.origin or mineral.chemical_formula or mineral.mohs_hardness %},{% endif %}
+        {% endif %}
+        {% if mineral.origin %}
+        {
+          "@type": "PropertyValue",
+          "name": "Origin",
+          "value": "{{ mineral.origin | escape }}"
+        }{% if mineral.chemical_formula or mineral.mohs_hardness %},{% endif %}
+        {% endif %}
+        {% if mineral.chemical_formula %}
+        {
+          "@type": "PropertyValue",
+          "name": "Chemical Formula",
+          "value": "{{ mineral.chemical_formula | escape }}"
+        }{% if mineral.mohs_hardness %},{% endif %}
+        {% endif %}
+        {% if mineral.mohs_hardness %}
+        {
+          "@type": "PropertyValue",
+          "name": "Mohs Hardness",
+          "value": "{{ mineral.mohs_hardness | escape }}"
+        }
+        {% endif %}
+      ]
+    }
+  }
+  </script>
+{% endif %}
+
+<script>
+  (function() {
+    class CrystalIdentityCard{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.observer = null;
+      }
+
+      connectedCallback() {
+        this.setupIntersectionObserver();
+      }
+
+      setupIntersectionObserver() {
+        const options = {
+          root: null,
+          rootMargin: '0px',
+          threshold: 0.2
+        };
+
+        this.observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('ai-crystal-identity-visible-{{ ai_gen_id }}');
+              this.observer.unobserve(entry.target);
+            }
+          });
+        }, options);
+
+        this.observer.observe(this);
+      }
+
+      disconnectedCallback() {
+        if (this.observer) {
+          this.observer.disconnect();
+        }
+      }
+    }
+
+    customElements.define('crystal-identity-card-{{ ai_gen_id }}', CrystalIdentityCard{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Crystal identity card",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section title",
+      "default": "Crystal Identity"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Crystal identity card"
+    }
+  ]
+}
 {% endschema %}
