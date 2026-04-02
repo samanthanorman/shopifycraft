@@ -70,10 +70,38 @@
             "current_color": "#999999"
           },
           "blocks": {}
+        },
+        "ai_gen_block_38e2ec8_hmQHCg": {
+          "type": "ai_gen_block_38e2ec8",
+          "settings": {
+            "section_title": "Crystal Identity",
+            "button_text": "Explore this crystal",
+            "max_width": 900,
+            "background_color": "#f5f0e8",
+            "top_border_color": "#0d1b3e",
+            "section_title_color": "#0d1b3e",
+            "heading_color": "#3c3c3a",
+            "caption_color": "#67479a",
+            "card_background": "#e8d5d0",
+            "card_border_color": "#ffffff14",
+            "card_hover_background": "#ffffff0f",
+            "card_hover_border": "#f7ffe8",
+            "label_color": "#67479a",
+            "value_color": "#643d6a",
+            "glow_size": 20,
+            "glow_color": "#f7ffe8",
+            "button_background": "#00d4ff",
+            "button_text_color": "#ffffff",
+            "button_ripple_color": "#ffffff4d",
+            "button_glow_size": 30,
+            "button_glow_color": "#00d4ff99"
+          },
+          "blocks": {}
         }
       },
       "block_order": [
-        "ai_gen_block_6c2c06d_FJhDTF"
+        "ai_gen_block_6c2c06d_FJhDTF",
+        "ai_gen_block_38e2ec8_hmQHCg"
       ],
       "name": "Breadcrumb navigation",
       "settings": {}
@@ -91,7 +119,24 @@
         },
         "title": {
           "type": "title",
+          "disabled": true,
           "settings": {}
+        },
+        "tinyseo_heading_one_block_N7gJXx": {
+          "type": "shopify://apps/tinyseo/blocks/heading-one-block/0605268f-f7c4-4e95-b560-e43df7d59ae4",
+          "settings": {
+            "heading_one": "{{ product.title }}",
+            "text_align": "center",
+            "font_size": 36,
+            "font_weight": "normal",
+            "line_height": 33,
+            "color": "#000000",
+            "margin_top": 20,
+            "margin_right": 5,
+            "margin_bottom": 20,
+            "margin_left": 5,
+            "custom_css": ""
+          }
         },
         "price": {
           "type": "price",
@@ -157,6 +202,7 @@
       "block_order": [
         "vendor",
         "title",
+        "tinyseo_heading_one_block_N7gJXx",
         "price",
         "collapsible_tab_WAUENK",
         "collapsible_tab_CtQ3Tf",
@@ -173,54 +219,60 @@
         "media_size": "large",
         "constrain_to_viewport": true,
         "media_fit": "contain",
-        "gallery_layout": "stacked",
+        "gallery_layout": "thumbnail_slider",
         "mobile_thumbnails": "show",
         "media_position": "left",
         "image_zoom": "lightbox",
         "hide_variants": false,
-        "enable_video_looping": false,
-        "padding_top": 36,
+        "enable_video_looping": true,
+        "padding_top": 28,
         "padding_bottom": 36
       }
-    },
-    "mineral_entry": {
-      "type": "mineral-details",
-      "disabled": true,
-      "settings": {}
     },
     "177516040783efe939": {
       "type": "_blocks",
       "blocks": {
-        "ai_gen_block_38e2ec8_UeriKL": {
-          "type": "ai_gen_block_38e2ec8",
+        "ai_gen_block_ea5878f_pKfhkV": {
+          "type": "ai_gen_block_ea5878f",
           "settings": {
-            "section_title": "Crystal Identity",
-            "button_text": "Explore this crystal",
-            "max_width": 900,
-            "background_color": "#f5f0e8",
-            "top_border_color": "#0d1b3e",
-            "section_title_color": "#0d1b3e",
-            "heading_color": "#3c3c3a",
-            "caption_color": "#67479a",
-            "card_background": "#e8d5d0",
-            "card_border_color": "#ffffff14",
-            "card_hover_background": "#ffffff0f",
-            "card_hover_border": "#f7ffe8",
+            "section_title": "The Energy Within {{ closest.product.metafields.custom.crystal.value.display_name.value }}",
+            "desktop_width_percent": 75,
+            "section_padding_top": 48,
+            "section_padding_bottom": 48,
+            "section_padding_horizontal": 32,
+            "header_spacing": 32,
+            "block_padding": 28,
+            "label_spacing": 12,
+            "heading_font": "poppins_n5",
+            "body_font": "raleway_n3",
+            "mineral_name_size": 32,
+            "section_title_size": 22,
+            "label_size": 13,
+            "label_letter_spacing": 1,
+            "value_size": 18,
+            "value_line_height": 1.6,
+            "background_color": "#F9FAFB",
+            "block_background": "rgba(0,0,0,0)",
+            "block_hover_background": "rgba(0, 102, 255, 0.02)",
+            "mineral_name_color": "#0d1b3e",
+            "section_title_color": "#666666",
             "label_color": "#67479a",
-            "value_color": "#643d6a",
-            "glow_size": 20,
-            "glow_color": "#f7ffe8",
-            "button_background": "#00d4ff",
-            "button_text_color": "#ffffff",
-            "button_ripple_color": "#ffffff4d",
-            "button_glow_size": 30,
-            "button_glow_color": "#00d4ff99"
+            "value_color": "#666666",
+            "accent_color": "#0066FF",
+            "divider_color": "#E5E7EB",
+            "top_border_thickness": 1,
+            "divider_thickness": 1,
+            "enable_hover_effect": true,
+            "hover_border_color": "#0066FF",
+            "hover_border_thickness": 3,
+            "hover_shift": 4,
+            "hover_transition_speed": 0.3
           },
           "blocks": {}
         }
       },
       "block_order": [
-        "ai_gen_block_38e2ec8_UeriKL"
+        "ai_gen_block_ea5878f_pKfhkV"
       ],
       "settings": {}
     },
@@ -264,7 +316,6 @@
     "crystal_product_main",
     "blocks_JgmYaQ",
     "main",
-    "mineral_entry",
     "177516040783efe939",
     "related_crystals",
     "crystal_blog"
