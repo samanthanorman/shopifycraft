@@ -35,6 +35,21 @@ INSTAGRAM_ACCESS_TOKEN = os.getenv("INSTAGRAM_ACCESS_TOKEN")
 NOTIFICATION_EMAIL = os.getenv("NOTIFICATION_EMAIL")
 ENABLE_FACEBOOK = os.getenv("ENABLE_FACEBOOK", "true").lower() == "true"
 ENABLE_INSTAGRAM = os.getenv("ENABLE_INSTAGRAM", "true").lower() == "true"
+ENABLE_PRODUCT_TAGGING = os.getenv("ENABLE_PRODUCT_TAGGING", "true").lower() == "true"
+
+# Facebook Product Catalog
+FACEBOOK_CATALOG_ID = os.getenv("FACEBOOK_CATALOG_ID", "1162102955270557")
+
+# Keyword-to-catalog search mapping (used to find products to tag per spotlight)
+CATALOG_SEARCH_KEYWORDS = {
+    'haramoon':  ['haramoon', 'korean skincare'],
+    'faraday':   ['faraday', 'emf shielding'],
+    'emf':       ['emf', 'shielding'],
+    'moonstone': ['moonstone', 'crystal'],
+    'crystal':   ['crystal', 'gemstone'],
+    'skincare':  ['haramoon', 'serum'],
+    'serum':     ['serum', 'haramoon'],
+}
 
 STORE_URL = "https://waxandwane.store"
 POSTED_LOG_FILE = SKILL_DIR / 'posted_links.txt'
@@ -42,46 +57,54 @@ SISTER_LOG_FILE = SKILL_DIR / 'sister_posted_links.txt'
 SISTER_QUEUE_FILE = SKILL_DIR / 'sister_queue_index.txt'  # Tracks which blog post to do next
 
 # Product keyword mapping - maps keywords in blog posts to product info
+# 'keyword' field is used for Facebook catalog product tag search
 PRODUCT_KEYWORDS = {
     'haramoon': {
         'name': 'HARAMOON K-Beauty Collection',
-        'shop_url': f'{STORE_URL}/collections/haramoon',
+        'keyword': 'haramoon',
+        'shop_url': f'{STORE_URL}/collections/haramoon-korean-skincare',
         'hashtags': '#HARAMOON #KBeauty #KoreanSkincare #GlowingSkin #SkinBarrier #GlassSkin #SkincareRoutine #KBeautyCommunity #WaxAndWane',
         'emoji': '✨💙'
     },
     'faraday': {
         'name': 'Faraday Bag EMF Protection',
-        'shop_url': f'{STORE_URL}/collections/emf-protection',
+        'keyword': 'faraday',
+        'shop_url': f'{STORE_URL}/collections/emf-shielding-faraday-protection',
         'hashtags': '#FaradayBag #EMFProtection #TechHealth #DigitalWellness #5GProtection #EMFShielding #WaxAndWane',
         'emoji': '🛡️⚡'
     },
     'emf': {
         'name': 'EMF Protection Collection',
-        'shop_url': f'{STORE_URL}/collections/emf-protection',
+        'keyword': 'emf',
+        'shop_url': f'{STORE_URL}/collections/emf-shielding-faraday-protection',
         'hashtags': '#EMFProtection #FaradayBag #TechHealth #DigitalWellness #5GProtection #WaxAndWane',
         'emoji': '🛡️⚡'
     },
     'moonstone': {
         'name': 'Moonstone Crystal Collection',
-        'shop_url': f'{STORE_URL}/collections/crystals',
+        'keyword': 'moonstone',
+        'shop_url': f'{STORE_URL}/collections/natural-crystals-gemstones',
         'hashtags': '#Moonstone #Crystals #CrystalHealing #Wellness #Spirituality #CrystalEnergy #WaxAndWane',
         'emoji': '🌙💎'
     },
     'crystal': {
         'name': 'Crystal & Wellness Collection',
-        'shop_url': f'{STORE_URL}/collections/crystals',
+        'keyword': 'crystal',
+        'shop_url': f'{STORE_URL}/collections/natural-crystals-gemstones',
         'hashtags': '#Crystals #CrystalHealing #Wellness #Spirituality #CrystalEnergy #Mindfulness #WaxAndWane',
         'emoji': '💎✨'
     },
     'skincare': {
         'name': 'HARAMOON K-Beauty Skincare',
-        'shop_url': f'{STORE_URL}/collections/haramoon',
+        'keyword': 'skincare',
+        'shop_url': f'{STORE_URL}/collections/haramoon-korean-skincare',
         'hashtags': '#Skincare #KBeauty #HARAMOON #GlowingSkin #SkincareRoutine #SkinBarrier #WaxAndWane',
         'emoji': '✨💙'
     },
     'serum': {
         'name': 'HARAMOON Skincare Serums',
-        'shop_url': f'{STORE_URL}/collections/haramoon',
+        'keyword': 'serum',
+        'shop_url': f'{STORE_URL}/collections/haramoon-korean-skincare',
         'hashtags': '#Serum #KBeauty #HARAMOON #GlowingSkin #SkincareRoutine #AntiAging #WaxAndWane',
         'emoji': '✨💙'
     }
@@ -250,8 +273,61 @@ def build_instagram_caption(blog_data, product):
     return caption
 
 
-def post_to_facebook(image_url, caption):
-    """Post to Facebook Page"""
+def search_catalog_for_product(product_keyword):
+    """Search the Facebook catalog for products matching a keyword.
+    Returns list of product IDs to tag. Falls back to [] on any error."""
+    if not ENABLE_PRODUCT_TAGGING or not FACEBOOK_PAGE_TOKEN:
+        return []
+    keywords = CATALOG_SEARCH_KEYWORDS.get(product_keyword, [product_keyword])
+    found_ids = []
+    for kw in keywords[:2]:
+        try:
+            url = f'https://graph.facebook.com/v25.0/{FACEBOOK_CATALOG_ID}/products'
+            params = {
+                'access_token': FACEBOOK_PAGE_TOKEN,
+                'filter': json.dumps({'name': {'i_contains': kw}}),
+                'fields': 'id,name,availability',
+                'limit': 3
+            }
+            resp = requests.get(url, params=params, timeout=10)
+            if resp.status_code == 200:
+                for p in resp.json().get('data', []):
+                    pid = p.get('id')
+                    if pid and pid not in found_ids:
+                        found_ids.append(pid)
+                        print(f'  🏷️  Catalog match: {p.get("name", pid)}')
+                if found_ids:
+                    break
+            elif resp.status_code == 403:
+                print('  ⚠️  Catalog access denied — product tagging skipped')
+                return []
+        except Exception as e:
+            print(f'  ⚠️  Catalog search error: {str(e)[:60]}')
+    return found_ids[:3]
+
+
+def attach_product_tags(post_id, product_ids):
+    """Attach product catalog tags to a Facebook post after creation.
+    Non-critical — the post is already live even if tagging fails."""
+    if not product_ids or not post_id:
+        return
+    try:
+        tag_url = f'https://graph.facebook.com/v25.0/{post_id}'
+        payload = {
+            'access_token': FACEBOOK_PAGE_TOKEN,
+            'tagged_products': json.dumps([{'product_id': pid} for pid in product_ids])
+        }
+        resp = requests.post(tag_url, data=payload, timeout=10)
+        if resp.status_code == 200:
+            print(f'  🛍️  Product tags attached ({len(product_ids)} products)')
+        else:
+            print(f'  ⚠️  Product tagging HTTP {resp.status_code} (non-critical)')
+    except Exception as e:
+        print(f'  ⚠️  Product tagging error (non-critical): {str(e)[:60]}')
+
+
+def post_to_facebook(image_url, caption, product_keyword=None):
+    """Post to Facebook Page with optional product catalog tagging"""
     if not ENABLE_FACEBOOK:
         print("⏭️  Facebook posting disabled")
         return None
@@ -272,6 +348,14 @@ def post_to_facebook(image_url, caption):
         post_id = response.json().get('id')
         post_url = f"https://www.facebook.com/{post_id}"
         print(f"✅ Facebook sister post created: {post_url}")
+
+        # ── Product Catalog Tagging ──────────────────────────────────────
+        if post_id and product_keyword and ENABLE_PRODUCT_TAGGING:
+            print(f"  🔍 Searching catalog for '{product_keyword}' products to tag...")
+            product_ids = search_catalog_for_product(product_keyword)
+            attach_product_tags(post_id, product_ids)
+        # ────────────────────────────────────────────────────────────────
+
         return post_url
     except Exception as e:
         print(f"❌ Facebook posting failed: {e}")
@@ -380,7 +464,9 @@ def main():
     print(f"\n📝 Facebook caption preview:\n{fb_caption[:200]}...")
     
     # Post to platforms
-    fb_url = post_to_facebook(blog_data['image_url'], fb_caption)
+    # Pass the product keyword so Facebook can tag matching catalog products
+    product_keyword = product.get('keyword', list(PRODUCT_KEYWORDS.keys())[0] if PRODUCT_KEYWORDS else None)
+    fb_url = post_to_facebook(blog_data['image_url'], fb_caption, product_keyword=product_keyword)
     time.sleep(2)
     ig_url = post_to_instagram(blog_data['image_url'], ig_caption)
     

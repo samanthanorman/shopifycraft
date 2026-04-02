@@ -34,6 +34,19 @@ NOTIFICATION_EMAIL = os.getenv('NOTIFICATION_EMAIL', 'samanthanorman.1995@gmail.
 # Feature flags
 ENABLE_FACEBOOK = os.getenv('ENABLE_FACEBOOK', 'true').lower() == 'true'
 ENABLE_INSTAGRAM = os.getenv('ENABLE_INSTAGRAM', 'true').lower() == 'true'
+ENABLE_PRODUCT_TAGGING = os.getenv('ENABLE_PRODUCT_TAGGING', 'true').lower() == 'true'
+
+# Facebook Product Catalog (Commerce Manager)
+FACEBOOK_CATALOG_ID = os.getenv('FACEBOOK_CATALOG_ID', '1162102955270557')
+FACEBOOK_COMMERCE_ACCOUNT_ID = os.getenv('FACEBOOK_COMMERCE_ACCOUNT_ID', '708744235470501')
+
+# Blog-to-collection URL mapping (used as product tag fallback links)
+COLLECTION_URLS = {
+    '119979376952': os.getenv('COLLECTION_URL_WAX_WANE', 'https://waxandwane.store/collections/all'),
+    '115858669880': os.getenv('COLLECTION_URL_HARAMOON', 'https://waxandwane.store/collections/haramoon-korean-skincare'),
+    '115660620088': os.getenv('COLLECTION_URL_EMF', 'https://waxandwane.store/collections/emf-shielding-faraday-protection'),
+    '115710034232': os.getenv('COLLECTION_URL_CRYSTALS', 'https://waxandwane.store/collections/natural-crystals-gemstones'),
+}
 
 # Shopify RSS Feeds (Atom format)
 # Updated March 14, 2026 - corrected handles verified against Shopify admin
@@ -72,6 +85,87 @@ SCOPES = [
 
 # Local log file to track posted articles
 POSTED_LOG_FILE = SKILL_DIR / 'posted_links.txt'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PRODUCT CATALOG TAGGING MODULE
+# Tags Facebook posts with products from the Wax & Wane catalog.
+# Uses the Facebook Catalog API to search for matching products by keyword,
+# then attaches them to the post so shoppers can tap through to buy.
+# Falls back gracefully if catalog search returns nothing.
+# Catalog ID: 1162102955270557 | Commerce Account: 708744235470501
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Blog-to-search-keyword mapping for catalog product lookup
+CATALOG_SEARCH_KEYWORDS = {
+    '119979376952': ['wellness', 'wax wane', 'ritual', 'lifestyle'],
+    '115858669880': ['haramoon', 'korean skincare', 'serum', 'moisturizer'],
+    '115660620088': ['emf', 'faraday', 'shielding', 'protection'],
+    '115710034232': ['crystal', 'gemstone', 'mineral', 'amethyst'],
+}
+
+
+def search_catalog_products(blog_id, access_token, max_results=3):
+    """Search the Facebook Product Catalog for products matching a blog topic.
+    Returns a list of product retailer_ids (Shopify product IDs) to tag.
+    Falls back to empty list if catalog search fails or returns nothing."""
+    if not ENABLE_PRODUCT_TAGGING:
+        return []
+    keywords = CATALOG_SEARCH_KEYWORDS.get(blog_id, [])
+    if not keywords:
+        return []
+    found_ids = []
+    for keyword in keywords[:2]:  # Try top 2 keywords to avoid rate limits
+        try:
+            url = f'https://graph.facebook.com/v25.0/{FACEBOOK_CATALOG_ID}/products'
+            params = {
+                'access_token': access_token,
+                'filter': json.dumps({'name': {'i_contains': keyword}}),
+                'fields': 'id,retailer_id,name,url,availability',
+                'limit': max_results
+            }
+            resp = requests.get(url, params=params, timeout=10)
+            if resp.status_code == 200:
+                products = resp.json().get('data', [])
+                for p in products:
+                    if p.get('availability') in ('in stock', 'available for order', None):
+                        pid = p.get('id')
+                        if pid and pid not in found_ids:
+                            found_ids.append(pid)
+                            print(f'  🏷️  Catalog match: {p.get("name", pid)}')
+                if found_ids:
+                    break  # Found products — no need to try more keywords
+            elif resp.status_code == 403:
+                print(f'  ⚠️  Catalog access denied (403) — product tagging skipped')
+                return []
+            else:
+                print(f'  ⚠️  Catalog search HTTP {resp.status_code} for "{keyword}"')
+        except Exception as e:
+            print(f'  ⚠️  Catalog search error: {str(e)[:80]}')
+    return found_ids[:max_results]
+
+
+def attach_product_tags_to_post(post_id, product_ids, access_token):
+    """After a Facebook post is created, attach product catalog tags to it.
+    This enables the shopping bag icon and lets viewers tap to buy.
+    Non-critical — post already exists even if tagging fails."""
+    if not product_ids:
+        return
+    try:
+        url = f'https://graph.facebook.com/v25.0/{post_id}/sponsor_tags'
+        # Product tags use the /tags endpoint on the post object
+        tag_url = f'https://graph.facebook.com/v25.0/{post_id}'
+        payload = {
+            'access_token': access_token,
+            'tagged_products': json.dumps([{'product_id': pid} for pid in product_ids])
+        }
+        resp = requests.post(tag_url, data=payload, timeout=10)
+        if resp.status_code == 200:
+            print(f'  🛍️  Product tags attached to post ({len(product_ids)} products)')
+        else:
+            print(f'  ⚠️  Product tagging returned HTTP {resp.status_code} (non-critical)')
+    except Exception as e:
+        print(f'  ⚠️  Product tagging error (non-critical): {str(e)[:80]}')
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # NEWS HEADLINE QUERIES — one search query per blog, used to pull trending
@@ -495,6 +589,22 @@ class ShopifyAutoposter:
             post_id = result.get('post_id') or result.get('id')
             fb_url = f"https://www.facebook.com/{post_id}"
             print(f"  📘 Facebook post created: {fb_url}")
+
+            # ── Product Catalog Tagging ──────────────────────────────────────
+            # Search the catalog for products matching this blog's topic,
+            # then attach them to the post so shoppers see a shopping bag icon.
+            if post_id and ENABLE_PRODUCT_TAGGING:
+                print(f"  🔍 Searching catalog for products to tag...")
+                product_ids = search_catalog_products(
+                    article.get('blog_id', ''),
+                    self.facebook_page_token
+                )
+                if product_ids:
+                    attach_product_tags_to_post(post_id, product_ids, self.facebook_page_token)
+                else:
+                    print(f"  ℹ️  No catalog products found for this topic — post published without tags")
+            # ────────────────────────────────────────────────────────────────
+
             return fb_url
         
         except requests.exceptions.HTTPError as e:
