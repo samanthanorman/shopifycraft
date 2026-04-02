@@ -1,6 +1,247 @@
+{% doc %}
+  @prompt
+    Crystal Energy & Properties Panel (Deeper content: energy properties, why you need it, archetype, emotional/body association, planets, musical chord)
+    Create a custom Liquid section called crystal_energy_panel for a Shopify product page. Pull the linked mineral metaobject using product.metafields.custom.crystal.value. Display the following fields: energy_properties, why_you_need_it, archetype, underlying_emotion_or_body_association, planets, and musical_chord. Render each as a titled content block with the field label as a small all-caps Poppins medium heading in medical blue (#0066FF) and the field value in Raleway light soft grey (#666666). Layout: single column, generous 24px+ padding per block, thin cool-grey (#E5E7EB) divider lines between blocks, active block gets a soft medical blue left border (3px). Add smooth staggered fade-up scroll animation. Background: soft cool-white (#F9FAFB). Thin medical blue top border across full section width. No gradients, no pill shapes. Sharp, minimal, clinical-premium aesthetic. Section must dynamically read from whatever mineral metaobject is linked to the current product via product.metafields.custom.crystal.value. Include an editable section title setting in schema.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{% assign mineral = product.metafields.custom.crystal.value %}
+
+{% style %}
+  .ai-crystal-energy-panel-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: #F9FAFB;
+    border-top: 1px solid #0066FF;
+    padding: 0;
+  }
+
+  .ai-crystal-energy-panel__title-{{ ai_gen_id }} {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    color: #0d1b3e;
+    text-align: center;
+    padding: 32px 24px;
+    margin: 0;
+  }
+
+  .ai-crystal-energy-panel__content-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }} {
+    padding: 28px 24px;
+    border-bottom: 1px solid #E5E7EB;
+    border-left: 3px solid transparent;
+    transition: border-left-color 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }}.ai-visible-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }}:hover {
+    border-left-color: #0066FF;
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }}:last-child {
+    border-bottom: none;
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }}:nth-child(1) {
+    transition-delay: 0.1s;
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }}:nth-child(2) {
+    transition-delay: 0.2s;
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }}:nth-child(3) {
+    transition-delay: 0.3s;
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }}:nth-child(4) {
+    transition-delay: 0.4s;
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }}:nth-child(5) {
+    transition-delay: 0.5s;
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }}:nth-child(6) {
+    transition-delay: 0.6s;
+  }
+
+  .ai-crystal-energy-panel__label-{{ ai_gen_id }} {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #0066FF;
+    margin: 0 0 12px 0;
+  }
+
+  .ai-crystal-energy-panel__value-{{ ai_gen_id }} {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #666666;
+    margin: 0;
+  }
+
+  .ai-crystal-energy-panel__empty-{{ ai_gen_id }} {
+    padding: 48px 24px;
+    text-align: center;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    color: #999999;
+    font-style: italic;
+  }
+{% endstyle %}
+
+<crystal-energy-panel-{{ ai_gen_id }}
+  class="ai-crystal-energy-panel-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  {% if block.settings.section_title != blank %}
+    <h2 class="ai-crystal-energy-panel__title-{{ ai_gen_id }}">
+      {{ block.settings.section_title }}
+    </h2>
+  {% endif %}
+
+  {% if mineral %}
+    <div class="ai-crystal-energy-panel__content-{{ ai_gen_id }}">
+      {% if mineral.energy_properties != blank %}
+        <div class="ai-crystal-energy-panel__block-{{ ai_gen_id }}">
+          <h3 class="ai-crystal-energy-panel__label-{{ ai_gen_id }}">Energy Properties</h3>
+          <div class="ai-crystal-energy-panel__value-{{ ai_gen_id }}">
+            {{ mineral.energy_properties }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if mineral.why_you_need_it != blank %}
+        <div class="ai-crystal-energy-panel__block-{{ ai_gen_id }}">
+          <h3 class="ai-crystal-energy-panel__label-{{ ai_gen_id }}">Why You Need It</h3>
+          <div class="ai-crystal-energy-panel__value-{{ ai_gen_id }}">
+            {{ mineral.why_you_need_it }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if mineral.archetype != blank %}
+        <div class="ai-crystal-energy-panel__block-{{ ai_gen_id }}">
+          <h3 class="ai-crystal-energy-panel__label-{{ ai_gen_id }}">Archetype</h3>
+          <div class="ai-crystal-energy-panel__value-{{ ai_gen_id }}">
+            {{ mineral.archetype }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if mineral.underlying_emotion_or_body_association != blank %}
+        <div class="ai-crystal-energy-panel__block-{{ ai_gen_id }}">
+          <h3 class="ai-crystal-energy-panel__label-{{ ai_gen_id }}">Emotional & Body Association</h3>
+          <div class="ai-crystal-energy-panel__value-{{ ai_gen_id }}">
+            {{ mineral.underlying_emotion_or_body_association }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if mineral.planets != blank %}
+        <div class="ai-crystal-energy-panel__block-{{ ai_gen_id }}">
+          <h3 class="ai-crystal-energy-panel__label-{{ ai_gen_id }}">Planets</h3>
+          <div class="ai-crystal-energy-panel__value-{{ ai_gen_id }}">
+            {{ mineral.planets }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if mineral.musical_chord != blank %}
+        <div class="ai-crystal-energy-panel__block-{{ ai_gen_id }}">
+          <h3 class="ai-crystal-energy-panel__label-{{ ai_gen_id }}">Musical Chord</h3>
+          <div class="ai-crystal-energy-panel__value-{{ ai_gen_id }}">
+            {{ mineral.musical_chord }}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="ai-crystal-energy-panel__empty-{{ ai_gen_id }}">
+      Link a mineral metaobject to this product to display energy properties
+    </div>
+  {% endif %}
+</crystal-energy-panel-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class CrystalEnergyPanel{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.observer = null;
+      }
+
+      connectedCallback() {
+        this.setupScrollAnimation();
+      }
+
+      setupScrollAnimation() {
+        const blocks = this.querySelectorAll('.ai-crystal-energy-panel__block-{{ ai_gen_id }}');
+        
+        if (!blocks.length) return;
+
+        const observerOptions = {
+          root: null,
+          rootMargin: '0px 0px -100px 0px',
+          threshold: 0.1
+        };
+
+        this.observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('ai-visible-{{ ai_gen_id }}');
+            }
+          });
+        }, observerOptions);
+
+        blocks.forEach((block) => {
+          this.observer.observe(block);
+        });
+      }
+
+      disconnectedCallback() {
+        if (this.observer) {
+          this.observer.disconnect();
+        }
+      }
+    }
+
+    customElements.define('crystal-energy-panel-{{ ai_gen_id }}', CrystalEnergyPanel{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Crystal energy panel",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section title",
+      "default": "Crystal Energy & Properties"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Crystal energy panel"
+    }
+  ]
+}
 {% endschema %}
