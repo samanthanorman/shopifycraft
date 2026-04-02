@@ -1,6 +1,636 @@
+{% doc %}
+  @prompt
+    Redesign a trust badges section for a premium K-beauty skincare brand targeting a Gen Z audience. Keep all existing trust badge content but completely modernize the layout and visual design. Display 5-6 trust badges (e.g. Vegan, Cruelty-Free, pH Balanced, Dermatologist Tested, Sensitive Skin Safe, Non-Irritating) in a clean horizontal row on desktop and 2-column grid on mobile. Each badge has: a bold clean SVG icon at the top in bright medical blue (#0066FF or similar), a short bold label in Poppins font in dark charcoal, and a one-line descriptor beneath in Raleway font in a softer grey (e.g. "0.00 Irritation Index", "Seoul Formulated", "All Skin Types"). All badge labels, descriptors, and icons must be editable in theme settings as repeatable blocks. Use a crisp white or very soft cool-white background — clean and clinical like a premium Korean dermatology brand. Add a thin bright medical blue top border or accent line across the full width of the section to frame it. Each badge should have a very subtle hover effect — a soft blue tint background circle behind the icon that expands on hover. Include an optional editable section title in Raleway light weight centered above the badges. Add smooth staggered fade-up animations on scroll for each badge. The overall feel should be editorial and clinical-premium — like Mamonde or IOPE's website — confident, modern, Gen Z K-beauty energy with HARAMOON's bright blue brand color as the sole accent. No gradients, no clutter, no rounded pill shapes — sharp, minimal, trustworthy.
+    
+    
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-trust-badges-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding_top }}px 0 {{ block.settings.section_padding_bottom }}px;
+    border-top: {{ block.settings.accent_border_thickness }}px solid {{ block.settings.accent_color }};
+  }
+
+  .ai-trust-badges-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-trust-badges-title-{{ ai_gen_id }} {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.title_color }};
+    text-align: center;
+    margin: 0 0 {{ block.settings.title_spacing }}px;
+    letter-spacing: 0.5px;
+  }
+
+  .ai-trust-badges-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: {{ block.settings.badge_spacing }}px;
+    align-items: start;
+  }
+
+  .ai-trust-badge-item-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .ai-trust-badge-item-{{ ai_gen_id }}.animate {
+    animation: ai-trust-badge-fade-up-{{ ai_gen_id }} 0.6s ease-out forwards;
+  }
+
+  .ai-trust-badge-icon-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    margin-bottom: {{ block.settings.icon_spacing }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-trust-badge-icon-bg-{{ ai_gen_id }} {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background-color: {{ block.settings.accent_color }};
+    opacity: 0.1;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+  }
+
+  .ai-trust-badge-item-{{ ai_gen_id }}:hover .ai-trust-badge-icon-bg-{{ ai_gen_id }} {
+    width: calc({{ block.settings.icon_size }}px + 20px);
+    height: calc({{ block.settings.icon_size }}px + 20px);
+  }
+
+  .ai-trust-badge-icon-{{ ai_gen_id }} {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    color: {{ block.settings.accent_color }};
+  }
+
+  .ai-trust-badge-icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.5;
+  }
+
+  .ai-trust-badge-label-{{ ai_gen_id }} {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: {{ block.settings.label_size }}px;
+    color: {{ block.settings.label_color }};
+    margin: 0 0 {{ block.settings.label_spacing }}px;
+    line-height: 1.3;
+  }
+
+  .ai-trust-badge-description-{{ ai_gen_id }} {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 400;
+    font-size: {{ block.settings.description_size }}px;
+    color: {{ block.settings.description_color }};
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  @keyframes ai-trust-badge-fade-up-{{ ai_gen_id }} {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-trust-badges-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+      gap: {{ block.settings.badge_spacing_mobile }}px;
+    }
+
+    .ai-trust-badge-icon-wrapper-{{ ai_gen_id }} {
+      width: {{ block.settings.icon_size_mobile }}px;
+      height: {{ block.settings.icon_size_mobile }}px;
+    }
+
+    .ai-trust-badge-item-{{ ai_gen_id }}:hover .ai-trust-badge-icon-bg-{{ ai_gen_id }} {
+      width: calc({{ block.settings.icon_size_mobile }}px + 16px);
+      height: calc({{ block.settings.icon_size_mobile }}px + 16px);
+    }
+
+    .ai-trust-badges-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.8 }}px;
+    }
+
+    .ai-trust-badge-label-{{ ai_gen_id }} {
+      font-size: {{ block.settings.label_size | times: 0.9 }}px;
+    }
+
+    .ai-trust-badge-description-{{ ai_gen_id }} {
+      font-size: {{ block.settings.description_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<trust-badges-{{ ai_gen_id }} class="ai-trust-badges-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-trust-badges-container-{{ ai_gen_id }}">
+    {% if block.settings.section_title != blank %}
+      <h2 class="ai-trust-badges-title-{{ ai_gen_id }}">{{ block.settings.section_title }}</h2>
+    {% endif %}
+
+    <div class="ai-trust-badges-grid-{{ ai_gen_id }}">
+      {% for i in (1..6) %}
+        {% liquid
+          assign badge_enabled_key = 'badge_' | append: i | append: '_enabled'
+          assign badge_icon_key = 'badge_' | append: i | append: '_icon'
+          assign badge_label_key = 'badge_' | append: i | append: '_label'
+          assign badge_description_key = 'badge_' | append: i | append: '_description'
+
+          assign badge_enabled = block.settings[badge_enabled_key]
+          assign badge_icon = block.settings[badge_icon_key]
+          assign badge_label = block.settings[badge_label_key]
+          assign badge_description = block.settings[badge_description_key]
+        %}
+
+        {% if badge_enabled %}
+          <div 
+            class="ai-trust-badge-item-{{ ai_gen_id }}"
+            data-badge-index="{{ forloop.index }}"
+          >
+            <div class="ai-trust-badge-icon-wrapper-{{ ai_gen_id }}">
+              <div class="ai-trust-badge-icon-bg-{{ ai_gen_id }}"></div>
+              <div class="ai-trust-badge-icon-{{ ai_gen_id }}">
+                {{ badge_icon }}
+              </div>
+            </div>
+            {% if badge_label != blank %}
+              <h3 class="ai-trust-badge-label-{{ ai_gen_id }}">{{ badge_label }}</h3>
+            {% endif %}
+            {% if badge_description != blank %}
+              <p class="ai-trust-badge-description-{{ ai_gen_id }}">{{ badge_description }}</p>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</trust-badges-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class TrustBadges{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.badges = [];
+        this.observer = null;
+      }
+
+      connectedCallback() {
+        this.badges = this.querySelectorAll('.ai-trust-badge-item-{{ ai_gen_id }}');
+        this.setupScrollAnimation();
+      }
+
+      setupScrollAnimation() {
+        const options = {
+          root: null,
+          rootMargin: '0px',
+          threshold: 0.1
+        };
+
+        this.observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              this.animateBadges();
+              this.observer.unobserve(entry.target);
+            }
+          });
+        }, options);
+
+        this.observer.observe(this);
+      }
+
+      animateBadges() {
+        this.badges.forEach((badge, index) => {
+          setTimeout(() => {
+            badge.classList.add('animate');
+          }, index * 100);
+        });
+      }
+
+      disconnectedCallback() {
+        if (this.observer) {
+          this.observer.disconnect();
+        }
+      }
+    }
+
+    customElements.define('trust-badges-{{ ai_gen_id }}', TrustBadges{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Trust badges",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_title",
+      "label": "Section title"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 14,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "title_spacing",
+      "min": 20,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Title spacing",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#2c2c2c"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 800,
+      "max": 1600,
+      "step": 100,
+      "unit": "px",
+      "label": "Container width",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "min": 20,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "min": 20,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 60
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#fafbfc"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Accent"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#0066FF"
+    },
+    {
+      "type": "range",
+      "id": "accent_border_thickness",
+      "min": 0,
+      "max": 6,
+      "step": 1,
+      "unit": "px",
+      "label": "Top border thickness",
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Badge layout"
+    },
+    {
+      "type": "range",
+      "id": "badge_spacing",
+      "min": 20,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Badge spacing (desktop)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "badge_spacing_mobile",
+      "min": 16,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "label": "Badge spacing (mobile)",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Icon"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 40,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Icon size (desktop)",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "icon_size_mobile",
+      "min": 32,
+      "max": 64,
+      "step": 4,
+      "unit": "px",
+      "label": "Icon size (mobile)",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "icon_spacing",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Icon spacing",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Label"
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Label size",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "label_spacing",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "unit": "px",
+      "label": "Label spacing",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Description"
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Description size",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#6b6b6b"
+    },
+    {
+      "type": "header",
+      "content": "Badge 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "badge_1_enabled",
+      "label": "Enable badge 1",
+      "default": true
+    },
+    {
+      "type": "html",
+      "id": "badge_1_icon",
+      "label": "Icon SVG",
+      "default": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M22 11.08V12a10 10 0 11-5.93-9.14\"/><path d=\"M22 4L12 14.01l-3-3\"/></svg>"
+    },
+    {
+      "type": "text",
+      "id": "badge_1_label",
+      "label": "Label",
+      "default": "Vegan"
+    },
+    {
+      "type": "text",
+      "id": "badge_1_description",
+      "label": "Description",
+      "default": "100% Plant-Based"
+    },
+    {
+      "type": "header",
+      "content": "Badge 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "badge_2_enabled",
+      "label": "Enable badge 2",
+      "default": true
+    },
+    {
+      "type": "html",
+      "id": "badge_2_icon",
+      "label": "Icon SVG",
+      "default": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z\"/></svg>"
+    },
+    {
+      "type": "text",
+      "id": "badge_2_label",
+      "label": "Label",
+      "default": "Cruelty-Free"
+    },
+    {
+      "type": "text",
+      "id": "badge_2_description",
+      "label": "Description",
+      "default": "Never Tested on Animals"
+    },
+    {
+      "type": "header",
+      "content": "Badge 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "badge_3_enabled",
+      "label": "Enable badge 3",
+      "default": true
+    },
+    {
+      "type": "html",
+      "id": "badge_3_icon",
+      "label": "Icon SVG",
+      "default": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M12 2v20M2 12h20\"/></svg>"
+    },
+    {
+      "type": "text",
+      "id": "badge_3_label",
+      "label": "Label",
+      "default": "pH Balanced"
+    },
+    {
+      "type": "text",
+      "id": "badge_3_description",
+      "label": "Description",
+      "default": "5.5 Optimal pH"
+    },
+    {
+      "type": "header",
+      "content": "Badge 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "badge_4_enabled",
+      "label": "Enable badge 4",
+      "default": true
+    },
+    {
+      "type": "html",
+      "id": "badge_4_icon",
+      "label": "Icon SVG",
+      "default": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z\"/><path d=\"M14 2v6h6M16 13H8M16 17H8M10 9H8\"/></svg>"
+    },
+    {
+      "type": "text",
+      "id": "badge_4_label",
+      "label": "Label",
+      "default": "Dermatologist Tested"
+    },
+    {
+      "type": "text",
+      "id": "badge_4_description",
+      "label": "Description",
+      "default": "Clinically Proven"
+    },
+    {
+      "type": "header",
+      "content": "Badge 5"
+    },
+    {
+      "type": "checkbox",
+      "id": "badge_5_enabled",
+      "label": "Enable badge 5",
+      "default": true
+    },
+    {
+      "type": "html",
+      "id": "badge_5_icon",
+      "label": "Icon SVG",
+      "default": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3\"/><line x1=\"12\" y1=\"17\" x2=\"12.01\" y2=\"17\"/></svg>"
+    },
+    {
+      "type": "text",
+      "id": "badge_5_label",
+      "label": "Label",
+      "default": "Sensitive Skin Safe"
+    },
+    {
+      "type": "text",
+      "id": "badge_5_description",
+      "label": "Description",
+      "default": "All Skin Types"
+    },
+    {
+      "type": "header",
+      "content": "Badge 6"
+    },
+    {
+      "type": "checkbox",
+      "id": "badge_6_enabled",
+      "label": "Enable badge 6",
+      "default": true
+    },
+    {
+      "type": "html",
+      "id": "badge_6_icon",
+      "label": "Icon SVG",
+      "default": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M12 2L2 7l10 5 10-5-10-5z\"/><path d=\"M2 17l10 5 10-5M2 12l10 5 10-5\"/></svg>"
+    },
+    {
+      "type": "text",
+      "id": "badge_6_label",
+      "label": "Label",
+      "default": "Non-Irritating"
+    },
+    {
+      "type": "text",
+      "id": "badge_6_description",
+      "label": "Description",
+      "default": "0.00 Irritation Index"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust badges"
+    }
+  ]
+}
 {% endschema %}
