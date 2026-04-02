@@ -1,6 +1,834 @@
+{% doc %}
+  @prompt
+     Crystal Hero Identity Block
+    (display_name, one_liner, color swatch, chakra, zodiac, element, origin, chemical_formula, mohs_hardness, planets, number, archetype, musical_chord)
+    
+    Create a custom Liquid section called mineral_identity_hero for a Shopify metaobject template page (URL pattern: /pages/crystals/[handle]). The Liquid root object is metaobject — access all fields as metaobject.[key].value.
+    
+    Display the following fields:
+    
+    metaobject.display_name.value as the main H1 heading
+    metaobject.one_liner.value as a subtitle tagline
+    metaobject.color.value as a small filled color swatch circle next to the heading
+    A responsive CSS data grid (2 col mobile, 4 col desktop) showing: chakra, zodiac, element, origin, chemical_formula, mohs_hardness, planets, number, archetype, musical_chord — each as a label/value pair. Only render a grid cell if the field value is not blank.
+    Style: crisp white background (#FFFFFF), medical blue (#0066FF) accent, Poppins medium (dark charcoal #1A1A1A) for labels, Raleway light (soft grey #666666) for values. Thin 2px medical blue top border across full section width. No gradients, no rounded pill shapes. Generous 24px+ padding. Staggered fade-up scroll entrance animation. Include an editable section title setting in schema. Add ItemPage JSON-LD structured data in a script tag using display_name, seo_description, origin, chemical_formula, and color fields. allow full customization of things like spacing padding font size width on screen, colors etc. thank you
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .mineral-identity-hero-{{ ai_gen_id }} {
+    display: block;
+    background-color: {{ block.settings.background_color }};
+    border-top: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
+    padding: {{ block.settings.padding_top }}px {{ block.settings.padding_horizontal }}px {{ block.settings.padding_bottom }}px;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .mineral-identity-hero__container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  .mineral-identity-hero__section-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.section_title_font.family }}, {{ block.settings.section_title_font.fallback_families }};
+    font-weight: {{ block.settings.section_title_font.weight }};
+    font-size: {{ block.settings.section_title_size }}px;
+    color: {{ block.settings.section_title_color }};
+    text-align: {{ block.settings.text_alignment }};
+    margin: 0 0 {{ block.settings.section_title_margin }}px;
+  }
+
+  .mineral-identity-hero__header-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: {{ block.settings.text_alignment }};
+    gap: {{ block.settings.header_gap }}px;
+    margin-bottom: {{ block.settings.header_margin }}px;
+    flex-wrap: wrap;
+  }
+
+  .mineral-identity-hero__heading-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .mineral-identity-hero__color-swatch-{{ ai_gen_id }} {
+    width: {{ block.settings.swatch_size }}px;
+    height: {{ block.settings.swatch_size }}px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: {{ block.settings.swatch_border_thickness }}px solid {{ block.settings.swatch_border_color }};
+  }
+
+  .mineral-identity-hero__tagline-{{ ai_gen_id }} {
+    font-family: {{ block.settings.tagline_font.family }}, {{ block.settings.tagline_font.fallback_families }};
+    font-weight: {{ block.settings.tagline_font.weight }};
+    font-size: {{ block.settings.tagline_size }}px;
+    color: {{ block.settings.tagline_color }};
+    text-align: {{ block.settings.text_alignment }};
+    margin: 0 0 {{ block.settings.tagline_margin }}px;
+    line-height: 1.5;
+  }
+
+  .mineral-identity-hero__grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.columns_mobile }}, 1fr);
+    gap: {{ block.settings.grid_gap_mobile }}px;
+    margin-top: {{ block.settings.grid_margin_top }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .mineral-identity-hero__grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.columns_desktop }}, 1fr);
+      gap: {{ block.settings.grid_gap_desktop }}px;
+    }
+  }
+
+  .mineral-identity-hero__grid-item-{{ ai_gen_id }} {
+    padding: {{ block.settings.grid_item_padding }}px;
+    background-color: {{ block.settings.grid_item_bg }};
+    border-radius: {{ block.settings.grid_item_radius }}px;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .mineral-identity-hero__grid-item-{{ ai_gen_id }}.animate {
+    animation: fadeUpStagger-{{ ai_gen_id }} 0.6s ease-out forwards;
+  }
+
+  .mineral-identity-hero__label-{{ ai_gen_id }} {
+    font-family: {{ block.settings.label_font.family }}, {{ block.settings.label_font.fallback_families }};
+    font-weight: {{ block.settings.label_font.weight }};
+    font-size: {{ block.settings.label_size }}px;
+    color: {{ block.settings.label_color }};
+    margin: 0 0 {{ block.settings.label_margin }}px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .mineral-identity-hero__value-{{ ai_gen_id }} {
+    font-family: {{ block.settings.value_font.family }}, {{ block.settings.value_font.fallback_families }};
+    font-weight: {{ block.settings.value_font.weight }};
+    font-size: {{ block.settings.value_size }}px;
+    color: {{ block.settings.value_color }};
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  @keyframes fadeUpStagger-{{ ai_gen_id }} {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .mineral-identity-hero-{{ ai_gen_id }} {
+      padding: {{ block.settings.padding_top_mobile }}px {{ block.settings.padding_horizontal_mobile }}px {{ block.settings.padding_bottom_mobile }}px;
+    }
+
+    .mineral-identity-hero__heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size_mobile }}px;
+    }
+
+    .mineral-identity-hero__tagline-{{ ai_gen_id }} {
+      font-size: {{ block.settings.tagline_size_mobile }}px;
+    }
+
+    .mineral-identity-hero__section-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.section_title_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<mineral-identity-hero-{{ ai_gen_id }} class="mineral-identity-hero-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="mineral-identity-hero__container-{{ ai_gen_id }}">
+    {% if block.settings.section_title != blank %}
+      <h2 class="mineral-identity-hero__section-title-{{ ai_gen_id }}">{{ block.settings.section_title }}</h2>
+    {% endif %}
+
+    {% if metaobject.display_name.value != blank %}
+      <div class="mineral-identity-hero__header-{{ ai_gen_id }}">
+        <h1 class="mineral-identity-hero__heading-{{ ai_gen_id }}">{{ metaobject.display_name.value }}</h1>
+        {% if metaobject.color.value != blank %}
+          <div 
+            class="mineral-identity-hero__color-swatch-{{ ai_gen_id }}"
+            style="background-color: {{ metaobject.color.value }};"
+            aria-label="Color: {{ metaobject.color.value }}"
+          ></div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if metaobject.one_liner.value != blank %}
+      <p class="mineral-identity-hero__tagline-{{ ai_gen_id }}">{{ metaobject.one_liner.value }}</p>
+    {% endif %}
+
+    <div class="mineral-identity-hero__grid-{{ ai_gen_id }}">
+      {% if metaobject.chakra.value != blank %}
+        <div class="mineral-identity-hero__grid-item-{{ ai_gen_id }}" data-index="0">
+          <div class="mineral-identity-hero__label-{{ ai_gen_id }}">Chakra</div>
+          <div class="mineral-identity-hero__value-{{ ai_gen_id }}">{{ metaobject.chakra.value }}</div>
+        </div>
+      {% endif %}
+
+      {% if metaobject.zodiac.value != blank %}
+        <div class="mineral-identity-hero__grid-item-{{ ai_gen_id }}" data-index="1">
+          <div class="mineral-identity-hero__label-{{ ai_gen_id }}">Zodiac</div>
+          <div class="mineral-identity-hero__value-{{ ai_gen_id }}">{{ metaobject.zodiac.value }}</div>
+        </div>
+      {% endif %}
+
+      {% if metaobject.element.value != blank %}
+        <div class="mineral-identity-hero__grid-item-{{ ai_gen_id }}" data-index="2">
+          <div class="mineral-identity-hero__label-{{ ai_gen_id }}">Element</div>
+          <div class="mineral-identity-hero__value-{{ ai_gen_id }}">{{ metaobject.element.value }}</div>
+        </div>
+      {% endif %}
+
+      {% if metaobject.origin.value != blank %}
+        <div class="mineral-identity-hero__grid-item-{{ ai_gen_id }}" data-index="3">
+          <div class="mineral-identity-hero__label-{{ ai_gen_id }}">Origin</div>
+          <div class="mineral-identity-hero__value-{{ ai_gen_id }}">{{ metaobject.origin.value }}</div>
+        </div>
+      {% endif %}
+
+      {% if metaobject.chemical_formula.value != blank %}
+        <div class="mineral-identity-hero__grid-item-{{ ai_gen_id }}" data-index="4">
+          <div class="mineral-identity-hero__label-{{ ai_gen_id }}">Chemical Formula</div>
+          <div class="mineral-identity-hero__value-{{ ai_gen_id }}">{{ metaobject.chemical_formula.value }}</div>
+        </div>
+      {% endif %}
+
+      {% if metaobject.mohs_hardness.value != blank %}
+        <div class="mineral-identity-hero__grid-item-{{ ai_gen_id }}" data-index="5">
+          <div class="mineral-identity-hero__label-{{ ai_gen_id }}">Mohs Hardness</div>
+          <div class="mineral-identity-hero__value-{{ ai_gen_id }}">{{ metaobject.mohs_hardness.value }}</div>
+        </div>
+      {% endif %}
+
+      {% if metaobject.planets.value != blank %}
+        <div class="mineral-identity-hero__grid-item-{{ ai_gen_id }}" data-index="6">
+          <div class="mineral-identity-hero__label-{{ ai_gen_id }}">Planets</div>
+          <div class="mineral-identity-hero__value-{{ ai_gen_id }}">{{ metaobject.planets.value }}</div>
+        </div>
+      {% endif %}
+
+      {% if metaobject.number.value != blank %}
+        <div class="mineral-identity-hero__grid-item-{{ ai_gen_id }}" data-index="7">
+          <div class="mineral-identity-hero__label-{{ ai_gen_id }}">Number</div>
+          <div class="mineral-identity-hero__value-{{ ai_gen_id }}">{{ metaobject.number.value }}</div>
+        </div>
+      {% endif %}
+
+      {% if metaobject.archetype.value != blank %}
+        <div class="mineral-identity-hero__grid-item-{{ ai_gen_id }}" data-index="8">
+          <div class="mineral-identity-hero__label-{{ ai_gen_id }}">Archetype</div>
+          <div class="mineral-identity-hero__value-{{ ai_gen_id }}">{{ metaobject.archetype.value }}</div>
+        </div>
+      {% endif %}
+
+      {% if metaobject.musical_chord.value != blank %}
+        <div class="mineral-identity-hero__grid-item-{{ ai_gen_id }}" data-index="9">
+          <div class="mineral-identity-hero__label-{{ ai_gen_id }}">Musical Chord</div>
+          <div class="mineral-identity-hero__value-{{ ai_gen_id }}">{{ metaobject.musical_chord.value }}</div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</mineral-identity-hero-{{ ai_gen_id }}>
+
+{% if block.settings.enable_structured_data %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemPage",
+    "name": {{ metaobject.display_name.value | default: '' | json }},
+    "description": {{ metaobject.seo_description.value | default: metaobject.one_liner.value | default: '' | json }},
+    "about": {
+      "@type": "Thing",
+      "name": {{ metaobject.display_name.value | default: '' | json }},
+      {% if metaobject.origin.value != blank %}
+      "location": {{ metaobject.origin.value | json }},
+      {% endif %}
+      {% if metaobject.chemical_formula.value != blank %}
+      "additionalProperty": {
+        "@type": "PropertyValue",
+        "name": "Chemical Formula",
+        "value": {{ metaobject.chemical_formula.value | json }}
+      },
+      {% endif %}
+      {% if metaobject.color.value != blank %}
+      "color": {{ metaobject.color.value | json }}
+      {% endif %}
+    }
+  }
+  </script>
+{% endif %}
+
+<script>
+  (function() {
+    class MineralIdentityHero{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.animationDelay = {{ block.settings.animation_delay }};
+        this.staggerDelay = {{ block.settings.stagger_delay }};
+      }
+
+      connectedCallback() {
+        if ({{ block.settings.enable_animation | json }}) {
+          this.setupScrollAnimation();
+        } else {
+          this.showAllItems();
+        }
+      }
+
+      setupScrollAnimation() {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              this.animateItems();
+              observer.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.1
+        });
+
+        observer.observe(this);
+      }
+
+      animateItems() {
+        const items = this.querySelectorAll('.mineral-identity-hero__grid-item-{{ ai_gen_id }}');
+        items.forEach((item, index) => {
+          setTimeout(() => {
+            item.classList.add('animate');
+          }, this.animationDelay + (index * this.staggerDelay));
+        });
+      }
+
+      showAllItems() {
+        const items = this.querySelectorAll('.mineral-identity-hero__grid-item-{{ ai_gen_id }}');
+        items.forEach(item => {
+          item.style.opacity = '1';
+          item.style.transform = 'translateY(0)';
+        });
+      }
+    }
+
+    customElements.define('mineral-identity-hero-{{ ai_gen_id }}', MineralIdentityHero{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Mineral identity hero",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section title"
+    },
+    {
+      "type": "font_picker",
+      "id": "section_title_font",
+      "label": "Section title font",
+      "default": "poppins_n5"
+    },
+    {
+      "type": "range",
+      "id": "section_title_size",
+      "label": "Section title size",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "section_title_size_mobile",
+      "label": "Section title size (mobile)",
+      "min": 12,
+      "max": 36,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "section_title_color",
+      "label": "Section title color",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "range",
+      "id": "section_title_margin",
+      "label": "Section title margin",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Top border",
+      "default": "#0066FF"
+    },
+    {
+      "type": "range",
+      "id": "border_thickness",
+      "label": "Border thickness",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "poppins_n5"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading size (mobile)",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "range",
+      "id": "header_gap",
+      "label": "Gap between heading and swatch",
+      "min": 8,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "header_margin",
+      "label": "Header bottom margin",
+      "min": 8,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Color swatch"
+    },
+    {
+      "type": "range",
+      "id": "swatch_size",
+      "label": "Swatch size",
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "swatch_border_thickness",
+      "label": "Swatch border thickness",
+      "min": 0,
+      "max": 6,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "color",
+      "id": "swatch_border_color",
+      "label": "Swatch border color",
+      "default": "#0066FF"
+    },
+    {
+      "type": "header",
+      "content": "Tagline"
+    },
+    {
+      "type": "font_picker",
+      "id": "tagline_font",
+      "label": "Tagline font",
+      "default": "raleway_n3"
+    },
+    {
+      "type": "range",
+      "id": "tagline_size",
+      "label": "Tagline size",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "tagline_size_mobile",
+      "label": "Tagline size (mobile)",
+      "min": 12,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "tagline_color",
+      "label": "Tagline color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "tagline_margin",
+      "label": "Tagline bottom margin",
+      "min": 8,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "header",
+      "content": "Data grid"
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "label": "Columns (mobile)",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns (desktop)",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "grid_gap_mobile",
+      "label": "Grid gap (mobile)",
+      "min": 8,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "grid_gap_desktop",
+      "label": "Grid gap (desktop)",
+      "min": 8,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "grid_margin_top",
+      "label": "Grid top margin",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "grid_item_padding",
+      "label": "Grid item padding",
+      "min": 8,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "grid_item_bg",
+      "label": "Grid item background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "grid_item_radius",
+      "label": "Grid item border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Labels"
+    },
+    {
+      "type": "font_picker",
+      "id": "label_font",
+      "label": "Label font",
+      "default": "poppins_n5"
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "label": "Label size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label color",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "range",
+      "id": "label_margin",
+      "label": "Label bottom margin",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Values"
+    },
+    {
+      "type": "font_picker",
+      "id": "value_font",
+      "label": "Value font",
+      "default": "raleway_n3"
+    },
+    {
+      "type": "range",
+      "id": "value_size",
+      "label": "Value size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "value_color",
+      "label": "Value color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Padding horizontal",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_mobile",
+      "label": "Padding horizontal (mobile)",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animation",
+      "label": "Enable scroll animation",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "animation_delay",
+      "label": "Initial delay",
+      "min": 0,
+      "max": 1000,
+      "step": 50,
+      "unit": "ms",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "stagger_delay",
+      "label": "Stagger delay",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "unit": "ms",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Structured data"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_structured_data",
+      "label": "Enable JSON-LD structured data",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mineral identity hero"
+    }
+  ]
+}
 {% endschema %}
