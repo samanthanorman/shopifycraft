@@ -1,6 +1,774 @@
+{% doc %}
+  @prompt
+    PRODUCT STORY / BRAND NARRATIVE — uses your product_story, product_highlight, product_caption fields:
+    
+    --- Create a full-width editorial product story section for a premium K-beauty skincare brand. Use a two-column layout: left side has a large tall rounded image card (uploadable in settings) with a soft floating caption badge overlaid at the bottom (editable text, e.g. "pH 5.5 · Vegan · Dermatologist Tested"). Right side has a small all-caps category label in accent color, a large editorial headline in a thin serif display font (e.g. "Born from the Sea. Perfected by Science."), 2-3 paragraphs of brand story copy in clean sans-serif, and a row of 3-4 small trust badges with icons (e.g. Vegan, Cruelty-Free, pH Balanced, Sensitive Skin Safe) — all editable. Add an optional secondary CTA text link at the bottom of the right column. please allow me to select from color schemas for hex colors thank you
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-product-story-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .ai-product-story-container-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    padding: 60px 40px;
+    background-color: {{ block.settings.background_color }};
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .ai-product-story-image-column-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+  }
+
+  .ai-product-story-image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    border-radius: {{ block.settings.image_border_radius }}px;
+    overflow: hidden;
+  }
+
+  .ai-product-story-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-product-story-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-product-story-image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 300px;
+    max-height: 300px;
+  }
+
+  .ai-product-story-caption-badge-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: {{ block.settings.badge_background_color }};
+    color: {{ block.settings.badge_text_color }};
+    padding: 12px 24px;
+    border-radius: {{ block.settings.badge_border_radius }}px;
+    font-size: {{ block.settings.badge_font_size }}px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    white-space: nowrap;
+  }
+
+  .ai-product-story-content-column-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .ai-product-story-category-{{ ai_gen_id }} {
+    font-size: {{ block.settings.category_font_size }}px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: {{ block.settings.accent_color }};
+    margin: 0;
+  }
+
+  .ai-product-story-headline-{{ ai_gen_id }} {
+    font-size: {{ block.settings.headline_font_size }}px;
+    font-weight: 300;
+    line-height: 1.2;
+    color: {{ block.settings.headline_color }};
+    margin: 0;
+    font-family: {{ block.settings.headline_font.family }}, {{ block.settings.headline_font.fallback_families }};
+    font-style: {{ block.settings.headline_font.style }};
+    font-weight: {{ block.settings.headline_font.weight }};
+  }
+
+  .ai-product-story-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.body_font_size }}px;
+    line-height: 1.7;
+    color: {{ block.settings.body_text_color }};
+    margin: 0;
+  }
+
+  .ai-product-story-text-{{ ai_gen_id }} p {
+    margin: 0 0 16px 0;
+  }
+
+  .ai-product-story-text-{{ ai_gen_id }} p:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-product-story-badges-{{ ai_gen_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .ai-product-story-trust-badge-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: {{ block.settings.trust_badge_font_size }}px;
+    color: {{ block.settings.trust_badge_color }};
+    font-weight: 500;
+  }
+
+  .ai-product-story-trust-badge-icon-{{ ai_gen_id }} {
+    width: {{ block.settings.trust_badge_icon_size }}px;
+    height: {{ block.settings.trust_badge_icon_size }}px;
+    flex-shrink: 0;
+  }
+
+  .ai-product-story-trust-badge-icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+
+  .ai-product-story-cta-{{ ai_gen_id }} {
+    margin-top: 8px;
+  }
+
+  .ai-product-story-cta-link-{{ ai_gen_id }} {
+    font-size: {{ block.settings.cta_font_size }}px;
+    color: {{ block.settings.cta_color }};
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid {{ block.settings.cta_color }};
+    padding-bottom: 2px;
+    transition: opacity 0.3s ease;
+  }
+
+  .ai-product-story-cta-link-{{ ai_gen_id }}:hover {
+    opacity: 0.7;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-product-story-container-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 40px;
+      padding: 40px 20px;
+    }
+
+    .ai-product-story-headline-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.headline_font_size }}px * 0.7);
+    }
+
+    .ai-product-story-caption-badge-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.badge_font_size }}px * 0.9);
+      padding: 10px 20px;
+    }
+  }
+{% endstyle %}
+
+<product-story-{{ ai_gen_id }} class="ai-product-story-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-product-story-container-{{ ai_gen_id }}">
+    <div class="ai-product-story-image-column-{{ ai_gen_id }}">
+      <div class="ai-product-story-image-wrapper-{{ ai_gen_id }}">
+        {% if block.settings.image %}
+          <img
+            src="{{ block.settings.image | image_url: width: 1000 }}"
+            alt="{{ block.settings.image.alt | escape }}"
+            loading="lazy"
+            width="{{ block.settings.image.width }}"
+            height="{{ block.settings.image.height }}"
+            class="ai-product-story-image-{{ ai_gen_id }}"
+          >
+        {% else %}
+          <div class="ai-product-story-image-placeholder-{{ ai_gen_id }}">
+            {{ 'image' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+        
+        {% if block.settings.caption_text != blank %}
+          <div class="ai-product-story-caption-badge-{{ ai_gen_id }}">
+            {{ block.settings.caption_text }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="ai-product-story-content-column-{{ ai_gen_id }}">
+      {% if block.settings.category_label != blank %}
+        <p class="ai-product-story-category-{{ ai_gen_id }}">{{ block.settings.category_label }}</p>
+      {% endif %}
+
+      {% if block.settings.headline != blank %}
+        <h2 class="ai-product-story-headline-{{ ai_gen_id }}">{{ block.settings.headline }}</h2>
+      {% endif %}
+
+      {% if block.settings.story_text != blank %}
+        <div class="ai-product-story-text-{{ ai_gen_id }}">
+          {{ block.settings.story_text }}
+        </div>
+      {% endif %}
+
+      <div class="ai-product-story-badges-{{ ai_gen_id }}">
+        {% if block.settings.badge_1_text != blank %}
+          <div class="ai-product-story-trust-badge-{{ ai_gen_id }}">
+            <div class="ai-product-story-trust-badge-icon-{{ ai_gen_id }}">
+              {% if block.settings.badge_1_icon == 'vegan' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12a10 10 0 1 0 20 0a10 10 0 1 0 -20 0"></path>
+                  <path d="M12 8v8"></path>
+                  <path d="M8 12h8"></path>
+                </svg>
+              {% elsif block.settings.badge_1_icon == 'cruelty_free' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+              {% elsif block.settings.badge_1_icon == 'ph_balanced' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 6v12"></path>
+                  <path d="M6 12h12"></path>
+                </svg>
+              {% elsif block.settings.badge_1_icon == 'sensitive_skin' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path>
+                  <path d="M12 6v6l4 2"></path>
+                </svg>
+              {% endif %}
+            </div>
+            <span>{{ block.settings.badge_1_text }}</span>
+          </div>
+        {% endif %}
+
+        {% if block.settings.badge_2_text != blank %}
+          <div class="ai-product-story-trust-badge-{{ ai_gen_id }}">
+            <div class="ai-product-story-trust-badge-icon-{{ ai_gen_id }}">
+              {% if block.settings.badge_2_icon == 'vegan' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12a10 10 0 1 0 20 0a10 10 0 1 0 -20 0"></path>
+                  <path d="M12 8v8"></path>
+                  <path d="M8 12h8"></path>
+                </svg>
+              {% elsif block.settings.badge_2_icon == 'cruelty_free' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+              {% elsif block.settings.badge_2_icon == 'ph_balanced' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 6v12"></path>
+                  <path d="M6 12h12"></path>
+                </svg>
+              {% elsif block.settings.badge_2_icon == 'sensitive_skin' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path>
+                  <path d="M12 6v6l4 2"></path>
+                </svg>
+              {% endif %}
+            </div>
+            <span>{{ block.settings.badge_2_text }}</span>
+          </div>
+        {% endif %}
+
+        {% if block.settings.badge_3_text != blank %}
+          <div class="ai-product-story-trust-badge-{{ ai_gen_id }}">
+            <div class="ai-product-story-trust-badge-icon-{{ ai_gen_id }}">
+              {% if block.settings.badge_3_icon == 'vegan' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12a10 10 0 1 0 20 0a10 10 0 1 0 -20 0"></path>
+                  <path d="M12 8v8"></path>
+                  <path d="M8 12h8"></path>
+                </svg>
+              {% elsif block.settings.badge_3_icon == 'cruelty_free' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+              {% elsif block.settings.badge_3_icon == 'ph_balanced' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 6v12"></path>
+                  <path d="M6 12h12"></path>
+                </svg>
+              {% elsif block.settings.badge_3_icon == 'sensitive_skin' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path>
+                  <path d="M12 6v6l4 2"></path>
+                </svg>
+              {% endif %}
+            </div>
+            <span>{{ block.settings.badge_3_text }}</span>
+          </div>
+        {% endif %}
+
+        {% if block.settings.badge_4_text != blank %}
+          <div class="ai-product-story-trust-badge-{{ ai_gen_id }}">
+            <div class="ai-product-story-trust-badge-icon-{{ ai_gen_id }}">
+              {% if block.settings.badge_4_icon == 'vegan' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12a10 10 0 1 0 20 0a10 10 0 1 0 -20 0"></path>
+                  <path d="M12 8v8"></path>
+                  <path d="M8 12h8"></path>
+                </svg>
+              {% elsif block.settings.badge_4_icon == 'cruelty_free' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+              {% elsif block.settings.badge_4_icon == 'ph_balanced' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 6v12"></path>
+                  <path d="M6 12h12"></path>
+                </svg>
+              {% elsif block.settings.badge_4_icon == 'sensitive_skin' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path>
+                  <path d="M12 6v6l4 2"></path>
+                </svg>
+              {% endif %}
+            </div>
+            <span>{{ block.settings.badge_4_text }}</span>
+          </div>
+        {% endif %}
+      </div>
+
+      {% if block.settings.cta_text != blank and block.settings.cta_link != blank %}
+        <div class="ai-product-story-cta-{{ ai_gen_id }}">
+          <a href="{{ block.settings.cta_link }}" class="ai-product-story-cta-link-{{ ai_gen_id }}">
+            {{ block.settings.cta_text }}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</product-story-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ProductStory{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.style.display = 'block';
+      }
+    }
+
+    customElements.define('product-story-{{ ai_gen_id }}', ProductStory{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Product story",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Color scheme"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "scheme_1",
+          "label": "Cream & Navy"
+        },
+        {
+          "value": "scheme_2",
+          "label": "Navy & Gold"
+        },
+        {
+          "value": "scheme_3",
+          "label": "Blush & Taupe"
+        },
+        {
+          "value": "scheme_4",
+          "label": "Mint & Teal"
+        },
+        {
+          "value": "scheme_5",
+          "label": "Sky Blue"
+        },
+        {
+          "value": "custom",
+          "label": "Custom colors"
+        }
+      ],
+      "default": "scheme_1"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#fdfaf0"
+    },
+    {
+      "type": "color",
+      "id": "headline_color",
+      "label": "Headline",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "body_text_color",
+      "label": "Body text",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#f0d84a"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "Image border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Caption badge"
+    },
+    {
+      "type": "text",
+      "id": "caption_text",
+      "label": "Caption text",
+      "default": "pH 5.5 · Vegan · Dermatologist Tested"
+    },
+    {
+      "type": "color",
+      "id": "badge_background_color",
+      "label": "Badge background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge text",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "range",
+      "id": "badge_font_size",
+      "label": "Badge font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "badge_border_radius",
+      "label": "Badge border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "category_label",
+      "label": "Category label",
+      "default": "K-BEAUTY INNOVATION"
+    },
+    {
+      "type": "range",
+      "id": "category_font_size",
+      "label": "Category font size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "inline_richtext",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Born from the Sea. Perfected by Science."
+    },
+    {
+      "type": "font_picker",
+      "id": "headline_font",
+      "label": "Headline font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "headline_font_size",
+      "label": "Headline font size",
+      "min": 24,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 42
+    },
+    {
+      "type": "richtext",
+      "id": "story_text",
+      "label": "Story text",
+      "default": "<p>Deep in the coastal waters of Jeju Island, marine botanicals have thrived for centuries in pristine conditions. Our scientists harness these powerful ingredients, combining traditional Korean wisdom with cutting-edge dermatological research.</p><p>Each formula is meticulously pH-balanced to work in harmony with your skin's natural barrier, delivering transformative results without compromise.</p>"
+    },
+    {
+      "type": "range",
+      "id": "body_font_size",
+      "label": "Body font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Trust badge 1"
+    },
+    {
+      "type": "select",
+      "id": "badge_1_icon",
+      "label": "Icon",
+      "options": [
+        {
+          "value": "vegan",
+          "label": "Vegan"
+        },
+        {
+          "value": "cruelty_free",
+          "label": "Cruelty-free"
+        },
+        {
+          "value": "ph_balanced",
+          "label": "pH balanced"
+        },
+        {
+          "value": "sensitive_skin",
+          "label": "Sensitive skin safe"
+        }
+      ],
+      "default": "vegan"
+    },
+    {
+      "type": "text",
+      "id": "badge_1_text",
+      "label": "Text",
+      "default": "Vegan"
+    },
+    {
+      "type": "header",
+      "content": "Trust badge 2"
+    },
+    {
+      "type": "select",
+      "id": "badge_2_icon",
+      "label": "Icon",
+      "options": [
+        {
+          "value": "vegan",
+          "label": "Vegan"
+        },
+        {
+          "value": "cruelty_free",
+          "label": "Cruelty-free"
+        },
+        {
+          "value": "ph_balanced",
+          "label": "pH balanced"
+        },
+        {
+          "value": "sensitive_skin",
+          "label": "Sensitive skin safe"
+        }
+      ],
+      "default": "cruelty_free"
+    },
+    {
+      "type": "text",
+      "id": "badge_2_text",
+      "label": "Text",
+      "default": "Cruelty-Free"
+    },
+    {
+      "type": "header",
+      "content": "Trust badge 3"
+    },
+    {
+      "type": "select",
+      "id": "badge_3_icon",
+      "label": "Icon",
+      "options": [
+        {
+          "value": "vegan",
+          "label": "Vegan"
+        },
+        {
+          "value": "cruelty_free",
+          "label": "Cruelty-free"
+        },
+        {
+          "value": "ph_balanced",
+          "label": "pH balanced"
+        },
+        {
+          "value": "sensitive_skin",
+          "label": "Sensitive skin safe"
+        }
+      ],
+      "default": "ph_balanced"
+    },
+    {
+      "type": "text",
+      "id": "badge_3_text",
+      "label": "Text",
+      "default": "pH Balanced"
+    },
+    {
+      "type": "header",
+      "content": "Trust badge 4"
+    },
+    {
+      "type": "select",
+      "id": "badge_4_icon",
+      "label": "Icon",
+      "options": [
+        {
+          "value": "vegan",
+          "label": "Vegan"
+        },
+        {
+          "value": "cruelty_free",
+          "label": "Cruelty-free"
+        },
+        {
+          "value": "ph_balanced",
+          "label": "pH balanced"
+        },
+        {
+          "value": "sensitive_skin",
+          "label": "Sensitive skin safe"
+        }
+      ],
+      "default": "sensitive_skin"
+    },
+    {
+      "type": "text",
+      "id": "badge_4_text",
+      "label": "Text",
+      "default": "Sensitive Skin Safe"
+    },
+    {
+      "type": "color",
+      "id": "trust_badge_color",
+      "label": "Trust badge color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "range",
+      "id": "trust_badge_font_size",
+      "label": "Trust badge font size",
+      "min": 11,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "trust_badge_icon_size",
+      "label": "Trust badge icon size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA text",
+      "default": "Discover the full collection"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "color",
+      "id": "cta_color",
+      "label": "CTA color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "range",
+      "id": "cta_font_size",
+      "label": "CTA font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product story"
+    }
+  ]
+}
 {% endschema %}
