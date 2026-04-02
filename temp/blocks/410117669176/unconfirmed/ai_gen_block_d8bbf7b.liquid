@@ -1,6 +1,618 @@
+{% doc %}
+  @prompt
+    please add an interactive custom liquid block above the product details under the  header to help short attention span users navigate the product page encouraging consideration and converting sales. make it modern, clean and sleek and completely unique to this product template for my skincare collection. i am an amateur so i am looking to you for elite and intuitive ideas to help me launch this brand successfully, it looks great, it just doesnt stick to the top of the. page or move with the highlighted label/icon so it doesnt intuitively work as it visually seems like it should. can you correct?
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-skincare-nav-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background: {{ block.settings.background_color }};
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid {{ block.settings.border_color }};
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .ai-skincare-nav-{{ ai_gen_id }}.scrolled {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .ai-skincare-nav__container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.desktop_width_percent }}%;
+    margin: 0 auto;
+    padding: {{ block.settings.vertical_padding }}px {{ block.settings.horizontal_padding }}px;
+    position: relative;
+  }
+
+  .ai-skincare-nav__grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+    position: relative;
+  }
+
+  .ai-skincare-nav__item-{{ ai_gen_id }} {
+    position: relative;
+    text-align: center;
+  }
+
+  .ai-skincare-nav__button-{{ ai_gen_id }} {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 12px 16px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    border-radius: {{ block.settings.button_radius }}px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .ai-skincare-nav__button-{{ ai_gen_id }}:hover {
+    background: {{ block.settings.hover_background }};
+    transform: translateY(-2px);
+  }
+
+  .ai-skincare-nav__button-{{ ai_gen_id }}.active {
+    background: {{ block.settings.active_background }};
+  }
+
+  .ai-skincare-nav__icon-{{ ai_gen_id }} {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    margin: 0 auto 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: {{ block.settings.icon_color }};
+    transition: all 0.3s ease;
+  }
+
+  .ai-skincare-nav__button-{{ ai_gen_id }}.active .ai-skincare-nav__icon-{{ ai_gen_id }} {
+    color: {{ block.settings.active_icon_color }};
+    transform: scale(1.1);
+  }
+
+  .ai-skincare-nav__icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ai-skincare-nav__label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.label_size }}px;
+    font-weight: 500;
+    color: {{ block.settings.text_color }};
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+  }
+
+  .ai-skincare-nav__button-{{ ai_gen_id }}.active .ai-skincare-nav__label-{{ ai_gen_id }} {
+    color: {{ block.settings.active_text_color }};
+    font-weight: 600;
+  }
+
+  .ai-skincare-nav__progress-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: {{ block.settings.progress_color }};
+    width: 0%;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 3px 3px 0 0;
+  }
+
+  .ai-skincare-nav__indicator-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    height: 3px;
+    background: {{ block.settings.indicator_color }};
+    width: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 3px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-skincare-nav__grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 4px;
+    }
+
+    .ai-skincare-nav__button-{{ ai_gen_id }} {
+      padding: 10px 8px;
+    }
+
+    .ai-skincare-nav__icon-{{ ai_gen_id }} {
+      width: calc({{ block.settings.icon_size }}px * 0.85);
+      height: calc({{ block.settings.icon_size }}px * 0.85);
+      margin-bottom: 4px;
+    }
+
+    .ai-skincare-nav__label-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.label_size }}px * 0.9);
+    }
+
+    .ai-skincare-nav__container-{{ ai_gen_id }} {
+      padding: {{ block.settings.vertical_padding | times: 0.7 }}px {{ block.settings.horizontal_padding | times: 0.7 }}px;
+    }
+  }
+{% endstyle %}
+
+<skincare-nav-{{ ai_gen_id }} class="ai-skincare-nav-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-skincare-nav__container-{{ ai_gen_id }}">
+    <nav class="ai-skincare-nav__grid-{{ ai_gen_id }}" role="navigation" aria-label="Product navigation">
+      {% if block.settings.show_overview %}
+        <div class="ai-skincare-nav__item-{{ ai_gen_id }}">
+          <button
+            class="ai-skincare-nav__button-{{ ai_gen_id }}"
+            data-target="overview"
+            aria-label="Navigate to overview"
+          >
+            <div class="ai-skincare-nav__icon-{{ ai_gen_id }}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <div class="ai-skincare-nav__label-{{ ai_gen_id }}">{{ block.settings.overview_label }}</div>
+          </button>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_ingredients %}
+        <div class="ai-skincare-nav__item-{{ ai_gen_id }}">
+          <button
+            class="ai-skincare-nav__button-{{ ai_gen_id }}"
+            data-target="ingredients"
+            aria-label="Navigate to ingredients"
+          >
+            <div class="ai-skincare-nav__icon-{{ ai_gen_id }}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+              </svg>
+            </div>
+            <div class="ai-skincare-nav__label-{{ ai_gen_id }}">{{ block.settings.ingredients_label }}</div>
+          </button>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_benefits %}
+        <div class="ai-skincare-nav__item-{{ ai_gen_id }}">
+          <button
+            class="ai-skincare-nav__button-{{ ai_gen_id }}"
+            data-target="benefits"
+            aria-label="Navigate to benefits"
+          >
+            <div class="ai-skincare-nav__icon-{{ ai_gen_id }}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+            <div class="ai-skincare-nav__label-{{ ai_gen_id }}">{{ block.settings.benefits_label }}</div>
+          </button>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_usage %}
+        <div class="ai-skincare-nav__item-{{ ai_gen_id }}">
+          <button
+            class="ai-skincare-nav__button-{{ ai_gen_id }}"
+            data-target="usage"
+            aria-label="Navigate to usage instructions"
+          >
+            <div class="ai-skincare-nav__icon-{{ ai_gen_id }}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24"></path>
+              </svg>
+            </div>
+            <div class="ai-skincare-nav__label-{{ ai_gen_id }}">{{ block.settings.usage_label }}</div>
+          </button>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_reviews %}
+        <div class="ai-skincare-nav__item-{{ ai_gen_id }}">
+          <button
+            class="ai-skincare-nav__button-{{ ai_gen_id }}"
+            data-target="reviews"
+            aria-label="Navigate to reviews"
+          >
+            <div class="ai-skincare-nav__icon-{{ ai_gen_id }}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+            </div>
+            <div class="ai-skincare-nav__label-{{ ai_gen_id }}">{{ block.settings.reviews_label }}</div>
+          </button>
+        </div>
+      {% endif %}
+
+      <div class="ai-skincare-nav__indicator-{{ ai_gen_id }}"></div>
+    </nav>
+    <div class="ai-skincare-nav__progress-{{ ai_gen_id }}"></div>
+  </div>
+</skincare-nav-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class SkincareNav{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.buttons = this.querySelectorAll('.ai-skincare-nav__button-{{ ai_gen_id }}');
+        this.indicator = this.querySelector('.ai-skincare-nav__indicator-{{ ai_gen_id }}');
+        this.progress = this.querySelector('.ai-skincare-nav__progress-{{ ai_gen_id }}');
+        this.sections = [];
+        this.currentSection = null;
+        this.isScrolling = false;
+        this.navHeight = 0;
+      }
+
+      connectedCallback() {
+        setTimeout(() => {
+          this.navHeight = this.offsetHeight;
+          this.initializeSections();
+          this.setupEventListeners();
+          this.updateActiveState();
+          this.positionIndicator();
+        }, 100);
+      }
+
+      initializeSections() {
+        this.buttons.forEach((button) => {
+          const target = button.getAttribute('data-target');
+          const section = document.getElementById(target);
+          if (section) {
+            this.sections.push({
+              button: button,
+              element: section,
+              target: target
+            });
+          }
+        });
+
+        if (this.sections.length > 0 && !this.currentSection) {
+          this.currentSection = this.sections[0];
+          this.sections[0].button.classList.add('active');
+          this.positionIndicator();
+        }
+      }
+
+      setupEventListeners() {
+        this.buttons.forEach((button) => {
+          button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = button.getAttribute('data-target');
+            this.scrollToSection(target);
+          });
+        });
+
+        let scrollTimeout;
+        let ticking = false;
+
+        window.addEventListener('scroll', () => {
+          if (!ticking) {
+            window.requestAnimationFrame(() => {
+              if (!this.isScrolling) {
+                this.updateActiveState();
+                this.updateProgress();
+              }
+
+              if (window.scrollY > 50) {
+                this.classList.add('scrolled');
+              } else {
+                this.classList.remove('scrolled');
+              }
+
+              ticking = false;
+            });
+            ticking = true;
+          }
+        });
+
+        window.addEventListener('resize', () => {
+          this.navHeight = this.offsetHeight;
+          this.positionIndicator();
+        });
+      }
+
+      scrollToSection(target) {
+        const section = document.getElementById(target);
+        if (!section) return;
+
+        this.isScrolling = true;
+        const targetPosition = section.getBoundingClientRect().top + window.scrollY - this.navHeight - 20;
+
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+
+        const targetButton = Array.from(this.buttons).find(btn => btn.getAttribute('data-target') === target);
+        if (targetButton) {
+          this.buttons.forEach((btn) => btn.classList.remove('active'));
+          targetButton.classList.add('active');
+          this.positionIndicator();
+        }
+
+        setTimeout(() => {
+          this.isScrolling = false;
+        }, 1000);
+      }
+
+      updateActiveState() {
+        if (this.sections.length === 0) return;
+
+        const scrollPosition = window.scrollY + this.navHeight + 150;
+        let activeSection = null;
+
+        for (let i = this.sections.length - 1; i >= 0; i--) {
+          const section = this.sections[i];
+          const sectionTop = section.element.getBoundingClientRect().top + window.scrollY;
+
+          if (scrollPosition >= sectionTop) {
+            activeSection = section;
+            break;
+          }
+        }
+
+        if (!activeSection) {
+          activeSection = this.sections[0];
+        }
+
+        if (activeSection && activeSection !== this.currentSection) {
+          this.currentSection = activeSection;
+          this.buttons.forEach((btn) => btn.classList.remove('active'));
+          activeSection.button.classList.add('active');
+          this.positionIndicator();
+        }
+      }
+
+      positionIndicator() {
+        const activeButton = this.querySelector('.ai-skincare-nav__button-{{ ai_gen_id }}.active');
+        if (!activeButton) return;
+
+        const parent = activeButton.parentElement;
+        const gridContainer = this.querySelector('.ai-skincare-nav__grid-{{ ai_gen_id }}');
+        const containerRect = gridContainer.getBoundingClientRect();
+        const parentRect = parent.getBoundingClientRect();
+
+        const left = parentRect.left - containerRect.left;
+        const width = parentRect.width;
+
+        this.indicator.style.left = left + 'px';
+        this.indicator.style.width = width + 'px';
+      }
+
+      updateProgress() {
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const scrollTop = window.scrollY;
+        const scrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100;
+
+        this.progress.style.width = Math.min(Math.max(scrollPercent, 0), 100) + '%';
+      }
+    }
+
+    customElements.define('skincare-nav-{{ ai_gen_id }}', SkincareNav{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Skincare nav",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Navigation sections"
+    },
+    {
+      "type": "paragraph",
+      "content": "Enable sections and set their target IDs to match section IDs on your product page"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overview",
+      "label": "Show overview",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "overview_label",
+      "label": "Overview label",
+      "default": "Overview"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_ingredients",
+      "label": "Show ingredients",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "ingredients_label",
+      "label": "Ingredients label",
+      "default": "Ingredients"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_benefits",
+      "label": "Show benefits",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "benefits_label",
+      "label": "Benefits label",
+      "default": "Benefits"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_usage",
+      "label": "Show usage",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "usage_label",
+      "label": "Usage label",
+      "default": "How to Use"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_reviews",
+      "label": "Show reviews",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "reviews_label",
+      "label": "Reviews label",
+      "default": "Reviews"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "label": "Vertical padding",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "horizontal_padding",
+      "label": "Horizontal padding",
+      "min": 12,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "rgba(253, 250, 240, 0.95)"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border",
+      "default": "rgba(13, 27, 62, 0.1)"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "hover_background",
+      "label": "Hover background",
+      "default": "rgba(240, 216, 74, 0.15)"
+    },
+    {
+      "type": "color",
+      "id": "active_background",
+      "label": "Active background",
+      "default": "rgba(240, 216, 74, 0.25)"
+    },
+    {
+      "type": "color",
+      "id": "active_text_color",
+      "label": "Active text",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "active_icon_color",
+      "label": "Active icon",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "indicator_color",
+      "label": "Active indicator",
+      "default": "#f0d84a"
+    },
+    {
+      "type": "color",
+      "id": "progress_color",
+      "label": "Progress bar",
+      "default": "#e2c84b"
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "label": "Button radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "label": "Label size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    }
+  ],
+  "presets": [
+    {
+      "name": "Skincare nav"
+    }
+  ]
+}
 {% endschema %}
