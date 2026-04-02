@@ -62,14 +62,14 @@
         "menu_type_desktop": "dropdown",
         "sticky_header_type": "reduce-logo-size",
         "show_line_separator": true,
-        "color_scheme": "scheme-18454811-40b3-4438-bce6-d3a35687366e",
-        "menu_color_scheme": "scheme-5a71830d-bb14-4361-a5f4-6672bdde5b1f",
+        "color_scheme": "scheme-5",
+        "menu_color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
         "enable_country_selector": true,
         "enable_language_selector": true,
-        "enable_customer_avatar": false,
-        "margin_bottom": 0,
-        "padding_top": 8,
-        "padding_bottom": 8
+        "enable_customer_avatar": true,
+        "margin_bottom": 8,
+        "padding_top": 16,
+        "padding_bottom": 16
       }
     }
   },
