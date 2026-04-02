@@ -1,6 +1,740 @@
+{% doc %}
+  @prompt
+    for this product template specific to gen z k-beauty consumers - 3. HOW TO USE + ROUTINE STEP — built around your how_to_use, absorption_time, application_method, best_for_time_of_day, routine_step_number fields:
+    
+    --- Create a "How To Use" routine section for a K-beauty skincare product page. Display 4-5 steps in a flowing horizontal timeline on desktop and vertical stack on mobile. Each step has: a large elegant step number in a thin serif display font, a bold short action label (e.g. "Cleanse", "Tone", "Apply Serum", "Press In", "Moisturize"), and 1-2 sentences of instruction copy. Connect steps with a soft gradient dotted line. Include a highlighted callout badge per step for optional metadata — e.g. "Step 3 in Routine", "PM Use", "30 sec absorption", "Press — do not rub" — all editable in settings. Add an optional lifestyle image per step uploadable in settings. Include a section title and subtitle editable in settings. Below the steps, add a slim "Layering Tip" banner — a soft accent-colored strip with an icon and one editable line of tip text (e.g. "Follow with Centella Moisture Cream for maximum barrier repair"). All step labels, copy, metadata badges, images, and layering tip must be editable in theme settings. Add HowTo schema JSON-LD in a script tag with each step marked up using name and text properties inside a HowTo type. Warm cream background, generous whitespace, smooth staggered scroll animations. Premium editorial K-beauty aesthetic.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-how-to-use-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding }}px 20px;
+  }
+
+  .ai-how-to-use-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-how-to-use-header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .ai-how-to-use-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    font-weight: 300;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .ai-how-to-use-subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.text_color }};
+    opacity: 0.8;
+    margin: 0;
+    font-weight: 300;
+  }
+
+  .ai-how-to-use-steps-{{ ai_gen_id }} {
+    display: flex;
+    gap: 40px;
+    position: relative;
+    margin-bottom: 50px;
+  }
+
+  .ai-how-to-use-step-{{ ai_gen_id }} {
+    flex: 1;
+    position: relative;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .ai-how-to-use-step-{{ ai_gen_id }}.ai-visible-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-how-to-use-step-{{ ai_gen_id }}:nth-child(1) {
+    transition-delay: 0.1s;
+  }
+
+  .ai-how-to-use-step-{{ ai_gen_id }}:nth-child(2) {
+    transition-delay: 0.2s;
+  }
+
+  .ai-how-to-use-step-{{ ai_gen_id }}:nth-child(3) {
+    transition-delay: 0.3s;
+  }
+
+  .ai-how-to-use-step-{{ ai_gen_id }}:nth-child(4) {
+    transition-delay: 0.4s;
+  }
+
+  .ai-how-to-use-step-{{ ai_gen_id }}:nth-child(5) {
+    transition-delay: 0.5s;
+  }
+
+  .ai-how-to-use-step-number-{{ ai_gen_id }} {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: {{ block.settings.step_number_size }}px;
+    font-weight: 300;
+    color: {{ block.settings.accent_color }};
+    margin: 0 0 16px;
+    line-height: 1;
+  }
+
+  .ai-how-to-use-step-image-wrapper-{{ ai_gen_id }} {
+    width: 100%;
+    margin-bottom: 20px;
+    border-radius: {{ block.settings.image_radius }}px;
+    overflow: hidden;
+  }
+
+  .ai-how-to-use-step-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .ai-how-to-use-step-label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.step_label_size }}px;
+    font-weight: 600;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 12px;
+    letter-spacing: 0.3px;
+  }
+
+  .ai-how-to-use-step-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.step_text_size }}px;
+    color: {{ block.settings.text_color }};
+    line-height: 1.6;
+    margin: 0 0 16px;
+    opacity: 0.9;
+  }
+
+  .ai-how-to-use-step-badge-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 6px 14px;
+    background-color: {{ block.settings.badge_bg_color }};
+    color: {{ block.settings.badge_text_color }};
+    border-radius: 20px;
+    font-size: {{ block.settings.badge_size }}px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  .ai-how-to-use-connector-{{ ai_gen_id }} {
+    position: absolute;
+    top: {{ block.settings.step_number_size | divided_by: 2 }}px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      to right,
+      {{ block.settings.accent_color }} 0%,
+      {{ block.settings.accent_color }} 20%,
+      transparent 20%,
+      transparent 40%,
+      {{ block.settings.accent_color }} 40%,
+      {{ block.settings.accent_color }} 60%,
+      transparent 60%,
+      transparent 80%,
+      {{ block.settings.accent_color }} 80%,
+      {{ block.settings.accent_color }} 100%
+    );
+    background-size: 30px 2px;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .ai-how-to-use-tip-{{ ai_gen_id }} {
+    background: linear-gradient(135deg, {{ block.settings.tip_bg_color }}, {{ block.settings.tip_bg_gradient }});
+    padding: 24px 32px;
+    border-radius: {{ block.settings.tip_radius }}px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .ai-how-to-use-tip-icon-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    color: {{ block.settings.tip_icon_color }};
+  }
+
+  .ai-how-to-use-tip-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.tip_text_size }}px;
+    color: {{ block.settings.tip_text_color }};
+    margin: 0;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-how-to-use-steps-{{ ai_gen_id }} {
+      flex-direction: column;
+      gap: 50px;
+    }
+
+    .ai-how-to-use-connector-{{ ai_gen_id }} {
+      display: none;
+    }
+
+    .ai-how-to-use-header-{{ ai_gen_id }} {
+      margin-bottom: 40px;
+    }
+
+    .ai-how-to-use-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.8 }}px;
+    }
+
+    .ai-how-to-use-subtitle-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subtitle_size | times: 0.9 }}px;
+    }
+
+    .ai-how-to-use-step-number-{{ ai_gen_id }} {
+      font-size: {{ block.settings.step_number_size | times: 0.7 }}px;
+    }
+
+    .ai-how-to-use-tip-{{ ai_gen_id }} {
+      padding: 20px 24px;
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+{% endstyle %}
+
+<how-to-use-{{ ai_gen_id }} class="ai-how-to-use-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-how-to-use-container-{{ ai_gen_id }}">
+    {% if block.settings.section_title != blank or block.settings.section_subtitle != blank %}
+      <div class="ai-how-to-use-header-{{ ai_gen_id }}">
+        {% if block.settings.section_title != blank %}
+          <h2 class="ai-how-to-use-title-{{ ai_gen_id }}">{{ block.settings.section_title }}</h2>
+        {% endif %}
+        {% if block.settings.section_subtitle != blank %}
+          <p class="ai-how-to-use-subtitle-{{ ai_gen_id }}">{{ block.settings.section_subtitle }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="ai-how-to-use-steps-{{ ai_gen_id }}">
+      <div class="ai-how-to-use-connector-{{ ai_gen_id }}"></div>
+
+      {% for i in (1..5) %}
+        {% liquid
+          assign step_enabled_key = 'step_' | append: i | append: '_enabled'
+          assign step_label_key = 'step_' | append: i | append: '_label'
+          assign step_text_key = 'step_' | append: i | append: '_text'
+          assign step_badge_key = 'step_' | append: i | append: '_badge'
+          assign step_image_key = 'step_' | append: i | append: '_image'
+
+          assign step_enabled = block.settings[step_enabled_key]
+          assign step_label = block.settings[step_label_key]
+          assign step_text = block.settings[step_text_key]
+          assign step_badge = block.settings[step_badge_key]
+          assign step_image = block.settings[step_image_key]
+        %}
+
+        {% if step_enabled %}
+          <div class="ai-how-to-use-step-{{ ai_gen_id }}" data-step="{{ i }}">
+            <div class="ai-how-to-use-step-number-{{ ai_gen_id }}">{{ i }}</div>
+
+            {% if step_image %}
+              <div class="ai-how-to-use-step-image-wrapper-{{ ai_gen_id }}">
+                <img
+                  src="{{ step_image | image_url: width: 600 }}"
+                  alt="{{ step_label | escape }}"
+                  class="ai-how-to-use-step-image-{{ ai_gen_id }}"
+                  loading="lazy"
+                  width="600"
+                  height="{{ 600 | divided_by: step_image.aspect_ratio | round }}"
+                >
+              </div>
+            {% endif %}
+
+            {% if step_label != blank %}
+              <h3 class="ai-how-to-use-step-label-{{ ai_gen_id }}">{{ step_label }}</h3>
+            {% endif %}
+
+            {% if step_text != blank %}
+              <p class="ai-how-to-use-step-text-{{ ai_gen_id }}">{{ step_text }}</p>
+            {% endif %}
+
+            {% if step_badge != blank %}
+              <span class="ai-how-to-use-step-badge-{{ ai_gen_id }}">{{ step_badge }}</span>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if block.settings.tip_text != blank %}
+      <div class="ai-how-to-use-tip-{{ ai_gen_id }}">
+        <svg class="ai-how-to-use-tip-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+        <p class="ai-how-to-use-tip-text-{{ ai_gen_id }}">{{ block.settings.tip_text }}</p>
+      </div>
+    {% endif %}
+  </div>
+</how-to-use-{{ ai_gen_id }}>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "{{ block.settings.section_title | default: 'How to Use' | escape }}",
+  {% if block.settings.section_subtitle != blank %}
+  "description": "{{ block.settings.section_subtitle | escape }}",
+  {% endif %}
+  "step": [
+    {% for i in (1..5) %}
+      {% liquid
+        assign step_enabled_key = 'step_' | append: i | append: '_enabled'
+        assign step_label_key = 'step_' | append: i | append: '_label'
+        assign step_text_key = 'step_' | append: i | append: '_text'
+        assign step_image_key = 'step_' | append: i | append: '_image'
+
+        assign step_enabled = block.settings[step_enabled_key]
+        assign step_label = block.settings[step_label_key]
+        assign step_text = block.settings[step_text_key]
+        assign step_image = block.settings[step_image_key]
+      %}
+
+      {% if step_enabled and step_label != blank %}
+        {
+          "@type": "HowToStep",
+          "name": "{{ step_label | escape }}",
+          "text": "{{ step_text | escape }}"
+          {% if step_image %}
+          ,
+          "image": "{{ step_image | image_url: width: 1200 }}"
+          {% endif %}
+        }{% unless forloop.last %},{% endunless %}
+      {% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+
+<script>
+  (function() {
+    class HowToUse{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.steps = this.querySelectorAll('.ai-how-to-use-step-{{ ai_gen_id }}');
+        this.setupScrollAnimation();
+      }
+
+      setupScrollAnimation() {
+        const observerOptions = {
+          threshold: 0.2,
+          rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('ai-visible-{{ ai_gen_id }}');
+            }
+          });
+        }, observerOptions);
+
+        this.steps.forEach((step) => {
+          observer.observe(step);
+        });
+      }
+    }
+
+    customElements.define('how-to-use-{{ ai_gen_id }}', HowToUse{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "How to use routine",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_title",
+      "label": "Title",
+      "default": "How To Use"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_subtitle",
+      "label": "Subtitle",
+      "default": "Follow these steps for optimal results"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Step 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "step_1_enabled",
+      "label": "Enable step 1",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "step_1_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "step_1_label",
+      "label": "Label",
+      "default": "Cleanse"
+    },
+    {
+      "type": "textarea",
+      "id": "step_1_text",
+      "label": "Instruction text",
+      "default": "Start with a clean, dry face. Gently pat skin to prepare for serum application."
+    },
+    {
+      "type": "text",
+      "id": "step_1_badge",
+      "label": "Badge text",
+      "default": "Step 1 in Routine"
+    },
+    {
+      "type": "header",
+      "content": "Step 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "step_2_enabled",
+      "label": "Enable step 2",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "step_2_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "step_2_label",
+      "label": "Label",
+      "default": "Tone"
+    },
+    {
+      "type": "textarea",
+      "id": "step_2_text",
+      "label": "Instruction text",
+      "default": "Apply toner to balance pH and prep skin for better serum absorption."
+    },
+    {
+      "type": "text",
+      "id": "step_2_badge",
+      "label": "Badge text",
+      "default": "Step 2 in Routine"
+    },
+    {
+      "type": "header",
+      "content": "Step 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "step_3_enabled",
+      "label": "Enable step 3",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "step_3_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "step_3_label",
+      "label": "Label",
+      "default": "Apply Serum"
+    },
+    {
+      "type": "textarea",
+      "id": "step_3_text",
+      "label": "Instruction text",
+      "default": "Dispense 2-3 drops onto fingertips. Gently smooth over face and neck."
+    },
+    {
+      "type": "text",
+      "id": "step_3_badge",
+      "label": "Badge text",
+      "default": "PM Use"
+    },
+    {
+      "type": "header",
+      "content": "Step 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "step_4_enabled",
+      "label": "Enable step 4",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "step_4_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "step_4_label",
+      "label": "Label",
+      "default": "Press In"
+    },
+    {
+      "type": "textarea",
+      "id": "step_4_text",
+      "label": "Instruction text",
+      "default": "Use gentle pressing motions to help serum absorb. Do not rub or pull skin."
+    },
+    {
+      "type": "text",
+      "id": "step_4_badge",
+      "label": "Badge text",
+      "default": "Press — do not rub"
+    },
+    {
+      "type": "header",
+      "content": "Step 5"
+    },
+    {
+      "type": "checkbox",
+      "id": "step_5_enabled",
+      "label": "Enable step 5",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "step_5_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "step_5_label",
+      "label": "Label",
+      "default": "Moisturize"
+    },
+    {
+      "type": "textarea",
+      "id": "step_5_text",
+      "label": "Instruction text",
+      "default": "Wait 30 seconds, then follow with your favorite moisturizer to seal in benefits."
+    },
+    {
+      "type": "text",
+      "id": "step_5_badge",
+      "label": "Badge text",
+      "default": "30 sec absorption"
+    },
+    {
+      "type": "header",
+      "content": "Layering tip"
+    },
+    {
+      "type": "text",
+      "id": "tip_text",
+      "label": "Tip text",
+      "default": "Follow with Centella Moisture Cream for maximum barrier repair"
+    },
+    {
+      "type": "range",
+      "id": "tip_text_size",
+      "label": "Tip text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "color",
+      "id": "tip_bg_color",
+      "label": "Tip background start",
+      "default": "#fff5e6"
+    },
+    {
+      "type": "color",
+      "id": "tip_bg_gradient",
+      "label": "Tip background end",
+      "default": "#ffe8cc"
+    },
+    {
+      "type": "color",
+      "id": "tip_text_color",
+      "label": "Tip text color",
+      "default": "#5c4033"
+    },
+    {
+      "type": "color",
+      "id": "tip_icon_color",
+      "label": "Tip icon color",
+      "default": "#d4a574"
+    },
+    {
+      "type": "range",
+      "id": "tip_radius",
+      "label": "Tip border radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "step_number_size",
+      "label": "Step number size",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "step_label_size",
+      "label": "Step label size",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "step_text_size",
+      "label": "Step text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "badge_size",
+      "label": "Badge text size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image border radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#fdfaf5"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#2c2c2c"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#d4a574"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg_color",
+      "label": "Badge background",
+      "default": "#f0e6d8"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge text",
+      "default": "#5c4033"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 800,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Section padding",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "How to use routine"
+    }
+  ]
+}
 {% endschema %}
