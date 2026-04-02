@@ -1,6 +1,1155 @@
+{% doc %}
+  @prompt
+     . The "HARAMOON's Ingredient Science" Section
+    Goal: A section that explains the "Why" behind the products -  Modern Gen Z/Alpha Korean skincare aesthetic
+    - Poppins font family
+    - Card hover effects: lift up 8px, shadow appears, icon animates
+    - Scroll-triggered fade-in animation (toggleable)
+    - Mobile-responsive
+    
+    Prompt: "Create a 'Scientific Breakdown' section. Content: Focus on 'Ceramides' and 'Peptides' and 'Hyaluronic Acid' . Design: A 3-column grid. Column 1: 'The Problem' (Weak Barrier). Column 2: 'The Science' (Lipid Restoration). Column 3: 'The Result' (Glass Skin). Use thin vertical lines to separate columns (medical chart style). Technical Output: Output raw HTML/Liquid code that I can inject into a Shopify 'Custom Liquid' block."
+    
+    Use the Meta object key:ingredient_profile to  help interlink that metaobject and boost organic seo 
+    CRITICAL LINKING REQUIREMENT:
+    - Wrap entire card in a link element
+    - Construct the URL manually using this pattern: /pages/ingredient-profile/{{ ingredient.handle }}
+    - Where ingredient.handle is the metaobject's handle (URL-safe version of the name)
+    - Example: if handle is "niacinamide", link becomes /pages/ingredient-profile/niacinamide
+    - Each card links to a DIFFERENT ingredient page using this URL pattern - allow me to customize fonts sizes colors spacing and anything else that would allow me flexibility in this custom liquid section. this section should serve to entice educated skincare shoppers to take a deeper look at the products. add hover effects, small animations, and glassmorphism vibes to boost engagement with a gen Z attention span!
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-ingredient-science-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: {{ block.settings.section_padding_top }}px {{ block.settings.section_padding_horizontal }}px {{ block.settings.section_padding_bottom }}px;
+    background: {{ block.settings.background_color }};
+    {% if block.settings.enable_glassmorphism %}
+      backdrop-filter: blur({{ block.settings.glass_blur }}px);
+      -webkit-backdrop-filter: blur({{ block.settings.glass_blur }}px);
+    {% endif %}
+  }
+
+  .ai-ingredient-science__container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-ingredient-science__header-{{ ai_gen_id }} {
+    text-align: {{ block.settings.header_alignment }};
+    margin-bottom: {{ block.settings.header_spacing }}px;
+  }
+
+  .ai-ingredient-science__title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.title_font.family }}, {{ block.settings.title_font.fallback_families }};
+    font-weight: {{ block.settings.title_font.weight }};
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 {{ block.settings.title_spacing }}px;
+    line-height: 1.2;
+  }
+
+  .ai-ingredient-science__subtitle-{{ ai_gen_id }} {
+    font-family: {{ block.settings.subtitle_font.family }}, {{ block.settings.subtitle_font.fallback_families }};
+    font-weight: {{ block.settings.subtitle_font.weight }};
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.subtitle_color }};
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .ai-ingredient-science__grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: {{ block.settings.grid_gap }}px;
+  }
+
+  .ai-ingredient-science__card-{{ ai_gen_id }} {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    background: {{ block.settings.card_background }};
+    border: {{ block.settings.card_border_width }}px solid {{ block.settings.card_border_color }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    padding: {{ block.settings.card_padding }}px;
+    transition: all {{ block.settings.animation_duration }}s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    {% if block.settings.enable_glassmorphism %}
+      backdrop-filter: blur({{ block.settings.card_glass_blur }}px);
+      -webkit-backdrop-filter: blur({{ block.settings.card_glass_blur }}px);
+    {% endif %}
+  }
+
+  .ai-ingredient-science__card-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: {{ block.settings.card_hover_overlay }};
+    opacity: 0;
+    transition: opacity {{ block.settings.animation_duration }}s ease;
+    pointer-events: none;
+  }
+
+  .ai-ingredient-science__card-{{ ai_gen_id }}:hover {
+    transform: translateY(-{{ block.settings.hover_lift }}px);
+    box-shadow: 0 {{ block.settings.hover_shadow_y }}px {{ block.settings.hover_shadow_blur }}px {{ block.settings.hover_shadow_color }};
+    border-color: {{ block.settings.card_hover_border_color }};
+  }
+
+  .ai-ingredient-science__card-{{ ai_gen_id }}:hover::before {
+    opacity: {{ block.settings.hover_overlay_opacity }};
+  }
+
+  .ai-ingredient-science__card-inner-{{ ai_gen_id }} {
+    position: relative;
+    z-index: 1;
+  }
+
+  .ai-ingredient-science__icon-wrapper-{{ ai_gen_id }} {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    margin: 0 auto {{ block.settings.icon_spacing }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: {{ block.settings.icon_background }};
+    border-radius: {{ block.settings.icon_border_radius }}px;
+    transition: transform {{ block.settings.animation_duration }}s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .ai-ingredient-science__card-{{ ai_gen_id }}:hover .ai-ingredient-science__icon-wrapper-{{ ai_gen_id }} {
+    transform: scale({{ block.settings.icon_hover_scale }}) rotate({{ block.settings.icon_hover_rotate }}deg);
+  }
+
+  .ai-ingredient-science__icon-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .ai-ingredient-science__icon-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: {{ block.settings.icon_size | times: 0.5 }}px;
+    color: {{ block.settings.icon_placeholder_color }};
+  }
+
+  .ai-ingredient-science__card-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.card_title_font.family }}, {{ block.settings.card_title_font.fallback_families }};
+    font-weight: {{ block.settings.card_title_font.weight }};
+    font-size: {{ block.settings.card_title_size }}px;
+    color: {{ block.settings.card_title_color }};
+    text-align: {{ block.settings.card_text_alignment }};
+    margin: 0 0 {{ block.settings.card_title_spacing }}px;
+    line-height: 1.3;
+  }
+
+  .ai-ingredient-science__divider-{{ ai_gen_id }} {
+    width: {{ block.settings.divider_width }}px;
+    height: {{ block.settings.divider_height }}px;
+    background: {{ block.settings.divider_color }};
+    margin: 0 auto {{ block.settings.divider_spacing }}px;
+    border-radius: {{ block.settings.divider_border_radius }}px;
+  }
+
+  .ai-ingredient-science__columns-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    position: relative;
+  }
+
+  .ai-ingredient-science__column-{{ ai_gen_id }} {
+    padding: {{ block.settings.column_padding }}px;
+    position: relative;
+  }
+
+  .ai-ingredient-science__column-{{ ai_gen_id }}:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: {{ block.settings.separator_offset }}px;
+    bottom: {{ block.settings.separator_offset }}px;
+    width: {{ block.settings.separator_width }}px;
+    background: {{ block.settings.separator_color }};
+  }
+
+  .ai-ingredient-science__column-label-{{ ai_gen_id }} {
+    font-family: {{ block.settings.column_label_font.family }}, {{ block.settings.column_label_font.fallback_families }};
+    font-weight: {{ block.settings.column_label_font.weight }};
+    font-size: {{ block.settings.column_label_size }}px;
+    color: {{ block.settings.column_label_color }};
+    text-transform: {{ block.settings.column_label_transform }};
+    letter-spacing: {{ block.settings.column_label_spacing }}px;
+    margin: 0 0 {{ block.settings.column_label_margin }}px;
+    text-align: {{ block.settings.card_text_alignment }};
+  }
+
+  .ai-ingredient-science__column-text-{{ ai_gen_id }} {
+    font-family: {{ block.settings.column_text_font.family }}, {{ block.settings.column_text_font.fallback_families }};
+    font-weight: {{ block.settings.column_text_font.weight }};
+    font-size: {{ block.settings.column_text_size }}px;
+    color: {{ block.settings.column_text_color }};
+    line-height: 1.6;
+    margin: 0;
+    text-align: {{ block.settings.card_text_alignment }};
+  }
+
+  {% if block.settings.enable_scroll_animation %}
+    .ai-ingredient-science__card-{{ ai_gen_id }} {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .ai-ingredient-science__card-{{ ai_gen_id }}.ai-visible-{{ ai_gen_id }} {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  {% endif %}
+
+  @media screen and (max-width: 989px) {
+    .ai-ingredient-science__grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ai-ingredient-science__title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.8 }}px;
+    }
+
+    .ai-ingredient-science__subtitle-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subtitle_size | times: 0.9 }}px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-ingredient-science-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding_top | times: 0.6 }}px {{ block.settings.section_padding_horizontal | times: 0.6 }}px {{ block.settings.section_padding_bottom | times: 0.6 }}px;
+    }
+
+    .ai-ingredient-science__grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+
+    .ai-ingredient-science__title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.7 }}px;
+    }
+
+    .ai-ingredient-science__subtitle-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subtitle_size | times: 0.85 }}px;
+    }
+
+    .ai-ingredient-science__card-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.card_title_size | times: 0.9 }}px;
+    }
+
+    .ai-ingredient-science__columns-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: {{ block.settings.column_padding }}px;
+    }
+
+    .ai-ingredient-science__column-{{ ai_gen_id }}:not(:last-child)::after {
+      display: none;
+    }
+
+    .ai-ingredient-science__column-{{ ai_gen_id }} {
+      padding: {{ block.settings.column_padding | times: 0.7 }}px 0;
+      border-bottom: {{ block.settings.separator_width }}px solid {{ block.settings.separator_color }};
+    }
+
+    .ai-ingredient-science__column-{{ ai_gen_id }}:last-child {
+      border-bottom: none;
+    }
+  }
+{% endstyle %}
+
+<ingredient-science-{{ ai_gen_id }} class="ai-ingredient-science-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-ingredient-science__container-{{ ai_gen_id }}">
+    {% if block.settings.section_title != blank or block.settings.section_subtitle != blank %}
+      <div class="ai-ingredient-science__header-{{ ai_gen_id }}">
+        {% if block.settings.section_title != blank %}
+          <h2 class="ai-ingredient-science__title-{{ ai_gen_id }}">{{ block.settings.section_title }}</h2>
+        {% endif %}
+        {% if block.settings.section_subtitle != blank %}
+          <div class="ai-ingredient-science__subtitle-{{ ai_gen_id }}">{{ block.settings.section_subtitle }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="ai-ingredient-science__grid-{{ ai_gen_id }}">
+      {% for i in (1..3) %}
+        {% liquid
+          assign ingredient_key = 'ingredient_' | append: i
+          assign ingredient = block.settings[ingredient_key]
+          assign icon_key = 'ingredient_' | append: i | append: '_icon'
+          assign icon = block.settings[icon_key]
+          assign problem_key = 'ingredient_' | append: i | append: '_problem'
+          assign problem = block.settings[problem_key]
+          assign science_key = 'ingredient_' | append: i | append: '_science'
+          assign science = block.settings[science_key]
+          assign result_key = 'ingredient_' | append: i | append: '_result'
+          assign result = block.settings[result_key]
+        %}
+
+        {% if ingredient != blank %}
+          <a
+            href="/pages/ingredient-profile/{{ ingredient.handle }}"
+            class="ai-ingredient-science__card-{{ ai_gen_id }}"
+            data-card-index="{{ i }}"
+          >
+            <div class="ai-ingredient-science__card-inner-{{ ai_gen_id }}">
+              <div class="ai-ingredient-science__icon-wrapper-{{ ai_gen_id }}">
+                {% if icon != blank %}
+                  <img
+                    src="{{ icon | image_url: width: 200 }}"
+                    alt="{{ ingredient.name }}"
+                    class="ai-ingredient-science__icon-{{ ai_gen_id }}"
+                    loading="lazy"
+                    width="200"
+                    height="200"
+                  >
+                {% else %}
+                  <div class="ai-ingredient-science__icon-placeholder-{{ ai_gen_id }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                      <path d="M2 17l10 5 10-5"/>
+                      <path d="M2 12l10 5 10-5"/>
+                    </svg>
+                  </div>
+                {% endif %}
+              </div>
+
+              <h3 class="ai-ingredient-science__card-title-{{ ai_gen_id }}">{{ ingredient.name }}</h3>
+
+              {% if block.settings.show_divider %}
+                <div class="ai-ingredient-science__divider-{{ ai_gen_id }}"></div>
+              {% endif %}
+
+              <div class="ai-ingredient-science__columns-{{ ai_gen_id }}">
+                <div class="ai-ingredient-science__column-{{ ai_gen_id }}">
+                  <div class="ai-ingredient-science__column-label-{{ ai_gen_id }}">{{ block.settings.problem_label }}</div>
+                  <div class="ai-ingredient-science__column-text-{{ ai_gen_id }}">{{ problem }}</div>
+                </div>
+
+                <div class="ai-ingredient-science__column-{{ ai_gen_id }}">
+                  <div class="ai-ingredient-science__column-label-{{ ai_gen_id }}">{{ block.settings.science_label }}</div>
+                  <div class="ai-ingredient-science__column-text-{{ ai_gen_id }}">{{ science }}</div>
+                </div>
+
+                <div class="ai-ingredient-science__column-{{ ai_gen_id }}">
+                  <div class="ai-ingredient-science__column-label-{{ ai_gen_id }}">{{ block.settings.result_label }}</div>
+                  <div class="ai-ingredient-science__column-text-{{ ai_gen_id }}">{{ result }}</div>
+                </div>
+              </div>
+            </div>
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</ingredient-science-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class IngredientScience{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.enableScrollAnimation = {{ block.settings.enable_scroll_animation | json }};
+      }
+
+      connectedCallback() {
+        if (this.enableScrollAnimation) {
+          this.setupScrollAnimation();
+        }
+      }
+
+      setupScrollAnimation() {
+        const cards = this.querySelectorAll('.ai-ingredient-science__card-{{ ai_gen_id }}');
+        
+        const observerOptions = {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+              const cardIndex = entry.target.getAttribute('data-card-index');
+              setTimeout(() => {
+                entry.target.classList.add('ai-visible-{{ ai_gen_id }}');
+              }, cardIndex * {{ block.settings.stagger_delay }});
+              observer.unobserve(entry.target);
+            }
+          });
+        }, observerOptions);
+
+        cards.forEach(card => {
+          observer.observe(card);
+        });
+      }
+    }
+
+    customElements.define('ingredient-science-{{ ai_gen_id }}', IngredientScience{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Ingredient science",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_title",
+      "label": "Title",
+      "default": "The Science Behind Your Skin"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_subtitle",
+      "label": "Subtitle",
+      "default": "Evidence-based ingredients that deliver real results"
+    },
+    {
+      "type": "select",
+      "id": "header_alignment",
+      "label": "Header alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "label": "Header spacing",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 1"
+    },
+    {
+      "type": "metaobject",
+      "id": "ingredient_1",
+      "label": "Ingredient",
+      "metaobject_type": "ingredient_profile"
+    },
+    {
+      "type": "image_picker",
+      "id": "ingredient_1_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_1_problem",
+      "label": "The problem",
+      "default": "Weak Barrier"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_1_science",
+      "label": "The science",
+      "default": "Lipid Restoration"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_1_result",
+      "label": "The result",
+      "default": "Glass Skin"
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 2"
+    },
+    {
+      "type": "metaobject",
+      "id": "ingredient_2",
+      "label": "Ingredient",
+      "metaobject_type": "ingredient_profile"
+    },
+    {
+      "type": "image_picker",
+      "id": "ingredient_2_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_2_problem",
+      "label": "The problem",
+      "default": "Fine Lines"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_2_science",
+      "label": "The science",
+      "default": "Collagen Synthesis"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_2_result",
+      "label": "The result",
+      "default": "Plump Skin"
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 3"
+    },
+    {
+      "type": "metaobject",
+      "id": "ingredient_3",
+      "label": "Ingredient",
+      "metaobject_type": "ingredient_profile"
+    },
+    {
+      "type": "image_picker",
+      "id": "ingredient_3_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_3_problem",
+      "label": "The problem",
+      "default": "Dehydration"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_3_science",
+      "label": "The science",
+      "default": "Moisture Binding"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_3_result",
+      "label": "The result",
+      "default": "Hydrated Glow"
+    },
+    {
+      "type": "header",
+      "content": "Column labels"
+    },
+    {
+      "type": "text",
+      "id": "problem_label",
+      "label": "Problem label",
+      "default": "The Problem"
+    },
+    {
+      "type": "text",
+      "id": "science_label",
+      "label": "Science label",
+      "default": "The Science"
+    },
+    {
+      "type": "text",
+      "id": "result_label",
+      "label": "Result label",
+      "default": "The Result"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Grid gap",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Section spacing"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_horizontal",
+      "label": "Padding horizontal",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Section colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#fdfaf0"
+    },
+    {
+      "type": "header",
+      "content": "Title style"
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Title font",
+      "default": "poppins_n6"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 42
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "range",
+      "id": "title_spacing",
+      "label": "Title spacing",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Subtitle style"
+    },
+    {
+      "type": "font_picker",
+      "id": "subtitle_font",
+      "label": "Subtitle font",
+      "default": "poppins_n4"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "rgba(255, 255, 255, 0.6)"
+    },
+    {
+      "type": "range",
+      "id": "card_border_width",
+      "label": "Border width",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Border color",
+      "default": "rgba(13, 27, 62, 0.1)"
+    },
+    {
+      "type": "color",
+      "id": "card_hover_border_color",
+      "label": "Hover border color",
+      "default": "rgba(226, 200, 75, 0.5)"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Card padding",
+      "min": 15,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "select",
+      "id": "card_text_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Card title style"
+    },
+    {
+      "type": "font_picker",
+      "id": "card_title_font",
+      "label": "Card title font",
+      "default": "poppins_n6"
+    },
+    {
+      "type": "range",
+      "id": "card_title_size",
+      "label": "Card title size",
+      "min": 14,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "color",
+      "id": "card_title_color",
+      "label": "Card title color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "range",
+      "id": "card_title_spacing",
+      "label": "Card title spacing",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Icon style"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 40,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 70
+    },
+    {
+      "type": "color",
+      "id": "icon_background",
+      "label": "Icon background",
+      "default": "rgba(226, 200, 75, 0.15)"
+    },
+    {
+      "type": "color",
+      "id": "icon_placeholder_color",
+      "label": "Icon placeholder color",
+      "default": "#e2c84b"
+    },
+    {
+      "type": "range",
+      "id": "icon_border_radius",
+      "label": "Icon border radius",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "icon_spacing",
+      "label": "Icon spacing",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "icon_hover_scale",
+      "label": "Icon hover scale",
+      "min": 1,
+      "max": 1.5,
+      "step": 0.1,
+      "default": 1.1
+    },
+    {
+      "type": "range",
+      "id": "icon_hover_rotate",
+      "label": "Icon hover rotate",
+      "min": 0,
+      "max": 360,
+      "step": 15,
+      "unit": "deg",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Divider"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_divider",
+      "label": "Show divider",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "divider_width",
+      "label": "Divider width",
+      "min": 20,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "divider_height",
+      "label": "Divider height",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#e2c84b"
+    },
+    {
+      "type": "range",
+      "id": "divider_border_radius",
+      "label": "Divider border radius",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "divider_spacing",
+      "label": "Divider spacing",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Column style"
+    },
+    {
+      "type": "range",
+      "id": "column_padding",
+      "label": "Column padding",
+      "min": 5,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "font_picker",
+      "id": "column_label_font",
+      "label": "Column label font",
+      "default": "poppins_n6"
+    },
+    {
+      "type": "range",
+      "id": "column_label_size",
+      "label": "Column label size",
+      "min": 8,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "color",
+      "id": "column_label_color",
+      "label": "Column label color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "select",
+      "id": "column_label_transform",
+      "label": "Column label transform",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "lowercase", "label": "Lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "column_label_spacing",
+      "label": "Column label letter spacing",
+      "min": 0,
+      "max": 3,
+      "step": 0.5,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "column_label_margin",
+      "label": "Column label margin",
+      "min": 5,
+      "max": 25,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "font_picker",
+      "id": "column_text_font",
+      "label": "Column text font",
+      "default": "poppins_n4"
+    },
+    {
+      "type": "range",
+      "id": "column_text_size",
+      "label": "Column text size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "color",
+      "id": "column_text_color",
+      "label": "Column text color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "header",
+      "content": "Column separator"
+    },
+    {
+      "type": "range",
+      "id": "separator_width",
+      "label": "Separator width",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "separator_color",
+      "label": "Separator color",
+      "default": "rgba(13, 27, 62, 0.15)"
+    },
+    {
+      "type": "range",
+      "id": "separator_offset",
+      "label": "Separator offset",
+      "min": 0,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Hover effects"
+    },
+    {
+      "type": "range",
+      "id": "hover_lift",
+      "label": "Hover lift",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "hover_shadow_y",
+      "label": "Hover shadow Y",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "hover_shadow_blur",
+      "label": "Hover shadow blur",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "hover_shadow_color",
+      "label": "Hover shadow color",
+      "default": "rgba(226, 200, 75, 0.3)"
+    },
+    {
+      "type": "color",
+      "id": "card_hover_overlay",
+      "label": "Card hover overlay",
+      "default": "rgba(226, 200, 75, 0.05)"
+    },
+    {
+      "type": "range",
+      "id": "hover_overlay_opacity",
+      "label": "Hover overlay opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Glassmorphism"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_glassmorphism",
+      "label": "Enable glassmorphism",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "glass_blur",
+      "label": "Section glass blur",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "card_glass_blur",
+      "label": "Card glass blur",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Animations"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_scroll_animation",
+      "label": "Enable scroll animation",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "animation_duration",
+      "label": "Animation duration",
+      "min": 0.1,
+      "max": 1,
+      "step": 0.1,
+      "unit": "s",
+      "default": 0.4
+    },
+    {
+      "type": "range",
+      "id": "stagger_delay",
+      "label": "Stagger delay",
+      "min": 50,
+      "max": 300,
+      "step": 25,
+      "unit": "ms",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredient science"
+    }
+  ]
+}
 {% endschema %}
