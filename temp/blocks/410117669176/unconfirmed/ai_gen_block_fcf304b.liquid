@@ -1,6 +1,701 @@
+{% doc %}
+  @prompt
+    Create a two-column hero section. Left column: a small all-caps category label (e.g. "KOREAN SKINCARE") in a brand accent color, a large bold headline (e.g. "Radiant Skin Starts Here"), a short paragraph of body text below it, a row of 3 icon + label pairs (icons from a simple SVG or inline icon set — layers, heart, checkmark circle) with labels like "PREMIUM QUALITY", "GENTLE CARE", "PROVEN RESULTS", and a pill-shaped CTA button with editable label and link. Right column: a single image (uploadable in theme settings) displayed in a rounded rectangle card. All text fields, the image, icon labels, button text, and button link should be editable in theme settings. Enhancement: make the left column text animate in from the left and the image slide in from the right on scroll, and add a hover lift effect on the CTA button. Use a clean off-white or warm white background to match a premium spa aesthetic. add a button at the bottom so i can dynamically link the page for users to learn more
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-hero-container-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding_top }}px {{ block.settings.section_padding_horizontal }}px {{ block.settings.section_padding_bottom }}px;
+  }
+
+  .ai-hero-wrapper-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ block.settings.column_gap }}px;
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+    align-items: center;
+  }
+
+  .ai-hero-left-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.content_gap }}px;
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .ai-hero-left-{{ ai_gen_id }}.ai-hero-visible-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .ai-hero-category-{{ ai_gen_id }} {
+    font-size: {{ block.settings.category_font_size }}px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: {{ block.settings.category_color }};
+    margin: 0;
+  }
+
+  .ai-hero-headline-{{ ai_gen_id }} {
+    font-size: {{ block.settings.headline_font_size }}px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: {{ block.settings.headline_color }};
+    margin: 0;
+  }
+
+  .ai-hero-body-{{ ai_gen_id }} {
+    font-size: {{ block.settings.body_font_size }}px;
+    line-height: 1.6;
+    color: {{ block.settings.body_color }};
+    margin: 0;
+  }
+
+  .ai-hero-icons-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.icon_gap }}px;
+    flex-wrap: wrap;
+  }
+
+  .ai-hero-icon-item-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .ai-hero-icon-{{ ai_gen_id }} {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    color: {{ block.settings.icon_color }};
+  }
+
+  .ai-hero-icon-label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.icon_label_font_size }}px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: {{ block.settings.icon_label_color }};
+  }
+
+  .ai-hero-cta-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .ai-hero-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;
+    background-color: {{ block.settings.button_bg_color }};
+    color: {{ block.settings.button_text_color }};
+    font-size: {{ block.settings.button_font_size }}px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+  }
+
+  .ai-hero-button-{{ ai_gen_id }}:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    background-color: {{ block.settings.button_hover_bg_color }};
+  }
+
+  .ai-hero-learn-more-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    background-color: transparent;
+    color: {{ block.settings.learn_more_color }};
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border: 2px solid {{ block.settings.learn_more_color }};
+    border-radius: {{ block.settings.button_border_radius }}px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    width: fit-content;
+  }
+
+  .ai-hero-learn-more-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.learn_more_color }};
+    color: {{ block.settings.background_color }};
+  }
+
+  .ai-hero-right-{{ ai_gen_id }} {
+    opacity: 0;
+    transform: translateX(50px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .ai-hero-right-{{ ai_gen_id }}.ai-hero-visible-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .ai-hero-image-card-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    border-radius: {{ block.settings.image_border_radius }}px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-hero-image-card-{{ ai_gen_id }} img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .ai-hero-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .ai-hero-image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-hero-empty-state-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-hero-wrapper-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .ai-hero-headline-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.headline_font_size }}px * 0.7);
+    }
+
+    .ai-hero-icons-{{ ai_gen_id }} {
+      justify-content: center;
+    }
+
+    .ai-hero-left-{{ ai_gen_id }} {
+      text-align: center;
+      align-items: center;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-hero-container-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding_top | times: 0.6 }}px {{ block.settings.section_padding_horizontal | times: 0.6 }}px {{ block.settings.section_padding_bottom | times: 0.6 }}px;
+    }
+
+    .ai-hero-headline-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.headline_font_size }}px * 0.5);
+    }
+
+    .ai-hero-body-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.body_font_size }}px * 0.9);
+    }
+  }
+{% endstyle %}
+
+<premium-hero-{{ ai_gen_id }} class="ai-hero-container-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-hero-wrapper-{{ ai_gen_id }}">
+    <div class="ai-hero-left-{{ ai_gen_id }}" data-animate="left">
+      {% if block.settings.category_label != blank %}
+        <p class="ai-hero-category-{{ ai_gen_id }}">{{ block.settings.category_label }}</p>
+      {% endif %}
+
+      {% if block.settings.headline != blank %}
+        <h1 class="ai-hero-headline-{{ ai_gen_id }}">{{ block.settings.headline }}</h1>
+      {% endif %}
+
+      {% if block.settings.body_text != blank %}
+        <div class="ai-hero-body-{{ ai_gen_id }}">{{ block.settings.body_text }}</div>
+      {% endif %}
+
+      <div class="ai-hero-icons-{{ ai_gen_id }}">
+        {% if block.settings.icon_1_label != blank %}
+          <div class="ai-hero-icon-item-{{ ai_gen_id }}">
+            <svg class="ai-hero-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+              <polyline points="2 17 12 22 22 17"></polyline>
+              <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
+            <span class="ai-hero-icon-label-{{ ai_gen_id }}">{{ block.settings.icon_1_label }}</span>
+          </div>
+        {% endif %}
+
+        {% if block.settings.icon_2_label != blank %}
+          <div class="ai-hero-icon-item-{{ ai_gen_id }}">
+            <svg class="ai-hero-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            <span class="ai-hero-icon-label-{{ ai_gen_id }}">{{ block.settings.icon_2_label }}</span>
+          </div>
+        {% endif %}
+
+        {% if block.settings.icon_3_label != blank %}
+          <div class="ai-hero-icon-item-{{ ai_gen_id }}">
+            <svg class="ai-hero-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span class="ai-hero-icon-label-{{ ai_gen_id }}">{{ block.settings.icon_3_label }}</span>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="ai-hero-cta-wrapper-{{ ai_gen_id }}">
+        {% if block.settings.button_text != blank %}
+          <a href="{{ block.settings.button_link }}" class="ai-hero-button-{{ ai_gen_id }}">
+            {{ block.settings.button_text }}
+          </a>
+        {% endif %}
+
+        {% if block.settings.learn_more_text != blank %}
+          <a href="{{ block.settings.learn_more_link }}" class="ai-hero-learn-more-{{ ai_gen_id }}">
+            {{ block.settings.learn_more_text }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="ai-hero-right-{{ ai_gen_id }}" data-animate="right">
+      <div class="ai-hero-image-card-{{ ai_gen_id }}">
+        {% if block.settings.hero_image %}
+          <img
+            src="{{ block.settings.hero_image | image_url: width: 1200 }}"
+            alt="{{ block.settings.hero_image.alt | escape }}"
+            loading="lazy"
+            width="{{ block.settings.hero_image.width }}"
+            height="{{ block.settings.hero_image.height }}"
+          >
+        {% else %}
+          <div class="ai-hero-image-placeholder-{{ ai_gen_id }}">
+            {{ 'hero-apparel-1' | placeholder_svg_tag }}
+            <div class="ai-hero-empty-state-{{ ai_gen_id }}">
+              Next, add a hero image
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</premium-hero-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class PremiumHero{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.observer = null;
+      }
+
+      connectedCallback() {
+        this.setupScrollAnimation();
+      }
+
+      setupScrollAnimation() {
+        const leftColumn = this.querySelector('[data-animate="left"]');
+        const rightColumn = this.querySelector('[data-animate="right"]');
+
+        const observerOptions = {
+          threshold: 0.2,
+          rootMargin: '0px 0px -100px 0px'
+        };
+
+        this.observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('ai-hero-visible-{{ ai_gen_id }}');
+            }
+          });
+        }, observerOptions);
+
+        if (leftColumn) {
+          this.observer.observe(leftColumn);
+        }
+
+        if (rightColumn) {
+          this.observer.observe(rightColumn);
+        }
+      }
+
+      disconnectedCallback() {
+        if (this.observer) {
+          this.observer.disconnect();
+        }
+      }
+    }
+
+    customElements.define('premium-hero-{{ ai_gen_id }}', PremiumHero{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Premium hero",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 1000,
+      "max": 1600,
+      "step": 100,
+      "unit": "px",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Column gap",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "content_gap",
+      "label": "Content gap",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#fdfaf0"
+    },
+    {
+      "type": "header",
+      "content": "Category label"
+    },
+    {
+      "type": "text",
+      "id": "category_label",
+      "label": "Category text",
+      "default": "KOREAN SKINCARE"
+    },
+    {
+      "type": "range",
+      "id": "category_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "category_color",
+      "label": "Text color",
+      "default": "#dfac40"
+    },
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline text",
+      "default": "Radiant Skin Starts Here"
+    },
+    {
+      "type": "range",
+      "id": "headline_font_size",
+      "label": "Font size",
+      "min": 30,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "color",
+      "id": "headline_color",
+      "label": "Text color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "header",
+      "content": "Body text"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text",
+      "label": "Body text",
+      "default": "<p>Experience the transformative power of premium Korean skincare, crafted with gentle care and proven results for your most radiant complexion.</p>"
+    },
+    {
+      "type": "range",
+      "id": "body_font_size",
+      "label": "Font size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Text color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "header",
+      "content": "Icon features"
+    },
+    {
+      "type": "text",
+      "id": "icon_1_label",
+      "label": "Icon 1 label",
+      "default": "PREMIUM QUALITY"
+    },
+    {
+      "type": "text",
+      "id": "icon_2_label",
+      "label": "Icon 2 label",
+      "default": "GENTLE CARE"
+    },
+    {
+      "type": "text",
+      "id": "icon_3_label",
+      "label": "Icon 3 label",
+      "default": "PROVEN RESULTS"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 20,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "icon_gap",
+      "label": "Icon spacing",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "icon_label_font_size",
+      "label": "Label font size",
+      "min": 8,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#dfac40"
+    },
+    {
+      "type": "color",
+      "id": "icon_label_color",
+      "label": "Label color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "header",
+      "content": "Primary button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "label": "Vertical padding",
+      "min": 10,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 20,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Background color",
+      "default": "#f0d84a"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#dfac40"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "header",
+      "content": "Learn more button"
+    },
+    {
+      "type": "text",
+      "id": "learn_more_text",
+      "label": "Button text",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "learn_more_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "learn_more_color",
+      "label": "Color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "header",
+      "content": "Hero image"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Image"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    }
+  ],
+  "presets": [
+    {
+      "name": "Premium hero"
+    }
+  ]
+}
 {% endschema %}
