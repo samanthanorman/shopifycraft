@@ -1,6 +1,690 @@
+{% doc %}
+  @prompt
+    HARAMOON_101 metaobject key for this product template custom liquid section - two column design with the goal of consideration and CTA "why you need this" featuring the field "skin care benefits" field from the metaobject definition ...also include the field in the metaobject definition called "Product Story" really selling the customer and infusing the metaobject data as much as possible for structured data SEO google likes. design the section for mobile optimization and ensure its clean and modern enough to build rapport and call the customer to action - build it so each of the products assigned to this template pull in their respective HARAMOON_101 metaobject that each have one linked to it. add cute animation upon hover to help it stand out from the rest of the glassmorphic design
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{% assign haramoon_data = product.metafields.custom.HARAMOON_101 %}
+
+{% style %}
+  .haramoon-why-you-need-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: {{ block.settings.section_padding_top }}px 20px {{ block.settings.section_padding_bottom }}px;
+    background: {{ block.settings.background_color }};
+  }
+
+  .haramoon-why-you-need__container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .haramoon-why-you-need__grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ block.settings.column_gap }}px;
+    align-items: center;
+  }
+
+  .haramoon-why-you-need__content-{{ ai_gen_id }} {
+    padding: {{ block.settings.content_padding }}px;
+    background: {{ block.settings.content_bg_color }};
+    backdrop-filter: blur({{ block.settings.glass_blur }}px);
+    border-radius: {{ block.settings.border_radius }}px;
+    border: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
+    box-shadow: {{ block.settings.shadow_horizontal }}px {{ block.settings.shadow_vertical }}px {{ block.settings.shadow_blur }}px {{ block.settings.shadow_color }};
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+  }
+
+  .haramoon-why-you-need__content-{{ ai_gen_id }}:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: {{ block.settings.shadow_horizontal | times: 1.5 }}px {{ block.settings.shadow_vertical | times: 2 }}px {{ block.settings.shadow_blur | times: 1.5 }}px {{ block.settings.shadow_color }};
+  }
+
+  .haramoon-why-you-need__story-{{ ai_gen_id }} {
+    padding: {{ block.settings.content_padding }}px;
+    background: {{ block.settings.story_bg_color }};
+    backdrop-filter: blur({{ block.settings.glass_blur }}px);
+    border-radius: {{ block.settings.border_radius }}px;
+    border: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
+    box-shadow: {{ block.settings.shadow_horizontal }}px {{ block.settings.shadow_vertical }}px {{ block.settings.shadow_blur }}px {{ block.settings.shadow_color }};
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+  }
+
+  .haramoon-why-you-need__story-{{ ai_gen_id }}:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: {{ block.settings.shadow_horizontal | times: 1.5 }}px {{ block.settings.shadow_vertical | times: 2 }}px {{ block.settings.shadow_blur | times: 1.5 }}px {{ block.settings.shadow_color }};
+  }
+
+  .haramoon-why-you-need__heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    font-weight: {{ block.settings.heading_weight }};
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 {{ block.settings.heading_spacing }}px;
+    line-height: 1.2;
+  }
+
+  .haramoon-why-you-need__subheading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subheading_size }}px;
+    font-weight: {{ block.settings.subheading_weight }};
+    color: {{ block.settings.subheading_color }};
+    margin: 0 0 {{ block.settings.text_spacing }}px;
+    line-height: 1.4;
+  }
+
+  .haramoon-why-you-need__text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    color: {{ block.settings.text_color }};
+    line-height: 1.6;
+    margin: 0 0 {{ block.settings.text_spacing }}px;
+  }
+
+  .haramoon-why-you-need__text-{{ ai_gen_id }}:last-child {
+    margin-bottom: 0;
+  }
+
+  .haramoon-why-you-need__benefits-list-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 {{ block.settings.text_spacing }}px;
+  }
+
+  .haramoon-why-you-need__benefit-item-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    color: {{ block.settings.text_color }};
+    line-height: 1.6;
+    margin-bottom: 12px;
+    padding-left: 28px;
+    position: relative;
+  }
+
+  .haramoon-why-you-need__benefit-item-{{ ai_gen_id }}::before {
+    content: "✦";
+    position: absolute;
+    left: 0;
+    color: {{ block.settings.accent_color }};
+    font-size: 18px;
+  }
+
+  .haramoon-why-you-need__cta-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: {{ block.settings.button_padding_v }}px {{ block.settings.button_padding_h }}px;
+    background: {{ block.settings.button_bg_color }};
+    color: {{ block.settings.button_text_color }};
+    text-decoration: none;
+    border-radius: {{ block.settings.button_radius }}px;
+    font-size: {{ block.settings.button_text_size }}px;
+    font-weight: {{ block.settings.button_weight }};
+    transition: all 0.3s ease;
+    border: 2px solid {{ block.settings.button_border_color }};
+    cursor: pointer;
+  }
+
+  .haramoon-why-you-need__cta-{{ ai_gen_id }}:hover {
+    background: {{ block.settings.button_hover_bg }};
+    color: {{ block.settings.button_hover_text }};
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px {{ block.settings.button_shadow_color }};
+  }
+
+  .haramoon-why-you-need__empty-state-{{ ai_gen_id }} {
+    padding: 60px 20px;
+    text-align: center;
+    background: {{ block.settings.content_bg_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+    border: 2px dashed {{ block.settings.border_color }};
+  }
+
+  .haramoon-why-you-need__empty-text-{{ ai_gen_id }} {
+    font-size: 16px;
+    color: {{ block.settings.text_color }};
+    opacity: 0.7;
+  }
+
+  @media screen and (max-width: 749px) {
+    .haramoon-why-you-need__grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: {{ block.settings.mobile_gap }}px;
+    }
+
+    .haramoon-why-you-need__heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.8 }}px;
+    }
+
+    .haramoon-why-you-need__subheading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subheading_size | times: 0.9 }}px;
+    }
+
+    .haramoon-why-you-need__text-{{ ai_gen_id }},
+    .haramoon-why-you-need__benefit-item-{{ ai_gen_id }} {
+      font-size: {{ block.settings.text_size | times: 0.95 }}px;
+    }
+
+    .haramoon-why-you-need__content-{{ ai_gen_id }},
+    .haramoon-why-you-need__story-{{ ai_gen_id }} {
+      padding: {{ block.settings.content_padding | times: 0.75 }}px;
+    }
+  }
+{% endstyle %}
+
+<haramoon-why-you-need-{{ ai_gen_id }}
+  class="haramoon-why-you-need-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="haramoon-why-you-need__container-{{ ai_gen_id }}">
+    {% if haramoon_data != blank %}
+      <div class="haramoon-why-you-need__grid-{{ ai_gen_id }}">
+        <div class="haramoon-why-you-need__content-{{ ai_gen_id }}">
+          <h2 class="haramoon-why-you-need__heading-{{ ai_gen_id }}">
+            {{ block.settings.main_heading }}
+          </h2>
+          
+          {% if haramoon_data.skin_care_benefits != blank %}
+            <h3 class="haramoon-why-you-need__subheading-{{ ai_gen_id }}">
+              {{ block.settings.benefits_label }}
+            </h3>
+            <ul class="haramoon-why-you-need__benefits-list-{{ ai_gen_id }}">
+              {% assign benefits = haramoon_data.skin_care_benefits | split: ',' %}
+              {% for benefit in benefits %}
+                <li class="haramoon-why-you-need__benefit-item-{{ ai_gen_id }}">
+                  {{ benefit | strip }}
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
+          {% if block.settings.show_cta %}
+            <a
+              href="#shopify-section-{{ section.id }}"
+              class="haramoon-why-you-need__cta-{{ ai_gen_id }}"
+            >
+              {{ block.settings.cta_text }}
+            </a>
+          {% endif %}
+        </div>
+
+        <div class="haramoon-why-you-need__story-{{ ai_gen_id }}">
+          {% if haramoon_data.product_story != blank %}
+            <h3 class="haramoon-why-you-need__subheading-{{ ai_gen_id }}">
+              {{ block.settings.story_label }}
+            </h3>
+            <div class="haramoon-why-you-need__text-{{ ai_gen_id }}">
+              {{ haramoon_data.product_story }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "{{ product.title | escape }}",
+        "description": "{{ haramoon_data.product_story | strip_html | escape }}",
+        {% if haramoon_data.skin_care_benefits != blank %}
+        "additionalProperty": [
+          {% assign benefits = haramoon_data.skin_care_benefits | split: ',' %}
+          {% for benefit in benefits %}
+          {
+            "@type": "PropertyValue",
+            "name": "Skin Care Benefit",
+            "value": "{{ benefit | strip | escape }}"
+          }{% unless forloop.last %},{% endunless %}
+          {% endfor %}
+        ],
+        {% endif %}
+        "brand": {
+          "@type": "Brand",
+          "name": "HARAMOON"
+        }
+      }
+      </script>
+    {% else %}
+      <div class="haramoon-why-you-need__empty-state-{{ ai_gen_id }}">
+        <p class="haramoon-why-you-need__empty-text-{{ ai_gen_id }}">
+          Next, link a HARAMOON_101 metaobject to this product to display skin care benefits and product story
+        </p>
+      </div>
+    {% endif %}
+  </div>
+</haramoon-why-you-need-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class HaramoonWhyYouNeed{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.initScrollAnimation();
+      }
+
+      initScrollAnimation() {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+
+        const contentBlocks = this.querySelectorAll(
+          '.haramoon-why-you-need__content-{{ ai_gen_id }}, .haramoon-why-you-need__story-{{ ai_gen_id }}'
+        );
+
+        contentBlocks.forEach((block) => {
+          block.style.opacity = '0';
+          block.style.transform = 'translateY(30px)';
+          block.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+          observer.observe(block);
+        });
+      }
+    }
+
+    customElements.define('haramoon-why-you-need-{{ ai_gen_id }}', HaramoonWhyYouNeed{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "HARAMOON why you need",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "main_heading",
+      "label": "Main heading",
+      "default": "Why You Need This"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "benefits_label",
+      "label": "Benefits label",
+      "default": "Skin Care Benefits"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "story_label",
+      "label": "Story label",
+      "default": "The Story"
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Show button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "Add to Cart"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Column gap",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "mobile_gap",
+      "label": "Mobile gap",
+      "min": 15,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "content_padding",
+      "label": "Content padding",
+      "min": 20,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Glassmorphic style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section background",
+      "default": "#fdfaf0"
+    },
+    {
+      "type": "color",
+      "id": "content_bg_color",
+      "label": "Content background",
+      "default": "rgba(255, 255, 255, 0.4)"
+    },
+    {
+      "type": "color",
+      "id": "story_bg_color",
+      "label": "Story background",
+      "default": "rgba(240, 216, 74, 0.15)"
+    },
+    {
+      "type": "range",
+      "id": "glass_blur",
+      "label": "Glass blur",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "border_thickness",
+      "label": "Border thickness",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "rgba(255, 255, 255, 0.3)"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Shadow"
+    },
+    {
+      "type": "range",
+      "id": "shadow_horizontal",
+      "label": "Horizontal offset",
+      "min": -10,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "shadow_vertical",
+      "label": "Vertical offset",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "shadow_blur",
+      "label": "Blur",
+      "min": 0,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "shadow_color",
+      "label": "Shadow color",
+      "default": "rgba(0, 0, 0, 0.1)"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 700
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing",
+      "label": "Heading spacing",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "label": "Subheading size",
+      "min": 14,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "subheading_weight",
+      "label": "Subheading weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 600
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Subheading color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "range",
+      "id": "text_spacing",
+      "label": "Text spacing",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#f0d84a"
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "range",
+      "id": "button_padding_v",
+      "label": "Vertical padding",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_padding_h",
+      "label": "Horizontal padding",
+      "min": 20,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Background",
+      "default": "#f0d84a"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Border color",
+      "default": "#f0d84a"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg",
+      "label": "Hover background",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text",
+      "label": "Hover text color",
+      "default": "#f0d84a"
+    },
+    {
+      "type": "color",
+      "id": "button_shadow_color",
+      "label": "Shadow color",
+      "default": "rgba(240, 216, 74, 0.4)"
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "button_text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_weight",
+      "label": "Font weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 600
+    }
+  ],
+  "presets": [
+    {
+      "name": "HARAMOON why you need"
+    }
+  ]
+}
 {% endschema %}
