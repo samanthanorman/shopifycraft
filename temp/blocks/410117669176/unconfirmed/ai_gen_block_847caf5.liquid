@@ -1,6 +1,543 @@
+{% doc %}
+  @prompt
+    3. HOW TO USE + ROUTINE
+    
+    --- Create a "How To Use" routine section for a K-beauty skincare product page that dynamically pulls from a Shopify metaobject of type haramoon_101 linked to the current product. Pull these fields from the haramoon_101 entry: how_to_use (multi-line text with the step instructions), absorption_time (e.g. "30 seconds"), application_method (e.g. "Press into skin"), best_for_time_of_day (list, e.g. ["PM"]), and routine_step_number (integer, e.g. 3). Display the how_to_use content as individual steps parsed by line break — each step shown as a large editorial step number in thin serif font, a bold action label, and the instruction copy. Connect steps with a soft dotted gradient line. Show routine_step_number as a highlighted badge (e.g. "Step 3 in Your Routine"), absorption_time as a timing badge, application_method as a technique badge, and best_for_time_of_day as an AM/PM badge — all pulled dynamically. Also pull layering_tips rich text field and display it as a slim accent-colored tip banner below the steps. Include an editable section title in theme settings. Add HowTo schema JSON-LD with each step marked up using name and text. Warm cream background, staggered scroll animations, premium editorial aesthetic
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{% assign haramoon_data = product.metafields.custom.haramoon_101.value %}
+
+{% style %}
+  .ai-how-to-use-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    background: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding }}px 40px;
+    border-radius: {{ block.settings.border_radius }}px;
+  }
+
+  .ai-how-to-use-container-{{ ai_gen_id }} {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .ai-how-to-use-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    text-align: center;
+    margin: 0 0 48px;
+    letter-spacing: 0.5px;
+  }
+
+  .ai-how-to-use-badges-{{ ai_gen_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+
+  .ai-how-to-use-badge-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: {{ block.settings.badge_background }};
+    color: {{ block.settings.badge_text_color }};
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  .ai-how-to-use-badge-icon-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+  }
+
+  .ai-how-to-use-steps-{{ ai_gen_id }} {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .ai-how-to-use-step-{{ ai_gen_id }} {
+    position: relative;
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .ai-how-to-use-step-{{ ai_gen_id }}.ai-visible-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-how-to-use-step-{{ ai_gen_id }}:nth-child(even) {
+    padding-left: 40px;
+  }
+
+  .ai-how-to-use-step-number-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    font-family: {{ block.settings.step_number_font.family }}, {{ block.settings.step_number_font.fallback_families }};
+    font-weight: {{ block.settings.step_number_font.weight }};
+    font-size: {{ block.settings.step_number_size }}px;
+    color: {{ block.settings.step_number_color }};
+    line-height: 1;
+    opacity: 0.3;
+    width: 60px;
+    text-align: center;
+  }
+
+  .ai-how-to-use-step-content-{{ ai_gen_id }} {
+    flex-grow: 1;
+  }
+
+  .ai-how-to-use-step-label-{{ ai_gen_id }} {
+    font-weight: 600;
+    font-size: {{ block.settings.step_label_size }}px;
+    color: {{ block.settings.step_label_color }};
+    margin: 0 0 8px;
+    letter-spacing: 0.3px;
+  }
+
+  .ai-how-to-use-step-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.step_text_size }}px;
+    color: {{ block.settings.step_text_color }};
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .ai-how-to-use-connector-{{ ai_gen_id }} {
+    position: absolute;
+    left: 30px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      {{ block.settings.connector_color }} 0%,
+      {{ block.settings.connector_color }} 50%,
+      transparent 50%,
+      transparent 100%
+    );
+    background-size: 2px 8px;
+    opacity: 0.3;
+  }
+
+  .ai-how-to-use-tip-{{ ai_gen_id }} {
+    margin-top: 40px;
+    padding: 20px 24px;
+    background: {{ block.settings.tip_background }};
+    border-left: 4px solid {{ block.settings.tip_accent_color }};
+    border-radius: 6px;
+  }
+
+  .ai-how-to-use-tip-{{ ai_gen_id }} p {
+    margin: 0;
+    font-size: 14px;
+    color: {{ block.settings.tip_text_color }};
+    line-height: 1.6;
+  }
+
+  .ai-how-to-use-empty-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 60px 20px;
+    color: {{ block.settings.step_text_color }};
+    opacity: 0.6;
+    font-style: italic;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-how-to-use-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding | times: 0.6 }}px 20px;
+    }
+
+    .ai-how-to-use-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.7 }}px;
+      margin-bottom: 32px;
+    }
+
+    .ai-how-to-use-step-{{ ai_gen_id }}:nth-child(even) {
+      padding-left: 0;
+    }
+
+    .ai-how-to-use-step-number-{{ ai_gen_id }} {
+      font-size: {{ block.settings.step_number_size | times: 0.6 }}px;
+      width: 40px;
+    }
+
+    .ai-how-to-use-connector-{{ ai_gen_id }} {
+      left: 20px;
+    }
+
+    .ai-how-to-use-step-label-{{ ai_gen_id }} {
+      font-size: {{ block.settings.step_label_size | times: 0.9 }}px;
+    }
+
+    .ai-how-to-use-step-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.step_text_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<how-to-use-{{ ai_gen_id }} class="ai-how-to-use-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-how-to-use-container-{{ ai_gen_id }}">
+    {% if block.settings.section_title != blank %}
+      <h2 class="ai-how-to-use-title-{{ ai_gen_id }}">{{ block.settings.section_title }}</h2>
+    {% endif %}
+
+    {% if haramoon_data %}
+      <div class="ai-how-to-use-badges-{{ ai_gen_id }}">
+        {% if haramoon_data.routine_step_number %}
+          <div class="ai-how-to-use-badge-{{ ai_gen_id }}">
+            <svg class="ai-how-to-use-badge-icon-{{ ai_gen_id }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+            </svg>
+            Step {{ haramoon_data.routine_step_number }} in Your Routine
+          </div>
+        {% endif %}
+
+        {% if haramoon_data.absorption_time %}
+          <div class="ai-how-to-use-badge-{{ ai_gen_id }}">
+            <svg class="ai-how-to-use-badge-icon-{{ ai_gen_id }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            {{ haramoon_data.absorption_time }}
+          </div>
+        {% endif %}
+
+        {% if haramoon_data.application_method %}
+          <div class="ai-how-to-use-badge-{{ ai_gen_id }}">
+            <svg class="ai-how-to-use-badge-icon-{{ ai_gen_id }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11"></path>
+            </svg>
+            {{ haramoon_data.application_method }}
+          </div>
+        {% endif %}
+
+        {% if haramoon_data.best_for_time_of_day %}
+          {% for time in haramoon_data.best_for_time_of_day %}
+            <div class="ai-how-to-use-badge-{{ ai_gen_id }}">
+              <svg class="ai-how-to-use-badge-icon-{{ ai_gen_id }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {% if time == 'AM' %}
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                {% else %}
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                {% endif %}
+              </svg>
+              {{ time }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      {% if haramoon_data.how_to_use %}
+        {% assign steps = haramoon_data.how_to_use | newline_to_br | split: '<br />' %}
+        <div class="ai-how-to-use-steps-{{ ai_gen_id }}">
+          <div class="ai-how-to-use-connector-{{ ai_gen_id }}"></div>
+          {% for step in steps %}
+            {% if step != blank %}
+              {% assign step_parts = step | split: ':' %}
+              {% if step_parts.size > 1 %}
+                <div class="ai-how-to-use-step-{{ ai_gen_id }}" data-step="{{ forloop.index }}">
+                  <div class="ai-how-to-use-step-number-{{ ai_gen_id }}">{{ forloop.index }}</div>
+                  <div class="ai-how-to-use-step-content-{{ ai_gen_id }}">
+                    <h3 class="ai-how-to-use-step-label-{{ ai_gen_id }}">{{ step_parts[0] | strip }}</h3>
+                    <p class="ai-how-to-use-step-text-{{ ai_gen_id }}">{{ step_parts[1] | strip }}</p>
+                  </div>
+                </div>
+              {% else %}
+                <div class="ai-how-to-use-step-{{ ai_gen_id }}" data-step="{{ forloop.index }}">
+                  <div class="ai-how-to-use-step-number-{{ ai_gen_id }}">{{ forloop.index }}</div>
+                  <div class="ai-how-to-use-step-content-{{ ai_gen_id }}">
+                    <p class="ai-how-to-use-step-text-{{ ai_gen_id }}">{{ step | strip }}</p>
+                  </div>
+                </div>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if haramoon_data.layering_tips %}
+        <div class="ai-how-to-use-tip-{{ ai_gen_id }}">
+          {{ haramoon_data.layering_tips }}
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="ai-how-to-use-empty-{{ ai_gen_id }}">
+        Link a haramoon_101 metaobject to this product to display usage instructions
+      </div>
+    {% endif %}
+  </div>
+</how-to-use-{{ ai_gen_id }}>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "{{ block.settings.section_title | default: 'How to Use' | escape }}",
+  {% if haramoon_data and haramoon_data.how_to_use %}
+    {% assign steps = haramoon_data.how_to_use | newline_to_br | split: '<br />' %}
+    "step": [
+      {% for step in steps %}
+        {% if step != blank %}
+          {% assign step_parts = step | split: ':' %}
+          {
+            "@type": "HowToStep",
+            "position": {{ forloop.index }},
+            {% if step_parts.size > 1 %}
+              "name": "{{ step_parts[0] | strip | escape }}",
+              "text": "{{ step_parts[1] | strip | escape }}"
+            {% else %}
+              "name": "Step {{ forloop.index }}",
+              "text": "{{ step | strip | escape }}"
+            {% endif %}
+          }{% unless forloop.last %},{% endunless %}
+        {% endif %}
+      {% endfor %}
+    ]
+  {% else %}
+    "step": []
+  {% endif %}
+}
+</script>
+
+<script>
+  (function() {
+    class HowToUse{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.steps = this.querySelectorAll('.ai-how-to-use-step-{{ ai_gen_id }}');
+      }
+
+      connectedCallback() {
+        this.setupScrollAnimation();
+      }
+
+      setupScrollAnimation() {
+        if (!this.steps.length) return;
+
+        const observerOptions = {
+          threshold: 0.2,
+          rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const step = entry.target;
+              const stepIndex = parseInt(step.dataset.step);
+              setTimeout(() => {
+                step.classList.add('ai-visible-{{ ai_gen_id }}');
+              }, stepIndex * 150);
+              observer.unobserve(step);
+            }
+          });
+        }, observerOptions);
+
+        this.steps.forEach((step) => {
+          observer.observe(step);
+        });
+      }
+    }
+
+    customElements.define('how-to-use-{{ ai_gen_id }}', HowToUse{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "How to use routine",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_title",
+      "label": "Section title",
+      "default": "How To Use"
+    },
+    {
+      "type": "paragraph",
+      "content": "This block pulls data from the haramoon_101 metaobject linked to the current product. Fields used: how_to_use, absorption_time, application_method, best_for_time_of_day, routine_step_number, and layering_tips."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Section padding",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#faf6ed"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "step_number_color",
+      "label": "Step number",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "step_label_color",
+      "label": "Step label",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "step_text_color",
+      "label": "Step text",
+      "default": "#3c3c3a"
+    },
+    {
+      "type": "color",
+      "id": "connector_color",
+      "label": "Connector line",
+      "default": "#e2c84b"
+    },
+    {
+      "type": "color",
+      "id": "badge_background",
+      "label": "Badge background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge text",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "tip_background",
+      "label": "Tip background",
+      "default": "#fff9e6"
+    },
+    {
+      "type": "color",
+      "id": "tip_accent_color",
+      "label": "Tip accent",
+      "default": "#e2c84b"
+    },
+    {
+      "type": "color",
+      "id": "tip_text_color",
+      "label": "Tip text",
+      "default": "#3c3c3a"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "font_picker",
+      "id": "step_number_font",
+      "label": "Step number font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "step_number_size",
+      "label": "Step number size",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "step_label_size",
+      "label": "Step label size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "step_text_size",
+      "label": "Step text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    }
+  ],
+  "presets": [
+    {
+      "name": "How to use routine"
+    }
+  ]
+}
 {% endschema %}
