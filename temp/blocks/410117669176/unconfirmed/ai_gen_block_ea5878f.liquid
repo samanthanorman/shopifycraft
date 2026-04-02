@@ -1,6 +1,592 @@
+{% doc %}
+  @prompt
+    Crystal Energy & Properties Panel (Deeper content: energy properties, why you need it, archetype, emotional/body association, planets, musical chord)
+    Create a custom Liquid section called crystal_energy_panel for a Shopify product page. Pull the linked mineral metaobject using product.metafields.custom.crystal.value. Display the following fields: energy_properties, why_you_need_it, archetype, underlying_emotion_or_body_association, planets, and musical_chord. Render each as a titled content block with the field label as a small all-caps Poppins medium heading in medical blue (#0066FF) and the field value in Raleway light soft grey (#666666). Layout: single column, generous 24px+ padding per block, thin cool-grey (#E5E7EB) divider lines between blocks, active block gets a soft medical blue left border (3px). Add smooth staggered fade-up scroll animation. Background: soft cool-white (#F9FAFB). Thin medical blue top border across full section width. No gradients, no pill shapes. Sharp, minimal, clinical-premium aesthetic. Section must dynamically read from whatever mineral metaobject is linked to the current product via product.metafields.custom.crystal.value. Include an editable section title setting in schema., this is perfectly built. only change the aesthetic features so that i am able to toggle and customize width, spacing, padding, font size, hover effect, colors, etc. Next, please pull in the mineral title/name into the section to help users navigate the page. make it a premiium and upscale vibe so users feel as if they were discovering information instead of just reading it off the page. the data pulled in is correct so do not change any piece of that, only the aesthetic design as if you were an expert jewelry/crystal website seller. help convert browsing audiences into customers
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{% assign mineral = product.metafields.custom.crystal.value %}
+
+{% style %}
+  .ai-crystal-energy-panel-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    margin: 0 auto;
+    background: {{ block.settings.background_color }};
+    border-top: {{ block.settings.top_border_thickness }}px solid {{ block.settings.accent_color }};
+    padding: {{ block.settings.section_padding_top }}px {{ block.settings.section_padding_horizontal }}px {{ block.settings.section_padding_bottom }}px;
+  }
+
+  .ai-crystal-energy-panel__header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: {{ block.settings.header_spacing }}px;
+    padding-bottom: {{ block.settings.header_spacing }}px;
+    border-bottom: 1px solid {{ block.settings.divider_color }};
+  }
+
+  .ai-crystal-energy-panel__mineral-name-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-style: {{ block.settings.heading_font.style }};
+    font-size: {{ block.settings.mineral_name_size }}px;
+    color: {{ block.settings.mineral_name_color }};
+    margin: 0 0 12px 0;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .ai-crystal-energy-panel__title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, {{ block.settings.body_font.fallback_families }};
+    font-weight: {{ block.settings.body_font.weight }};
+    font-style: {{ block.settings.body_font.style }};
+    font-size: {{ block.settings.section_title_size }}px;
+    color: {{ block.settings.section_title_color }};
+    margin: 0;
+    letter-spacing: 0.5px;
+  }
+
+  .ai-crystal-energy-panel__content-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }} {
+    padding: {{ block.settings.block_padding }}px;
+    border-bottom: {{ block.settings.divider_thickness }}px solid {{ block.settings.divider_color }};
+    border-left: {{ block.settings.hover_border_thickness }}px solid transparent;
+    transition: all {{ block.settings.hover_transition_speed }}s ease;
+    opacity: 0;
+    transform: translateY(20px);
+    background: {{ block.settings.block_background }};
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }}.ai-visible-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  {% if block.settings.enable_hover_effect %}
+    .ai-crystal-energy-panel__block-{{ ai_gen_id }}:hover {
+      border-left-color: {{ block.settings.hover_border_color }};
+      background: {{ block.settings.block_hover_background }};
+      transform: translateX({{ block.settings.hover_shift }}px);
+    }
+  {% endif %}
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }}:last-child {
+    border-bottom: none;
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }}:nth-child(1) {
+    transition-delay: 0.1s;
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }}:nth-child(2) {
+    transition-delay: 0.2s;
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }}:nth-child(3) {
+    transition-delay: 0.3s;
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }}:nth-child(4) {
+    transition-delay: 0.4s;
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }}:nth-child(5) {
+    transition-delay: 0.5s;
+  }
+
+  .ai-crystal-energy-panel__block-{{ ai_gen_id }}:nth-child(6) {
+    transition-delay: 0.6s;
+  }
+
+  .ai-crystal-energy-panel__label-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-style: {{ block.settings.heading_font.style }};
+    font-size: {{ block.settings.label_size }}px;
+    text-transform: uppercase;
+    letter-spacing: {{ block.settings.label_letter_spacing }}px;
+    color: {{ block.settings.label_color }};
+    margin: 0 0 {{ block.settings.label_spacing }}px 0;
+  }
+
+  .ai-crystal-energy-panel__value-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, {{ block.settings.body_font.fallback_families }};
+    font-weight: {{ block.settings.body_font.weight }};
+    font-style: {{ block.settings.body_font.style }};
+    font-size: {{ block.settings.value_size }}px;
+    line-height: {{ block.settings.value_line_height }};
+    color: {{ block.settings.value_color }};
+    margin: 0;
+  }
+
+  .ai-crystal-energy-panel__empty-{{ ai_gen_id }} {
+    padding: 48px 24px;
+    text-align: center;
+    font-family: {{ block.settings.body_font.family }}, {{ block.settings.body_font.fallback_families }};
+    font-weight: {{ block.settings.body_font.weight }};
+    font-size: 15px;
+    color: #999999;
+    font-style: italic;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-crystal-energy-panel-{{ ai_gen_id }} {
+      width: 100%;
+      padding: {{ block.settings.section_padding_top | times: 0.7 }}px {{ block.settings.section_padding_horizontal | times: 0.7 }}px {{ block.settings.section_padding_bottom | times: 0.7 }}px;
+    }
+
+    .ai-crystal-energy-panel__mineral-name-{{ ai_gen_id }} {
+      font-size: {{ block.settings.mineral_name_size | times: 0.8 }}px;
+    }
+
+    .ai-crystal-energy-panel__title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.section_title_size | times: 0.8 }}px;
+    }
+
+    .ai-crystal-energy-panel__label-{{ ai_gen_id }} {
+      font-size: {{ block.settings.label_size | times: 0.9 }}px;
+    }
+
+    .ai-crystal-energy-panel__value-{{ ai_gen_id }} {
+      font-size: {{ block.settings.value_size | times: 0.9 }}px;
+    }
+
+    .ai-crystal-energy-panel__block-{{ ai_gen_id }} {
+      padding: {{ block.settings.block_padding | times: 0.7 }}px;
+    }
+  }
+{% endstyle %}
+
+<crystal-energy-panel-{{ ai_gen_id }}
+  class="ai-crystal-energy-panel-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  {% if mineral or block.settings.section_title != blank %}
+    <div class="ai-crystal-energy-panel__header-{{ ai_gen_id }}">
+      {% if mineral and mineral.title != blank %}
+        <h2 class="ai-crystal-energy-panel__mineral-name-{{ ai_gen_id }}">
+          {{ mineral.title }}
+        </h2>
+      {% endif %}
+      
+      {% if block.settings.section_title != blank %}
+        <p class="ai-crystal-energy-panel__title-{{ ai_gen_id }}">
+          {{ block.settings.section_title }}
+        </p>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if mineral %}
+    <div class="ai-crystal-energy-panel__content-{{ ai_gen_id }}">
+      {% if mineral.energy_properties != blank %}
+        <div class="ai-crystal-energy-panel__block-{{ ai_gen_id }}">
+          <h3 class="ai-crystal-energy-panel__label-{{ ai_gen_id }}">Energy Properties</h3>
+          <div class="ai-crystal-energy-panel__value-{{ ai_gen_id }}">
+            {{ mineral.energy_properties }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if mineral.why_you_need_it != blank %}
+        <div class="ai-crystal-energy-panel__block-{{ ai_gen_id }}">
+          <h3 class="ai-crystal-energy-panel__label-{{ ai_gen_id }}">Why You Need It</h3>
+          <div class="ai-crystal-energy-panel__value-{{ ai_gen_id }}">
+            {{ mineral.why_you_need_it }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if mineral.archetype != blank %}
+        <div class="ai-crystal-energy-panel__block-{{ ai_gen_id }}">
+          <h3 class="ai-crystal-energy-panel__label-{{ ai_gen_id }}">Archetype</h3>
+          <div class="ai-crystal-energy-panel__value-{{ ai_gen_id }}">
+            {{ mineral.archetype }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if mineral.underlying_emotion_or_body_association != blank %}
+        <div class="ai-crystal-energy-panel__block-{{ ai_gen_id }}">
+          <h3 class="ai-crystal-energy-panel__label-{{ ai_gen_id }}">Emotional & Body Association</h3>
+          <div class="ai-crystal-energy-panel__value-{{ ai_gen_id }}">
+            {{ mineral.underlying_emotion_or_body_association }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if mineral.planets != blank %}
+        <div class="ai-crystal-energy-panel__block-{{ ai_gen_id }}">
+          <h3 class="ai-crystal-energy-panel__label-{{ ai_gen_id }}">Planets</h3>
+          <div class="ai-crystal-energy-panel__value-{{ ai_gen_id }}">
+            {{ mineral.planets }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if mineral.musical_chord != blank %}
+        <div class="ai-crystal-energy-panel__block-{{ ai_gen_id }}">
+          <h3 class="ai-crystal-energy-panel__label-{{ ai_gen_id }}">Musical Chord</h3>
+          <div class="ai-crystal-energy-panel__value-{{ ai_gen_id }}">
+            {{ mineral.musical_chord }}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="ai-crystal-energy-panel__empty-{{ ai_gen_id }}">
+      Link a mineral metaobject to this product to display energy properties
+    </div>
+  {% endif %}
+</crystal-energy-panel-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class CrystalEnergyPanel{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.observer = null;
+      }
+
+      connectedCallback() {
+        this.setupScrollAnimation();
+      }
+
+      setupScrollAnimation() {
+        const blocks = this.querySelectorAll('.ai-crystal-energy-panel__block-{{ ai_gen_id }}');
+        
+        if (!blocks.length) return;
+
+        const observerOptions = {
+          root: null,
+          rootMargin: '0px 0px -100px 0px',
+          threshold: 0.1
+        };
+
+        this.observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('ai-visible-{{ ai_gen_id }}');
+            }
+          });
+        }, observerOptions);
+
+        blocks.forEach((block) => {
+          this.observer.observe(block);
+        });
+      }
+
+      disconnectedCallback() {
+        if (this.observer) {
+          this.observer.disconnect();
+        }
+      }
+    }
+
+    customElements.define('crystal-energy-panel-{{ ai_gen_id }}', CrystalEnergyPanel{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Crystal energy panel",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section subtitle",
+      "default": "Discover the energy within"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "section_padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "label": "Header spacing",
+      "min": 12,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "block_padding",
+      "label": "Block padding",
+      "min": 12,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "label_spacing",
+      "label": "Label spacing",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "poppins_n5"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body font",
+      "default": "raleway_n3"
+    },
+    {
+      "type": "range",
+      "id": "mineral_name_size",
+      "label": "Mineral name size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "section_title_size",
+      "label": "Section title size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "label": "Label size",
+      "min": 8,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "label_letter_spacing",
+      "label": "Label letter spacing",
+      "min": 0,
+      "max": 3,
+      "step": 0.5,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "value_size",
+      "label": "Value text size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "value_line_height",
+      "label": "Value line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "color",
+      "id": "block_background",
+      "label": "Block background",
+      "default": "rgba(0,0,0,0)"
+    },
+    {
+      "type": "color",
+      "id": "block_hover_background",
+      "label": "Block hover background",
+      "default": "rgba(0, 102, 255, 0.02)"
+    },
+    {
+      "type": "color",
+      "id": "mineral_name_color",
+      "label": "Mineral name",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "section_title_color",
+      "label": "Section title",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label",
+      "default": "#0066FF"
+    },
+    {
+      "type": "color",
+      "id": "value_color",
+      "label": "Value text",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#0066FF"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider",
+      "default": "#E5E7EB"
+    },
+    {
+      "type": "header",
+      "content": "Borders"
+    },
+    {
+      "type": "range",
+      "id": "top_border_thickness",
+      "label": "Top border thickness",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "divider_thickness",
+      "label": "Divider thickness",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Hover effect"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_hover_effect",
+      "label": "Enable hover effect",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "hover_border_color",
+      "label": "Hover border color",
+      "default": "#0066FF"
+    },
+    {
+      "type": "range",
+      "id": "hover_border_thickness",
+      "label": "Hover border thickness",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "hover_shift",
+      "label": "Hover shift",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "hover_transition_speed",
+      "label": "Transition speed",
+      "min": 0.1,
+      "max": 1,
+      "step": 0.1,
+      "unit": "s",
+      "default": 0.3
+    }
+  ],
+  "presets": [
+    {
+      "name": "Crystal energy panel"
+    }
+  ]
+}
 {% endschema %}
