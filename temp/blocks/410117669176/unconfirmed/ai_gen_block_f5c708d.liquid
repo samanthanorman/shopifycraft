@@ -1,6 +1,695 @@
+{% doc %}
+  @prompt
+    Redesign a results timeline section for a premium K-beauty skincare brand targeting a Gen Z audience. Keep the core function: showing a week-by-week skin results progression (e.g. Week 1, Week 2, Week 4, Week 8). But completely modernize the layout and visual style. Use a two-column layout: left column is large, bold, and editorial — showing an oversized week label or number in a thin elegant font with a strong accent underline or color pop, plus a short punchy headline (e.g. "Skin barrier restored.") and 2-3 lines of benefit copy. Right column shows a soft lifestyle or skin close-up image in a tall rounded card. Alternate the layout left-right for each timeline entry so it feels dynamic as you scroll. Add smooth scroll-triggered fade and slide-in animations for each row. Use generous whitespace between entries. Include a soft vertical connecting line or dot trail between timeline entries to show progression. Typography should mix a large serif or editorial display font for the week label with a clean sans-serif for body copy. Background should be a warm off-white or soft cream. All content — week labels, headlines, body copy, images — must be editable in theme settings. Section title and subtitle at the top should also be editable. Make it feel like Mamonde or Laneige's website — premium, minimal, editorial, and aspirational.
+    
+    
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-results-timeline-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding_top }}px 20px {{ block.settings.section_padding_bottom }}px;
+  }
+
+  .ai-results-timeline__container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+    width: {{ block.settings.desktop_width_percent }}%;
+  }
+
+  .ai-results-timeline__header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: {{ block.settings.header_spacing }}px;
+  }
+
+  .ai-results-timeline__title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 16px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+  }
+
+  .ai-results-timeline__subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.subtitle_color }};
+    margin: 0;
+    opacity: 0.8;
+    line-height: 1.6;
+  }
+
+  .ai-results-timeline__entries-{{ ai_gen_id }} {
+    position: relative;
+    padding-left: 0;
+  }
+
+  .ai-results-timeline__connector-{{ ai_gen_id }} {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: {{ block.settings.connector_color }};
+    transform: translateX(-50%);
+    opacity: 0.2;
+  }
+
+  .ai-results-timeline__entry-{{ ai_gen_id }} {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ block.settings.entry_gap }}px;
+    margin-bottom: {{ block.settings.entry_spacing }}px;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .ai-results-timeline__entry-{{ ai_gen_id }}.ai-visible-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-results-timeline__entry-{{ ai_gen_id }}:nth-child(even) .ai-results-timeline__content-{{ ai_gen_id }} {
+    order: 2;
+  }
+
+  .ai-results-timeline__entry-{{ ai_gen_id }}:nth-child(even) .ai-results-timeline__image-wrapper-{{ ai_gen_id }} {
+    order: 1;
+  }
+
+  .ai-results-timeline__dot-{{ ai_gen_id }} {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    background: {{ block.settings.dot_color }};
+    border-radius: 50%;
+    z-index: 2;
+    box-shadow: 0 0 0 4px {{ block.settings.background_color }};
+  }
+
+  .ai-results-timeline__content-{{ ai_gen_id }} {
+    padding: {{ block.settings.content_padding }}px;
+  }
+
+  .ai-results-timeline__week-label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.week_label_size }}px;
+    color: {{ block.settings.accent_color }};
+    margin: 0 0 8px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    position: relative;
+    display: inline-block;
+  }
+
+  .ai-results-timeline__week-label-{{ ai_gen_id }}::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: {{ block.settings.accent_color }};
+  }
+
+  .ai-results-timeline__headline-{{ ai_gen_id }} {
+    font-size: {{ block.settings.headline_size }}px;
+    color: {{ block.settings.headline_color }};
+    margin: 16px 0 12px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .ai-results-timeline__description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.description_size }}px;
+    color: {{ block.settings.description_color }};
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .ai-results-timeline__image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    border-radius: {{ block.settings.image_border_radius }}px;
+    overflow: hidden;
+    aspect-ratio: {{ block.settings.image_aspect_ratio }};
+    background: #f5f0e8;
+  }
+
+  .ai-results-timeline__image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ai-results-timeline__image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f0e8 0%, #e8dfd5 100%);
+  }
+
+  .ai-results-timeline__image-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-results-timeline__container-{{ ai_gen_id }} {
+      width: 100%;
+    }
+
+    .ai-results-timeline__entry-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .ai-results-timeline__entry-{{ ai_gen_id }}:nth-child(even) .ai-results-timeline__content-{{ ai_gen_id }} {
+      order: 1;
+    }
+
+    .ai-results-timeline__entry-{{ ai_gen_id }}:nth-child(even) .ai-results-timeline__image-wrapper-{{ ai_gen_id }} {
+      order: 2;
+    }
+
+    .ai-results-timeline__connector-{{ ai_gen_id }} {
+      left: 20px;
+    }
+
+    .ai-results-timeline__dot-{{ ai_gen_id }} {
+      left: 20px;
+    }
+
+    .ai-results-timeline__title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.7 }}px;
+    }
+
+    .ai-results-timeline__week-label-{{ ai_gen_id }} {
+      font-size: {{ block.settings.week_label_size | times: 0.7 }}px;
+    }
+
+    .ai-results-timeline__headline-{{ ai_gen_id }} {
+      font-size: {{ block.settings.headline_size | times: 0.8 }}px;
+    }
+  }
+{% endstyle %}
+
+<results-timeline-{{ ai_gen_id }} class="ai-results-timeline-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-results-timeline__container-{{ ai_gen_id }}">
+    {% if block.settings.section_title != blank or block.settings.section_subtitle != blank %}
+      <div class="ai-results-timeline__header-{{ ai_gen_id }}">
+        {% if block.settings.section_title != blank %}
+          <h2 class="ai-results-timeline__title-{{ ai_gen_id }}">{{ block.settings.section_title }}</h2>
+        {% endif %}
+        {% if block.settings.section_subtitle != blank %}
+          <div class="ai-results-timeline__subtitle-{{ ai_gen_id }}">{{ block.settings.section_subtitle }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="ai-results-timeline__entries-{{ ai_gen_id }}">
+      {% if block.settings.show_connector %}
+        <div class="ai-results-timeline__connector-{{ ai_gen_id }}"></div>
+      {% endif %}
+
+      {% for i in (1..4) %}
+        {% liquid
+          assign week_label_key = 'week_' | append: i | append: '_label'
+          assign headline_key = 'week_' | append: i | append: '_headline'
+          assign description_key = 'week_' | append: i | append: '_description'
+          assign image_key = 'week_' | append: i | append: '_image'
+
+          assign week_label = block.settings[week_label_key]
+          assign headline = block.settings[headline_key]
+          assign description = block.settings[description_key]
+          assign image = block.settings[image_key]
+        %}
+
+        <div class="ai-results-timeline__entry-{{ ai_gen_id }}" data-entry="{{ i }}">
+          {% if block.settings.show_connector %}
+            <div class="ai-results-timeline__dot-{{ ai_gen_id }}"></div>
+          {% endif %}
+
+          <div class="ai-results-timeline__content-{{ ai_gen_id }}">
+            {% if week_label != blank %}
+              <div class="ai-results-timeline__week-label-{{ ai_gen_id }}">{{ week_label }}</div>
+            {% endif %}
+            {% if headline != blank %}
+              <h3 class="ai-results-timeline__headline-{{ ai_gen_id }}">{{ headline }}</h3>
+            {% endif %}
+            {% if description != blank %}
+              <div class="ai-results-timeline__description-{{ ai_gen_id }}">{{ description }}</div>
+            {% endif %}
+          </div>
+
+          <div class="ai-results-timeline__image-wrapper-{{ ai_gen_id }}">
+            {% if image %}
+              <img
+                src="{{ image | image_url: width: 800 }}"
+                alt="{{ headline | escape }}"
+                loading="lazy"
+                width="800"
+                height="{{ 800 | divided_by: block.settings.image_aspect_ratio }}"
+                class="ai-results-timeline__image-{{ ai_gen_id }}"
+              >
+            {% else %}
+              <div class="ai-results-timeline__image-placeholder-{{ ai_gen_id }}">
+                {{ 'lifestyle-1' | placeholder_svg_tag }}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</results-timeline-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ResultsTimeline{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.entries = this.querySelectorAll('.ai-results-timeline__entry-{{ ai_gen_id }}');
+        this.observer = null;
+      }
+
+      connectedCallback() {
+        this.setupIntersectionObserver();
+      }
+
+      setupIntersectionObserver() {
+        const options = {
+          root: null,
+          rootMargin: '0px 0px -100px 0px',
+          threshold: 0.2
+        };
+
+        this.observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('ai-visible-{{ ai_gen_id }}');
+            }
+          });
+        }, options);
+
+        this.entries.forEach((entry, index) => {
+          entry.style.transitionDelay = `${index * 0.15}s`;
+          this.observer.observe(entry);
+        });
+      }
+
+      disconnectedCallback() {
+        if (this.observer) {
+          this.observer.disconnect();
+        }
+      }
+    }
+
+    customElements.define('results-timeline-{{ ai_gen_id }}', ResultsTimeline{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Results timeline",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_title",
+      "label": "Title",
+      "default": "Your Skin's Journey"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_subtitle",
+      "label": "Subtitle",
+      "default": "Visible transformation, week by week"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "label": "Header spacing",
+      "min": 40,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Week 1"
+    },
+    {
+      "type": "text",
+      "id": "week_1_label",
+      "label": "Week label",
+      "default": "Week 1"
+    },
+    {
+      "type": "text",
+      "id": "week_1_headline",
+      "label": "Headline",
+      "default": "Skin barrier restored."
+    },
+    {
+      "type": "textarea",
+      "id": "week_1_description",
+      "label": "Description",
+      "default": "Immediate hydration and soothing. Redness begins to calm as peptides start their repair work."
+    },
+    {
+      "type": "image_picker",
+      "id": "week_1_image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "Week 2"
+    },
+    {
+      "type": "text",
+      "id": "week_2_label",
+      "label": "Week label",
+      "default": "Week 2"
+    },
+    {
+      "type": "text",
+      "id": "week_2_headline",
+      "label": "Headline",
+      "default": "Texture refined."
+    },
+    {
+      "type": "textarea",
+      "id": "week_2_description",
+      "label": "Description",
+      "default": "Skin feels smoother and more supple. Fine lines appear softened as cellular turnover accelerates."
+    },
+    {
+      "type": "image_picker",
+      "id": "week_2_image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "Week 4"
+    },
+    {
+      "type": "text",
+      "id": "week_3_label",
+      "label": "Week label",
+      "default": "Week 4"
+    },
+    {
+      "type": "text",
+      "id": "week_3_headline",
+      "label": "Headline",
+      "default": "Radiance unlocked."
+    },
+    {
+      "type": "textarea",
+      "id": "week_3_description",
+      "label": "Description",
+      "default": "A visible glow emerges. Skin tone appears more even, and elasticity noticeably improves."
+    },
+    {
+      "type": "image_picker",
+      "id": "week_3_image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "Week 8"
+    },
+    {
+      "type": "text",
+      "id": "week_4_label",
+      "label": "Week label",
+      "default": "Week 8"
+    },
+    {
+      "type": "text",
+      "id": "week_4_headline",
+      "label": "Headline",
+      "default": "Transformation complete."
+    },
+    {
+      "type": "textarea",
+      "id": "week_4_description",
+      "label": "Description",
+      "default": "Skin looks visibly younger, firmer, and deeply nourished. The full power of peptides revealed."
+    },
+    {
+      "type": "image_picker",
+      "id": "week_4_image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "week_label_size",
+      "label": "Week label size",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "headline_size",
+      "label": "Headline size",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Description size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "color",
+      "id": "headline_color",
+      "label": "Headline color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#e2c84b"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "entry_gap",
+      "label": "Entry gap",
+      "min": 40,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "entry_spacing",
+      "label": "Entry spacing",
+      "min": 60,
+      "max": 160,
+      "step": 10,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "content_padding",
+      "label": "Content padding",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Section padding top",
+      "min": 40,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Section padding bottom",
+      "min": 40,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Image style"
+    },
+    {
+      "type": "select",
+      "id": "image_aspect_ratio",
+      "label": "Image aspect ratio",
+      "options": [
+        {
+          "value": "0.75",
+          "label": "Portrait (3:4)"
+        },
+        {
+          "value": "1",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "1.33",
+          "label": "Landscape (4:3)"
+        },
+        {
+          "value": "1.5",
+          "label": "Tall landscape (3:2)"
+        }
+      ],
+      "default": "0.75"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "Image border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Timeline connector"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_connector",
+      "label": "Show connector line",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "connector_color",
+      "label": "Connector color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "dot_color",
+      "label": "Dot color",
+      "default": "#e2c84b"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#fdfaf0"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Results timeline"
+    }
+  ]
+}
 {% endschema %}
