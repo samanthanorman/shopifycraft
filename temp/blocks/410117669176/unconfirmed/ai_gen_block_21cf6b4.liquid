@@ -1,6 +1,609 @@
+{% doc %}
+  @prompt
+    Create a "How To Layer" routine section for a K-beauty skincare product page. This section must dynamically pull data from the haramoon_101 metaobject linked to the current product via the product metafield with namespace shopify and key product-form (type: list.metaobject_reference — use the first entry). Pull and display these fields:
+    
+    Routine flow: Use use_after_products (list of product references) and use_before_products (list of product references) to build a visual "before → this product → after" layering sequence. Display each product in the sequence as a step card showing the product featured image, product title, and a "Step X" label. The current product should be visually highlighted as the hero center step with a soft accent border or glow.
+    
+    How to use copy: Pull how_to_use and display it as the main instruction paragraph beneath the step sequence.
+    
+    Metadata badges row: Display these as small pill badges in a horizontal row: routine_step_number (e.g. "Step 3 in Routine"), absorption_time (e.g. "Absorbs in 1 min"), application_method (e.g. "Press into skin"), best_for_time_of_day (e.g. "AM & PM").
+    
+    Layering tip: Pull layering_tips and display it as a distinct editorial callout block — soft accent background, italic or light serif font, with a small leaf or drop icon. This is rich text so render it properly.
+    
+    Style: Warm off-white background, generous whitespace, thin elegant serif font for step numbers, clean sans-serif for body copy. Step cards connected by a soft arrow or dotted line. Smooth scroll-triggered fade-in animations. Premium Mamonde-level K-beauty aesthetic — editorial, minimal, aspirational. Section title editable in theme settings.
+    
+    Add HowTo schema JSON-LD with each step in the layering sequence marked up using name and text from the product titles and how_to_use copy.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% liquid
+  assign haramoon_metaobject = null
+  if product.metafields.shopify.product-form.value.first
+    assign haramoon_metaobject = product.metafields.shopify.product-form.value.first
+  endif
+%}
+
+{% style %}
+  .ai-layering-routine-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding }}px 40px;
+    margin: 0 auto;
+  }
+
+  .ai-layering-routine__container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ai-layering-routine__title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.title_font.family }}, serif;
+    font-size: {{ block.settings.title_size }}px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    text-align: center;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 48px;
+  }
+
+  .ai-layering-routine__steps-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+  }
+
+  .ai-layering-routine__step-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .ai-layering-routine__step-{{ ai_gen_id }}.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-layering-routine__step-label-{{ ai_gen_id }} {
+    font-family: {{ block.settings.title_font.family }}, serif;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: {{ block.settings.accent_color }};
+    margin: 0;
+  }
+
+  .ai-layering-routine__step-card-{{ ai_gen_id }} {
+    width: 140px;
+    background: {{ block.settings.card_background }};
+    border-radius: {{ block.settings.card_radius }}px;
+    padding: 16px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(13, 27, 62, 0.08);
+  }
+
+  .ai-layering-routine__step-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(13, 27, 62, 0.1);
+  }
+
+  .ai-layering-routine__step-card-{{ ai_gen_id }}.current-product {
+    border: 2px solid {{ block.settings.accent_color }};
+    box-shadow: 0 0 20px {{ block.settings.accent_color }}33;
+    transform: scale(1.08);
+  }
+
+  .ai-layering-routine__step-card-{{ ai_gen_id }}.current-product:hover {
+    transform: scale(1.08) translateY(-4px);
+  }
+
+  .ai-layering-routine__step-image-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: {{ block.settings.image_radius }}px;
+    margin-bottom: 12px;
+  }
+
+  .ai-layering-routine__step-title-{{ ai_gen_id }} {
+    font-size: 13px;
+    line-height: 1.4;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    font-weight: 400;
+  }
+
+  .ai-layering-routine__arrow-{{ ai_gen_id }} {
+    color: {{ block.settings.accent_color }};
+    font-size: 24px;
+    opacity: 0.4;
+    flex-shrink: 0;
+  }
+
+  .ai-layering-routine__how-to-{{ ai_gen_id }} {
+    max-width: 800px;
+    margin: 0 auto 40px;
+    text-align: center;
+  }
+
+  .ai-layering-routine__how-to-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.title_font.family }}, serif;
+    font-size: 20px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 16px;
+  }
+
+  .ai-layering-routine__how-to-text-{{ ai_gen_id }} {
+    font-size: 15px;
+    line-height: 1.7;
+    color: {{ block.settings.text_color }};
+    opacity: 0.85;
+  }
+
+  .ai-layering-routine__badges-{{ ai_gen_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+
+  .ai-layering-routine__badge-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: {{ block.settings.badge_background }};
+    border-radius: 20px;
+    font-size: 13px;
+    color: {{ block.settings.text_color }};
+    border: 1px solid rgba(13, 27, 62, 0.1);
+  }
+
+  .ai-layering-routine__layering-tip-{{ ai_gen_id }} {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 32px 40px;
+    background: {{ block.settings.tip_background }};
+    border-radius: {{ block.settings.card_radius }}px;
+    border-left: 3px solid {{ block.settings.accent_color }};
+    position: relative;
+  }
+
+  .ai-layering-routine__tip-icon-{{ ai_gen_id }} {
+    position: absolute;
+    top: 32px;
+    left: 16px;
+    width: 16px;
+    height: 16px;
+    color: {{ block.settings.accent_color }};
+    opacity: 0.6;
+  }
+
+  .ai-layering-routine__tip-content-{{ ai_gen_id }} {
+    font-family: Georgia, serif;
+    font-size: 15px;
+    line-height: 1.7;
+    font-style: italic;
+    color: {{ block.settings.text_color }};
+    opacity: 0.9;
+  }
+
+  .ai-layering-routine__empty-state-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 60px 20px;
+    color: {{ block.settings.text_color }};
+    opacity: 0.5;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-layering-routine-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding | times: 0.7 }}px 20px;
+    }
+
+    .ai-layering-routine__title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.8 }}px;
+      margin-bottom: 32px;
+    }
+
+    .ai-layering-routine__steps-{{ ai_gen_id }} {
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .ai-layering-routine__step-card-{{ ai_gen_id }} {
+      width: 110px;
+      padding: 12px;
+    }
+
+    .ai-layering-routine__arrow-{{ ai_gen_id }} {
+      font-size: 18px;
+    }
+
+    .ai-layering-routine__layering-tip-{{ ai_gen_id }} {
+      padding: 24px 20px 24px 32px;
+    }
+  }
+{% endstyle %}
+
+<k-beauty-layering-{{ ai_gen_id }} class="ai-layering-routine-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-layering-routine__container-{{ ai_gen_id }}">
+    {% if block.settings.section_title != blank %}
+      <h2 class="ai-layering-routine__title-{{ ai_gen_id }}">{{ block.settings.section_title }}</h2>
+    {% endif %}
+
+    {% if haramoon_metaobject %}
+      {% liquid
+        assign use_before = haramoon_metaobject.use_before_products.value
+        assign use_after = haramoon_metaobject.use_after_products.value
+        assign how_to_use = haramoon_metaobject.how_to_use.value
+        assign routine_step = haramoon_metaobject.routine_step_number.value
+        assign absorption_time = haramoon_metaobject.absorption_time.value
+        assign application_method = haramoon_metaobject.application_method.value
+        assign best_time = haramoon_metaobject.best_for_time_of_day.value
+        assign layering_tips = haramoon_metaobject.layering_tips.value
+      %}
+
+      <div class="ai-layering-routine__steps-{{ ai_gen_id }}">
+        {% assign step_counter = 1 %}
+        
+        {% if use_before.size > 0 %}
+          {% for before_product in use_before %}
+            <div class="ai-layering-routine__step-{{ ai_gen_id }}" data-step="{{ step_counter }}">
+              <span class="ai-layering-routine__step-label-{{ ai_gen_id }}">Step {{ step_counter }}</span>
+              <a href="{{ before_product.url }}" class="ai-layering-routine__step-card-{{ ai_gen_id }}">
+                {% if before_product.featured_image %}
+                  <img
+                    src="{{ before_product.featured_image | image_url: width: 280 }}"
+                    alt="{{ before_product.featured_image.alt | escape }}"
+                    class="ai-layering-routine__step-image-{{ ai_gen_id }}"
+                    loading="lazy"
+                    width="280"
+                    height="280"
+                  >
+                {% else %}
+                  <div class="ai-layering-routine__step-image-{{ ai_gen_id }}" style="background: #f5f0e8;"></div>
+                {% endif %}
+                <p class="ai-layering-routine__step-title-{{ ai_gen_id }}">{{ before_product.title }}</p>
+              </a>
+            </div>
+            <div class="ai-layering-routine__arrow-{{ ai_gen_id }}">→</div>
+            {% assign step_counter = step_counter | plus: 1 %}
+          {% endfor %}
+        {% endif %}
+
+        <div class="ai-layering-routine__step-{{ ai_gen_id }}" data-step="{{ step_counter }}">
+          <span class="ai-layering-routine__step-label-{{ ai_gen_id }}">Step {{ step_counter }}</span>
+          <div class="ai-layering-routine__step-card-{{ ai_gen_id }} current-product">
+            {% if product.featured_image %}
+              <img
+                src="{{ product.featured_image | image_url: width: 280 }}"
+                alt="{{ product.featured_image.alt | escape }}"
+                class="ai-layering-routine__step-image-{{ ai_gen_id }}"
+                loading="lazy"
+                width="280"
+                height="280"
+              >
+            {% else %}
+              <div class="ai-layering-routine__step-image-{{ ai_gen_id }}" style="background: #f5f0e8;"></div>
+            {% endif %}
+            <p class="ai-layering-routine__step-title-{{ ai_gen_id }}">{{ product.title }}</p>
+          </div>
+        </div>
+
+        {% assign step_counter = step_counter | plus: 1 %}
+
+        {% if use_after.size > 0 %}
+          {% for after_product in use_after %}
+            <div class="ai-layering-routine__arrow-{{ ai_gen_id }}">→</div>
+            <div class="ai-layering-routine__step-{{ ai_gen_id }}" data-step="{{ step_counter }}">
+              <span class="ai-layering-routine__step-label-{{ ai_gen_id }}">Step {{ step_counter }}</span>
+              <a href="{{ after_product.url }}" class="ai-layering-routine__step-card-{{ ai_gen_id }}">
+                {% if after_product.featured_image %}
+                  <img
+                    src="{{ after_product.featured_image | image_url: width: 280 }}"
+                    alt="{{ after_product.featured_image.alt | escape }}"
+                    class="ai-layering-routine__step-image-{{ ai_gen_id }}"
+                    loading="lazy"
+                    width="280"
+                    height="280"
+                  >
+                {% else %}
+                  <div class="ai-layering-routine__step-image-{{ ai_gen_id }}" style="background: #f5f0e8;"></div>
+                {% endif %}
+                <p class="ai-layering-routine__step-title-{{ ai_gen_id }}">{{ after_product.title }}</p>
+              </a>
+            </div>
+            {% assign step_counter = step_counter | plus: 1 %}
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      {% if how_to_use != blank %}
+        <div class="ai-layering-routine__how-to-{{ ai_gen_id }}">
+          <h3 class="ai-layering-routine__how-to-title-{{ ai_gen_id }}">How to use</h3>
+          <div class="ai-layering-routine__how-to-text-{{ ai_gen_id }}">{{ how_to_use }}</div>
+        </div>
+      {% endif %}
+
+      {% if routine_step != blank or absorption_time != blank or application_method != blank or best_time != blank %}
+        <div class="ai-layering-routine__badges-{{ ai_gen_id }}">
+          {% if routine_step != blank %}
+            <span class="ai-layering-routine__badge-{{ ai_gen_id }}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+              {{ routine_step }}
+            </span>
+          {% endif %}
+          {% if absorption_time != blank %}
+            <span class="ai-layering-routine__badge-{{ ai_gen_id }}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              {{ absorption_time }}
+            </span>
+          {% endif %}
+          {% if application_method != blank %}
+            <span class="ai-layering-routine__badge-{{ ai_gen_id }}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              {{ application_method }}
+            </span>
+          {% endif %}
+          {% if best_time != blank %}
+            <span class="ai-layering-routine__badge-{{ ai_gen_id }}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+              {{ best_time }}
+            </span>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if layering_tips != blank %}
+        <div class="ai-layering-routine__layering-tip-{{ ai_gen_id }}">
+          <svg class="ai-layering-routine__tip-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+          </svg>
+          <div class="ai-layering-routine__tip-content-{{ ai_gen_id }}">{{ layering_tips }}</div>
+        </div>
+      {% endif %}
+
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "{{ block.settings.section_title | default: 'How to Layer This Product' | escape }}",
+        "step": [
+          {% assign step_num = 1 %}
+          {% if use_before.size > 0 %}
+            {% for before_product in use_before %}
+              {
+                "@type": "HowToStep",
+                "position": {{ step_num }},
+                "name": "Step {{ step_num }}: {{ before_product.title | escape }}",
+                "text": "Apply {{ before_product.title | escape }}"
+              }{% unless forloop.last or use_after.size > 0 %},{% endunless %}
+              {% assign step_num = step_num | plus: 1 %}
+            {% endfor %}{% if use_after.size > 0 %},{% endif %}
+          {% endif %}
+          {
+            "@type": "HowToStep",
+            "position": {{ step_num }},
+            "name": "Step {{ step_num }}: {{ product.title | escape }}",
+            "text": "{{ how_to_use | strip_html | escape }}"
+          }
+          {% assign step_num = step_num | plus: 1 %}
+          {% if use_after.size > 0 %}
+            {% for after_product in use_after %}
+              ,{
+                "@type": "HowToStep",
+                "position": {{ step_num }},
+                "name": "Step {{ step_num }}: {{ after_product.title | escape }}",
+                "text": "Apply {{ after_product.title | escape }}"
+              }
+              {% assign step_num = step_num | plus: 1 %}
+            {% endfor %}
+          {% endif %}
+        ]
+      }
+      </script>
+
+    {% else %}
+      <div class="ai-layering-routine__empty-state-{{ ai_gen_id }}">
+        <p>Next, link a haramoon_101 metaobject to this product via the product-form metafield</p>
+      </div>
+    {% endif %}
+  </div>
+</k-beauty-layering-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class KBeautyLayering{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.setupScrollAnimation();
+      }
+
+      setupScrollAnimation() {
+        const steps = this.querySelectorAll('.ai-layering-routine__step-{{ ai_gen_id }}');
+        
+        if (!steps.length) return;
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+              setTimeout(() => {
+                entry.target.classList.add('visible');
+              }, index * 100);
+            }
+          });
+        }, {
+          threshold: 0.2,
+          rootMargin: '0px 0px -50px 0px'
+        });
+
+        steps.forEach((step) => {
+          observer.observe(step);
+        });
+      }
+    }
+
+    customElements.define('k-beauty-layering-{{ ai_gen_id }}', KBeautyLayering{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "How to layer",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_title",
+      "label": "Section title",
+      "default": "How to Layer This Product"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Section padding",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#fdfaf0"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#e2c84b"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "badge_background",
+      "label": "Badge background",
+      "default": "#f5f0e8"
+    },
+    {
+      "type": "color",
+      "id": "tip_background",
+      "label": "Tip background",
+      "default": "#f5f0e8"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Title font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 20,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 6
+    }
+  ],
+  "presets": [
+    {
+      "name": "How to layer"
+    }
+  ]
+}
 {% endschema %}
