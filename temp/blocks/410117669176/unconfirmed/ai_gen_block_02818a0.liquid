@@ -1,6 +1,856 @@
+{% doc %}
+  @prompt
+    --- Create a premium ingredient spotlight section for a K-beauty skincare product page. Display 5-6 key active ingredients as large editorial cards in a 2-column grid on desktop, single column on mobile. Each card contains: an oversized ingredient name in a thin elegant serif display font (e.g. "Niacinamide", "Hyaluronic Acid", "Madecassoside", "Sea Buckthorn Oil", "Ceramides", "Palmitoyl Tripeptide-5"), a one-line benefit subtitle in small caps accent color (e.g. "Brightening + Pore Refining"), and a 2-3 sentence description of what the ingredient does for skin. Add an optional small uploadable image or botanical icon per card. Cards should have a soft hover lift with a very subtle shadow. Use a warm cream or soft sage green background. Include an editable bold editorial section title (e.g. "What's Inside") and a short subtitle. All ingredient names, subtitles, descriptions, and images must be editable in theme settings as repeatable blocks — minimum 6 blocks. Add ChemicalSubstance schema JSON-LD in a script tag for each ingredient with "name" and "description" properties, nested inside the parent Product schema context. Animate cards in on scroll with a gentle staggered fade-up. Premium Mamonde-level aesthetic — generous whitespace, no clutter., please make sure the ingredient cards are in the metafield so each product shows the accurate ingredients for the product the user is viewing. there is a product metafield that i made for this exact purpose. next, condense the information to be more compact using a unique interactive page turner or fun horizontal scroll/transition so the infomration doesnt take up so much of the screen as it is not the main character of the page and is more supplementary information for skincare deep divers who want to get nitty gritty. please ensure the metafield sructure makes sense and can function as intended. 
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-ingredient-carousel-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding_top }}px 0 {{ block.settings.section_padding_bottom }}px;
+    overflow: hidden;
+  }
+
+  .ai-ingredient-carousel-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-ingredient-carousel-header-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: {{ block.settings.header_spacing }}px;
+    gap: 20px;
+  }
+
+  .ai-ingredient-carousel-title-wrapper-{{ ai_gen_id }} {
+    flex: 1;
+  }
+
+  .ai-ingredient-carousel-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.title_font.family }}, {{ block.settings.title_font.fallback_families }};
+    font-weight: {{ block.settings.title_font.weight }};
+    font-size: {{ block.settings.title_size }}px;
+    line-height: 1.3;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 {{ block.settings.title_spacing }}px;
+    letter-spacing: -0.01em;
+  }
+
+  .ai-ingredient-carousel-subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    line-height: 1.5;
+    color: {{ block.settings.subtitle_color }};
+    margin: 0;
+  }
+
+  .ai-ingredient-carousel-controls-{{ ai_gen_id }} {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .ai-ingredient-carousel-nav-{{ ai_gen_id }} {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: {{ block.settings.nav_button_bg }};
+    border: 1px solid {{ block.settings.nav_button_border }};
+    color: {{ block.settings.nav_button_color }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .ai-ingredient-carousel-nav-{{ ai_gen_id }}:hover:not(:disabled) {
+    background-color: {{ block.settings.nav_button_hover_bg }};
+    transform: scale(1.05);
+  }
+
+  .ai-ingredient-carousel-nav-{{ ai_gen_id }}:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .ai-ingredient-carousel-track-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    overflow: hidden;
+    margin: 0 -20px;
+    padding: 0 20px;
+  }
+
+  .ai-ingredient-carousel-track-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.card_gap }}px;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+  }
+
+  .ai-ingredient-carousel-card-{{ ai_gen_id }} {
+    flex: 0 0 {{ block.settings.card_width }}px;
+    background-color: {{ block.settings.card_background }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    padding: {{ block.settings.card_padding }}px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: grab;
+    user-select: none;
+  }
+
+  .ai-ingredient-carousel-card-{{ ai_gen_id }}:active {
+    cursor: grabbing;
+  }
+
+  .ai-ingredient-carousel-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-ingredient-carousel-card-icon-{{ ai_gen_id }} {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    margin: 0 auto {{ block.settings.icon_spacing }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-ingredient-carousel-card-icon-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .ai-ingredient-carousel-card-icon-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.2;
+  }
+
+  .ai-ingredient-carousel-card-icon-placeholder-{{ ai_gen_id }} svg {
+    width: 70%;
+    height: 70%;
+  }
+
+  .ai-ingredient-carousel-card-name-{{ ai_gen_id }} {
+    font-family: {{ block.settings.ingredient_font.family }}, {{ block.settings.ingredient_font.fallback_families }};
+    font-weight: {{ block.settings.ingredient_font.weight }};
+    font-size: {{ block.settings.ingredient_name_size }}px;
+    line-height: 1.2;
+    color: {{ block.settings.ingredient_name_color }};
+    margin: 0 0 {{ block.settings.name_spacing }}px;
+    text-align: center;
+    letter-spacing: -0.01em;
+  }
+
+  .ai-ingredient-carousel-card-benefit-{{ ai_gen_id }} {
+    font-size: {{ block.settings.benefit_size }}px;
+    line-height: 1.3;
+    color: {{ block.settings.accent_color }};
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    margin: 0 0 {{ block.settings.benefit_spacing }}px;
+    text-align: center;
+  }
+
+  .ai-ingredient-carousel-card-description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.description_size }}px;
+    line-height: 1.6;
+    color: {{ block.settings.description_color }};
+    text-align: center;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .ai-ingredient-carousel-dots-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: {{ block.settings.dots_spacing }}px;
+  }
+
+  .ai-ingredient-carousel-dot-{{ ai_gen_id }} {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: {{ block.settings.dot_color }};
+    opacity: 0.3;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .ai-ingredient-carousel-dot-{{ ai_gen_id }}.active {
+    opacity: 1;
+    background-color: {{ block.settings.dot_active_color }};
+    transform: scale(1.2);
+  }
+
+  .ai-ingredient-carousel-empty-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 40px 20px;
+    color: {{ block.settings.subtitle_color }};
+    font-size: 14px;
+    font-style: italic;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-ingredient-carousel-title-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.title_size }}px * 0.75);
+    }
+
+    .ai-ingredient-carousel-header-{{ ai_gen_id }} {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .ai-ingredient-carousel-controls-{{ ai_gen_id }} {
+      align-self: flex-end;
+    }
+
+    .ai-ingredient-carousel-card-{{ ai_gen_id }} {
+      flex: 0 0 280px;
+    }
+
+    .ai-ingredient-carousel-card-name-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.ingredient_name_size }}px * 0.85);
+    }
+  }
+{% endstyle %}
+
+<ingredient-carousel-{{ ai_gen_id }}
+  class="ai-ingredient-carousel-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-ingredient-carousel-container-{{ ai_gen_id }}">
+    {% if block.settings.section_title != blank or block.settings.section_subtitle != blank %}
+      <div class="ai-ingredient-carousel-header-{{ ai_gen_id }}">
+        <div class="ai-ingredient-carousel-title-wrapper-{{ ai_gen_id }}">
+          {% if block.settings.section_title != blank %}
+            <h2 class="ai-ingredient-carousel-title-{{ ai_gen_id }}">
+              {{ block.settings.section_title }}
+            </h2>
+          {% endif %}
+          {% if block.settings.section_subtitle != blank %}
+            <div class="ai-ingredient-carousel-subtitle-{{ ai_gen_id }}">
+              {{ block.settings.section_subtitle }}
+            </div>
+          {% endif %}
+        </div>
+        <div class="ai-ingredient-carousel-controls-{{ ai_gen_id }}">
+          <button
+            class="ai-ingredient-carousel-nav-{{ ai_gen_id }}"
+            data-carousel-prev
+            aria-label="Previous ingredient"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button
+            class="ai-ingredient-carousel-nav-{{ ai_gen_id }}"
+            data-carousel-next
+            aria-label="Next ingredient"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    {% endif %}
+
+    {% assign ingredients = product.metafields.custom.key_ingredients.value %}
+
+    {% if ingredients != blank and ingredients.size > 0 %}
+      <div class="ai-ingredient-carousel-track-wrapper-{{ ai_gen_id }}">
+        <div class="ai-ingredient-carousel-track-{{ ai_gen_id }}" data-carousel-track>
+          {% for ingredient in ingredients %}
+            <div
+              class="ai-ingredient-carousel-card-{{ ai_gen_id }}"
+              data-carousel-card
+              data-ingredient-name="{{ ingredient.name | escape }}"
+              data-ingredient-description="{{ ingredient.description | escape }}"
+            >
+              {% if ingredient.icon != blank %}
+                <div class="ai-ingredient-carousel-card-icon-{{ ai_gen_id }}">
+                  <img
+                    src="{{ ingredient.icon | image_url: width: 120 }}"
+                    alt="{{ ingredient.name | escape }}"
+                    loading="lazy"
+                    width="120"
+                    height="120"
+                  >
+                </div>
+              {% elsif block.settings.show_placeholder_icon %}
+                <div class="ai-ingredient-carousel-card-icon-{{ ai_gen_id }}">
+                  <div class="ai-ingredient-carousel-card-icon-placeholder-{{ ai_gen_id }}">
+                    {{ 'product-1' | placeholder_svg_tag }}
+                  </div>
+                </div>
+              {% endif %}
+
+              {% if ingredient.name != blank %}
+                <h3 class="ai-ingredient-carousel-card-name-{{ ai_gen_id }}">
+                  {{ ingredient.name }}
+                </h3>
+              {% endif %}
+
+              {% if ingredient.benefit != blank %}
+                <div class="ai-ingredient-carousel-card-benefit-{{ ai_gen_id }}">
+                  {{ ingredient.benefit }}
+                </div>
+              {% endif %}
+
+              {% if ingredient.description != blank %}
+                <div class="ai-ingredient-carousel-card-description-{{ ai_gen_id }}">
+                  {{ ingredient.description }}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      {% if block.settings.show_dots %}
+        <div class="ai-ingredient-carousel-dots-{{ ai_gen_id }}" data-carousel-dots></div>
+      {% endif %}
+    {% else %}
+      <div class="ai-ingredient-carousel-empty-{{ ai_gen_id }}">
+        Add key ingredients to this product using the "key_ingredients" metafield to display them here.
+      </div>
+    {% endif %}
+  </div>
+</ingredient-carousel-{{ ai_gen_id }}>
+
+{% if ingredients != blank and ingredients.size > 0 %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": [
+      {% for ingredient in ingredients %}
+        {
+          "@type": "ChemicalSubstance",
+          "name": {{ ingredient.name | json }},
+          "description": {{ ingredient.description | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  }
+  </script>
+{% endif %}
+
+<script>
+  (function() {
+    class IngredientCarousel{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.track = this.querySelector('[data-carousel-track]');
+        this.cards = this.querySelectorAll('[data-carousel-card]');
+        this.prevBtn = this.querySelector('[data-carousel-prev]');
+        this.nextBtn = this.querySelector('[data-carousel-next]');
+        this.dotsContainer = this.querySelector('[data-carousel-dots]');
+        
+        this.currentIndex = 0;
+        this.cardWidth = {{ block.settings.card_width }};
+        this.gap = {{ block.settings.card_gap }};
+        this.isDragging = false;
+        this.startX = 0;
+        this.currentTranslate = 0;
+        this.prevTranslate = 0;
+      }
+
+      connectedCallback() {
+        if (!this.track || this.cards.length === 0) return;
+        
+        this.setupNavigation();
+        this.setupDots();
+        this.setupDragAndSwipe();
+        this.updateCarousel();
+      }
+
+      setupNavigation() {
+        if (this.prevBtn) {
+          this.prevBtn.addEventListener('click', () => this.navigate(-1));
+        }
+        if (this.nextBtn) {
+          this.nextBtn.addEventListener('click', () => this.navigate(1));
+        }
+      }
+
+      setupDots() {
+        if (!this.dotsContainer) return;
+        
+        const visibleCards = this.getVisibleCards();
+        const totalDots = Math.ceil(this.cards.length / visibleCards);
+        
+        for (let i = 0; i < totalDots; i++) {
+          const dot = document.createElement('button');
+          dot.className = 'ai-ingredient-carousel-dot-{{ ai_gen_id }}';
+          dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+          dot.addEventListener('click', () => {
+            this.currentIndex = i * visibleCards;
+            this.updateCarousel();
+          });
+          this.dotsContainer.appendChild(dot);
+        }
+      }
+
+      setupDragAndSwipe() {
+        this.track.addEventListener('mousedown', this.dragStart.bind(this));
+        this.track.addEventListener('touchstart', this.dragStart.bind(this));
+        this.track.addEventListener('mousemove', this.drag.bind(this));
+        this.track.addEventListener('touchmove', this.drag.bind(this));
+        this.track.addEventListener('mouseup', this.dragEnd.bind(this));
+        this.track.addEventListener('touchend', this.dragEnd.bind(this));
+        this.track.addEventListener('mouseleave', this.dragEnd.bind(this));
+      }
+
+      dragStart(e) {
+        this.isDragging = true;
+        this.startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+        this.track.style.cursor = 'grabbing';
+      }
+
+      drag(e) {
+        if (!this.isDragging) return;
+        e.preventDefault();
+        
+        const currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+        const diff = currentX - this.startX;
+        this.currentTranslate = this.prevTranslate + diff;
+      }
+
+      dragEnd() {
+        if (!this.isDragging) return;
+        this.isDragging = false;
+        this.track.style.cursor = 'grab';
+        
+        const movedBy = this.currentTranslate - this.prevTranslate;
+        
+        if (movedBy < -50 && this.currentIndex < this.cards.length - this.getVisibleCards()) {
+          this.currentIndex++;
+        }
+        
+        if (movedBy > 50 && this.currentIndex > 0) {
+          this.currentIndex--;
+        }
+        
+        this.updateCarousel();
+      }
+
+      navigate(direction) {
+        const visibleCards = this.getVisibleCards();
+        this.currentIndex += direction * visibleCards;
+        this.currentIndex = Math.max(0, Math.min(this.currentIndex, this.cards.length - visibleCards));
+        this.updateCarousel();
+      }
+
+      getVisibleCards() {
+        const containerWidth = this.track.parentElement.offsetWidth;
+        return Math.floor(containerWidth / (this.cardWidth + this.gap));
+      }
+
+      updateCarousel() {
+        const offset = this.currentIndex * (this.cardWidth + this.gap);
+        this.track.style.transform = `translateX(-${offset}px)`;
+        this.prevTranslate = -offset;
+        this.currentTranslate = -offset;
+        
+        const visibleCards = this.getVisibleCards();
+        
+        if (this.prevBtn) {
+          this.prevBtn.disabled = this.currentIndex === 0;
+        }
+        
+        if (this.nextBtn) {
+          this.nextBtn.disabled = this.currentIndex >= this.cards.length - visibleCards;
+        }
+        
+        if (this.dotsContainer) {
+          const dots = this.dotsContainer.querySelectorAll('.ai-ingredient-carousel-dot-{{ ai_gen_id }}');
+          const activeDotIndex = Math.floor(this.currentIndex / visibleCards);
+          dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === activeDotIndex);
+          });
+        }
+      }
+
+      disconnectedCallback() {
+        if (this.prevBtn) {
+          this.prevBtn.removeEventListener('click', () => this.navigate(-1));
+        }
+        if (this.nextBtn) {
+          this.nextBtn.removeEventListener('click', () => this.navigate(1));
+        }
+      }
+    }
+
+    customElements.define('ingredient-carousel-{{ ai_gen_id }}', IngredientCarousel{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Ingredient carousel",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "This block displays ingredients from the product's 'key_ingredients' metafield (list of metaobjects). Each metaobject should have: name, benefit, description, and icon fields."
+    },
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_title",
+      "label": "Title",
+      "default": "Key Ingredients"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_subtitle",
+      "label": "Subtitle",
+      "default": "Swipe to explore the active ingredients"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Title font",
+      "default": "serif"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#5a5a5a"
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "label": "Header bottom spacing",
+      "min": 12,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "title_spacing",
+      "label": "Title bottom spacing",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Top padding",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Bottom padding",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "label": "Card width",
+      "min": 200,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "default": 320
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "label": "Card gap",
+      "min": 12,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section background",
+      "default": "#fdfaf0"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Card padding",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Card content"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 32,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "icon_spacing",
+      "label": "Icon bottom spacing",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "checkbox",
+      "id": "show_placeholder_icon",
+      "label": "Show placeholder icon if no image",
+      "default": false
+    },
+    {
+      "type": "font_picker",
+      "id": "ingredient_font",
+      "label": "Ingredient name font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "ingredient_name_size",
+      "label": "Ingredient name size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "ingredient_name_color",
+      "label": "Ingredient name color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "range",
+      "id": "name_spacing",
+      "label": "Name bottom spacing",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "benefit_size",
+      "label": "Benefit text size",
+      "min": 9,
+      "max": 14,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Benefit text color",
+      "default": "#e2c84b"
+    },
+    {
+      "type": "range",
+      "id": "benefit_spacing",
+      "label": "Benefit bottom spacing",
+      "min": 6,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Description size",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#5a5a5a"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "color",
+      "id": "nav_button_bg",
+      "label": "Button background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "nav_button_hover_bg",
+      "label": "Button hover background",
+      "default": "#f5f0e8"
+    },
+    {
+      "type": "color",
+      "id": "nav_button_border",
+      "label": "Button border",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "nav_button_color",
+      "label": "Button icon color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show navigation dots",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "dots_spacing",
+      "label": "Dots top spacing",
+      "min": 12,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "dot_color",
+      "label": "Dot color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "dot_active_color",
+      "label": "Active dot color",
+      "default": "#e2c84b"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredient carousel"
+    }
+  ]
+}
 {% endschema %}
