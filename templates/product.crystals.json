@@ -11,6 +11,7 @@
   "sections": {
     "crystal_product_main": {
       "type": "crystal-product-detail",
+      "disabled": true,
       "settings": {
         "bg_color": "#0d0d1a",
         "accent_color": "#c084fc",
@@ -25,19 +26,64 @@
         "block_padding": 60,
         "eyebrow": "Crystal Courtesan",
         "show_mineral_profile": true,
+        "mineral_eyebrow": "Crystal Profile",
+        "mineral_heading": "Know Your Stone",
+        "mineral_subtitle": "Every crystal carries its own identity. Here is everything about this one.",
         "show_care": true,
+        "care_eyebrow": "Crystal Care",
+        "care_heading": "How to Care for Your Stone",
         "show_history": true,
+        "history_eyebrow": "Through the Ages",
+        "history_heading": "The History of This Crystal",
         "show_faq": true,
+        "faq_eyebrow": "Questions & Answers",
+        "faq_heading": "Crystal Courtesan FAQ",
         "show_related": true,
+        "related_eyebrow": "Keep Exploring",
+        "related_heading": "You Might Also Love",
         "show_glossary_cta": true,
+        "glossary_cta_text": "Curious about more crystals? Explore the full Crystal Compendium.",
         "glossary_cta_url": "/pages/crystal-compendium"
       }
+    },
+    "blocks_JgmYaQ": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_6c2c06d_FJhDTF": {
+          "type": "ai_gen_block_6c2c06d",
+          "settings": {
+            "desktop_width_percent": 100,
+            "padding_top": 15,
+            "padding_bottom": 15,
+            "spacing": 8,
+            "font": "poppins_n4",
+            "font_size": 14,
+            "show_home_icon": true,
+            "home_text": "Home",
+            "home_icon_size": 16,
+            "separator": "/",
+            "separator_color": "#999999",
+            "background_color": "#ffffff",
+            "link_color": "#0d1b3e",
+            "link_hover_color": "#f0d84a",
+            "hover_underline": "none",
+            "current_color": "#999999"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_6c2c06d_FJhDTF"
+      ],
+      "name": "Breadcrumb navigation",
+      "settings": {}
     },
     "main": {
       "type": "main-product",
       "blocks": {
         "vendor": {
           "type": "text",
+          "disabled": true,
           "settings": {
             "text": "{{ product.vendor }}",
             "text_style": "uppercase"
@@ -51,10 +97,38 @@
           "type": "price",
           "settings": {}
         },
+        "collapsible_tab_WAUENK": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Full Product Description",
+            "icon": "chat_bubble",
+            "content": "{{ product.description }}",
+            "page": ""
+          }
+        },
+        "collapsible_tab_CtQ3Tf": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Historical Use",
+            "icon": "check_mark",
+            "content": "<p>{{ product.metafields.custom.crystal.value.history | metafield_tag }}</p>",
+            "page": ""
+          }
+        },
+        "collapsible_tab_G6mnxJ": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Why You Need It",
+            "icon": "heart",
+            "content": "<p>{{ product.metafields.custom.crystal.value.why_you_need_it | metafield_tag }}</p>",
+            "page": ""
+          }
+        },
         "variant_picker": {
           "type": "variant_picker",
           "settings": {
-            "picker_type": "button"
+            "picker_type": "button",
+            "swatch_shape": "circle"
           }
         },
         "quantity_selector": {
@@ -64,11 +138,13 @@
         "buy_buttons": {
           "type": "buy_buttons",
           "settings": {
-            "show_dynamic_checkout": true
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true
           }
         },
         "description": {
           "type": "description",
+          "disabled": true,
           "settings": {}
         },
         "share": {
@@ -82,6 +158,9 @@
         "vendor",
         "title",
         "price",
+        "collapsible_tab_WAUENK",
+        "collapsible_tab_CtQ3Tf",
+        "collapsible_tab_G6mnxJ",
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
@@ -90,9 +169,14 @@
       ],
       "settings": {
         "enable_sticky_info": true,
+        "color_scheme": "scheme-3",
         "media_size": "large",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "gallery_layout": "stacked",
         "mobile_thumbnails": "show",
         "media_position": "left",
+        "image_zoom": "lightbox",
         "hide_variants": false,
         "enable_video_looping": false,
         "padding_top": 36,
@@ -107,11 +191,16 @@
       "type": "related-products",
       "settings": {
         "heading": "You May Also Like",
+        "heading_size": "h1",
         "products_to_show": 4,
         "columns_desktop": 4,
+        "columns_mobile": "2",
         "color_scheme": "",
         "image_ratio": "adapt",
+        "image_shape": "default",
         "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
         "padding_top": 36,
         "padding_bottom": 36
       }
@@ -136,6 +225,7 @@
   },
   "order": [
     "crystal_product_main",
+    "blocks_JgmYaQ",
     "main",
     "mineral_entry",
     "related_crystals",
