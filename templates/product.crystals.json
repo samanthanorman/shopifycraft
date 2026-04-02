@@ -188,6 +188,42 @@
       "disabled": true,
       "settings": {}
     },
+    "177516040783efe939": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_38e2ec8_UeriKL": {
+          "type": "ai_gen_block_38e2ec8",
+          "settings": {
+            "section_title": "Crystal Identity",
+            "button_text": "Explore this crystal",
+            "max_width": 900,
+            "background_color": "#f5f0e8",
+            "top_border_color": "#0d1b3e",
+            "section_title_color": "#0d1b3e",
+            "heading_color": "#3c3c3a",
+            "caption_color": "#67479a",
+            "card_background": "#e8d5d0",
+            "card_border_color": "#ffffff14",
+            "card_hover_background": "#ffffff0f",
+            "card_hover_border": "#f7ffe8",
+            "label_color": "#67479a",
+            "value_color": "#643d6a",
+            "glow_size": 20,
+            "glow_color": "#f7ffe8",
+            "button_background": "#00d4ff",
+            "button_text_color": "#ffffff",
+            "button_ripple_color": "#ffffff4d",
+            "button_glow_size": 30,
+            "button_glow_color": "#00d4ff99"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_38e2ec8_UeriKL"
+      ],
+      "settings": {}
+    },
     "related_crystals": {
       "type": "related-products",
       "settings": {
@@ -229,6 +265,7 @@
     "blocks_JgmYaQ",
     "main",
     "mineral_entry",
+    "177516040783efe939",
     "related_crystals",
     "crystal_blog"
   ]

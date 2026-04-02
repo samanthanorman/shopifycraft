@@ -17,22 +17,22 @@
         "ann_shipping": {
           "type": "announcement",
           "settings": {
-            "text": "✨ Personal EMF Protection Products 🛜",
-            "link": "shopify://collections/emf-shielding-faraday-protection"
+            "text": "✨ FREE SHIPPING | Korean Skincare · Crystals · EMF Protection",
+            "link": "shopify://collections/all"
           }
         },
         "ann_haramoon": {
           "type": "announcement",
           "settings": {
             "text": "🌙 NEW: HARAMOON 4-Step Glass Skin Routine — Shop the Bundle →",
-            "link": "shopify://products/haramoon-starter-set"
+            "link": "shopify://pages/radiant-skin-starts-here"
           }
         },
         "ann_crystals": {
           "type": "announcement",
           "settings": {
-            "text": "🔮 Explore the Crystal Collection —  Minerals with full metaphysical profiles",
-            "link": "shopify://collections/natural-crystals-gemstones"
+            "text": "🔮 Explore the Crystal Compendium — 50+ minerals with full metaphysical profiles",
+            "link": "/pages/crystal-compendium"
           }
         }
       },
@@ -45,7 +45,7 @@
       "settings": {
         "auto_rotate": true,
         "change_slides_speed": 4,
-        "color_scheme": "scheme-18454811-40b3-4438-bce6-d3a35687366e",
+        "color_scheme": "scheme-4",
         "show_line_separator": true,
         "show_social": true,
         "enable_country_selector": false,
@@ -66,9 +66,9 @@
         "menu_type_desktop": "dropdown",
         "sticky_header_type": "reduce-logo-size",
         "show_line_separator": true,
-        "color_scheme": "scheme-3",
+        "color_scheme": "scheme-5",
         "menu_color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
-        "enable_country_selector": false,
+        "enable_country_selector": true,
         "enable_language_selector": true,
         "enable_customer_avatar": true,
         "margin_bottom": 8,
