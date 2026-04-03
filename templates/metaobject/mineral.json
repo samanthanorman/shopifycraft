@@ -147,6 +147,10 @@
         "padding_top": 40,
         "padding_bottom": 52
       }
+    },
+    "1775206862f6267651": {
+      "type": "_blocks",
+      "settings": {}
     }
   },
   "order": [
@@ -154,6 +158,7 @@
     "crystal_blog",
     "17751667169a1b0ebb",
     "1775206006475e31b0",
-    "newsletter_E4rqTB"
+    "newsletter_E4rqTB",
+    "1775206862f6267651"
   ]
 }
