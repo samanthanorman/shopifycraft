@@ -9,9 +9,43 @@
  */
 {
   "sections": {
-    "custom_liquid_nReViM": {
-      "type": "crystal-breadcrumb",
-      "name": "t:sections.custom-liquid.presets.name",
+    "17752562796fa79b76": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_99a3842_hmmjxz": {
+          "type": "ai_gen_block_99a3842",
+          "settings": {
+            "back_button_label": "Back to Crystal Compendium",
+            "back_button_url": "",
+            "browse_more_label": "Browse More",
+            "browse_more_url": "",
+            "center_label_text": "VIEW ALL CRYSTALS & MINERALS",
+            "compendium_url": "",
+            "background_color": "#FAF9F7",
+            "text_color": "#1A1A1A",
+            "button_border_color": "#1A1A1A",
+            "accent_color": "#0066FF",
+            "button_border_width": 1,
+            "button_padding_vertical": 14,
+            "button_padding_horizontal": 28,
+            "button_font_size": 16,
+            "hover_style": "underline",
+            "enable_glow": false,
+            "glow_intensity": "subtle",
+            "breadcrumb_font_size": 14,
+            "center_label_font_size": 13,
+            "letter_spacing": 12,
+            "padding_top": 24,
+            "padding_bottom": 24,
+            "max_width": 1200,
+            "enable_entrance_animation": true
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_99a3842_hmmjxz"
+      ],
       "settings": {}
     },
     "1775167310d360e281": {
@@ -26,12 +60,12 @@
             "padding_top": 60,
             "padding_bottom": 60,
             "padding_horizontal": 24,
-            "background_color": "#FFFFFF",
-            "border_color": "#0066FF",
+            "background_color": "#ffffff",
+            "border_color": "#0066ff",
             "border_thickness": 2,
-            "heading_color": "#1A1A1A",
+            "heading_color": "#1a1a1a",
             "tagline_color": "#666666",
-            "label_color": "#1A1A1A",
+            "label_color": "#1a1a1a",
             "value_color": "#666666",
             "heading_size": 48,
             "tagline_size": 18,
@@ -46,7 +80,7 @@
             "grid_gap": 24,
             "grid_item_padding": 12,
             "swatch_size": 40,
-            "swatch_border_color": "#E0E0E0"
+            "swatch_border_color": "#e0e0e0"
           },
           "blocks": {}
         },
@@ -78,12 +112,12 @@
             "card_border_thickness": 2,
             "card_border_radius": 6,
             "card_text_size": 16,
-            "background_color": "#F9FAFB",
-            "accent_color": "#0066FF",
+            "background_color": "#f9fafb",
+            "accent_color": "#0066ff",
             "text_color": "#666666",
-            "divider_color": "#E5E7EB",
-            "card_background": "#FFFFFF",
-            "card_shadow_color": "rgba(0, 102, 255, 0.15)"
+            "divider_color": "#e5e7eb",
+            "card_background": "#ffffff",
+            "card_shadow_color": "#0066ff26"
           },
           "blocks": {}
         }
@@ -91,6 +125,37 @@
       "block_order": [
         "ai_gen_block_b87255d_KzNQfB",
         "ai_gen_block_aed83a7_J7Pgrr"
+      ],
+      "settings": {}
+    },
+    "1775256663aa16ec76": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_a9b47ec_mEUrwV": {
+          "type": "ai_gen_block_a9b47ec",
+          "settings": {
+            "background_color": "#FAF9F7",
+            "text_color": "#1A1A1A",
+            "border_color": "#1A1A1A",
+            "accent_color": "#0066FF",
+            "button_border_width": 1,
+            "button_padding_vertical": 16,
+            "button_padding_horizontal": 28,
+            "hover_style": "underline",
+            "glow_effect": false,
+            "glow_intensity": "subtle",
+            "label_font_size": 11,
+            "name_font_size": 18,
+            "max_width": 1200,
+            "padding_top": 24,
+            "padding_bottom": 24,
+            "entrance_animation": true
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_a9b47ec_mEUrwV"
       ],
       "settings": {}
     },
@@ -159,8 +224,9 @@
     }
   },
   "order": [
-    "custom_liquid_nReViM",
+    "17752562796fa79b76",
     "1775167310d360e281",
+    "1775256663aa16ec76",
     "crystal_blog",
     "17751667169a1b0ebb",
     "1775206006475e31b0",
