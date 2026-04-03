@@ -1,6 +1,588 @@
+{% doc %}
+  @prompt
+    breadcrumb for a Shopify metaobject template page where the URL pattern is /pages/crystals/[handle]. The Liquid root object is metaobject — access all fields using dot notation like metaobject.display_name.value.
+    
+    Layout: A single horizontal row with three zones — left button, center content, right button — using CSS Grid (grid-template-columns: 1fr auto 1fr). On mobile (below 640px), stack into two rows: center content spans full width on top, left and right buttons sit side by side below it.
+    
+    Left zone: A navigation link styled as a sharp rectangular outlined button (zero border-radius). Shows a left-pointing SVG chevron icon on the left + label text. The chevron is drawn inline as an SVG polyline points="15 18 9 12 15 6", stroke currentColor, no fill, stroke-width 2. Links to an editable URL in schema settings.
+    
+    Center zone: Two stacked elements — (1) a small all-caps tracked label text link (editable in schema, default "VIEW ALL CRYSTALS & MINERALS") linking to the compendium URL, and (2) a breadcrumb trail reading: Home › Crystal Compendium › [metaobject.display_name.value] where Home links to /, Crystal Compendium links to an editable schema URL, and the current entry name is plain non-linked text pulled from metaobject.display_name.value.
+    
+    Right zone: A navigation link styled identically to the left button but with the chevron on the right pointing right, SVG polyline points="9 18 15 12 9 6". Links to an editable URL in schema settings.
+    
+    Schema settings — all editable in the theme editor sidebar:
+    
+    Back button label (text, default: "Back to Crystal Compendium")
+    Back button URL (url picker)
+    Browse More button label (text, default: "Browse More")
+    Browse More button URL (url picker)
+    Center label text (text, default: "VIEW ALL CRYSTALS & MINERALS")
+    Crystal Compendium URL used in breadcrumb and center label (url picker)
+    Background color (color, default: #FAF9F7)
+    Text color (color, default: #1A1A1A)
+    Button border color (color, default: #1A1A1A)
+    Accent and hover color (color, default: #0066FF)
+    Button border width in px (range 1–4, default: 1)
+    Button vertical padding in px (range 8–32, default: 14)
+    Button horizontal padding in px (range 16–56, default: 28)
+    Section padding top in px (range 0–80, default: 24)
+    Section padding bottom in px (range 0–80, default: 24)
+    Section max-width in px (range 800–1600, default: 1280)
+    Breadcrumb font size in px (range 11–20, default: 14)
+    Button label font size in px (range 12–22, default: 16)
+    Center label font size in px (range 10–18, default: 13)
+    Letter spacing for breadcrumb and center label (range 0–30 stored as integer, divide by 100 in CSS to get em value, default: 12)
+    Hover animation style (select: "underline" = sliding bottom border, "fill" = solid background fill, "glow_pulse" = pulsing box-shadow, default: underline)
+    Glow effect toggle (checkbox, default: false) — when enabled adds a colored box-shadow on hover
+    Glow intensity (select: subtle = 0 0 8px 2px, medium = 0 0 16px 4px, strong = 0 0 28px 8px, default: subtle)
+    Entrance animation toggle (checkbox, default: true) — when enabled the section fades up from 18px below on scroll using IntersectionObserver
+    Fonts: Import Raleway (weights 300, 400) and Poppins (weights 400, 500) from Google Fonts via @import in the style tag. Use Raleway light (300) for all text throughout. Button labels use font-size from schema. Breadcrumb uses font-size from schema. All text uses the text color from schema.
+    
+    Button hover states: All three hover styles must change text color and border color to the accent color. If glow is enabled, add box-shadow using the selected intensity value and accent color at 55% opacity. The underline style adds a 2px bottom pseudo-element that slides from width 0 to 100%. The fill style changes background to accent color and text to white. The glow_pulse style adds a CSS keyframe animation alternating box-shadow opacity between 44% and 99%.
+    
+    Breadcrumb and center label hover: Links change to accent color on hover with a 0.2s ease transition.
+    
+    Entrance animation: Use IntersectionObserver in a script tag. Set initial state opacity: 0; transform: translateY(18px) via CSS, add class mnav-visible with opacity: 1; transform: translateY(0); transition: 0.6s ease when the section enters the viewport. Fall back gracefully if IntersectionObserver is not supported.
+    
+    Mobile optimization: Below 640px — center content goes full width on its own row above the buttons. Left and right buttons each take 50% width and are justified to their respective edges. Button font size reduces by 2px. Button padding reduces slightly. Breadcrumb wraps and centers. No horizontal overflow.
+    
+    Style rules: Zero border-radius everywhere. No gradients. No pill shapes. Smooth 0.25s ease transitions on color, border-color, background, box-shadow. Section width 100%. Inner container uses max-width from schema, centered with auto margins, 24px horizontal padding. 
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400&family=Poppins:wght@400;500&display=swap');
+
+  .mnav-container-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding-top: {{ block.settings.padding_top }}px;
+    padding-bottom: {{ block.settings.padding_bottom }}px;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .mnav-container-{{ ai_gen_id }}.mnav-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .mnav-inner-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .mnav-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .mnav-left-{{ ai_gen_id }} {
+    justify-self: start;
+  }
+
+  .mnav-center-{{ ai_gen_id }} {
+    justify-self: center;
+    text-align: center;
+  }
+
+  .mnav-right-{{ ai_gen_id }} {
+    justify-self: end;
+  }
+
+  .mnav-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;
+    background-color: transparent;
+    color: {{ block.settings.text_color }};
+    border: {{ block.settings.button_border_width }}px solid {{ block.settings.button_border_color }};
+    border-radius: 0;
+    text-decoration: none;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: {{ block.settings.button_font_size }}px;
+    transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mnav-button-{{ ai_gen_id }} svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .mnav-button-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.accent_color }};
+    border-color: {{ block.settings.accent_color }};
+  }
+
+  {% if block.settings.hover_style == 'underline' %}
+    .mnav-button-{{ ai_gen_id }}::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: {{ block.settings.accent_color }};
+      transition: width 0.25s ease;
+    }
+
+    .mnav-button-{{ ai_gen_id }}:hover::after {
+      width: 100%;
+    }
+  {% elsif block.settings.hover_style == 'fill' %}
+    .mnav-button-{{ ai_gen_id }}:hover {
+      background-color: {{ block.settings.accent_color }};
+      color: #ffffff;
+    }
+  {% elsif block.settings.hover_style == 'glow_pulse' %}
+    @keyframes mnav-glow-pulse-{{ ai_gen_id }} {
+      0%, 100% {
+        box-shadow: {% if block.settings.glow_intensity == 'subtle' %}0 0 8px 2px{% elsif block.settings.glow_intensity == 'medium' %}0 0 16px 4px{% else %}0 0 28px 8px{% endif %} {{ block.settings.accent_color | color_modify: 'alpha', 0.44 }};
+      }
+      50% {
+        box-shadow: {% if block.settings.glow_intensity == 'subtle' %}0 0 8px 2px{% elsif block.settings.glow_intensity == 'medium' %}0 0 16px 4px{% else %}0 0 28px 8px{% endif %} {{ block.settings.accent_color | color_modify: 'alpha', 0.99 }};
+      }
+    }
+
+    .mnav-button-{{ ai_gen_id }}:hover {
+      animation: mnav-glow-pulse-{{ ai_gen_id }} 1.5s ease-in-out infinite;
+    }
+  {% endif %}
+
+  {% if block.settings.enable_glow %}
+    .mnav-button-{{ ai_gen_id }}:hover {
+      box-shadow: {% if block.settings.glow_intensity == 'subtle' %}0 0 8px 2px{% elsif block.settings.glow_intensity == 'medium' %}0 0 16px 4px{% else %}0 0 28px 8px{% endif %} {{ block.settings.accent_color | color_modify: 'alpha', 0.55 }};
+    }
+  {% endif %}
+
+  .mnav-center-label-{{ ai_gen_id }} {
+    display: block;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: {{ block.settings.center_label_font_size }}px;
+    letter-spacing: {{ block.settings.letter_spacing | divided_by: 100.0 }}em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .mnav-center-label-{{ ai_gen_id }} a {
+    color: {{ block.settings.text_color }};
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .mnav-center-label-{{ ai_gen_id }} a:hover {
+    color: {{ block.settings.accent_color }};
+  }
+
+  .mnav-breadcrumb-{{ ai_gen_id }} {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: {{ block.settings.breadcrumb_font_size }}px;
+    letter-spacing: {{ block.settings.letter_spacing | divided_by: 100.0 }}em;
+    color: {{ block.settings.text_color }};
+  }
+
+  .mnav-breadcrumb-{{ ai_gen_id }} a {
+    color: {{ block.settings.text_color }};
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .mnav-breadcrumb-{{ ai_gen_id }} a:hover {
+    color: {{ block.settings.accent_color }};
+  }
+
+  .mnav-breadcrumb-{{ ai_gen_id }} span {
+    margin: 0 6px;
+  }
+
+  @media screen and (max-width: 640px) {
+    .mnav-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+      gap: 16px;
+    }
+
+    .mnav-center-{{ ai_gen_id }} {
+      grid-row: 1;
+      grid-column: 1;
+      width: 100%;
+    }
+
+    .mnav-left-{{ ai_gen_id }} {
+      grid-row: 2;
+      grid-column: 1;
+      justify-self: start;
+      width: 50%;
+    }
+
+    .mnav-right-{{ ai_gen_id }} {
+      grid-row: 2;
+      grid-column: 1;
+      justify-self: end;
+      width: 50%;
+    }
+
+    .mnav-button-{{ ai_gen_id }} {
+      font-size: {{ block.settings.button_font_size | minus: 2 }}px;
+      padding: {{ block.settings.button_padding_vertical | minus: 2 }}px {{ block.settings.button_padding_horizontal | minus: 4 }}px;
+    }
+
+    .mnav-breadcrumb-{{ ai_gen_id }} {
+      text-align: center;
+    }
+  }
+{% endstyle %}
+
+<metaobject-breadcrumb-{{ ai_gen_id }}
+  class="mnav-container-{{ ai_gen_id }} {% unless block.settings.enable_entrance_animation %}mnav-visible{% endunless %}"
+  {{ block.shopify_attributes }}
+>
+  <div class="mnav-inner-{{ ai_gen_id }}">
+    <div class="mnav-grid-{{ ai_gen_id }}">
+      <div class="mnav-left-{{ ai_gen_id }}">
+        {% if block.settings.back_button_url != blank %}
+          <a href="{{ block.settings.back_button_url }}" class="mnav-button-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            <span>{{ block.settings.back_button_label }}</span>
+          </a>
+        {% endif %}
+      </div>
+
+      <div class="mnav-center-{{ ai_gen_id }}">
+        {% if block.settings.center_label_text != blank %}
+          <div class="mnav-center-label-{{ ai_gen_id }}">
+            {% if block.settings.compendium_url != blank %}
+              <a href="{{ block.settings.compendium_url }}">{{ block.settings.center_label_text }}</a>
+            {% else %}
+              {{ block.settings.center_label_text }}
+            {% endif %}
+          </div>
+        {% endif %}
+        <nav class="mnav-breadcrumb-{{ ai_gen_id }}" aria-label="Breadcrumb">
+          <a href="/">Home</a>
+          <span aria-hidden="true">›</span>
+          {% if block.settings.compendium_url != blank %}
+            <a href="{{ block.settings.compendium_url }}">Crystal Compendium</a>
+          {% else %}
+            <span>Crystal Compendium</span>
+          {% endif %}
+          <span aria-hidden="true">›</span>
+          <span>{{ metaobject.display_name.value }}</span>
+        </nav>
+      </div>
+
+      <div class="mnav-right-{{ ai_gen_id }}">
+        {% if block.settings.browse_more_url != blank %}
+          <a href="{{ block.settings.browse_more_url }}" class="mnav-button-{{ ai_gen_id }}">
+            <span>{{ block.settings.browse_more_label }}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</metaobject-breadcrumb-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class MetaobjectBreadcrumb{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        {% if block.settings.enable_entrance_animation %}
+          if ('IntersectionObserver' in window) {
+            this.setupIntersectionObserver();
+          } else {
+            this.classList.add('mnav-visible');
+          }
+        {% endif %}
+      }
+
+      setupIntersectionObserver() {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('mnav-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
+        });
+
+        observer.observe(this);
+      }
+    }
+
+    customElements.define('metaobject-breadcrumb-{{ ai_gen_id }}', MetaobjectBreadcrumb{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Metaobject breadcrumb",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Navigation buttons"
+    },
+    {
+      "type": "text",
+      "id": "back_button_label",
+      "label": "Back button label",
+      "default": "Back to Crystal Compendium"
+    },
+    {
+      "type": "url",
+      "id": "back_button_url",
+      "label": "Back button URL"
+    },
+    {
+      "type": "text",
+      "id": "browse_more_label",
+      "label": "Browse more button label",
+      "default": "Browse More"
+    },
+    {
+      "type": "url",
+      "id": "browse_more_url",
+      "label": "Browse more button URL"
+    },
+    {
+      "type": "header",
+      "content": "Center content"
+    },
+    {
+      "type": "text",
+      "id": "center_label_text",
+      "label": "Center label text",
+      "default": "VIEW ALL CRYSTALS & MINERALS"
+    },
+    {
+      "type": "url",
+      "id": "compendium_url",
+      "label": "Crystal Compendium URL"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FAF9F7"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button border",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent and hover",
+      "default": "#0066FF"
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "range",
+      "id": "button_border_width",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Border width",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Vertical padding",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "min": 16,
+      "max": 56,
+      "step": 4,
+      "unit": "px",
+      "label": "Horizontal padding",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Button font size",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "hover_style",
+      "label": "Hover animation style",
+      "options": [
+        {
+          "value": "underline",
+          "label": "Underline"
+        },
+        {
+          "value": "fill",
+          "label": "Fill"
+        },
+        {
+          "value": "glow_pulse",
+          "label": "Glow pulse"
+        }
+      ],
+      "default": "underline"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_glow",
+      "label": "Enable glow effect",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "glow_intensity",
+      "label": "Glow intensity",
+      "options": [
+        {
+          "value": "subtle",
+          "label": "Subtle"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "strong",
+          "label": "Strong"
+        }
+      ],
+      "default": "subtle"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "breadcrumb_font_size",
+      "min": 11,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Breadcrumb font size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "center_label_font_size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Center label font size",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "label": "Letter spacing",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1600,
+      "step": 100,
+      "unit": "px",
+      "label": "Max width",
+      "default": 1200
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_entrance_animation",
+      "label": "Enable entrance animation",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Metaobject breadcrumb"
+    }
+  ]
+}
 {% endschema %}
