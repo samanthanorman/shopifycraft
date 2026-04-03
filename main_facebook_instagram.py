@@ -23,6 +23,15 @@ from googleapiclient.errors import HttpError
 SKILL_DIR = Path.home() / 'antigravity_skills' / 'shopify-social-autoposter'
 load_dotenv(dotenv_path=SKILL_DIR / '.env')
 
+# TikTok Shop module (graceful fallback if not yet authorized)
+try:
+    sys.path.insert(0, str(SKILL_DIR))
+    from tiktok_shop_poster import post_blog_to_tiktok_shop
+    TIKTOK_AVAILABLE = True
+except ImportError:
+    TIKTOK_AVAILABLE = False
+    def post_blog_to_tiktok_shop(article): return 'UNAVAILABLE'
+
 # Configuration
 FACEBOOK_PAGE_ID = os.getenv('FACEBOOK_PAGE_ID')
 FACEBOOK_PAGE_TOKEN = os.getenv('FACEBOOK_PAGE_TOKEN')
@@ -786,6 +795,10 @@ Shopify Social Autoposter - Facebook & Instagram Edition
         # Post to Instagram
         instagram_url = self.post_to_instagram(article)
         time.sleep(2)  # Rate limiting
+
+        # Post to TikTok Shop (builds caption + product link, queues for posting)
+        tiktok_result = post_blog_to_tiktok_shop(article)
+        time.sleep(1)
         
         # Log to Google Sheets
         self.log_to_google_sheets(article, facebook_url, instagram_url)
