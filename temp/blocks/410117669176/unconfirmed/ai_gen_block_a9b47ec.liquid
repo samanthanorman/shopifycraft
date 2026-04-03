@@ -1,6 +1,540 @@
+{% doc %}
+  @prompt
+    Create a custom Liquid section called mineral_prev_next_nav for a Shopify metaobject template page (URL pattern: /pages/crystals/[handle]). The Liquid root object is metaobject — access fields as metaobject.[key].value.
+    
+    Purpose: Previous / Next navigation buttons that let users move through crystals in A-Z alphabetical order by display name.
+    
+    Hardcode the full ordered list of mineral entries as a Liquid array using assign and split, with each entry as handle|Display Name pairs separated by commas. The list in A-Z order is: mineral-amethyst|Amethyst, mineral-black-tourmaline|Black Tourmaline, brass|Brass, citrine|Citrine, clear-quartz|Clear Quartz, mineral-copper|Copper, fluorite|Fluorite, gold|Gold, mineral-hematite|Hematite, jade|Jade, lapis-lazuli|Lapis Lazuli, mineral-malachite|Malachite, moonstone|Moonstone, mineral-ocean-jasper|Ocean Jasper, rose-quartz|Rose Quartz, shungite|Shungite, silver|Silver, snowflake-fluorite|Snowflake Fluorite, terahertz|Terahertz, mineral-thousand-layer-quartz|Thousand-Layer Quartz, mineral-tiger-eye|Tiger Eye, mineral-watermelon-fluorite|Watermelon Fluorite, wood|Wood
+    
+    Logic: Loop through the array to find the entry whose handle matches metaobject.system.handle. Store the index. The previous entry is index minus 1, next entry is index plus 1. Extract the handle and display name for each using split: "|". Build URLs as /pages/crystals/[handle]. If at the first entry, hide the previous button. If at the last entry, hide the next button.
+    
+    Layout: Full-width section. Single row with left button (Previous) and right button (Next) at opposite ends using flexbox justify-content: space-between. If one button is hidden, the other stays on its correct side. On mobile (below 640px) buttons stack vertically centered, full width.
+    
+    Left button: Left-pointing SVG chevron (polyline points="15 18 9 12 15 6", stroke currentColor, no fill, stroke-width 2) + two lines of text: small all-caps label "PREVIOUS CRYSTAL" above, and the previous crystal's display name in larger weight below.
+    
+    Right button: Two lines of text: small all-caps label "NEXT CRYSTAL" above, display name below + right-pointing SVG chevron (polyline points="9 18 15 12 9 6"). Text right-aligned.
+    
+    Schema settings: Background color (default #FAF9F7), text color (default #1A1A1A), border color (default #1A1A1A), accent/hover color (default #0066FF), button border width range 1–4 default 1, button vertical padding range 8–32 default 16, button horizontal padding range 16–56 default 28, section padding top range 0–80 default 24, section padding bottom range 0–80 default 24, max-width range 800–1600 default 1280, small label font size range 9–16 default 11, crystal name font size range 14–24 default 18, glow effect toggle checkbox default false, glow intensity select subtle/medium/strong default subtle, hover style select underline/fill/glow_pulse default underline, entrance animation toggle checkbox default true.
+    
+    Button style: Zero border-radius, no gradients, no pill shapes. Outlined rectangular buttons matching the breadcrumb nav style. Import Raleway (300, 400) and Poppins (400, 500) from Google Fonts. Small label in Raleway 300 all-caps letter-spaced opacity 0.6. Crystal name in Raleway 400 full opacity. Chevron SVG 16px, flex-shrink 0, stroke currentColor. Gap 10px between chevron and text block.
+    
+    Hover: Accent color on text and border. If glow enabled, box-shadow using intensity value at 55% opacity. Underline style: 2px pseudo-element slides width 0 to 100%. Fill style: background becomes accent, text becomes white. Glow pulse: keyframe animation on box-shadow. All transitions 0.25s ease.
+    
+    Entrance animation: IntersectionObserver fades section up from translateY(18px), opacity 0 to 1, 0.6s ease. Graceful fallback if unsupported.
+    
+    Mobile: Below 640px buttons stack vertically, full width, centered text, chevrons above/below text block respectively. No horizontal overflow.
+    
+    All CSS scoped to section ID. Accessible: aria-label on section, aria-hidden on decorative SVGs and separators.
+{% enddoc %}
+{% assign ai_gen_id = section.id | replace: '_', '' | downcase %}
+
+{% assign mineral_list = "mineral-amethyst|Amethyst,mineral-black-tourmaline|Black Tourmaline,brass|Brass,citrine|Citrine,clear-quartz|Clear Quartz,mineral-copper|Copper,fluorite|Fluorite,gold|Gold,mineral-hematite|Hematite,jade|Jade,lapis-lazuli|Lapis Lazuli,mineral-malachite|Malachite,moonstone|Moonstone,mineral-ocean-jasper|Ocean Jasper,rose-quartz|Rose Quartz,shungite|Shungite,silver|Silver,snowflake-fluorite|Snowflake Fluorite,terahertz|Terahertz,mineral-thousand-layer-quartz|Thousand-Layer Quartz,mineral-tiger-eye|Tiger Eye,mineral-watermelon-fluorite|Watermelon Fluorite,wood|Wood" | split: "," %}
+
+{% assign current_handle = metaobject.system.handle %}
+{% assign current_index = -1 %}
+{% assign prev_entry = nil %}
+{% assign next_entry = nil %}
+
+{% for entry in mineral_list %}
+  {% assign entry_parts = entry | split: "|" %}
+  {% assign entry_handle = entry_parts[0] %}
+  
+  {% if entry_handle == current_handle %}
+    {% assign current_index = forloop.index0 %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+{% if current_index > 0 %}
+  {% assign prev_index = current_index | minus: 1 %}
+  {% assign prev_entry = mineral_list[prev_index] %}
+{% endif %}
+
+{% assign next_index = current_index | plus: 1 %}
+{% if next_index < mineral_list.size %}
+  {% assign next_entry = mineral_list[next_index] %}
+{% endif %}
+
+{% style %}
+  @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400&family=Poppins:wght@400;500&display=swap');
+
+  .mineral-nav-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ section.settings.background_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .mineral-nav-{{ ai_gen_id }}.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .mineral-nav-container-{{ ai_gen_id }} {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .mineral-nav-buttons-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .mineral-nav-button-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: {{ section.settings.button_padding_vertical }}px {{ section.settings.button_padding_horizontal }}px;
+    background-color: transparent;
+    border: {{ section.settings.button_border_width }}px solid {{ section.settings.border_color }};
+    border-radius: 0;
+    color: {{ section.settings.text_color }};
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mineral-nav-button-{{ ai_gen_id }}:hover {
+    border-color: {{ section.settings.accent_color }};
+    color: {{ section.settings.accent_color }};
+  }
+
+  {% if section.settings.glow_effect %}
+    {% case section.settings.glow_intensity %}
+      {% when 'subtle' %}
+        {% assign glow_blur = 8 %}
+        {% assign glow_spread = 0 %}
+      {% when 'medium' %}
+        {% assign glow_blur = 16 %}
+        {% assign glow_spread = 2 %}
+      {% when 'strong' %}
+        {% assign glow_blur = 24 %}
+        {% assign glow_spread = 4 %}
+    {% endcase %}
+
+    .mineral-nav-button-{{ ai_gen_id }}:hover {
+      box-shadow: 0 0 {{ glow_blur }}px {{ glow_spread }}px {{ section.settings.accent_color | color_modify: 'alpha', 0.55 }};
+    }
+
+    {% if section.settings.hover_style == 'glow_pulse' %}
+      @keyframes mineral-nav-glow-pulse-{{ ai_gen_id }} {
+        0%, 100% {
+          box-shadow: 0 0 {{ glow_blur }}px {{ glow_spread }}px {{ section.settings.accent_color | color_modify: 'alpha', 0.55 }};
+        }
+        50% {
+          box-shadow: 0 0 {{ glow_blur | times: 1.5 }}px {{ glow_spread | plus: 2 }}px {{ section.settings.accent_color | color_modify: 'alpha', 0.75 }};
+        }
+      }
+
+      .mineral-nav-button-{{ ai_gen_id }}:hover {
+        animation: mineral-nav-glow-pulse-{{ ai_gen_id }} 1.5s ease-in-out infinite;
+      }
+    {% endif %}
+  {% endif %}
+
+  {% if section.settings.hover_style == 'underline' %}
+    .mineral-nav-button-{{ ai_gen_id }}::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: {{ section.settings.accent_color }};
+      transition: width 0.25s ease;
+    }
+
+    .mineral-nav-button-{{ ai_gen_id }}:hover::after {
+      width: 100%;
+    }
+  {% endif %}
+
+  {% if section.settings.hover_style == 'fill' %}
+    .mineral-nav-button-{{ ai_gen_id }}::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 100%;
+      background-color: {{ section.settings.accent_color }};
+      transition: width 0.25s ease;
+      z-index: 0;
+    }
+
+    .mineral-nav-button-{{ ai_gen_id }}:hover::before {
+      width: 100%;
+    }
+
+    .mineral-nav-button-{{ ai_gen_id }}:hover {
+      color: #ffffff;
+    }
+
+    .mineral-nav-button-{{ ai_gen_id }} > * {
+      position: relative;
+      z-index: 1;
+    }
+  {% endif %}
+
+  .mineral-nav-button-text-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .mineral-nav-button-{{ ai_gen_id }}--prev .mineral-nav-button-text-{{ ai_gen_id }} {
+    align-items: flex-start;
+  }
+
+  .mineral-nav-button-{{ ai_gen_id }}--next .mineral-nav-button-text-{{ ai_gen_id }} {
+    align-items: flex-end;
+  }
+
+  .mineral-nav-label-{{ ai_gen_id }} {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: {{ section.settings.label_font_size }}px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.6;
+  }
+
+  .mineral-nav-name-{{ ai_gen_id }} {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 400;
+    font-size: {{ section.settings.name_font_size }}px;
+  }
+
+  .mineral-nav-chevron-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    stroke: currentColor;
+  }
+
+  @media screen and (max-width: 639px) {
+    .mineral-nav-buttons-{{ ai_gen_id }} {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .mineral-nav-button-{{ ai_gen_id }} {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .mineral-nav-button-{{ ai_gen_id }}--prev {
+      flex-direction: column;
+    }
+
+    .mineral-nav-button-{{ ai_gen_id }}--next {
+      flex-direction: column-reverse;
+    }
+
+    .mineral-nav-button-{{ ai_gen_id }}--prev .mineral-nav-button-text-{{ ai_gen_id }},
+    .mineral-nav-button-{{ ai_gen_id }}--next .mineral-nav-button-text-{{ ai_gen_id }} {
+      align-items: center;
+      text-align: center;
+    }
+  }
+{% endstyle %}
+
+<mineral-prev-next-nav-{{ ai_gen_id }}
+  class="mineral-nav-{{ ai_gen_id }}"
+  aria-label="Mineral navigation"
+  data-entrance-animation="{{ section.settings.entrance_animation }}"
+>
+  <div class="mineral-nav-container-{{ ai_gen_id }}">
+    <div class="mineral-nav-buttons-{{ ai_gen_id }}">
+      {% if prev_entry %}
+        {% assign prev_parts = prev_entry | split: "|" %}
+        {% assign prev_handle = prev_parts[0] %}
+        {% assign prev_name = prev_parts[1] %}
+        <a
+          href="/pages/crystals/{{ prev_handle }}"
+          class="mineral-nav-button-{{ ai_gen_id }} mineral-nav-button-{{ ai_gen_id }}--prev"
+        >
+          <svg
+            class="mineral-nav-chevron-{{ ai_gen_id }}"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <polyline points="15 18 9 12 15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          </svg>
+          <div class="mineral-nav-button-text-{{ ai_gen_id }}">
+            <span class="mineral-nav-label-{{ ai_gen_id }}">Previous Crystal</span>
+            <span class="mineral-nav-name-{{ ai_gen_id }}">{{ prev_name }}</span>
+          </div>
+        </a>
+      {% else %}
+        <div></div>
+      {% endif %}
+
+      {% if next_entry %}
+        {% assign next_parts = next_entry | split: "|" %}
+        {% assign next_handle = next_parts[0] %}
+        {% assign next_name = next_parts[1] %}
+        <a
+          href="/pages/crystals/{{ next_handle }}"
+          class="mineral-nav-button-{{ ai_gen_id }} mineral-nav-button-{{ ai_gen_id }}--next"
+        >
+          <div class="mineral-nav-button-text-{{ ai_gen_id }}">
+            <span class="mineral-nav-label-{{ ai_gen_id }}">Next Crystal</span>
+            <span class="mineral-nav-name-{{ ai_gen_id }}">{{ next_name }}</span>
+          </div>
+          <svg
+            class="mineral-nav-chevron-{{ ai_gen_id }}"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <polyline points="9 18 15 12 9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          </svg>
+        </a>
+      {% else %}
+        <div></div>
+      {% endif %}
+    </div>
+  </div>
+</mineral-prev-next-nav-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class MineralPrevNextNav{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.entranceAnimation = this.dataset.entranceAnimation === 'true';
+      }
+
+      connectedCallback() {
+        if (this.entranceAnimation) {
+          this.setupIntersectionObserver();
+        } else {
+          this.classList.add('visible');
+        }
+      }
+
+      setupIntersectionObserver() {
+        if ('IntersectionObserver' in window) {
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                this.classList.add('visible');
+                observer.unobserve(this);
+              }
+            });
+          }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+          });
+
+          observer.observe(this);
+        } else {
+          this.classList.add('visible');
+        }
+      }
+    }
+
+    customElements.define('mineral-prev-next-nav-{{ ai_gen_id }}', MineralPrevNextNav{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Mineral prev/next nav",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FAF9F7"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent/hover",
+      "default": "#0066FF"
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "range",
+      "id": "button_border_width",
+      "label": "Border width",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "label": "Vertical padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 16,
+      "max": 56,
+      "step": 4,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "select",
+      "id": "hover_style",
+      "label": "Hover style",
+      "options": [
+        {
+          "value": "underline",
+          "label": "Underline"
+        },
+        {
+          "value": "fill",
+          "label": "Fill"
+        },
+        {
+          "value": "glow_pulse",
+          "label": "Glow pulse"
+        }
+      ],
+      "default": "underline"
+    },
+    {
+      "type": "header",
+      "content": "Glow effect"
+    },
+    {
+      "type": "checkbox",
+      "id": "glow_effect",
+      "label": "Enable glow effect",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "glow_intensity",
+      "label": "Glow intensity",
+      "options": [
+        {
+          "value": "subtle",
+          "label": "Subtle"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "strong",
+          "label": "Strong"
+        }
+      ],
+      "default": "subtle"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "label_font_size",
+      "label": "Small label size",
+      "min": 9,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "name_font_size",
+      "label": "Crystal name size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1600,
+      "step": 100,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "entrance_animation",
+      "label": "Enable entrance animation",
+      "default": true
+    }
+  ]
+}
 {% endschema %}
