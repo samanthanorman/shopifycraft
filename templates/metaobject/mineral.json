@@ -44,10 +44,48 @@
             "swatch_border_color": "#E0E0E0"
           },
           "blocks": {}
+        },
+        "ai_gen_block_aed83a7_J7Pgrr": {
+          "type": "ai_gen_block_aed83a7",
+          "settings": {
+            "section_title": "Crystal Energy & Properties",
+            "title_size": 28,
+            "title_padding_top": 40,
+            "title_padding_bottom": 20,
+            "max_width": 1200,
+            "top_border_thickness": 2,
+            "block_padding_vertical": 24,
+            "block_padding_horizontal": 32,
+            "divider_thickness": 1,
+            "hover_border_thickness": 3,
+            "label_size": 12,
+            "label_letter_spacing": 1,
+            "label_spacing": 12,
+            "text_size": 16,
+            "text_line_height": 1.6,
+            "pairing_padding_vertical": 32,
+            "pairing_padding_bottom": 40,
+            "pairing_title_spacing": 16,
+            "card_gap": 16,
+            "card_min_width": 200,
+            "card_padding_vertical": 16,
+            "card_padding_horizontal": 20,
+            "card_border_thickness": 2,
+            "card_border_radius": 6,
+            "card_text_size": 16,
+            "background_color": "#F9FAFB",
+            "accent_color": "#0066FF",
+            "text_color": "#666666",
+            "divider_color": "#E5E7EB",
+            "card_background": "#FFFFFF",
+            "card_shadow_color": "rgba(0, 102, 255, 0.15)"
+          },
+          "blocks": {}
         }
       },
       "block_order": [
-        "ai_gen_block_b87255d_KzNQfB"
+        "ai_gen_block_b87255d_KzNQfB",
+        "ai_gen_block_aed83a7_J7Pgrr"
       ],
       "settings": {}
     },
