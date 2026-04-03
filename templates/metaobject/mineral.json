@@ -10,14 +10,9 @@
 {
   "sections": {
     "custom_liquid_nReViM": {
-      "type": "custom-liquid",
+      "type": "crystal-breadcrumb",
       "name": "t:sections.custom-liquid.presets.name",
-      "settings": {
-        "custom_liquid": "",
-        "color_scheme": "",
-        "padding_top": 40,
-        "padding_bottom": 52
-      }
+      "settings": {}
     },
     "1775167310d360e281": {
       "type": "_blocks",

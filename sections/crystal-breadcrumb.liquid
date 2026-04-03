@@ -1,68 +1,490 @@
-{%- style -%}
-  .section-{{ section.id }}-padding {
-    padding-top: calc({{ section.settings.padding_top }}px * 0.75);
-    padding-bottom: calc({{ section.settings.padding_bottom }}px  * 0.75);
+{% comment %}
+  mineral-breadcrumb-nav.liquid
+  Breadcrumb + prev/next nav for /pages/crystals/[handle] metaobject template pages
+  Liquid root object: metaobject — fields accessed as metaobject.[key].value
+{% endcomment %}
+
+{%- liquid
+  assign entry_name = metaobject.display_name.value | default: 'Crystal'
+  assign back_url = section.settings.back_url | default: '/pages/crystal-compendium'
+  assign browse_url = section.settings.browse_url | default: '/pages/crystal-compendium'
+  assign compendium_url = section.settings.compendium_url | default: '/pages/crystal-compendium'
+  assign back_label = section.settings.back_label | default: 'Back to Crystal Compendium'
+  assign browse_label = section.settings.browse_label | default: 'Browse More'
+  assign center_label = section.settings.center_label | default: 'VIEW ALL CRYSTALS & MINERALS'
+  assign bg_color = section.settings.bg_color
+  assign text_color = section.settings.text_color
+  assign border_color = section.settings.border_color
+  assign accent_color = section.settings.accent_color
+  assign border_width = section.settings.border_width
+  assign btn_pad_v = section.settings.btn_pad_v
+  assign btn_pad_h = section.settings.btn_pad_h
+  assign section_pad_top = section.settings.section_pad_top
+  assign section_pad_bottom = section.settings.section_pad_bottom
+  assign max_width = section.settings.max_width
+  assign breadcrumb_size = section.settings.breadcrumb_size
+  assign btn_size = section.settings.btn_size
+  assign letter_spacing = section.settings.letter_spacing
+  assign glow_on = section.settings.glow_effect
+  assign glow_intensity = section.settings.glow_intensity
+  assign hover_style = section.settings.hover_style
+  assign entrance_anim = section.settings.entrance_animation
+-%}
+
+{%- capture glow_value -%}
+  {%- if glow_intensity == 'subtle' -%}0 0 8px 2px{%- elsif glow_intensity == 'medium' -%}0 0 16px 4px{%- else -%}0 0 28px 8px{%- endif -%}
+{%- endcapture -%}
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400&family=Poppins:wght@400;500&display=swap');
+
+  #mineral-breadcrumb-{{ section.id }} {
+    background-color: {{ bg_color }};
+    padding-top: {{ section_pad_top }}px;
+    padding-bottom: {{ section_pad_bottom }}px;
+    width: 100%;
+    font-family: 'Raleway', sans-serif;
   }
 
-  @media screen and (min-width: 750px) {
-    .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
+  #mineral-breadcrumb-{{ section.id }} .mnav-inner {
+    max-width: {{ max_width }}px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 16px;
+  }
+
+  #mineral-breadcrumb-{{ section.id }} .mnav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: {{ btn_size }}px;
+    color: {{ text_color }};
+    text-decoration: none;
+    border: {{ border_width }}px solid {{ border_color }};
+    padding: {{ btn_pad_v }}px {{ btn_pad_h }}px;
+    border-radius: 0;
+    background: transparent;
+    letter-spacing: 0.04em;
+    transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  #mineral-breadcrumb-{{ section.id }} .mnav-btn svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+    transition: stroke 0.25s ease;
+  }
+
+  {% if hover_style == 'fill' %}
+  #mineral-breadcrumb-{{ section.id }} .mnav-btn:hover {
+    color: #ffffff;
+    background-color: {{ accent_color }};
+    border-color: {{ accent_color }};
+    {% if glow_on %}box-shadow: {{ glow_value }} {{ accent_color }}66;{% endif %}
+  }
+  {% elsif hover_style == 'glow_pulse' %}
+  #mineral-breadcrumb-{{ section.id }} .mnav-btn:hover {
+    color: {{ accent_color }};
+    border-color: {{ accent_color }};
+    {% if glow_on %}box-shadow: {{ glow_value }} {{ accent_color }}66;{% endif %}
+    animation: mnav-pulse-{{ section.id }} 1.2s ease-in-out infinite;
+  }
+  @keyframes mnav-pulse-{{ section.id }} {
+    0%, 100% { box-shadow: {{ glow_value }} {{ accent_color }}44; }
+    50% { box-shadow: {{ glow_value }} {{ accent_color }}99; }
+  }
+  {% else %}
+  /* underline slide (default) */
+  #mineral-breadcrumb-{{ section.id }} .mnav-btn {
+    position: relative;
+    overflow: hidden;
+  }
+  #mineral-breadcrumb-{{ section.id }} .mnav-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: {{ accent_color }};
+    transition: width 0.3s ease;
+  }
+  #mineral-breadcrumb-{{ section.id }} .mnav-btn:hover {
+    color: {{ accent_color }};
+    border-color: {{ accent_color }};
+    {% if glow_on %}box-shadow: {{ glow_value }} {{ accent_color }}55;{% endif %}
+  }
+  #mineral-breadcrumb-{{ section.id }} .mnav-btn:hover::after {
+    width: 100%;
+  }
+  {% endif %}
+
+  #mineral-breadcrumb-{{ section.id }} .mnav-left {
+    justify-self: start;
+  }
+
+  #mineral-breadcrumb-{{ section.id }} .mnav-right {
+    justify-self: end;
+  }
+
+  #mineral-breadcrumb-{{ section.id }} .mnav-center {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  #mineral-breadcrumb-{{ section.id }} .mnav-center-label {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: {{ breadcrumb_size | minus: 1 }}px;
+    letter-spacing: {{ letter_spacing }}em;
+    color: {{ text_color }};
+    opacity: 0.5;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: opacity 0.2s ease, color 0.2s ease;
+  }
+
+  #mineral-breadcrumb-{{ section.id }} .mnav-center-label:hover {
+    opacity: 1;
+    color: {{ accent_color }};
+  }
+
+  #mineral-breadcrumb-{{ section.id }} .mnav-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: {{ breadcrumb_size }}px;
+    letter-spacing: {{ letter_spacing }}em;
+    color: {{ text_color }};
+    opacity: 0.65;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  #mineral-breadcrumb-{{ section.id }} .mnav-breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease, opacity 0.2s ease;
+  }
+
+  #mineral-breadcrumb-{{ section.id }} .mnav-breadcrumb a:hover {
+    color: {{ accent_color }};
+    opacity: 1;
+  }
+
+  #mineral-breadcrumb-{{ section.id }} .mnav-breadcrumb .mnav-sep {
+    opacity: 0.4;
+    font-size: 0.85em;
+  }
+
+  #mineral-breadcrumb-{{ section.id }} .mnav-breadcrumb .mnav-current {
+    font-weight: 400;
+    opacity: 1;
+    color: {{ text_color }};
+  }
+
+  {% if entrance_anim %}
+  #mineral-breadcrumb-{{ section.id }} {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  #mineral-breadcrumb-{{ section.id }}.mnav-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  {% endif %}
+
+  @media (max-width: 640px) {
+    #mineral-breadcrumb-{{ section.id }} .mnav-inner {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+    }
+    #mineral-breadcrumb-{{ section.id }} .mnav-center {
+      grid-column: 1 / -1;
+      order: -1;
+    }
+    #mineral-breadcrumb-{{ section.id }} .mnav-btn {
+      font-size: {{ btn_size | minus: 1 }}px;
+      padding: {{ btn_pad_v | minus: 2 }}px {{ btn_pad_h | minus: 4 }}px;
     }
   }
-{%- endstyle -%}
-<div class="color-{{ section.settings.color_scheme }} gradient">
-  <div class="section-{{ section.id }}-padding">
-    {{ section.settings.custom_liquid }}
+</style>
+
+<section id="mineral-breadcrumb-{{ section.id }}" aria-label="Crystal navigation">
+  <div class="mnav-inner">
+
+    <div class="mnav-left">
+      <a href="{{ back_url }}" class="mnav-btn">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        {{ back_label }}
+      </a>
+    </div>
+
+    <div class="mnav-center">
+      <a href="{{ compendium_url }}" class="mnav-center-label">{{ center_label }}</a>
+      <nav class="mnav-breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span class="mnav-sep" aria-hidden="true">›</span>
+        <a href="{{ compendium_url }}">Crystal Compendium</a>
+        <span class="mnav-sep" aria-hidden="true">›</span>
+        <span class="mnav-current">{{ entry_name }}</span>
+      </nav>
+    </div>
+
+    <div class="mnav-right">
+      <a href="{{ browse_url }}" class="mnav-btn">
+        {{ browse_label }}
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+    </div>
+
   </div>
-</div>
+</section>
+
+{% if entrance_anim %}
+<script>
+  (function() {
+    var el = document.getElementById('mineral-breadcrumb-{{ section.id }}');
+    if (!el) return;
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            el.classList.add('mnav-visible');
+            obs.disconnect();
+          }
+        });
+      }, { threshold: 0.1 });
+      obs.observe(el);
+    } else {
+      el.classList.add('mnav-visible');
+    }
+  })();
+</script>
+{% endif %}
 
 {% schema %}
 {
-  "name": "t:sections.custom-liquid.name",
-  "tag": "section",
-  "class": "section",
+  "name": "Crystal Breadcrumb Nav",
+  "tag": "div",
   "settings": [
     {
-      "type": "liquid",
-      "id": "custom_liquid",
-      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
-      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+      "type": "header",
+      "content": "Labels & Links"
     },
     {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "t:sections.all.colors.label",
-      "default": "scheme-1"
+      "type": "text",
+      "id": "back_label",
+      "label": "Back button label",
+      "default": "Back to Crystal Compendium"
+    },
+    {
+      "type": "url",
+      "id": "back_url",
+      "label": "Back button URL"
+    },
+    {
+      "type": "text",
+      "id": "browse_label",
+      "label": "Browse More button label",
+      "default": "Browse More"
+    },
+    {
+      "type": "url",
+      "id": "browse_url",
+      "label": "Browse More button URL"
+    },
+    {
+      "type": "text",
+      "id": "center_label",
+      "label": "Center label text",
+      "default": "VIEW ALL CRYSTALS & MINERALS"
+    },
+    {
+      "type": "url",
+      "id": "compendium_url",
+      "label": "Crystal Compendium URL (breadcrumb + center link)"
     },
     {
       "type": "header",
-      "content": "t:sections.all.padding.section_padding_heading"
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#FAF9F7"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Button border color",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent / hover color",
+      "default": "#0066FF"
+    },
+    {
+      "type": "header",
+      "content": "Spacing & Sizing"
     },
     {
       "type": "range",
-      "id": "padding_top",
+      "id": "section_pad_top",
+      "label": "Section padding top (px)",
       "min": 0,
-      "max": 100,
+      "max": 80,
       "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_top",
-      "default": 40
+      "default": 20
     },
     {
       "type": "range",
-      "id": "padding_bottom",
+      "id": "section_pad_bottom",
+      "label": "Section padding bottom (px)",
       "min": 0,
-      "max": 100,
+      "max": 80,
       "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_bottom",
-      "default": 52
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Section max-width (px)",
+      "min": 800,
+      "max": 1600,
+      "step": 40,
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "btn_pad_v",
+      "label": "Button vertical padding (px)",
+      "min": 6,
+      "max": 24,
+      "step": 2,
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "btn_pad_h",
+      "label": "Button horizontal padding (px)",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Button border width (px)",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "breadcrumb_size",
+      "label": "Breadcrumb font size (px)",
+      "min": 9,
+      "max": 16,
+      "step": 1,
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "btn_size",
+      "label": "Button label font size (px)",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "label": "Breadcrumb letter spacing (em × 0.01)",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "default": 10,
+      "info": "Value of 10 = 0.10em letter spacing"
+    },
+    {
+      "type": "header",
+      "content": "Hover & Glow Effects"
+    },
+    {
+      "type": "select",
+      "id": "hover_style",
+      "label": "Hover animation style",
+      "options": [
+        { "value": "underline", "label": "Underline slide" },
+        { "value": "fill", "label": "Background fill" },
+        { "value": "glow_pulse", "label": "Glow pulse" }
+      ],
+      "default": "underline"
+    },
+    {
+      "type": "checkbox",
+      "id": "glow_effect",
+      "label": "Enable glow effect on hover",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "glow_intensity",
+      "label": "Glow intensity",
+      "options": [
+        { "value": "subtle", "label": "Subtle" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "strong", "label": "Strong" }
+      ],
+      "default": "subtle"
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "entrance_animation",
+      "label": "Enable fade-up entrance animation on scroll",
+      "default": true
     }
   ],
   "presets": [
     {
-      "name": "t:sections.custom-liquid.presets.name"
+      "name": "Crystal Breadcrumb Nav"
     }
   ]
 }
