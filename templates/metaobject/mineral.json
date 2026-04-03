@@ -89,10 +89,6 @@
       ],
       "settings": {}
     },
-    "main": {
-      "type": "mineral-details",
-      "settings": {}
-    },
     "crystal_blog": {
       "type": "featured-blog",
       "settings": {
@@ -112,75 +108,52 @@
     },
     "17751667169a1b0ebb": {
       "type": "_blocks",
+      "settings": {}
+    },
+    "1775206006475e31b0": {
+      "type": "_blocks",
+      "settings": {}
+    },
+    "newsletter_E4rqTB": {
+      "type": "newsletter",
       "blocks": {
-        "ai_gen_block_6efa99a_CmtaGy": {
-          "type": "ai_gen_block_6efa99a",
+        "heading_TUfTAM": {
+          "type": "heading",
           "settings": {
-            "section_title": "",
-            "section_title_font": "poppins_n5",
-            "section_title_size": 24,
-            "section_title_size_mobile": 20,
-            "section_title_color": "#1a1a1a",
-            "section_title_margin": 32,
-            "text_alignment": "flex-start",
-            "desktop_width_percent": 100,
-            "max_width": 1200,
-            "background_color": "#ffffff",
-            "border_color": "#0066ff",
-            "border_thickness": 2,
-            "heading_font": "poppins_n5",
-            "heading_size": 48,
-            "heading_size_mobile": 32,
-            "heading_color": "#1a1a1a",
-            "header_gap": 16,
-            "header_margin": 24,
-            "swatch_size": 40,
-            "swatch_border_thickness": 2,
-            "swatch_border_color": "#0066ff",
-            "tagline_font": "raleway_n3",
-            "tagline_size": 18,
-            "tagline_size_mobile": 16,
-            "tagline_color": "#666666",
-            "tagline_margin": 32,
-            "columns_mobile": 2,
-            "columns_desktop": 4,
-            "grid_gap_mobile": 16,
-            "grid_gap_desktop": 24,
-            "grid_margin_top": 0,
-            "grid_item_padding": 20,
-            "grid_item_bg": "#ffffff",
-            "grid_item_radius": 0,
-            "label_font": "poppins_n5",
-            "label_size": 12,
-            "label_color": "#1a1a1a",
-            "label_margin": 8,
-            "value_font": "raleway_n3",
-            "value_size": 16,
-            "value_color": "#666666",
-            "padding_top": 60,
-            "padding_bottom": 60,
-            "padding_horizontal": 40,
-            "padding_top_mobile": 40,
-            "padding_bottom_mobile": 40,
-            "padding_horizontal_mobile": 20,
-            "enable_animation": true,
-            "animation_delay": 100,
-            "stagger_delay": 80,
-            "enable_structured_data": true
-          },
-          "blocks": {}
+            "heading": "Subscribe to our emails",
+            "heading_size": "h1"
+          }
+        },
+        "paragraph_k4aEye": {
+          "type": "paragraph",
+          "settings": {
+            "text": "<p>Be the first to know about new collections and exclusive offers.</p>"
+          }
+        },
+        "email_form_d8jpW3": {
+          "type": "email_form",
+          "settings": {}
         }
       },
       "block_order": [
-        "ai_gen_block_6efa99a_CmtaGy"
+        "heading_TUfTAM",
+        "paragraph_k4aEye",
+        "email_form_d8jpW3"
       ],
-      "settings": {}
+      "name": "t:sections.newsletter.presets.name",
+      "settings": {
+        "color_scheme": "scheme-3",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
     }
   },
   "order": [
     "1775167310d360e281",
-    "main",
     "crystal_blog",
-    "17751667169a1b0ebb"
+    "17751667169a1b0ebb",
+    "1775206006475e31b0",
+    "newsletter_E4rqTB"
   ]
 }
