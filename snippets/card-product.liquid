@@ -82,7 +82,7 @@
                 height="{{ card_product.featured_media.height }}"
               >
               {% comment %}theme-check-enable ImgLazyLoading{% endcomment %}
-<amazon-delivery-message
+<<amazon-delivery-message
 	product-external-id="gid://shopify/ProductVariant/{{ product.selected_or_first_available_variant.id }}"
 	message-type="delivery-estimate"
 	color-mode="light"
@@ -624,11 +624,7 @@
         </div>
       </div>
     </div>
-    <amazon-delivery-message
-	product-external-id="gid://shopify/ProductVariant/{{ product.selected_or_first_available_variant.id }}"
-	message-type="delivery-estimate"
-	color-mode="light"
-></amazon-delivery-message>
+ 
   </div>
 {%- endif -%}
 
