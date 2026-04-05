@@ -1,6 +1,346 @@
+{% doc %}
+  @prompt
+    Create a breadcrumb section for a metaobject page (ingredient profile page) that:
+    
+    1. **Breadcrumb trail** - displays "Home > Ingredient Glossary > [Metaobject Entry Name]" using the current metaobject entry's title dynamically. The breadcrumb should be built with proper structured data (JSON-LD schema.org BreadcrumbList) so Google Search Console recognizes it for SEO. Style it as plain text links separated by ">" chevrons, matching a clean minimal look with small font.
+    
+    2. **"Back To" Button** - a fully customizable button with these theme editor settings:
+       - Toggle to show/hide the button entirely
+       - Button label text (customizable string)
+       - Button background color picker
+       - Button text color picker
+       - Button font size (small / medium / large options)
+       - Button border radius (for pill vs square shape)
+       - Button alignment (left / center / right)
+       - The button links back to the Ingredient Glossary page (customizable URL field)
+       - Arrow icon on the left of the label (← style)
+    
+    3. The section should work on metaobject pages and pull the current entry's title dynamically using metaobject.display_name or the page title.
+    
+    4. The breadcrumb links should be: Home (links to /), Ingredient Glossary (links to a customizable URL set in section settings), and the current page name (no link, just text).
+    
+    5. Include JSON-LD structured data for the BreadcrumbList with proper @context, @type, itemListElement with name and item (URL) for each crumb.
+    
+    6. Style the breadcrumb row to sit above the button, left-aligned, with subtle muted text color.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% liquid
+  assign current_page_title = ''
+  if metaobject.display_name
+    assign current_page_title = metaobject.display_name
+  elsif page.title
+    assign current_page_title = page.title
+  else
+    assign current_page_title = 'Current Page'
+  endif
+
+  assign home_url = routes.root_url
+  assign glossary_url = block.settings.glossary_url
+  if glossary_url == blank
+    assign glossary_url = '/pages/ingredient-glossary'
+  endif
+  assign current_url = canonical_url
+%}
+
+{% style %}
+  .ai-breadcrumb-section-{{ ai_gen_id }} {
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    padding: {{ block.settings.section_padding }}px 0;
+    display: block;
+  }
+
+  .ai-breadcrumb-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .ai-breadcrumb-trail-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: {{ block.settings.breadcrumb_font_size }}px;
+    color: {{ block.settings.breadcrumb_text_color }};
+    flex-wrap: wrap;
+  }
+
+  .ai-breadcrumb-link-{{ ai_gen_id }} {
+    color: {{ block.settings.breadcrumb_link_color }};
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .ai-breadcrumb-link-{{ ai_gen_id }}:hover {
+    opacity: 0.7;
+    text-decoration: underline;
+  }
+
+  .ai-breadcrumb-separator-{{ ai_gen_id }} {
+    color: {{ block.settings.breadcrumb_text_color }};
+    opacity: 0.5;
+  }
+
+  .ai-breadcrumb-current-{{ ai_gen_id }} {
+    color: {{ block.settings.breadcrumb_text_color }};
+  }
+
+  .ai-breadcrumb-button-container-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: {{ block.settings.button_alignment }};
+  }
+
+  .ai-breadcrumb-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background-color: {{ block.settings.button_bg_color }};
+    color: {{ block.settings.button_text_color }};
+    text-decoration: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    transition: opacity 0.2s ease;
+    {% if block.settings.button_font_size == 'small' %}
+      font-size: 14px;
+    {% elsif block.settings.button_font_size == 'large' %}
+      font-size: 18px;
+    {% else %}
+      font-size: 16px;
+    {% endif %}
+  }
+
+  .ai-breadcrumb-button-{{ ai_gen_id }}:hover {
+    opacity: 0.85;
+  }
+
+  .ai-breadcrumb-button-arrow-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-breadcrumb-trail-{{ ai_gen_id }} {
+      font-size: {{ block.settings.breadcrumb_font_size | times: 0.9 }}px;
+    }
+
+    .ai-breadcrumb-button-{{ ai_gen_id }} {
+      padding: 10px 20px;
+      {% if block.settings.button_font_size == 'small' %}
+        font-size: 13px;
+      {% elsif block.settings.button_font_size == 'large' %}
+        font-size: 16px;
+      {% else %}
+        font-size: 15px;
+      {% endif %}
+    }
+  }
+{% endstyle %}
+
+<div class="ai-breadcrumb-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-breadcrumb-wrapper-{{ ai_gen_id }}">
+    <nav class="ai-breadcrumb-trail-{{ ai_gen_id }}" aria-label="Breadcrumb">
+      <a href="{{ home_url }}" class="ai-breadcrumb-link-{{ ai_gen_id }}">Home</a>
+      <span class="ai-breadcrumb-separator-{{ ai_gen_id }}" aria-hidden="true">></span>
+      <a href="{{ glossary_url }}" class="ai-breadcrumb-link-{{ ai_gen_id }}">{{ block.settings.glossary_label }}</a>
+      <span class="ai-breadcrumb-separator-{{ ai_gen_id }}" aria-hidden="true">></span>
+      <span class="ai-breadcrumb-current-{{ ai_gen_id }}" aria-current="page">{{ current_page_title }}</span>
+    </nav>
+
+    {% if block.settings.show_back_button %}
+      <div class="ai-breadcrumb-button-container-{{ ai_gen_id }}">
+        <a href="{{ glossary_url }}" class="ai-breadcrumb-button-{{ ai_gen_id }}">
+          <span class="ai-breadcrumb-button-arrow-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </span>
+          <span>{{ block.settings.button_label }}</span>
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ shop.url }}{{ home_url }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "{{ block.settings.glossary_label }}",
+      "item": "{{ shop.url }}{{ glossary_url }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": {{ current_page_title | json }},
+      "item": "{{ shop.url }}{{ current_url }}"
+    }
+  ]
+}
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Ingredient breadcrumb",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Breadcrumb trail"
+    },
+    {
+      "type": "text",
+      "id": "glossary_label",
+      "label": "Glossary label",
+      "default": "Ingredient Glossary"
+    },
+    {
+      "type": "url",
+      "id": "glossary_url",
+      "label": "Glossary page URL"
+    },
+    {
+      "type": "range",
+      "id": "breadcrumb_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "color",
+      "id": "breadcrumb_text_color",
+      "label": "Text color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "breadcrumb_link_color",
+      "label": "Link color",
+      "default": "#333333"
+    },
+    {
+      "type": "header",
+      "content": "Back button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_back_button",
+      "label": "Show back button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Back to Ingredient Glossary"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "select",
+      "id": "button_font_size",
+      "label": "Font size",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "button_alignment",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Vertical padding",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredient breadcrumb"
+    }
+  ]
+}
 {% endschema %}
