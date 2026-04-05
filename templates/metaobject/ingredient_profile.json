@@ -9,17 +9,54 @@
  */
 {
   "sections": {
+    "ingredient_profile_hero_cmEeGc": {
+      "type": "ingredient-profile-hero",
+      "name": "Ingredient Hero",
+      "settings": {
+        "hero_background": "#ffffff",
+        "heading_color": "#00b4ff",
+        "heading_size": 48,
+        "show_origin_badge": true,
+        "badge_background": "#f7ddf3ff",
+        "badge_text_active": "#ffffff",
+        "badge_background_inactive": "#d4d4d4",
+        "badge_text_inactive": "#02151d",
+        "overview_heading": "Overview",
+        "show_categories": true,
+        "benefits_heading": "Key Benefits",
+        "benefits_card_background": "#f7ddf3ff",
+        "benefits_text_size": 16,
+        "text_color": "#0a506d",
+        "body_text_size": 16,
+        "section_padding_top": 60,
+        "section_padding_bottom": 60,
+        "content_spacing": 32
+      }
+    },
     "ingredient_profile_detail": {
       "type": "ingredient-profile-detail",
+      "disabled": true,
       "name": "Ingredient Profile",
       "settings": {}
     },
     "ingredient-comparison": {
       "type": "ingredient-comparison",
-      "settings": {}
+      "disabled": true,
+      "settings": {
+        "eyebrow": "How Does It Compare?",
+        "subheading": "See how this ingredient stacks up against similar actives — and whether you can use them together.",
+        "show_note": true,
+        "bg_color": "#fdfaf0",
+        "heading_color": "#160272",
+        "subtext_color": "#8fa8c0",
+        "accent_color": "#3498ff",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
     }
   },
   "order": [
+    "ingredient_profile_hero_cmEeGc",
     "ingredient_profile_detail",
     "ingredient-comparison"
   ]
