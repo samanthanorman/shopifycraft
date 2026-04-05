@@ -46,7 +46,7 @@
     "card_style": "card",
     "card_image_padding": 0,
     "card_text_alignment": "center",
-    "card_color_scheme": "scheme-1",
+    "card_color_scheme": "scheme-5",
     "card_border_thickness": 1,
     "card_border_opacity": 10,
     "card_corner_radius": 6,
@@ -178,8 +178,8 @@
           "text": "#0d1b3e",
           "button": "#160272",
           "button_label": "#fdfaf0",
-          "secondary_button_label": "#f7ddf3ff",
-          "shadow": "#f7ddf3ff"
+          "secondary_button_label": "#f7ddf3",
+          "shadow": "#f7ddf3"
         }
       },
       "scheme-2": {
@@ -187,10 +187,10 @@
           "background": "#063c7f",
           "background_gradient": "radial-gradient(rgba(201, 217, 255, 1), rgba(253, 250, 240, 1) 62%)",
           "text": "#0d1b3e",
-          "button": "#a7b4d4ff",
+          "button": "#a7b4d4",
           "button_label": "#0d1b3e",
           "secondary_button_label": "#8690aa",
-          "shadow": "#f7ddf3ff"
+          "shadow": "#f7ddf3"
         }
       },
       "scheme-3": {
@@ -220,7 +220,7 @@
           "background": "#387aff",
           "background_gradient": "",
           "text": "#fdfaf0",
-          "button": "#f4fff3ff",
+          "button": "#f4fff3",
           "button_label": "#080e1a",
           "secondary_button_label": "#0d1b3e",
           "shadow": "#73c5ff"
