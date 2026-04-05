@@ -1,0 +1,400 @@
+{% liquid
+  assign ai_gen_id = section.id | replace: '_', '' | downcase
+%}
+
+{% style %}
+  .ai-ingredient-hero-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: {{ section.settings.section_padding_top }}px 20px {{ section.settings.section_padding_bottom }}px;
+    background: {{ section.settings.hero_background }};
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .ai-ingredient-hero-container-{{ ai_gen_id }} {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .ai-ingredient-hero-content-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: {{ section.settings.content_spacing }}px;
+  }
+
+  .ai-ingredient-hero-name-{{ ai_gen_id }} {
+    font-size: {{ section.settings.heading_size }}px;
+    font-weight: 700;
+    color: {{ section.settings.heading_color }};
+    margin: 0 0 16px;
+    line-height: 1.2;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .ai-ingredient-hero-badges-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .ai-ingredient-hero-badge-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    background: {{ section.settings.badge_background_inactive }};
+    color: {{ section.settings.badge_text_inactive }};
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+  }
+
+  .ai-ingredient-hero-badge-{{ ai_gen_id }}.active {
+    background: {{ section.settings.badge_background }};
+    color: {{ section.settings.badge_text_active }};
+    opacity: 1;
+    transform: scale(1.05);
+  }
+
+  .ai-ingredient-hero-badge-icon-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+  }
+
+  .ai-ingredient-hero-function-{{ ai_gen_id }} {
+    font-size: 18px;
+    color: {{ section.settings.text_color }};
+    margin: 0;
+    font-weight: 400;
+    opacity: 0.9;
+  }
+
+  .ai-ingredient-overview-{{ ai_gen_id }} {
+    margin-bottom: {{ section.settings.content_spacing }}px;
+  }
+
+  .ai-ingredient-overview-heading-{{ ai_gen_id }} {
+    font-size: 24px;
+    font-weight: 600;
+    color: {{ section.settings.heading_color }};
+    margin: 0 0 16px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .ai-ingredient-overview-description-{{ ai_gen_id }} {
+    font-size: {{ section.settings.body_text_size }}px;
+    color: {{ section.settings.text_color }};
+    line-height: 1.6;
+    margin: 0 0 20px;
+  }
+
+  .ai-ingredient-overview-categories-{{ ai_gen_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .ai-ingredient-overview-category-{{ ai_gen_id }} {
+    font-size: 14px;
+    color: {{ section.settings.text_color }};
+    padding: 6px 16px;
+    background: {{ section.settings.badge_background_inactive }};
+    border-radius: 20px;
+    opacity: 0.8;
+  }
+
+  .ai-ingredient-benefits-{{ ai_gen_id }} {
+    background: {{ section.settings.benefits_card_background }};
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .ai-ingredient-benefits-heading-{{ ai_gen_id }} {
+    font-size: 24px;
+    font-weight: 600;
+    color: {{ section.settings.heading_color }};
+    margin: 0 0 16px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .ai-ingredient-benefits-text-{{ ai_gen_id }} {
+    font-size: {{ section.settings.benefits_text_size }}px;
+    color: {{ section.settings.text_color }};
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-ingredient-hero-name-{{ ai_gen_id }} {
+      font-size: {{ section.settings.heading_size | times: 0.7 | round }}px;
+    }
+
+    .ai-ingredient-hero-function-{{ ai_gen_id }} {
+      font-size: 16px;
+    }
+
+    .ai-ingredient-overview-heading-{{ ai_gen_id }},
+    .ai-ingredient-benefits-heading-{{ ai_gen_id }} {
+      font-size: 20px;
+    }
+
+    .ai-ingredient-benefits-{{ ai_gen_id }} {
+      padding: 24px;
+    }
+
+    .ai-ingredient-hero-badge-{{ ai_gen_id }} {
+      font-size: 12px;
+      padding: 6px 14px;
+    }
+  }
+{% endstyle %}
+
+<ingredient-profile-{{ ai_gen_id }} class="ai-ingredient-hero-{{ ai_gen_id }}">
+  <div class="ai-ingredient-hero-container-{{ ai_gen_id }}">
+    <div class="ai-ingredient-hero-content-{{ ai_gen_id }}">
+      {% if metaobject.name %}
+        <h1 class="ai-ingredient-hero-name-{{ ai_gen_id }}">{{ metaobject.name }}</h1>
+      {% endif %}
+
+      {% if section.settings.show_origin_badge %}
+        <div class="ai-ingredient-hero-badges-wrapper-{{ ai_gen_id }}">
+          {%- comment -%}
+            Origin options match the live ingredient_profile metaobject definition exactly.
+            The active badge highlights whichever value is stored in metaobject.ingredient_origin.
+          {%- endcomment -%}
+          {% assign origin_options = 'Natural,Synthetic,Bioengineered,Marine,Mineral,Animal-derived,Fermented' | split: ',' %}
+          {% assign current_origin = metaobject.ingredient_origin %}
+          {% for origin in origin_options %}
+            {% if current_origin == origin %}
+              <div class="ai-ingredient-hero-badge-{{ ai_gen_id }} active">
+                <svg class="ai-ingredient-hero-badge-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                  <path d="M2 17l10 5 10-5"></path>
+                  <path d="M2 12l10 5 10-5"></path>
+                </svg>
+                <span>{{ origin }}</span>
+              </div>
+            {% else %}
+              <div class="ai-ingredient-hero-badge-{{ ai_gen_id }}">
+                <svg class="ai-ingredient-hero-badge-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                  <path d="M2 17l10 5 10-5"></path>
+                  <path d="M2 12l10 5 10-5"></path>
+                </svg>
+                <span>{{ origin }}</span>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if metaobject.main_function %}
+        <p class="ai-ingredient-hero-function-{{ ai_gen_id }}">{{ metaobject.main_function }}</p>
+      {% endif %}
+    </div>
+
+    {% if metaobject.description or metaobject.l1 or metaobject.l2 %}
+      <div id="overview" class="ai-ingredient-overview-{{ ai_gen_id }}">
+        <h2 class="ai-ingredient-overview-heading-{{ ai_gen_id }}">{{ section.settings.overview_heading }}</h2>
+
+        {% if metaobject.description %}
+          <div class="ai-ingredient-overview-description-{{ ai_gen_id }}">
+            {{ metaobject.description }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.show_categories %}
+          {% if metaobject.l1 or metaobject.l2 %}
+            <div class="ai-ingredient-overview-categories-{{ ai_gen_id }}">
+              {% if metaobject.l1 %}
+                <span class="ai-ingredient-overview-category-{{ ai_gen_id }}">{{ metaobject.l1 }}</span>
+              {% endif %}
+              {% if metaobject.l2 %}
+                <span class="ai-ingredient-overview-category-{{ ai_gen_id }}">{{ metaobject.l2 }}</span>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if metaobject.skin_benefits %}
+      <div id="key-benefits" class="ai-ingredient-benefits-{{ ai_gen_id }}">
+        <h2 class="ai-ingredient-benefits-heading-{{ ai_gen_id }}">{{ section.settings.benefits_heading }}</h2>
+        <div class="ai-ingredient-benefits-text-{{ ai_gen_id }}">
+          {{ metaobject.skin_benefits }}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</ingredient-profile-{{ ai_gen_id }}>
+
+{% schema %}
+{
+  "name": "Ingredient Hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero section"
+    },
+    {
+      "type": "color",
+      "id": "hero_background",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 48
+    },
+    {
+      "type": "checkbox",
+      "id": "show_origin_badge",
+      "label": "Show origin badges",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "badge_background",
+      "label": "Active badge background",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_active",
+      "label": "Active badge text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "badge_background_inactive",
+      "label": "Inactive badge background",
+      "default": "#efeeec"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_inactive",
+      "label": "Inactive badge text",
+      "default": "#0a506d"
+    },
+    {
+      "type": "header",
+      "content": "Overview section"
+    },
+    {
+      "type": "text",
+      "id": "overview_heading",
+      "label": "Overview heading",
+      "default": "Overview"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_categories",
+      "label": "Show category fields (L1 / L2)",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Benefits section"
+    },
+    {
+      "type": "text",
+      "id": "benefits_heading",
+      "label": "Benefits heading",
+      "default": "Key Benefits"
+    },
+    {
+      "type": "color",
+      "id": "benefits_card_background",
+      "label": "Card background",
+      "default": "#efeeec"
+    },
+    {
+      "type": "range",
+      "id": "benefits_text_size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "range",
+      "id": "body_text_size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Body text size",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "min": 20,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "min": 20,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "content_spacing",
+      "min": 16,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Content spacing",
+      "default": 32
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredient Hero"
+    }
+  ]
+}
+{% endschema %}
