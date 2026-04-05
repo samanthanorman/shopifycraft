@@ -102,6 +102,40 @@
         "show_pore_clogging": false,
         "pore_clogging_label": "Potentially pore clogging?"
       }
+    },
+    "newsletter_BAz6HG": {
+      "type": "newsletter",
+      "blocks": {
+        "heading_fCVqeT": {
+          "type": "heading",
+          "settings": {
+            "heading": "Subscribe to our emails",
+            "heading_size": "h1"
+          }
+        },
+        "paragraph_6F7jW3": {
+          "type": "paragraph",
+          "settings": {
+            "text": "<p>Be the first to know about new collections and exclusive offers.</p>"
+          }
+        },
+        "email_form_byYpW6": {
+          "type": "email_form",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "heading_fCVqeT",
+        "paragraph_6F7jW3",
+        "email_form_byYpW6"
+      ],
+      "name": "t:sections.newsletter.presets.name",
+      "settings": {
+        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
     }
   },
   "order": [
@@ -109,6 +143,7 @@
     "ingredient_profile_hero_cmEeGc",
     "ingredient_profile_detail",
     "ingredient-comparison",
-    "ingredient_suitability_safety_gxaqeM"
+    "ingredient_suitability_safety_gxaqeM",
+    "newsletter_BAz6HG"
   ]
 }
