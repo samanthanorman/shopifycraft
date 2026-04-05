@@ -1,0 +1,1148 @@
+{% liquid
+  assign collection = collections['haramoon-korean-skincare']
+  assign products = collection.products
+  assign ai_gen_id = section.id | replace: '_', '' | downcase
+%}
+
+{% style %}
+  .haramoon-carousel-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: {{ section.settings.section_padding_top }}px 0 {{ section.settings.section_padding_bottom }}px;
+    background: {{ section.settings.background_color }};
+    overflow: hidden;
+    position: relative;
+  }
+
+  .haramoon-carousel__container-{{ ai_gen_id }} {
+    max-width: {{ section.settings.container_width }}%;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .haramoon-carousel__header-{{ ai_gen_id }} {
+    text-align: {{ section.settings.heading_alignment }};
+    margin-bottom: {{ section.settings.heading_spacing }}px;
+  }
+
+  .haramoon-carousel__title-{{ ai_gen_id }} {
+    font-size: {{ section.settings.heading_size }}px;
+    color: {{ section.settings.heading_color }};
+    margin: 0 0 12px;
+    font-weight: 700;
+    background: linear-gradient(135deg, {{ section.settings.gradient_overlay_start }} 0%, {{ section.settings.gradient_overlay_end }} 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .haramoon-carousel__subtitle-{{ ai_gen_id }} {
+    font-size: {{ section.settings.subheading_size }}px;
+    color: {{ section.settings.subheading_color }};
+    margin: 0;
+  }
+
+  .haramoon-carousel__wrapper-{{ ai_gen_id }} {
+    position: relative;
+    overflow: hidden;
+    margin: 0 -10px;
+  }
+
+  .haramoon-carousel__track-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ section.settings.card_gap }}px;
+    padding: 20px 10px;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+  }
+
+  {% if section.settings.layout_style == 'grid' %}
+    .haramoon-carousel__track-{{ ai_gen_id }} {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: {{ section.settings.card_gap }}px;
+    }
+  {% elsif section.settings.layout_style == 'masonry' %}
+    .haramoon-carousel__track-{{ ai_gen_id }} {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-auto-rows: 20px;
+      gap: {{ section.settings.card_gap }}px;
+    }
+  {% endif %}
+
+  .haramoon-carousel__card-{{ ai_gen_id }} {
+    flex: 0 0 {{ section.settings.card_width }}px;
+    position: relative;
+    border-radius: {{ section.settings.card_border_radius }}px;
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+    cursor: pointer;
+  }
+
+  {% if section.settings.layout_style == 'grid' or section.settings.layout_style == 'masonry' %}
+    .haramoon-carousel__card-{{ ai_gen_id }} {
+      flex: 1;
+    }
+  {% endif %}
+
+  {% if section.settings.card_style == 'minimal' %}
+    .haramoon-carousel__card-{{ ai_gen_id }} {
+      background: transparent;
+    }
+  {% elsif section.settings.card_style == 'bordered' %}
+    .haramoon-carousel__card-{{ ai_gen_id }} {
+      background: {{ section.settings.card_background }};
+      border: 2px solid {{ section.settings.card_border_color }};
+    }
+  {% elsif section.settings.card_style == 'shadow' %}
+    .haramoon-carousel__card-{{ ai_gen_id }} {
+      background: {{ section.settings.card_background }};
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+  {% elsif section.settings.card_style == 'neon' %}
+    .haramoon-carousel__card-{{ ai_gen_id }} {
+      background: {{ section.settings.card_background }};
+      box-shadow: 0 0 20px {{ section.settings.neon_glow_color }}, 0 0 40px {{ section.settings.neon_glow_color }}40;
+      border: 1px solid {{ section.settings.neon_glow_color }};
+    }
+  {% endif %}
+
+  .haramoon-carousel__card-{{ ai_gen_id }}:hover {
+    transform: translateY(-{{ section.settings.hover_lift }}px) scale({{ section.settings.hover_scale_percent | divided_by: 100.0 }});
+  }
+
+  {% if section.settings.card_style == 'shadow' %}
+    .haramoon-carousel__card-{{ ai_gen_id }}:hover {
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+    }
+  {% elsif section.settings.card_style == 'neon' %}
+    .haramoon-carousel__card-{{ ai_gen_id }}:hover {
+      box-shadow: 0 0 30px {{ section.settings.neon_glow_color }}, 0 0 60px {{ section.settings.neon_glow_color }}80;
+    }
+  {% endif %}
+
+  .haramoon-carousel__link-{{ ai_gen_id }} {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .haramoon-carousel__image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    padding-bottom: 125%;
+    overflow: hidden;
+    background: {{ section.settings.image_background }};
+  }
+
+  .haramoon-carousel__image-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .haramoon-carousel__card-{{ ai_gen_id }}:hover .haramoon-carousel__image-{{ ai_gen_id }} {
+    transform: scale(1.1);
+  }
+
+  .haramoon-carousel__gradient-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, {{ section.settings.gradient_overlay_start }}{{ section.settings.gradient_opacity_hex }} 0%, {{ section.settings.gradient_overlay_end }}{{ section.settings.gradient_opacity_hex }} 100%);
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+
+  .haramoon-carousel__badge-{{ ai_gen_id }} {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: {{ section.settings.badge_background }};
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: {{ section.settings.badge_text_color }};
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 2;
+    border: 1px solid {{ section.settings.badge_border_color }};
+    animation: badge-pulse-{{ ai_gen_id }} 2s ease-in-out infinite;
+  }
+
+  @keyframes badge-pulse-{{ ai_gen_id }} {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  .haramoon-carousel__badge-icon-{{ ai_gen_id }} {
+    width: 14px;
+    height: 14px;
+    animation: badge-icon-spin-{{ ai_gen_id }} 3s linear infinite;
+  }
+
+  @keyframes badge-icon-spin-{{ ai_gen_id }} {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .haramoon-carousel__content-{{ ai_gen_id }} {
+    padding: {{ section.settings.card_padding }}px;
+    background: {{ section.settings.content_background }};
+    backdrop-filter: blur({{ section.settings.glass_blur }}px);
+    -webkit-backdrop-filter: blur({{ section.settings.glass_blur }}px);
+    position: relative;
+  }
+
+  .haramoon-carousel__product-type-{{ ai_gen_id }} {
+    font-size: {{ section.settings.product_type_size }}px;
+    color: {{ section.settings.product_type_color }};
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+  }
+
+  .haramoon-carousel__product-name-{{ ai_gen_id }} {
+    font-size: {{ section.settings.product_name_size }}px;
+    color: {{ section.settings.product_name_color }};
+    margin: 0 0 12px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .haramoon-carousel__claims-{{ ai_gen_id }} {
+    font-size: {{ section.settings.claims_size }}px;
+    color: {{ section.settings.claims_color }};
+    margin: 0 0 16px;
+    line-height: 1.5;
+  }
+
+  .haramoon-carousel__price-{{ ai_gen_id }} {
+    font-size: {{ section.settings.price_size }}px;
+    color: {{ section.settings.price_color }};
+    margin: 0 0 16px;
+    font-weight: 600;
+  }
+
+  .haramoon-carousel__cta-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    background: {{ section.settings.cta_background }};
+    color: {{ section.settings.cta_text_color }};
+    border-radius: {{ section.settings.cta_border_radius }}px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid {{ section.settings.cta_border_color }};
+    width: 100%;
+  }
+
+  .haramoon-carousel__cta-{{ ai_gen_id }}:hover {
+    background: {{ section.settings.cta_hover_background }};
+    color: {{ section.settings.cta_hover_text_color }};
+    transform: translateY(-2px);
+  }
+
+  .haramoon-carousel__cta-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  .haramoon-carousel__cta-{{ ai_gen_id }}:active::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  .haramoon-carousel__controls-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .haramoon-carousel__control-btn-{{ ai_gen_id }} {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: {{ section.settings.control_background }};
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid {{ section.settings.control_border_color }};
+    color: {{ section.settings.control_icon_color }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .haramoon-carousel__control-btn-{{ ai_gen_id }}:hover {
+    background: {{ section.settings.control_hover_background }};
+    transform: scale(1.1);
+  }
+
+  .haramoon-carousel__control-btn-{{ ai_gen_id }}:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .haramoon-carousel__placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: {{ section.settings.image_background }};
+  }
+
+  .haramoon-carousel__placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 200px;
+    max-height: 200px;
+    opacity: 0.3;
+  }
+
+  .haramoon-carousel__empty-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 60px 20px;
+    color: {{ section.settings.subheading_color }};
+    font-size: 16px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .haramoon-carousel__card-{{ ai_gen_id }} {
+      flex: 0 0 280px;
+    }
+    .haramoon-carousel__title-{{ ai_gen_id }} {
+      font-size: {{ section.settings.heading_size | times: 0.7 }}px;
+    }
+    .haramoon-carousel__subtitle-{{ ai_gen_id }} {
+      font-size: {{ section.settings.subheading_size | times: 0.8 }}px;
+    }
+    .haramoon-carousel__controls-{{ ai_gen_id }} {
+      display: none;
+    }
+  }
+{% endstyle %}
+
+<haramoon-carousel-{{ ai_gen_id }}
+  class="haramoon-carousel-{{ ai_gen_id }}"
+  data-autoplay="{{ section.settings.enable_autoplay }}"
+  data-autoplay-speed="{{ section.settings.autoplay_speed }}"
+  data-direction="{{ section.settings.scroll_direction }}"
+  data-layout="{{ section.settings.layout_style }}"
+>
+  <div class="haramoon-carousel__container-{{ ai_gen_id }}">
+    {% if section.settings.show_heading %}
+      <div class="haramoon-carousel__header-{{ ai_gen_id }}">
+        {% if section.settings.heading != blank %}
+          <h2 class="haramoon-carousel__title-{{ ai_gen_id }}">{{ section.settings.heading }}</h2>
+        {% endif %}
+        {% if section.settings.subheading != blank %}
+          <p class="haramoon-carousel__subtitle-{{ ai_gen_id }}">{{ section.settings.subheading }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="haramoon-carousel__wrapper-{{ ai_gen_id }}">
+      <div class="haramoon-carousel__track-{{ ai_gen_id }}">
+        {% if products.size > 0 %}
+          {% for product in products limit: section.settings.max_products %}
+            {% liquid
+              assign product_type = product.type
+              assign claim_1 = product.metafields.custom.key_feature_1.value
+              assign claim_2 = product.metafields.custom.key_feature_2.value
+              assign claim_3 = product.metafields.custom.key_feature_3.value
+            %}
+            <div class="haramoon-carousel__card-{{ ai_gen_id }}" data-index="{{ forloop.index0 }}">
+              <a href="{{ product.url }}" class="haramoon-carousel__link-{{ ai_gen_id }}">
+                <div class="haramoon-carousel__image-wrapper-{{ ai_gen_id }}">
+                  {% if product.featured_image %}
+                    <img
+                      src="{{ product.featured_image | image_url: width: 600 }}"
+                      alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                      class="haramoon-carousel__image-{{ ai_gen_id }}"
+                      loading="lazy"
+                      width="600"
+                      height="750"
+                    >
+                  {% else %}
+                    <div class="haramoon-carousel__placeholder-{{ ai_gen_id }}">
+                      {{ 'product-1' | placeholder_svg_tag }}
+                    </div>
+                  {% endif %}
+                  <div class="haramoon-carousel__gradient-overlay-{{ ai_gen_id }}"></div>
+
+                  {% if section.settings.show_badge %}
+                    <div class="haramoon-carousel__badge-{{ ai_gen_id }}">
+                      <svg class="haramoon-carousel__badge-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                      </svg>
+                      {{ section.settings.badge_text }}
+                    </div>
+                  {% endif %}
+                </div>
+
+                <div class="haramoon-carousel__content-{{ ai_gen_id }}">
+                  {% if product_type != blank %}
+                    <div class="haramoon-carousel__product-type-{{ ai_gen_id }}">{{ product_type }}</div>
+                  {% endif %}
+
+                  <h3 class="haramoon-carousel__product-name-{{ ai_gen_id }}">{{ product.title }}</h3>
+
+                  {% if claim_1 != blank or claim_2 != blank or claim_3 != blank %}
+                    <div class="haramoon-carousel__claims-{{ ai_gen_id }}">
+                      {%- if claim_1 != blank -%}{{ claim_1 }}{%- endif -%}
+                      {%- if claim_2 != blank -%}{% unless claim_1 == blank %} · {% endunless %}{{ claim_2 }}{%- endif -%}
+                      {%- if claim_3 != blank -%}{% unless claim_1 == blank and claim_2 == blank %} · {% endunless %}{{ claim_3 }}{%- endif -%}
+                    </div>
+                  {% endif %}
+
+                  {% if section.settings.show_price %}
+                    <div class="haramoon-carousel__price-{{ ai_gen_id }}">
+                      {{ product.price | money }}
+                    </div>
+                  {% endif %}
+
+                  <span class="haramoon-carousel__cta-{{ ai_gen_id }}">
+                    {{ section.settings.cta_text }}
+                  </span>
+                </div>
+              </a>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="haramoon-carousel__empty-{{ ai_gen_id }}">
+            <p>No products found in the HARAMOON Korean Skincare collection.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if section.settings.layout_style == 'carousel' and section.settings.show_controls %}
+      <div class="haramoon-carousel__controls-{{ ai_gen_id }}">
+        <button class="haramoon-carousel__control-btn-{{ ai_gen_id }}" data-direction="prev" aria-label="Previous">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 18L9 12L15 6"/>
+          </svg>
+        </button>
+        <button class="haramoon-carousel__control-btn-{{ ai_gen_id }}" data-direction="next" aria-label="Next">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18L15 12L9 6"/>
+          </svg>
+        </button>
+      </div>
+    {% endif %}
+  </div>
+</haramoon-carousel-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class HaramoonCarousel{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.currentIndex = 0;
+        this.autoplayInterval = null;
+        this.isHovered = false;
+        this.touchStartX = 0;
+        this.touchEndX = 0;
+        this.isDragging = false;
+      }
+
+      connectedCallback() {
+        this.track = this.querySelector('.haramoon-carousel__track-{{ ai_gen_id }}');
+        this.cards = this.querySelectorAll('.haramoon-carousel__card-{{ ai_gen_id }}');
+        this.prevBtn = this.querySelector('[data-direction="prev"]');
+        this.nextBtn = this.querySelector('[data-direction="next"]');
+        this.autoplay = this.dataset.autoplay === 'true';
+        this.autoplaySpeed = parseInt(this.dataset.autoplaySpeed) || 3000;
+        this.direction = this.dataset.direction || 'left';
+        this.layout = this.dataset.layout || 'carousel';
+
+        if (this.layout === 'carousel') {
+          this.setupCarousel();
+        }
+
+        this.setupIntersectionObserver();
+      }
+
+      setupCarousel() {
+        if (this.prevBtn) {
+          this.prevBtn.addEventListener('click', () => this.navigate('prev'));
+        }
+        if (this.nextBtn) {
+          this.nextBtn.addEventListener('click', () => this.navigate('next'));
+        }
+
+        this.track.addEventListener('mouseenter', () => {
+          this.isHovered = true;
+          this.stopAutoplay();
+        });
+
+        this.track.addEventListener('mouseleave', () => {
+          this.isHovered = false;
+          if (this.autoplay) this.startAutoplay();
+        });
+
+        this.track.addEventListener('touchstart', (e) => {
+          this.touchStartX = e.changedTouches[0].screenX;
+          this.isDragging = true;
+        }, { passive: true });
+
+        this.track.addEventListener('touchmove', (e) => {
+          if (!this.isDragging) return;
+          this.touchEndX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        this.track.addEventListener('touchend', (e) => {
+          if (!this.isDragging) return;
+          this.touchEndX = e.changedTouches[0].screenX;
+          this.handleSwipe();
+          this.isDragging = false;
+        }, { passive: true });
+
+        if (this.autoplay) this.startAutoplay();
+        this.updateControls();
+      }
+
+      navigate(dir) {
+        const cardWidth = this.cards[0].offsetWidth;
+        const gap = parseInt(getComputedStyle(this.track).gap) || 20;
+        const scrollAmount = cardWidth + gap;
+        if (dir === 'next') {
+          this.currentIndex = Math.min(this.currentIndex + 1, this.cards.length - 1);
+        } else {
+          this.currentIndex = Math.max(this.currentIndex - 1, 0);
+        }
+        this.track.style.transform = `translateX(-${this.currentIndex * scrollAmount}px)`;
+        this.updateControls();
+      }
+
+      handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = this.touchStartX - this.touchEndX;
+        if (Math.abs(diff) > swipeThreshold) {
+          this.navigate(diff > 0 ? 'next' : 'prev');
+        }
+      }
+
+      startAutoplay() {
+        this.stopAutoplay();
+        this.autoplayInterval = setInterval(() => {
+          if (!this.isHovered) {
+            if (this.direction === 'left') {
+              if (this.currentIndex >= this.cards.length - 1) {
+                this.currentIndex = 0;
+                this.track.style.transition = 'none';
+                this.track.style.transform = 'translateX(0)';
+                setTimeout(() => {
+                  this.track.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                }, 50);
+              } else {
+                this.navigate('next');
+              }
+            } else {
+              if (this.currentIndex <= 0) {
+                this.currentIndex = this.cards.length - 1;
+                const cardWidth = this.cards[0].offsetWidth;
+                const gap = parseInt(getComputedStyle(this.track).gap) || 20;
+                this.track.style.transition = 'none';
+                this.track.style.transform = `translateX(-${this.currentIndex * (cardWidth + gap)}px)`;
+                setTimeout(() => {
+                  this.track.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                }, 50);
+              } else {
+                this.navigate('prev');
+              }
+            }
+            this.updateControls();
+          }
+        }, this.autoplaySpeed);
+      }
+
+      stopAutoplay() {
+        if (this.autoplayInterval) {
+          clearInterval(this.autoplayInterval);
+          this.autoplayInterval = null;
+        }
+      }
+
+      updateControls() {
+        if (this.prevBtn) this.prevBtn.disabled = this.currentIndex === 0;
+        if (this.nextBtn) this.nextBtn.disabled = this.currentIndex >= this.cards.length - 1;
+      }
+
+      setupIntersectionObserver() {
+        const images = this.querySelectorAll('.haramoon-carousel__image-{{ ai_gen_id }}');
+        const imageObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              if (img.dataset.src) {
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+              }
+              imageObserver.unobserve(img);
+            }
+          });
+        }, { rootMargin: '50px' });
+        images.forEach(img => imageObserver.observe(img));
+      }
+
+      disconnectedCallback() {
+        this.stopAutoplay();
+      }
+    }
+
+    customElements.define('haramoon-carousel-{{ ai_gen_id }}', HaramoonCarousel{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "HARAMOON Carousel",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Collection"
+    },
+    {
+      "type": "paragraph",
+      "content": "Automatically pulls products from the HARAMOON Korean Skincare collection."
+    },
+    {
+      "type": "range",
+      "id": "max_products",
+      "min": 3,
+      "max": 20,
+      "step": 1,
+      "label": "Maximum products to show",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_heading",
+      "label": "Show heading",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "HARAMOON Collection"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Discover premium K-beauty skincare"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subheading size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing",
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Space below heading",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout_style",
+      "label": "Layout style",
+      "options": [
+        { "value": "carousel", "label": "Carousel" },
+        { "value": "grid", "label": "Grid" },
+        { "value": "masonry", "label": "Masonry" }
+      ],
+      "default": "carousel"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Carousel width (lower = narrower, less empty space)",
+      "default": 85
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "min": 200,
+      "max": 400,
+      "step": 20,
+      "unit": "px",
+      "label": "Card width",
+      "default": 300
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between cards",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Autoplay"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_autoplay",
+      "label": "Enable autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 1000,
+      "max": 8000,
+      "step": 500,
+      "unit": "ms",
+      "label": "Autoplay speed",
+      "default": 3000
+    },
+    {
+      "type": "select",
+      "id": "scroll_direction",
+      "label": "Scroll direction",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Card Style"
+    },
+    {
+      "type": "select",
+      "id": "card_style",
+      "label": "Card style",
+      "options": [
+        { "value": "minimal", "label": "Minimal" },
+        { "value": "bordered", "label": "Bordered" },
+        { "value": "shadow", "label": "Shadow" },
+        { "value": "neon", "label": "Neon glow" }
+      ],
+      "default": "shadow"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Card padding",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "hover_lift",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Hover lift",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "hover_scale_percent",
+      "min": 100,
+      "max": 110,
+      "step": 1,
+      "label": "Hover scale (100 = no scale, 105 = 5% larger)",
+      "default": 102
+    },
+    {
+      "type": "range",
+      "id": "glass_blur",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Glass blur (card content area)",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Badge"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "K-Beauty"
+    },
+    {
+      "type": "color",
+      "id": "badge_background",
+      "label": "Badge background",
+      "default": "rgba(255, 255, 255, 0.85)"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge text color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "badge_border_color",
+      "label": "Badge border color",
+      "default": "rgba(10, 80, 109, 0.2)"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "product_type_size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Product type size",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "product_name_size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Product name size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "claims_size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Claims / features size",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Price size",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Product Info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show price",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "CTA Button"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "range",
+      "id": "cta_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "cta_background",
+      "label": "Button background",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "cta_hover_background",
+      "label": "Button hover background",
+      "default": "#002c60"
+    },
+    {
+      "type": "color",
+      "id": "cta_hover_text_color",
+      "label": "Button hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "cta_border_color",
+      "label": "Button border color",
+      "default": "rgba(255, 255, 255, 0.2)"
+    },
+    {
+      "type": "header",
+      "content": "Navigation Controls"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_controls",
+      "label": "Show prev/next buttons",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "control_background",
+      "label": "Button background",
+      "default": "rgba(255, 255, 255, 0.9)"
+    },
+    {
+      "type": "color",
+      "id": "control_hover_background",
+      "label": "Button hover background",
+      "default": "rgba(255, 255, 255, 1)"
+    },
+    {
+      "type": "color",
+      "id": "control_icon_color",
+      "label": "Arrow color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "control_border_color",
+      "label": "Button border color",
+      "default": "rgba(10, 80, 109, 0.2)"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Subheading color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "neon_glow_color",
+      "label": "Neon glow color",
+      "default": "#ff6b9d"
+    },
+    {
+      "type": "color",
+      "id": "image_background",
+      "label": "Image placeholder background",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "color",
+      "id": "content_background",
+      "label": "Card content background",
+      "default": "rgba(255, 255, 255, 0.95)"
+    },
+    {
+      "type": "color",
+      "id": "gradient_overlay_start",
+      "label": "Gradient start color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "gradient_overlay_end",
+      "label": "Gradient end color",
+      "default": "#ff6b9d"
+    },
+    {
+      "type": "text",
+      "id": "gradient_opacity_hex",
+      "label": "Gradient opacity (hex suffix, e.g. 20 = 12%)",
+      "default": "20"
+    },
+    {
+      "type": "color",
+      "id": "product_type_color",
+      "label": "Product type color",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "product_name_color",
+      "label": "Product name color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "claims_color",
+      "label": "Features text color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "HARAMOON Carousel"
+    }
+  ]
+}
+{% endschema %}
