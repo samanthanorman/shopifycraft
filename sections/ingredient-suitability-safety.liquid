@@ -1,0 +1,424 @@
+{% liquid
+  assign ai_gen_id = section.id | replace: '_', '' | downcase
+%}
+
+{% style %}
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+  .ai-ingredient-suitability-{{ ai_gen_id }} {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    padding: {{ section.settings.section_padding }}px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .ai-ingredient-section-{{ ai_gen_id }} {
+    margin-bottom: {{ section.settings.section_spacing }}px;
+  }
+
+  .ai-ingredient-section-{{ ai_gen_id }}:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-ingredient-heading-{{ ai_gen_id }} {
+    font-size: 24px;
+    font-weight: 600;
+    color: {{ section.settings.text_color }};
+    margin: 0 0 16px 0;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .ai-ingredient-badge-group-{{ ai_gen_id }} {
+    margin-bottom: 20px;
+  }
+
+  .ai-ingredient-badge-group-{{ ai_gen_id }}:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-ingredient-badge-label-{{ ai_gen_id }} {
+    font-size: 14px;
+    font-weight: 500;
+    color: {{ section.settings.text_color }};
+    margin: 0 0 10px 0;
+    opacity: 0.8;
+  }
+
+  .ai-ingredient-badges-{{ ai_gen_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: {{ section.settings.badge_gap }}px;
+  }
+
+  .ai-ingredient-badge-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: {{ section.settings.badge_text_size }}px;
+    font-weight: 500;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    cursor: default;
+  }
+
+  .ai-ingredient-badge-skin-{{ ai_gen_id }} {
+    background-color: {{ section.settings.badge_skin_bg }};
+    color: {{ section.settings.text_color }};
+  }
+
+  .ai-ingredient-badge-skin-{{ ai_gen_id }}:hover {
+    transform: scale(1.05);
+    background-color: {{ section.settings.badge_skin_bg | color_darken: 5 }};
+  }
+
+  .ai-ingredient-badge-effect-{{ ai_gen_id }} {
+    background-color: {{ section.settings.badge_effect_bg }};
+    color: {{ section.settings.text_color }};
+  }
+
+  .ai-ingredient-badge-effect-{{ ai_gen_id }}:hover {
+    transform: scale(1.05);
+    background-color: {{ section.settings.badge_effect_bg | color_darken: 5 }};
+  }
+
+  .ai-ingredient-safety-card-{{ ai_gen_id }} {
+    background-color: {{ section.settings.safety_card_bg }};
+    border: 1px solid {{ section.settings.border_color }};
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .ai-ingredient-safety-header-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .ai-ingredient-safety-icon-{{ ai_gen_id }} {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .ai-ingredient-safety-title-{{ ai_gen_id }} {
+    font-size: 20px;
+    font-weight: 600;
+    color: {{ section.settings.text_color }};
+    margin: 0;
+  }
+
+  .ai-ingredient-cautions-{{ ai_gen_id }} {
+    font-size: {{ section.settings.safety_text_size }}px;
+    line-height: 1.6;
+    color: {{ section.settings.text_color }};
+    margin: 0 0 16px 0;
+    white-space: pre-wrap;
+  }
+
+  .ai-ingredient-pore-clogging-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: {{ section.settings.safety_text_size }}px;
+    font-weight: 500;
+    color: {{ section.settings.text_color }};
+    padding-top: 12px;
+    border-top: 1px solid {{ section.settings.border_color }};
+    margin-top: 12px;
+  }
+
+  .ai-ingredient-pore-question-{{ ai_gen_id }} {
+    flex: 1;
+  }
+
+  .ai-ingredient-pore-indicator-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .ai-ingredient-pore-indicator-yes-{{ ai_gen_id }} {
+    background-color: #ffc107;
+    color: #000;
+  }
+
+  .ai-ingredient-pore-indicator-no-{{ ai_gen_id }} {
+    background-color: #4caf50;
+    color: #fff;
+  }
+
+  .ai-ingredient-pore-indicator-{{ ai_gen_id }} svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .ai-ingredient-empty-state-{{ ai_gen_id }} {
+    font-size: 14px;
+    color: {{ section.settings.text_color }};
+    opacity: 0.6;
+    font-style: italic;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-ingredient-heading-{{ ai_gen_id }} {
+      font-size: 20px;
+    }
+
+    .ai-ingredient-safety-title-{{ ai_gen_id }} {
+      font-size: 18px;
+    }
+
+    .ai-ingredient-safety-card-{{ ai_gen_id }} {
+      padding: 20px;
+    }
+
+    .ai-ingredient-pore-clogging-{{ ai_gen_id }} {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-ingredient-suitability-{{ ai_gen_id }}">
+
+  {%- comment -%}
+    suitable_for_skin_type and effective_at are list.metaobject_reference fields.
+    In Liquid on a metaobject template, iterate directly — no .value needed.
+    Each item exposes its own fields via item.field_name (e.g. skin_type.label).
+  {%- endcomment -%}
+
+  {% assign has_skin_types = false %}
+  {% assign has_effects = false %}
+  {% if metaobject.suitable_for_skin_type != blank %}
+    {% assign has_skin_types = true %}
+  {% endif %}
+  {% if metaobject.effective_at != blank %}
+    {% assign has_effects = true %}
+  {% endif %}
+
+  {% if has_skin_types or has_effects %}
+    <div class="ai-ingredient-section-{{ ai_gen_id }}" id="good-for">
+      <h2 class="ai-ingredient-heading-{{ ai_gen_id }}">{{ section.settings.good_for_heading }}</h2>
+
+      {% if has_skin_types %}
+        <div class="ai-ingredient-badge-group-{{ ai_gen_id }}">
+          <p class="ai-ingredient-badge-label-{{ ai_gen_id }}">Suitable for skin types:</p>
+          <div class="ai-ingredient-badges-{{ ai_gen_id }}">
+            {% for skin_type in metaobject.suitable_for_skin_type.value %}
+              <span class="ai-ingredient-badge-{{ ai_gen_id }} ai-ingredient-badge-skin-{{ ai_gen_id }}">
+                {{ skin_type.label }}
+              </span>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if has_effects %}
+        <div class="ai-ingredient-badge-group-{{ ai_gen_id }}">
+          <p class="ai-ingredient-badge-label-{{ ai_gen_id }}">Effective at:</p>
+          <div class="ai-ingredient-badges-{{ ai_gen_id }}">
+            {% for effect in metaobject.effective_at.value %}
+              <span class="ai-ingredient-badge-{{ ai_gen_id }} ai-ingredient-badge-effect-{{ ai_gen_id }}">
+                {{ effect.label }}
+              </span>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if metaobject.cautions_side_effects != blank or section.settings.show_pore_clogging %}
+    <div class="ai-ingredient-section-{{ ai_gen_id }}" id="safety">
+      <div class="ai-ingredient-safety-card-{{ ai_gen_id }}">
+        <div class="ai-ingredient-safety-header-{{ ai_gen_id }}">
+          <div class="ai-ingredient-safety-icon-{{ ai_gen_id }}">
+            {%- comment -%} Shield icon for safety heading {%- endcomment -%}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="{{ section.settings.text_color }}">
+              <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+            </svg>
+          </div>
+          <h2 class="ai-ingredient-safety-title-{{ ai_gen_id }}">{{ section.settings.safety_heading }}</h2>
+        </div>
+
+        {% if metaobject.cautions_side_effects != blank %}
+          <p class="ai-ingredient-cautions-{{ ai_gen_id }}">{{ metaobject.cautions_side_effects }}</p>
+        {% else %}
+          <p class="ai-ingredient-empty-state-{{ ai_gen_id }}">No specific cautions or side effects reported.</p>
+        {% endif %}
+
+        {% if section.settings.show_pore_clogging %}
+          <div class="ai-ingredient-pore-clogging-{{ ai_gen_id }}">
+            <span class="ai-ingredient-pore-question-{{ ai_gen_id }}">{{ section.settings.pore_clogging_label }}</span>
+            {% if metaobject.potentially_pore_clogging == true or metaobject.potentially_pore_clogging == 'true' %}
+              {%- comment -%} YES = pore clogging = yellow warning icon {%- endcomment -%}
+              <span class="ai-ingredient-pore-indicator-{{ ai_gen_id }} ai-ingredient-pore-indicator-yes-{{ ai_gen_id }}" title="Yes — potentially pore clogging">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                </svg>
+              </span>
+            {% else %}
+              {%- comment -%} NO = not pore clogging = green checkmark {%- endcomment -%}
+              <span class="ai-ingredient-pore-indicator-{{ ai_gen_id }} ai-ingredient-pore-indicator-no-{{ ai_gen_id }}" title="No — not pore clogging">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                </svg>
+              </span>
+            {% endif %}
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+  {% endif %}
+
+</div>
+
+{% schema %}
+{
+  "name": "Suitability & Safety",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section headings"
+    },
+    {
+      "type": "text",
+      "id": "good_for_heading",
+      "label": "Good for heading",
+      "default": "Good For"
+    },
+    {
+      "type": "text",
+      "id": "safety_heading",
+      "label": "Safety heading",
+      "default": "Safety & Cautions"
+    },
+    {
+      "type": "header",
+      "content": "Badge style"
+    },
+    {
+      "type": "color",
+      "id": "badge_skin_bg",
+      "label": "Skin type badge background",
+      "default": "#e3f2fd"
+    },
+    {
+      "type": "color",
+      "id": "badge_effect_bg",
+      "label": "Effect badge background",
+      "default": "#fff3e0"
+    },
+    {
+      "type": "range",
+      "id": "badge_text_size",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Badge text size",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "badge_gap",
+      "min": 8,
+      "max": 16,
+      "step": 2,
+      "unit": "px",
+      "label": "Badge gap",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Safety card style"
+    },
+    {
+      "type": "color",
+      "id": "safety_card_bg",
+      "label": "Background",
+      "default": "#fffbf0"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#ffd54f"
+    },
+    {
+      "type": "range",
+      "id": "safety_text_size",
+      "min": 14,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Section padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "section_spacing",
+      "min": 24,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Spacing between sections",
+      "default": 32
+    },
+    {
+      "type": "header",
+      "content": "Pore clogging indicator"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pore_clogging",
+      "label": "Show pore clogging indicator",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "pore_clogging_label",
+      "label": "Pore clogging label",
+      "default": "Potentially pore clogging?"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Suitability & Safety"
+    }
+  ]
+}
+{% endschema %}
