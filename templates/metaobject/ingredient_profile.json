@@ -103,6 +103,10 @@
         "pore_clogging_label": "Potentially pore clogging?"
       }
     },
+    "177543047397834956": {
+      "type": "_blocks",
+      "settings": {}
+    },
     "featured_collection_zBUa3Y": {
       "type": "featured-collection",
       "name": "t:sections.featured-collection.presets.name",
@@ -211,6 +215,7 @@
     "ingredient_profile_detail",
     "ingredient-comparison",
     "ingredient_suitability_safety_gxaqeM",
+    "177543047397834956",
     "featured_collection_zBUa3Y",
     "newsletter_BAz6HG",
     "ingredient_resources_fMP4AM"
