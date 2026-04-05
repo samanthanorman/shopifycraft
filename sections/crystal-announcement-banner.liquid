@@ -1,0 +1,394 @@
+{% liquid
+  assign ai_gen_id = section.id | replace: '_', '' | downcase
+%}
+
+{% style %}
+  .ai-crystal-banner-{{ ai_gen_id }} {
+    display: flex;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    {% if section.settings.background_gradient != blank %}
+      background: {{ section.settings.background_gradient }};
+    {% else %}
+      background: {{ section.settings.background_color }};
+    {% endif %}
+    padding: {{ section.settings.padding_vertical }}px {{ section.settings.padding_horizontal }}px;
+    min-height: {{ section.settings.banner_height }}px;
+    align-items: center;
+  }
+
+  .ai-crystal-banner-carousel-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-crystal-banner-slide-{{ ai_gen_id }} {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: {{ section.settings.icon_spacing }}px;
+    pointer-events: none;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .ai-crystal-banner-slide-{{ ai_gen_id }}.active {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .ai-crystal-banner-icon-{{ ai_gen_id }} {
+    width: {{ section.settings.icon_size }}px;
+    height: {{ section.settings.icon_size }}px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-crystal-banner-icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ai-crystal-banner-text-{{ ai_gen_id }} {
+    font-family: {{ section.settings.font_family.family }}, {{ section.settings.font_family.fallback_families }};
+    font-weight: {{ section.settings.font_family.weight }};
+    font-size: {{ section.settings.font_size }}px;
+    color: {{ section.settings.text_color }};
+    text-align: center;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  a.ai-crystal-banner-slide-{{ ai_gen_id }} .ai-crystal-banner-text-{{ ai_gen_id }} {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: {{ section.settings.text_color }}60;
+  }
+
+  a.ai-crystal-banner-slide-{{ ai_gen_id }}:hover .ai-crystal-banner-text-{{ ai_gen_id }} {
+    text-decoration-color: {{ section.settings.text_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-crystal-banner-{{ ai_gen_id }} {
+      padding: {{ section.settings.padding_vertical | times: 0.7 | round }}px {{ section.settings.padding_horizontal | times: 0.7 | round }}px;
+      min-height: {{ section.settings.banner_height | times: 0.7 | round }}px;
+    }
+
+    .ai-crystal-banner-text-{{ ai_gen_id }} {
+      font-size: {{ section.settings.font_size | times: 0.85 | round }}px;
+    }
+
+    .ai-crystal-banner-icon-{{ ai_gen_id }} {
+      width: {{ section.settings.icon_size | times: 0.8 | round }}px;
+      height: {{ section.settings.icon_size | times: 0.8 | round }}px;
+    }
+
+    .ai-crystal-banner-slide-{{ ai_gen_id }} {
+      gap: {{ section.settings.icon_spacing | times: 0.7 | round }}px;
+    }
+  }
+{% endstyle %}
+
+<crystal-banner-{{ ai_gen_id }} class="ai-crystal-banner-{{ ai_gen_id }}">
+  <div class="ai-crystal-banner-carousel-{{ ai_gen_id }}">
+
+    {%- comment -%} Slide 1 — links to Crystal Collection {%- endcomment -%}
+    {% if section.settings.text_1 != blank %}
+      {% if section.settings.link_1 != blank %}
+        <a href="{{ section.settings.link_1 }}" class="ai-crystal-banner-slide-{{ ai_gen_id }} active" data-slide="1">
+      {% else %}
+        <div class="ai-crystal-banner-slide-{{ ai_gen_id }} active" data-slide="1">
+      {% endif %}
+          <div class="ai-crystal-banner-icon-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 2L15.5 8.5L22 9.5L17 14.5L18.5 21L12 17.5L5.5 21L7 14.5L2 9.5L8.5 8.5L12 2Z"
+                stroke="{{ section.settings.icon_stroke_color }}"
+                stroke-width="{{ section.settings.icon_stroke_width_int | divided_by: 10.0 }}"
+                fill="none"/>
+              <circle cx="12" cy="12" r="2" fill="{{ section.settings.icon_color }}"/>
+            </svg>
+          </div>
+          <p class="ai-crystal-banner-text-{{ ai_gen_id }}">{{ section.settings.text_1 }}</p>
+          <div class="ai-crystal-banner-icon-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <polygon points="12,2 16,8 22,10 17,15 18,22 12,18 6,22 7,15 2,10 8,8"
+                stroke="{{ section.settings.icon_stroke_color }}"
+                stroke-width="{{ section.settings.icon_stroke_width_int | divided_by: 10.0 }}"
+                fill="none"/>
+              <path d="M12 8 L14 11 L17 12 L14 13 L12 16 L10 13 L7 12 L10 11 Z" fill="{{ section.settings.icon_color }}"/>
+            </svg>
+          </div>
+      {% if section.settings.link_1 != blank %}
+        </a>
+      {% else %}
+        </div>
+      {% endif %}
+    {% endif %}
+
+    {%- comment -%} Slide 2 — links to Crystal Courtesan glossary {%- endcomment -%}
+    {% if section.settings.text_2 != blank %}
+      {% if section.settings.link_2 != blank %}
+        <a href="{{ section.settings.link_2 }}" class="ai-crystal-banner-slide-{{ ai_gen_id }}" data-slide="2">
+      {% else %}
+        <div class="ai-crystal-banner-slide-{{ ai_gen_id }}" data-slide="2">
+      {% endif %}
+          <div class="ai-crystal-banner-icon-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 3L9 9L3 10L7.5 14.5L6 21L12 17.5L18 21L16.5 14.5L21 10L15 9L12 3Z"
+                stroke="{{ section.settings.icon_stroke_color }}"
+                stroke-width="{{ section.settings.icon_stroke_width_int | divided_by: 10.0 }}"
+                fill="none"/>
+              <polygon points="12,8 10,11 7,11 9,13 8,16 12,14 16,16 15,13 17,11 14,11" fill="{{ section.settings.icon_color }}"/>
+            </svg>
+          </div>
+          <p class="ai-crystal-banner-text-{{ ai_gen_id }}">{{ section.settings.text_2 }}</p>
+          <div class="ai-crystal-banner-icon-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <rect x="8" y="8" width="8" height="8" transform="rotate(45 12 12)"
+                stroke="{{ section.settings.icon_stroke_color }}"
+                stroke-width="{{ section.settings.icon_stroke_width_int | divided_by: 10.0 }}"
+                fill="none"/>
+              <circle cx="12" cy="12" r="3" fill="{{ section.settings.icon_color }}"/>
+              <line x1="12" y1="5" x2="12" y2="7" stroke="{{ section.settings.icon_stroke_color }}" stroke-width="{{ section.settings.icon_stroke_width_int | divided_by: 10.0 }}"/>
+              <line x1="12" y1="17" x2="12" y2="19" stroke="{{ section.settings.icon_stroke_color }}" stroke-width="{{ section.settings.icon_stroke_width_int | divided_by: 10.0 }}"/>
+              <line x1="5" y1="12" x2="7" y2="12" stroke="{{ section.settings.icon_stroke_color }}" stroke-width="{{ section.settings.icon_stroke_width_int | divided_by: 10.0 }}"/>
+              <line x1="17" y1="12" x2="19" y2="12" stroke="{{ section.settings.icon_stroke_color }}" stroke-width="{{ section.settings.icon_stroke_width_int | divided_by: 10.0 }}"/>
+            </svg>
+          </div>
+      {% if section.settings.link_2 != blank %}
+        </a>
+      {% else %}
+        </div>
+      {% endif %}
+    {% endif %}
+
+  </div>
+</crystal-banner-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class CrystalBanner{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.currentSlide = 0;
+        this.slides = [];
+        this.intervalId = null;
+      }
+
+      connectedCallback() {
+        this.slides = Array.from(this.querySelectorAll('.ai-crystal-banner-slide-{{ ai_gen_id }}'));
+        if (this.slides.length > 1) {
+          this.startCarousel();
+        }
+      }
+
+      startCarousel() {
+        this.intervalId = setInterval(() => {
+          this.nextSlide();
+        }, 5000);
+      }
+
+      nextSlide() {
+        this.slides[this.currentSlide].classList.remove('active');
+        this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+        this.slides[this.currentSlide].classList.add('active');
+      }
+
+      disconnectedCallback() {
+        if (this.intervalId) {
+          clearInterval(this.intervalId);
+        }
+      }
+    }
+
+    customElements.define('crystal-banner-{{ ai_gen_id }}', CrystalBanner{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Crystal Banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Slide 1 — Crystal Collection"
+    },
+    {
+      "type": "text",
+      "id": "text_1",
+      "label": "Message 1",
+      "default": "✨ Shop our Crystal Collection — healing gemstones for every intention"
+    },
+    {
+      "type": "url",
+      "id": "link_1",
+      "label": "Link for Message 1",
+      "info": "Pre-set to your Crystal Collection. Change only if needed."
+    },
+    {
+      "type": "header",
+      "content": "Slide 2 — Crystal Courtesan Glossary"
+    },
+    {
+      "type": "text",
+      "id": "text_2",
+      "label": "Message 2",
+      "default": "💎 Become a Crystal Courtesan — explore the complete crystal glossary"
+    },
+    {
+      "type": "url",
+      "id": "link_2",
+      "label": "Link for Message 2",
+      "info": "Pre-set to your Crystal Courtesan glossary page. Change only if needed."
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "font_family",
+      "label": "Font",
+      "default": "poppins_n4"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#e0f7ff"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background gradient (overrides solid color)"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#002c60"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon fill",
+      "default": "#00adff"
+    },
+    {
+      "type": "color",
+      "id": "icon_stroke_color",
+      "label": "Icon outline",
+      "default": "#002c60"
+    },
+    {
+      "type": "header",
+      "content": "Icon style"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Icon size",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "icon_spacing",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Icon spacing",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "icon_stroke_width_int",
+      "min": 10,
+      "max": 30,
+      "step": 5,
+      "label": "Icon outline thickness (10 = thin, 15 = medium, 20 = thick)",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "banner_height",
+      "min": 40,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Banner height",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Vertical padding",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Horizontal padding",
+      "default": 32
+    }
+  ],
+  "presets": [
+    {
+      "name": "Crystal Banner",
+      "settings": {
+        "link_1": "/collections/natural-crystals-gemstones",
+        "link_2": "/pages/crystal-courtesan"
+      }
+    }
+  ]
+}
+{% endschema %}
