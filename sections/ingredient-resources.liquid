@@ -1,0 +1,655 @@
+{% liquid
+  assign ai_gen_id = section.id | replace: '_', '' | downcase
+  assign card_width_mobile = section.settings.card_width | times: 0.75 | round
+  assign heading_size_mobile = section.settings.heading_size | times: 0.85 | round
+  assign link_font_size_mobile = section.settings.link_font_size | times: 0.9 | round
+%}
+
+{% style %}
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+  .ai-ingredient-resources-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+    padding: {{ section.settings.section_padding }}px 0;
+  }
+
+  .ai-ingredient-resources__section-{{ ai_gen_id }} {
+    margin-bottom: {{ section.settings.section_spacing }}px;
+  }
+
+  .ai-ingredient-resources__section-{{ ai_gen_id }}:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-ingredient-resources__heading-{{ ai_gen_id }} {
+    font-size: {{ section.settings.heading_size }}px;
+    font-weight: 600;
+    color: {{ section.settings.heading_color }};
+    margin: 0 0 {{ section.settings.heading_spacing }}px 0;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .ai-ingredient-resources__products-scroll-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ section.settings.product_gap }}px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: {{ section.settings.scrollbar_color }} transparent;
+    padding-bottom: 12px;
+    cursor: grab;
+  }
+
+  .ai-ingredient-resources__products-scroll-{{ ai_gen_id }}::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .ai-ingredient-resources__products-scroll-{{ ai_gen_id }}::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .ai-ingredient-resources__products-scroll-{{ ai_gen_id }}::-webkit-scrollbar-thumb {
+    background-color: {{ section.settings.scrollbar_color }};
+    border-radius: 4px;
+  }
+
+  .ai-ingredient-resources__product-card-{{ ai_gen_id }} {
+    position: relative;
+    flex: 0 0 {{ section.settings.card_width }}px;
+    background: {{ section.settings.card_bg_color }};
+    border: {{ section.settings.card_border_width }}px solid {{ section.settings.card_border_color }};
+    border-radius: {{ section.settings.card_border_radius }}px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    display: block;
+  }
+
+  .ai-ingredient-resources__product-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(10, 80, 109, 0.15);
+    border-color: {{ section.settings.card_hover_border_color }};
+  }
+
+  .ai-ingredient-resources__product-image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+
+  .ai-ingredient-resources__product-image-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-ingredient-resources__product-image-placeholder-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+  }
+
+  .ai-ingredient-resources__product-badge-{{ ai_gen_id }} {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: {{ section.settings.badge_bg_color }};
+    color: {{ section.settings.badge_text_color }};
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-ingredient-resources__product-info-{{ ai_gen_id }} {
+    padding: 16px;
+  }
+
+  .ai-ingredient-resources__product-title-{{ ai_gen_id }} {
+    font-size: {{ section.settings.product_title_size }}px;
+    font-weight: 500;
+    color: {{ section.settings.product_title_color }};
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .ai-ingredient-resources__related-grid-{{ ai_gen_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: {{ section.settings.related_gap }}px;
+  }
+
+  .ai-ingredient-resources__related-link-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: {{ section.settings.link_padding_vertical }}px {{ section.settings.link_padding_horizontal }}px;
+    background: {{ section.settings.link_bg_color }};
+    color: {{ section.settings.link_text_color }};
+    border: {{ section.settings.link_border_width }}px solid {{ section.settings.link_border_color }};
+    border-radius: {{ section.settings.link_border_radius }}px;
+    text-decoration: none;
+    font-size: {{ section.settings.link_font_size }}px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .ai-ingredient-resources__related-link-{{ ai_gen_id }}:hover {
+    transform: scale(1.02);
+    background: {{ section.settings.link_hover_bg_color }};
+    color: {{ section.settings.link_hover_text_color }};
+    border-color: {{ section.settings.link_hover_border_color }};
+    box-shadow: 0 4px 12px rgba(10, 80, 109, 0.12);
+  }
+
+  .ai-ingredient-resources__arrow-icon-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-ingredient-resources__related-link-{{ ai_gen_id }}:hover .ai-ingredient-resources__arrow-icon-{{ ai_gen_id }} {
+    transform: translateX(4px);
+  }
+
+  .ai-ingredient-resources__empty-state-{{ ai_gen_id }} {
+    padding: 40px 20px;
+    text-align: center;
+    color: #999;
+    font-style: italic;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-ingredient-resources__product-card-{{ ai_gen_id }} {
+      flex: 0 0 {{ card_width_mobile }}px;
+    }
+
+    .ai-ingredient-resources__heading-{{ ai_gen_id }} {
+      font-size: {{ heading_size_mobile }}px;
+    }
+
+    .ai-ingredient-resources__related-link-{{ ai_gen_id }} {
+      font-size: {{ link_font_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<ingredient-resources-{{ ai_gen_id }} class="ai-ingredient-resources-{{ ai_gen_id }}">
+
+  {%- comment -%}
+    products_containing is a list.metaobject_reference pointing to haramoon_101 entries.
+    Each haramoon_101 entry has: .product (product_reference), .routine_step_number (integer), .product_name_type (text).
+    In Liquid on a metaobject template, iterate the list directly via .value.
+    Access the nested product via haramoon_entry.product (resolves to the product object).
+  {%- endcomment -%}
+
+  {% if metaobject.products_containing != blank %}
+    <div class="ai-ingredient-resources__section-{{ ai_gen_id }}" id="find-it-in">
+      <h2 class="ai-ingredient-resources__heading-{{ ai_gen_id }}">{{ section.settings.products_heading }}</h2>
+
+      <div class="ai-ingredient-resources__products-scroll-{{ ai_gen_id }}">
+        {% for haramoon_entry in metaobject.products_containing.value %}
+          {% assign product_ref = haramoon_entry.product %}
+          {% if product_ref != blank %}
+            <a href="{{ product_ref.url }}" class="ai-ingredient-resources__product-card-{{ ai_gen_id }}">
+              <div class="ai-ingredient-resources__product-image-wrapper-{{ ai_gen_id }}">
+                {% if product_ref.featured_image %}
+                  <img
+                    src="{{ product_ref.featured_image | image_url: width: 600 }}"
+                    alt="{{ product_ref.featured_image.alt | default: product_ref.title | escape }}"
+                    class="ai-ingredient-resources__product-image-{{ ai_gen_id }}"
+                    loading="lazy"
+                    width="600"
+                    height="600"
+                  >
+                {% else %}
+                  <div class="ai-ingredient-resources__product-image-placeholder-{{ ai_gen_id }}">
+                    {{ 'product-1' | placeholder_svg_tag }}
+                  </div>
+                {% endif %}
+
+                {% if haramoon_entry.routine_step_number != blank %}
+                  <div class="ai-ingredient-resources__product-badge-{{ ai_gen_id }}">
+                    Step {{ haramoon_entry.routine_step_number }}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="ai-ingredient-resources__product-info-{{ ai_gen_id }}">
+                <h3 class="ai-ingredient-resources__product-title-{{ ai_gen_id }}">
+                  {% if haramoon_entry.product_name_type != blank %}
+                    {{ haramoon_entry.product_name_type }}
+                  {% else %}
+                    {{ product_ref.title }}
+                  {% endif %}
+                </h3>
+              </div>
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  {%- comment -%}
+    Related ingredients: list.metaobject_reference pointing to other ingredient_profile entries.
+    URL pattern for ingredient profile pages: /pages/ingredient-profile/[handle]
+    Use the metaobject .handle property for the URL slug.
+  {%- endcomment -%}
+
+  {% assign has_related_content = false %}
+  {% if metaobject.related_ingredients != blank
+    or metaobject.blog_post != blank
+    or metaobject.page != blank
+    or metaobject.reference != blank %}
+    {% assign has_related_content = true %}
+  {% endif %}
+
+  {% if has_related_content %}
+    <div class="ai-ingredient-resources__section-{{ ai_gen_id }}" id="related-intel">
+      <h2 class="ai-ingredient-resources__heading-{{ ai_gen_id }}">{{ section.settings.related_heading }}</h2>
+
+      <div class="ai-ingredient-resources__related-grid-{{ ai_gen_id }}">
+
+        {% for related_ingredient in metaobject.related_ingredients.value %}
+          {% assign rel_name = related_ingredient.name | default: related_ingredient.handle %}
+          {% if rel_name != blank %}
+            <a href="/pages/ingredient-profile/{{ related_ingredient.handle }}"
+               class="ai-ingredient-resources__related-link-{{ ai_gen_id }}">
+              {{ rel_name }}
+              <svg class="ai-ingredient-resources__arrow-icon-{{ ai_gen_id }}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 8h14M9 2l6 6-6 6"/>
+              </svg>
+            </a>
+          {% endif %}
+        {% endfor %}
+
+        {% if metaobject.blog_post != blank %}
+          <a href="{{ metaobject.blog_post.url }}" class="ai-ingredient-resources__related-link-{{ ai_gen_id }}">
+            Read More: {{ metaobject.blog_post.title }}
+            <svg class="ai-ingredient-resources__arrow-icon-{{ ai_gen_id }}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 8h14M9 2l6 6-6 6"/>
+            </svg>
+          </a>
+        {% endif %}
+
+        {% if metaobject.page != blank %}
+          <a href="{{ metaobject.page.url }}" class="ai-ingredient-resources__related-link-{{ ai_gen_id }}">
+            Learn More: {{ metaobject.page.title }}
+            <svg class="ai-ingredient-resources__arrow-icon-{{ ai_gen_id }}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 8h14M9 2l6 6-6 6"/>
+            </svg>
+          </a>
+        {% endif %}
+
+        {% if metaobject.reference != blank %}
+          {% assign ref_name = metaobject.reference.name | default: metaobject.reference.handle %}
+          <a href="/pages/ingredient-profile/{{ metaobject.reference.handle }}"
+             class="ai-ingredient-resources__related-link-{{ ai_gen_id }}">
+            See Also: {{ ref_name }}
+            <svg class="ai-ingredient-resources__arrow-icon-{{ ai_gen_id }}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 8h14M9 2l6 6-6 6"/>
+            </svg>
+          </a>
+        {% endif %}
+
+      </div>
+    </div>
+  {% endif %}
+
+  {% if metaobject.products_containing == blank and has_related_content == false %}
+    <div class="ai-ingredient-resources__empty-state-{{ ai_gen_id }}">
+      No products or related resources available yet.
+    </div>
+  {% endif %}
+
+</ingredient-resources-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    if (customElements.get('ingredient-resources-{{ ai_gen_id }}')) return;
+
+    class IngredientResources extends HTMLElement {
+      connectedCallback() {
+        this.initScrollBehavior();
+      }
+
+      initScrollBehavior() {
+        const scrollContainer = this.querySelector('.ai-ingredient-resources__products-scroll-{{ ai_gen_id }}');
+        if (!scrollContainer) return;
+
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        scrollContainer.addEventListener('mousedown', (e) => {
+          isDown = true;
+          scrollContainer.style.cursor = 'grabbing';
+          startX = e.pageX - scrollContainer.offsetLeft;
+          scrollLeft = scrollContainer.scrollLeft;
+        });
+
+        scrollContainer.addEventListener('mouseleave', () => {
+          isDown = false;
+          scrollContainer.style.cursor = 'grab';
+        });
+
+        scrollContainer.addEventListener('mouseup', () => {
+          isDown = false;
+          scrollContainer.style.cursor = 'grab';
+        });
+
+        scrollContainer.addEventListener('mousemove', (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - scrollContainer.offsetLeft;
+          const walk = (x - startX) * 2;
+          scrollContainer.scrollLeft = scrollLeft - walk;
+        });
+      }
+    }
+
+    customElements.define('ingredient-resources-{{ ai_gen_id }}', IngredientResources);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Ingredient Resources",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section layout"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Section padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "section_spacing",
+      "min": 20,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Space between sections",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Headings"
+    },
+    {
+      "type": "text",
+      "id": "products_heading",
+      "label": "Products section heading",
+      "default": "Find It In"
+    },
+    {
+      "type": "text",
+      "id": "related_heading",
+      "label": "Related section heading",
+      "default": "Related Intel"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 28
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing",
+      "min": 12,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "label": "Heading bottom spacing",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Product cards"
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "min": 200,
+      "max": 400,
+      "step": 20,
+      "unit": "px",
+      "label": "Card width",
+      "default": 280
+    },
+    {
+      "type": "range",
+      "id": "product_gap",
+      "min": 8,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "label": "Gap between cards",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "color",
+      "id": "card_hover_border_color",
+      "label": "Card hover border",
+      "default": "#0a506d"
+    },
+    {
+      "type": "range",
+      "id": "card_border_width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Card border width",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "product_title_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Product title size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "product_title_color",
+      "label": "Product title color",
+      "default": "#0a506d"
+    },
+    {
+      "type": "header",
+      "content": "Step badge"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg_color",
+      "label": "Badge background",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Related links"
+    },
+    {
+      "type": "range",
+      "id": "related_gap",
+      "min": 8,
+      "max": 24,
+      "step": 4,
+      "unit": "px",
+      "label": "Gap between links",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "link_font_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Link font size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "link_padding_vertical",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Link vertical padding",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "link_padding_horizontal",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "unit": "px",
+      "label": "Link horizontal padding",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "link_bg_color",
+      "label": "Link background",
+      "default": "#efeeec"
+    },
+    {
+      "type": "color",
+      "id": "link_text_color",
+      "label": "Link text",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "link_border_color",
+      "label": "Link border",
+      "default": "#dbe8ff"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_bg_color",
+      "label": "Link hover background",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_text_color",
+      "label": "Link hover text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_border_color",
+      "label": "Link hover border",
+      "default": "#0a506d"
+    },
+    {
+      "type": "range",
+      "id": "link_border_width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Link border width",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "link_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "label": "Link border radius",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Scrollbar"
+    },
+    {
+      "type": "color",
+      "id": "scrollbar_color",
+      "label": "Scrollbar color",
+      "default": "#0a506d"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredient Resources"
+    }
+  ]
+}
+{% endschema %}
