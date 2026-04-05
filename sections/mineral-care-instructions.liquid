@@ -1,0 +1,1080 @@
+{% liquid
+  assign ai_gen_id = section.id | replace: '_', '' | downcase
+  assign pad_top_mobile    = section.settings.section_padding_top | times: 0.7 | round
+  assign pad_horiz_mobile  = section.settings.section_padding_horizontal | times: 0.8 | round
+  assign pad_bottom_mobile = section.settings.section_padding_bottom | times: 0.7 | round
+  assign heading_mobile    = section.settings.heading_size | times: 0.8 | round
+  assign heading_mb_mobile = section.settings.heading_margin_bottom | times: 0.8 | round
+  assign card_pad_mobile   = section.settings.card_padding | times: 0.7 | round
+  assign title_mobile      = section.settings.card_title_size | times: 0.9 | round
+  assign content_mobile    = section.settings.content_size | times: 0.95 | round
+  assign icon_mobile       = section.settings.icon_size | times: 0.85 | round
+  assign icon_svg_mobile   = section.settings.icon_svg_size | times: 0.85 | round
+  assign transition_s      = section.settings.hover_transition_speed | divided_by: 1000.0
+  assign stagger_s         = section.settings.stagger_delay | divided_by: 1000.0
+  assign stagger_2_s       = section.settings.stagger_delay | times: 2 | divided_by: 1000.0
+  assign stagger_3_s       = section.settings.stagger_delay | times: 3 | divided_by: 1000.0
+  assign glow_opacity      = section.settings.hover_glow_opacity | divided_by: 100.0
+  assign icon_glow_opacity = section.settings.icon_glow_opacity | divided_by: 100.0
+  assign icon_scale        = section.settings.icon_hover_scale | divided_by: 100.0
+  assign pulse_scale       = section.settings.warning_pulse_scale | divided_by: 100.0
+  assign gradient_opacity  = section.settings.gradient_opacity | divided_by: 100.0
+  assign icon_border_r     = section.settings.icon_border_radius
+%}
+
+{% style %}
+  .ai-mineral-care-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: {{ section.settings.section_padding_top }}px {{ section.settings.section_padding_horizontal }}px {{ section.settings.section_padding_bottom }}px;
+    background: {{ section.settings.background_gradient }};
+    position: relative;
+    overflow: hidden;
+  }
+
+  {% if section.settings.enable_animated_gradient %}
+  .ai-mineral-care-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(circle at 20% 30%, {{ section.settings.gradient_color_1 }} 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, {{ section.settings.gradient_color_2 }} 0%, transparent 50%);
+    animation: ai-mineral-care-gradient-shift-{{ ai_gen_id }} {{ section.settings.gradient_animation_speed }}s ease-in-out infinite;
+    pointer-events: none;
+    opacity: {{ gradient_opacity }};
+  }
+
+  @keyframes ai-mineral-care-gradient-shift-{{ ai_gen_id }} {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.1); }
+  }
+  {% endif %}
+
+  .ai-mineral-care-container-{{ ai_gen_id }} {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .ai-mineral-care-heading-{{ ai_gen_id }} {
+    font-size: {{ section.settings.heading_size }}px;
+    color: {{ section.settings.heading_color }};
+    text-align: {{ section.settings.heading_alignment }};
+    margin: 0 0 {{ section.settings.heading_margin_bottom }}px;
+    font-weight: {{ section.settings.heading_font_weight }};
+    {% if section.settings.enable_heading_shadow %}
+    text-shadow: 0 2px 10px {{ section.settings.heading_shadow_color }};
+    {% endif %}
+    line-height: {{ section.settings.heading_line_height }};
+  }
+
+  .ai-mineral-care-grid-{{ ai_gen_id }} {
+    display: grid;
+    gap: {{ section.settings.card_gap }}px;
+    opacity: 0;
+    animation: ai-mineral-care-fade-in-{{ ai_gen_id }} 0.8s ease-out forwards;
+  }
+
+  @keyframes ai-mineral-care-fade-in-{{ ai_gen_id }} {
+    to { opacity: 1; }
+  }
+
+  .ai-mineral-care-card-{{ ai_gen_id }} {
+    background: {{ section.settings.card_background }};
+    backdrop-filter: blur({{ section.settings.card_blur }}px);
+    border-radius: {{ section.settings.card_border_radius }}px;
+    padding: {{ section.settings.card_padding }}px;
+    border: {{ section.settings.card_border_width }}px solid {{ section.settings.card_border_color }};
+    box-shadow: {{ section.settings.card_shadow }};
+    position: relative;
+    overflow: hidden;
+    transition: all {{ transition_s }}s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: ai-mineral-care-card-appear-{{ ai_gen_id }} 0.6s ease-out forwards;
+  }
+
+  .ai-mineral-care-card-{{ ai_gen_id }}:nth-child(1) { animation-delay: {{ stagger_s }}s; }
+  .ai-mineral-care-card-{{ ai_gen_id }}:nth-child(2) { animation-delay: {{ stagger_2_s }}s; }
+  .ai-mineral-care-card-{{ ai_gen_id }}:nth-child(3) { animation-delay: {{ stagger_3_s }}s; }
+
+  @keyframes ai-mineral-care-card-appear-{{ ai_gen_id }} {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  {% if section.settings.enable_hover_glow %}
+  .ai-mineral-care-card-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    background: linear-gradient(135deg, var(--ai-mineral-glow-color-{{ ai_gen_id }}, {{ section.settings.hover_glow_color }}), transparent);
+    border-radius: {{ section.settings.card_border_radius }}px;
+    opacity: 0;
+    transition: opacity {{ transition_s }}s ease;
+    z-index: -1;
+  }
+
+  .ai-mineral-care-card-{{ ai_gen_id }}:hover::before {
+    opacity: {{ glow_opacity }};
+  }
+  {% endif %}
+
+  .ai-mineral-care-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-{{ section.settings.hover_lift_distance }}px);
+    box-shadow: {{ section.settings.card_hover_shadow }};
+  }
+
+  {% if section.settings.enable_icon_animation %}
+  .ai-mineral-care-card-{{ ai_gen_id }}:hover .ai-mineral-care-icon-{{ ai_gen_id }} {
+    transform: scale({{ icon_scale }}) rotate({{ section.settings.icon_hover_rotate }}deg);
+  }
+  {% endif %}
+
+  .ai-mineral-care-card-header-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: {{ section.settings.icon_title_gap }}px;
+    margin-bottom: {{ section.settings.header_margin_bottom }}px;
+  }
+
+  .ai-mineral-care-icon-{{ ai_gen_id }} {
+    width: {{ section.settings.icon_size }}px;
+    height: {{ section.settings.icon_size }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: {{ section.settings.icon_background }};
+    border-radius: {{ icon_border_r }}%;
+    flex-shrink: 0;
+    transition: transform {{ transition_s }}s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+
+  {% if section.settings.enable_icon_glow %}
+  .ai-mineral-care-icon-{{ ai_gen_id }}::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: {{ icon_border_r }}%;
+    background: radial-gradient(circle, var(--ai-mineral-glow-color-{{ ai_gen_id }}, {{ section.settings.icon_glow_color }}) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity {{ transition_s }}s ease;
+  }
+
+  .ai-mineral-care-card-{{ ai_gen_id }}:hover .ai-mineral-care-icon-{{ ai_gen_id }}::after {
+    opacity: {{ icon_glow_opacity }};
+  }
+  {% endif %}
+
+  .ai-mineral-care-icon-{{ ai_gen_id }} svg {
+    width: {{ section.settings.icon_svg_size }}px;
+    height: {{ section.settings.icon_svg_size }}px;
+    fill: none;
+    stroke: {{ section.settings.icon_color }};
+    stroke-width: {{ section.settings.icon_stroke_width }};
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    position: relative;
+    z-index: 1;
+  }
+
+  .ai-mineral-care-card-title-{{ ai_gen_id }} {
+    font-size: {{ section.settings.card_title_size }}px;
+    color: {{ section.settings.card_title_color }};
+    margin: 0;
+    font-weight: {{ section.settings.card_title_font_weight }};
+    line-height: {{ section.settings.card_title_line_height }};
+  }
+
+  .ai-mineral-care-content-{{ ai_gen_id }} {
+    font-size: {{ section.settings.content_size }}px;
+    color: {{ section.settings.content_color }};
+    line-height: {{ section.settings.content_line_height }};
+    font-weight: {{ section.settings.content_font_weight }};
+  }
+
+  .ai-mineral-care-content-{{ ai_gen_id }} p { margin: 0; }
+
+  .ai-mineral-care-warning-{{ ai_gen_id }} {
+    background: {{ section.settings.warning_background }};
+    backdrop-filter: blur({{ section.settings.card_blur }}px);
+    border-radius: {{ section.settings.card_border_radius }}px;
+    padding: {{ section.settings.card_padding }}px;
+    border: {{ section.settings.card_border_width }}px solid {{ section.settings.warning_border_color }};
+    box-shadow: {{ section.settings.warning_shadow }};
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: ai-mineral-care-card-appear-{{ ai_gen_id }} 0.6s ease-out {{ stagger_3_s }}s forwards;
+  }
+
+  {% if section.settings.enable_hover_glow %}
+  .ai-mineral-care-warning-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    background: linear-gradient(135deg, {{ section.settings.warning_glow_color }}, transparent);
+    border-radius: {{ section.settings.card_border_radius }}px;
+    opacity: 0;
+    transition: opacity {{ transition_s }}s ease;
+    z-index: -1;
+  }
+
+  .ai-mineral-care-warning-{{ ai_gen_id }}:hover::before {
+    opacity: {{ glow_opacity }};
+  }
+  {% endif %}
+
+  .ai-mineral-care-warning-icon-{{ ai_gen_id }} {
+    font-size: {{ section.settings.warning_emoji_size }}px;
+    margin-right: 4px;
+    display: inline-block;
+    {% if section.settings.enable_warning_pulse %}
+    animation: ai-mineral-care-pulse-{{ ai_gen_id }} {{ section.settings.warning_pulse_speed }}s ease-in-out infinite;
+    {% endif %}
+  }
+
+  @keyframes ai-mineral-care-pulse-{{ ai_gen_id }} {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale({{ pulse_scale }}); }
+  }
+
+  .ai-mineral-care-empty-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 40px 20px;
+    color: {{ section.settings.content_color }};
+    font-size: {{ section.settings.content_size }}px;
+    opacity: 0.6;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-mineral-care-{{ ai_gen_id }} {
+      padding: {{ pad_top_mobile }}px {{ pad_horiz_mobile }}px {{ pad_bottom_mobile }}px;
+    }
+
+    .ai-mineral-care-heading-{{ ai_gen_id }} {
+      font-size: {{ heading_mobile }}px;
+      margin-bottom: {{ heading_mb_mobile }}px;
+    }
+
+    .ai-mineral-care-card-{{ ai_gen_id }},
+    .ai-mineral-care-warning-{{ ai_gen_id }} {
+      padding: {{ card_pad_mobile }}px;
+    }
+
+    .ai-mineral-care-card-title-{{ ai_gen_id }} {
+      font-size: {{ title_mobile }}px;
+    }
+
+    .ai-mineral-care-content-{{ ai_gen_id }} {
+      font-size: {{ content_mobile }}px;
+    }
+
+    .ai-mineral-care-icon-{{ ai_gen_id }} {
+      width: {{ icon_mobile }}px;
+      height: {{ icon_mobile }}px;
+    }
+
+    .ai-mineral-care-icon-{{ ai_gen_id }} svg {
+      width: {{ icon_svg_mobile }}px;
+      height: {{ icon_svg_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+{%- comment -%}
+  On a metaobject template, the current metaobject is accessed via `metaobject`.
+  For the mineral type: metaobject.display_name, metaobject.cleanse, metaobject.recharge,
+  metaobject.safety_notes, metaobject.color (hex color field).
+  The color field value is a hex string like "#920eff" — used directly as a CSS color.
+{%- endcomment -%}
+
+<mineral-care-{{ ai_gen_id }}
+  class="ai-mineral-care-{{ ai_gen_id }}"
+  style="--ai-mineral-glow-color-{{ ai_gen_id }}: {{ metaobject.color | default: section.settings.hover_glow_color }};"
+>
+  <div class="ai-mineral-care-container-{{ ai_gen_id }}">
+    {% if metaobject != blank %}
+      <h2 class="ai-mineral-care-heading-{{ ai_gen_id }}">
+        How to Care for {{ metaobject.display_name | default: 'Your Crystal' }}
+      </h2>
+
+      <div class="ai-mineral-care-grid-{{ ai_gen_id }}">
+
+        {% if metaobject.cleanse != blank %}
+          <div class="ai-mineral-care-card-{{ ai_gen_id }}">
+            <div class="ai-mineral-care-card-header-{{ ai_gen_id }}">
+              <div class="ai-mineral-care-icon-{{ ai_gen_id }}">
+                {% if section.settings.cleanse_icon == 'moon' %}
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                  </svg>
+                {% elsif section.settings.cleanse_icon == 'droplet' %}
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                  </svg>
+                {% else %}
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M3 12h1m16 0h1M12 3v1m0 16v1m6.36-13.36l-.71.71M5.64 18.36l-.71.71m12.73 0l-.71-.71M5.64 5.64l-.71-.71"/>
+                  </svg>
+                {% endif %}
+              </div>
+              <h3 class="ai-mineral-care-card-title-{{ ai_gen_id }}">
+                {{ section.settings.cleanse_title | replace: 'Crystal', metaobject.display_name | default: section.settings.cleanse_title }}
+              </h3>
+            </div>
+            <div class="ai-mineral-care-content-{{ ai_gen_id }}">
+              {{ metaobject.cleanse }}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if metaobject.recharge != blank %}
+          <div class="ai-mineral-care-card-{{ ai_gen_id }}">
+            <div class="ai-mineral-care-card-header-{{ ai_gen_id }}">
+              <div class="ai-mineral-care-icon-{{ ai_gen_id }}">
+                {% if section.settings.recharge_icon == 'sun' %}
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1" x2="12" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                    <line x1="1" y1="12" x2="3" y2="12"/>
+                    <line x1="21" y1="12" x2="23" y2="12"/>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                  </svg>
+                {% elsif section.settings.recharge_icon == 'zap' %}
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                  </svg>
+                {% else %}
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
+                  </svg>
+                {% endif %}
+              </div>
+              <h3 class="ai-mineral-care-card-title-{{ ai_gen_id }}">
+                {{ section.settings.recharge_title | replace: 'Crystal', metaobject.display_name | default: section.settings.recharge_title }}
+              </h3>
+            </div>
+            <div class="ai-mineral-care-content-{{ ai_gen_id }}">
+              {{ metaobject.recharge }}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if metaobject.safety_notes != blank %}
+          <div class="ai-mineral-care-warning-{{ ai_gen_id }}" role="alert">
+            <div class="ai-mineral-care-card-header-{{ ai_gen_id }}">
+              <div class="ai-mineral-care-icon-{{ ai_gen_id }}">
+                {% if section.settings.warning_icon == 'alert-circle' %}
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                {% else %}
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                {% endif %}
+              </div>
+              <h3 class="ai-mineral-care-card-title-{{ ai_gen_id }}">
+                <span class="ai-mineral-care-warning-icon-{{ ai_gen_id }}">{{ section.settings.warning_emoji }}</span>
+                {{ section.settings.warning_title }}
+              </h3>
+            </div>
+            <div class="ai-mineral-care-content-{{ ai_gen_id }}">
+              {{ metaobject.safety_notes }}
+            </div>
+          </div>
+        {% endif %}
+
+      </div>
+    {% else %}
+      <div class="ai-mineral-care-empty-{{ ai_gen_id }}">
+        No care information available for this crystal yet.
+      </div>
+    {% endif %}
+  </div>
+</mineral-care-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    if (customElements.get('mineral-care-{{ ai_gen_id }}')) return;
+
+    class MineralCare extends HTMLElement {
+      connectedCallback() {
+        this.setupScrollAnimation();
+      }
+
+      setupScrollAnimation() {
+        if (!window.IntersectionObserver) return;
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.style.animationPlayState = 'running';
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+
+        const cards = this.querySelectorAll(
+          '.ai-mineral-care-card-{{ ai_gen_id }}, .ai-mineral-care-warning-{{ ai_gen_id }}'
+        );
+        cards.forEach((card) => {
+          card.style.animationPlayState = 'paused';
+          observer.observe(card);
+        });
+      }
+    }
+
+    customElements.define('mineral-care-{{ ai_gen_id }}', MineralCare);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Mineral Care",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 600,
+      "max": 1200,
+      "step": 50,
+      "unit": "px",
+      "label": "Maximum width",
+      "default": 800
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_horizontal",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Horizontal padding",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Background gradient"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background",
+      "default": "linear-gradient(135deg, rgba(255, 251, 244, 0.95) 0%, rgba(221, 237, 255, 0.95) 100%)"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animated_gradient",
+      "label": "Enable animated gradient overlay",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "gradient_color_1",
+      "label": "Gradient color 1",
+      "default": "rgba(255, 215, 0, 0.1)"
+    },
+    {
+      "type": "color",
+      "id": "gradient_color_2",
+      "label": "Gradient color 2",
+      "default": "rgba(0, 173, 255, 0.1)"
+    },
+    {
+      "type": "range",
+      "id": "gradient_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Gradient opacity",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "gradient_animation_speed",
+      "min": 2,
+      "max": 20,
+      "step": 1,
+      "unit": "s",
+      "label": "Animation speed",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "label": "Size",
+      "default": 36
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Color",
+      "default": "#002c60"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "label": "Font weight",
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "heading_line_height",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "label": "Line height (÷10)",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "heading_margin_bottom",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 40
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_heading_shadow",
+      "label": "Enable text shadow",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "heading_shadow_color",
+      "label": "Shadow color",
+      "default": "rgba(0, 173, 255, 0.2)"
+    },
+    {
+      "type": "header",
+      "content": "Cards"
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "label": "Gap between cards",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "min": 12,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 20
+    },
+    {
+      "type": "color_background",
+      "id": "card_background",
+      "label": "Background",
+      "default": "rgba(255, 255, 255, 0.7)"
+    },
+    {
+      "type": "range",
+      "id": "card_blur",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Backdrop blur",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "card_border_width",
+      "min": 0,
+      "max": 6,
+      "step": 1,
+      "unit": "px",
+      "label": "Border width",
+      "default": 2
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Border color",
+      "default": "rgba(0, 173, 255, 0.2)"
+    },
+    {
+      "type": "text",
+      "id": "card_shadow",
+      "label": "Shadow",
+      "default": "0 8px 32px rgba(0, 44, 96, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8)"
+    },
+    {
+      "type": "text",
+      "id": "card_hover_shadow",
+      "label": "Hover shadow",
+      "default": "0 12px 48px rgba(0, 44, 96, 0.15), 0 0 20px rgba(0, 173, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.9)"
+    },
+    {
+      "type": "header",
+      "content": "Card titles"
+    },
+    {
+      "type": "range",
+      "id": "card_title_size",
+      "min": 14,
+      "max": 36,
+      "step": 2,
+      "unit": "px",
+      "label": "Size",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "card_title_color",
+      "label": "Color",
+      "default": "#002c60"
+    },
+    {
+      "type": "range",
+      "id": "card_title_font_weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "label": "Font weight",
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "card_title_line_height",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "label": "Line height (÷10)",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "header_margin_bottom",
+      "min": 8,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "label": "Header bottom margin",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Card content"
+    },
+    {
+      "type": "range",
+      "id": "content_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "content_color",
+      "label": "Color",
+      "default": "#002c60"
+    },
+    {
+      "type": "range",
+      "id": "content_font_weight",
+      "min": 300,
+      "max": 700,
+      "step": 100,
+      "label": "Font weight",
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "content_line_height",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "label": "Line height (÷10)",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Icons"
+    },
+    {
+      "type": "select",
+      "id": "cleanse_icon",
+      "label": "Cleanse icon",
+      "options": [
+        { "value": "droplet", "label": "Water droplet" },
+        { "value": "moon", "label": "Moon" },
+        { "value": "sparkles", "label": "Sparkles" }
+      ],
+      "default": "droplet"
+    },
+    {
+      "type": "text",
+      "id": "cleanse_title",
+      "label": "Cleanse title",
+      "default": "Cleansing Your Crystal"
+    },
+    {
+      "type": "select",
+      "id": "recharge_icon",
+      "label": "Recharge icon",
+      "options": [
+        { "value": "sun", "label": "Sun" },
+        { "value": "zap", "label": "Lightning bolt" },
+        { "value": "crystal", "label": "Crystal" }
+      ],
+      "default": "sun"
+    },
+    {
+      "type": "text",
+      "id": "recharge_title",
+      "label": "Recharge title",
+      "default": "Recharging Your Crystal"
+    },
+    {
+      "type": "select",
+      "id": "warning_icon",
+      "label": "Warning icon",
+      "options": [
+        { "value": "alert-triangle", "label": "Triangle" },
+        { "value": "alert-circle", "label": "Circle" }
+      ],
+      "default": "alert-triangle"
+    },
+    {
+      "type": "text",
+      "id": "warning_title",
+      "label": "Warning title",
+      "default": "Safety Notes"
+    },
+    {
+      "type": "text",
+      "id": "warning_emoji",
+      "label": "Warning emoji",
+      "default": "⚠️"
+    },
+    {
+      "type": "range",
+      "id": "warning_emoji_size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Warning emoji size",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 32,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Icon container size",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "icon_svg_size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Icon graphic size",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "icon_border_radius",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "%",
+      "label": "Icon border radius",
+      "default": 50
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#00adff"
+    },
+    {
+      "type": "range",
+      "id": "icon_stroke_width",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "label": "Icon stroke width",
+      "default": 2
+    },
+    {
+      "type": "color_background",
+      "id": "icon_background",
+      "label": "Icon background",
+      "default": "linear-gradient(135deg, rgba(0, 173, 255, 0.15), rgba(255, 215, 0, 0.15))"
+    },
+    {
+      "type": "range",
+      "id": "icon_title_gap",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "unit": "px",
+      "label": "Gap between icon and title",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Hover effects"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_hover_glow",
+      "label": "Enable hover glow",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "hover_glow_color",
+      "label": "Hover glow color (fallback)",
+      "default": "rgba(0, 173, 255, 0.3)"
+    },
+    {
+      "type": "range",
+      "id": "hover_glow_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Hover glow opacity",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "hover_lift_distance",
+      "min": 0,
+      "max": 16,
+      "step": 2,
+      "unit": "px",
+      "label": "Hover lift distance",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "hover_transition_speed",
+      "min": 100,
+      "max": 1000,
+      "step": 50,
+      "unit": "ms",
+      "label": "Transition speed",
+      "default": 400
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_icon_animation",
+      "label": "Enable icon animation on hover",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "icon_hover_scale",
+      "min": 100,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "label": "Icon hover scale",
+      "default": 110
+    },
+    {
+      "type": "range",
+      "id": "icon_hover_rotate",
+      "min": 0,
+      "max": 45,
+      "step": 5,
+      "unit": "deg",
+      "label": "Icon hover rotation",
+      "default": 5
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_icon_glow",
+      "label": "Enable icon glow on hover",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "icon_glow_color",
+      "label": "Icon glow color",
+      "default": "rgba(0, 173, 255, 0.4)"
+    },
+    {
+      "type": "range",
+      "id": "icon_glow_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Icon glow opacity",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "range",
+      "id": "stagger_delay",
+      "min": 0,
+      "max": 500,
+      "step": 50,
+      "unit": "ms",
+      "label": "Card stagger delay",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Warning box"
+    },
+    {
+      "type": "color_background",
+      "id": "warning_background",
+      "label": "Background",
+      "default": "linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 248, 167, 0.2))"
+    },
+    {
+      "type": "color",
+      "id": "warning_border_color",
+      "label": "Border color",
+      "default": "rgba(255, 215, 0, 0.4)"
+    },
+    {
+      "type": "text",
+      "id": "warning_shadow",
+      "label": "Shadow",
+      "default": "0 8px 32px rgba(255, 215, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6)"
+    },
+    {
+      "type": "color",
+      "id": "warning_glow_color",
+      "label": "Hover glow color",
+      "default": "rgba(255, 215, 0, 0.3)"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_warning_pulse",
+      "label": "Enable emoji pulse animation",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "warning_pulse_speed",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "s",
+      "label": "Pulse speed",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "warning_pulse_scale",
+      "min": 100,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "label": "Pulse scale",
+      "default": 110
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mineral Care"
+    }
+  ]
+}
+{% endschema %}
