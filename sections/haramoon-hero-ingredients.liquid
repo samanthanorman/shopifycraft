@@ -1,0 +1,580 @@
+{% liquid
+  # Unique ID for this section instance
+  assign sec_id = section.id | replace: '_', '' | downcase
+
+  # Dual-context: works on haramoon_101 metaobject template AND HARAMOON product pages
+  # On metaobject template: metaobject IS the haramoon_101 entry
+  # On product page: product.metafields.custom.haramoon is the linked haramoon_101 entry
+  assign h101 = nil
+  if metaobject != blank and metaobject.system.type.name == 'haramoon_101'
+    assign h101 = metaobject
+  elsif product != blank
+    assign h101 = product.metafields.custom.haramoon.value
+  endif
+
+  # Resolve ingredient lists
+  assign active_ingredients = nil
+  assign ingredient_profiles = nil
+  if h101 != blank
+    assign active_ingredients = h101.active_ingredients.value
+    assign ingredient_profiles = h101.ingredient_profile.value
+  endif
+
+  # Max ingredients to show (0 = show all)
+  assign max_count = section.settings.max_ingredients
+%}
+
+{% style %}
+  .hhi-wrap-{{ sec_id }} {
+    padding: {{ section.settings.section_padding }}px 20px;
+    background-color: {{ section.settings.color_scheme.background }};
+    color: {{ section.settings.color_scheme.text }};
+  }
+
+  .hhi-container-{{ sec_id }} {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .hhi-header-{{ sec_id }} {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .hhi-title-{{ sec_id }} {
+    color: {{ section.settings.color_scheme.text }};
+    font-size: {{ section.settings.title_size }}px;
+    font-weight: 600;
+    margin: 0 0 16px;
+    line-height: 1.2;
+  }
+
+  .hhi-subtext-{{ sec_id }} {
+    color: {{ section.settings.color_scheme.text }};
+    font-size: {{ section.settings.subtext_size }}px;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+    opacity: 0.8;
+  }
+
+  .hhi-expand-btn-{{ sec_id }} {
+    display: block;
+    margin: 0 auto 32px;
+    padding: 12px 32px;
+    background-color: {{ section.settings.color_scheme.button }};
+    color: {{ section.settings.color_scheme.button_label }};
+    border: none;
+    border-radius: 40px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .hhi-expand-btn-{{ sec_id }}:hover {
+    opacity: 0.85;
+    transform: translateY(-2px);
+  }
+
+  .hhi-grid-{{ sec_id }} {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: {{ section.settings.card_spacing }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .hhi-grid-{{ sec_id }} {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .hhi-grid-{{ sec_id }} {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .hhi-card-{{ sec_id }} {
+    background: linear-gradient(
+      180deg,
+      {{ section.settings.gradient_start }} 0%,
+      {{ section.settings.gradient_end }} 100%
+    );
+    border-radius: {{ section.settings.border_radius }}px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .hhi-card-{{ sec_id }}:hover {
+    transform: translateY(-{{ section.settings.hover_lift }}px);
+    box-shadow: 0 {{ section.settings.hover_lift }}px {{ section.settings.hover_lift | times: 2 }}px {{ section.settings.glow_color }};
+  }
+
+  .hhi-acc-header-{{ sec_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: {{ section.settings.card_padding }}px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .hhi-acc-heading-{{ sec_id }} {
+    color: {{ section.settings.heading_color }};
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.4;
+    flex-grow: 1;
+  }
+
+  .hhi-acc-icon-{{ sec_id }} {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+    color: {{ section.settings.heading_color }};
+  }
+
+  .hhi-acc-icon-{{ sec_id }}.active {
+    transform: rotate(180deg);
+  }
+
+  .hhi-acc-body-{{ sec_id }} {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+
+  .hhi-acc-body-{{ sec_id }}.active {
+    max-height: 2000px;
+  }
+
+  .hhi-acc-inner-{{ sec_id }} {
+    padding: 0 {{ section.settings.card_padding }}px {{ section.settings.card_padding }}px;
+  }
+
+  .hhi-field-{{ sec_id }} {
+    margin-bottom: 14px;
+  }
+
+  .hhi-field-{{ sec_id }}:last-child {
+    margin-bottom: 0;
+  }
+
+  .hhi-field-label-{{ sec_id }} {
+    color: {{ section.settings.field_label_color }};
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 4px;
+  }
+
+  .hhi-field-value-{{ sec_id }} {
+    color: {{ section.settings.field_value_color }};
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .hhi-view-link-{{ sec_id }} {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 8px 20px;
+    background-color: {{ section.settings.color_scheme.button }};
+    color: {{ section.settings.color_scheme.button_label }};
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .hhi-view-link-{{ sec_id }}:hover {
+    opacity: 0.8;
+  }
+
+  .hhi-empty-{{ sec_id }} {
+    text-align: center;
+    padding: 60px 20px;
+    color: {{ section.settings.color_scheme.text }};
+    opacity: 0.5;
+    font-size: 16px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .hhi-title-{{ sec_id }} {
+      font-size: {{ section.settings.title_size | times: 80 | divided_by: 100 }}px;
+    }
+    .hhi-acc-heading-{{ sec_id }} {
+      font-size: 18px;
+    }
+  }
+{% endstyle %}
+
+<haramoon-hero-ingredients-{{ sec_id }}
+  class="hhi-wrap-{{ sec_id }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="hhi-container-{{ sec_id }}">
+
+    {% if section.settings.section_title != blank or section.settings.section_subtext != blank %}
+      <div class="hhi-header-{{ sec_id }}">
+        {% if section.settings.section_title != blank %}
+          <h2 class="hhi-title-{{ sec_id }}">{{ section.settings.section_title }}</h2>
+        {% endif %}
+        {% if section.settings.section_subtext != blank %}
+          <div class="hhi-subtext-{{ sec_id }}">{{ section.settings.section_subtext }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if h101 != blank %}
+      {% liquid
+        assign has_active = false
+        assign has_profiles = false
+        if active_ingredients != blank and active_ingredients.size > 0
+          assign has_active = true
+        endif
+        if ingredient_profiles != blank and ingredient_profiles.size > 0
+          assign has_profiles = true
+        endif
+      %}
+
+      {% if has_active or has_profiles %}
+
+        <button class="hhi-expand-btn-{{ sec_id }}" data-expand-all>
+          {{ section.settings.expand_btn_label | default: 'Expand All Ingredients' }}
+        </button>
+
+        <div class="hhi-grid-{{ sec_id }}">
+
+          {% comment %} --- active_ingredients list (references to ingredient_profile metaobjects) --- {% endcomment %}
+          {% if has_active %}
+            {% assign ai_count = 0 %}
+            {% for item in active_ingredients %}
+              {% if max_count > 0 and ai_count >= max_count %}{% break %}{% endif %}
+              {% assign item_name = item.name %}
+              {% if item_name == blank %}{% assign item_name = item.title %}{% endif %}
+              {% if item_name == blank %}{% assign item_name = item.handle %}{% endif %}
+              {% if item_name != blank %}
+                {% assign ai_count = ai_count | plus: 1 %}
+                <div class="hhi-card-{{ sec_id }}">
+                  <div class="hhi-acc-header-{{ sec_id }}" data-acc-trigger role="button" tabindex="0" aria-expanded="false">
+                    <h3 class="hhi-acc-heading-{{ sec_id }}">{{ item_name }}</h3>
+                    <svg class="hhi-acc-icon-{{ sec_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </div>
+                  <div class="hhi-acc-body-{{ sec_id }}" data-acc-body>
+                    <div class="hhi-acc-inner-{{ sec_id }}">
+                      {% if item.main_function != blank %}
+                        <div class="hhi-field-{{ sec_id }}">
+                          <div class="hhi-field-label-{{ sec_id }}">Main Function</div>
+                          <div class="hhi-field-value-{{ sec_id }}">{{ item.main_function }}</div>
+                        </div>
+                      {% endif %}
+                      {% if item.description != blank %}
+                        <div class="hhi-field-{{ sec_id }}">
+                          <div class="hhi-field-label-{{ sec_id }}">About</div>
+                          <div class="hhi-field-value-{{ sec_id }}">{{ item.description }}</div>
+                        </div>
+                      {% endif %}
+                      {% if item.skin_benefits != blank %}
+                        <div class="hhi-field-{{ sec_id }}">
+                          <div class="hhi-field-label-{{ sec_id }}">Skin Benefits</div>
+                          <div class="hhi-field-value-{{ sec_id }}">{{ item.skin_benefits }}</div>
+                        </div>
+                      {% endif %}
+                      {% comment %} Link to ingredient_profile metaobject page {% endcomment %}
+                      {% assign ing_url = '/pages/ingredient-profile/' | append: item.handle %}
+                      <a href="{{ ing_url }}" class="hhi-view-link-{{ sec_id }}">
+                        View full ingredient profile →
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+
+          {% comment %} --- ingredient_profile list (direct ingredient_profile metaobject references) --- {% endcomment %}
+          {% if has_profiles %}
+            {% assign ip_count = 0 %}
+            {% for entry in ingredient_profiles %}
+              {% if max_count > 0 and ip_count >= max_count %}{% break %}{% endif %}
+              {% assign entry_name = entry.name %}
+              {% if entry_name != blank %}
+                {% assign ip_count = ip_count | plus: 1 %}
+                <div class="hhi-card-{{ sec_id }}">
+                  <div class="hhi-acc-header-{{ sec_id }}" data-acc-trigger role="button" tabindex="0" aria-expanded="false">
+                    <h3 class="hhi-acc-heading-{{ sec_id }}">{{ entry_name }}</h3>
+                    <svg class="hhi-acc-icon-{{ sec_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </div>
+                  <div class="hhi-acc-body-{{ sec_id }}" data-acc-body>
+                    <div class="hhi-acc-inner-{{ sec_id }}">
+                      {% if entry.main_function != blank %}
+                        <div class="hhi-field-{{ sec_id }}">
+                          <div class="hhi-field-label-{{ sec_id }}">Main Function</div>
+                          <div class="hhi-field-value-{{ sec_id }}">{{ entry.main_function }}</div>
+                        </div>
+                      {% endif %}
+                      {% if entry.description != blank %}
+                        <div class="hhi-field-{{ sec_id }}">
+                          <div class="hhi-field-label-{{ sec_id }}">About</div>
+                          <div class="hhi-field-value-{{ sec_id }}">{{ entry.description }}</div>
+                        </div>
+                      {% endif %}
+                      {% if entry.skin_benefits != blank %}
+                        <div class="hhi-field-{{ sec_id }}">
+                          <div class="hhi-field-label-{{ sec_id }}">Skin Benefits</div>
+                          <div class="hhi-field-value-{{ sec_id }}">{{ entry.skin_benefits }}</div>
+                        </div>
+                      {% endif %}
+                      {% comment %} Link to ingredient_profile metaobject page {% endcomment %}
+                      {% assign ing_url = '/pages/ingredient-profile/' | append: entry.handle %}
+                      <a href="{{ ing_url }}" class="hhi-view-link-{{ sec_id }}">
+                        View full ingredient profile →
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+
+        </div>
+
+      {% else %}
+        <div class="hhi-empty-{{ sec_id }}">No ingredient data found on this HARAMOON_101 entry yet.</div>
+      {% endif %}
+
+    {% else %}
+      <div class="hhi-empty-{{ sec_id }}">
+        {% if product != blank %}
+          Connect a HARAMOON_101 metaobject to this product via the <code>custom.haramoon</code> metafield.
+        {% else %}
+          Add this section to a HARAMOON_101 metaobject template or a HARAMOON product page.
+        {% endif %}
+      </div>
+    {% endif %}
+
+  </div>
+</haramoon-hero-ingredients-{{ sec_id }}>
+
+<script>
+(function() {
+  if (customElements.get('haramoon-hero-ingredients-{{ sec_id }}')) return;
+  class HaramoonHeroIngredients extends HTMLElement {
+    connectedCallback() {
+      this.querySelectorAll('[data-acc-trigger]').forEach(trigger => {
+        trigger.addEventListener('click', () => this.toggle(trigger));
+        trigger.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.toggle(trigger); }
+        });
+      });
+
+      const expandBtn = this.querySelector('[data-expand-all]');
+      if (expandBtn) {
+        expandBtn.addEventListener('click', () => {
+          this.querySelectorAll('[data-acc-body]').forEach(body => {
+            body.classList.add('active');
+          });
+          this.querySelectorAll('.hhi-acc-icon-{{ sec_id }}').forEach(icon => {
+            icon.classList.add('active');
+          });
+          this.querySelectorAll('[data-acc-trigger]').forEach(t => {
+            t.setAttribute('aria-expanded', 'true');
+          });
+        });
+      }
+    }
+
+    toggle(trigger) {
+      const body = trigger.nextElementSibling;
+      const icon = trigger.querySelector('svg');
+      const open = body.classList.contains('active');
+      body.classList.toggle('active', !open);
+      icon && icon.classList.toggle('active', !open);
+      trigger.setAttribute('aria-expanded', String(!open));
+    }
+  }
+  customElements.define('haramoon-hero-ingredients-{{ sec_id }}', HaramoonHeroIngredients);
+})();
+</script>
+
+{% schema %}
+{
+  "name": "HARAMOON Ingredients",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_title",
+      "label": "Title",
+      "default": "Hero Ingredients"
+    },
+    {
+      "type": "richtext",
+      "id": "section_subtext",
+      "label": "Subtext",
+      "default": "<p>Discover the powerful ingredients that make this formula exceptional</p>"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "subtext_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtext size",
+      "default": 16
+    },
+    {
+      "type": "text",
+      "id": "expand_btn_label",
+      "label": "Expand button text",
+      "default": "Expand All Ingredients"
+    },
+    {
+      "type": "header",
+      "content": "Color scheme"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Card colors"
+    },
+    {
+      "type": "color",
+      "id": "gradient_start",
+      "label": "Card gradient start",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "gradient_end",
+      "label": "Card gradient end",
+      "default": "#87CEEB"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Ingredient name color",
+      "default": "#002c60"
+    },
+    {
+      "type": "color",
+      "id": "field_label_color",
+      "label": "Field label color",
+      "default": "#002c60"
+    },
+    {
+      "type": "color",
+      "id": "field_value_color",
+      "label": "Field value color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "glow_color",
+      "label": "Hover glow color",
+      "default": "#FFFF00"
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Card padding",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "hover_lift",
+      "min": 2,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Hover lift distance",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "card_spacing",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Card spacing",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "label": "Section top/bottom padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "max_ingredients",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "label": "Max ingredients to show (0 = show all)",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "HARAMOON Ingredients"
+    }
+  ]
+}
+{% endschema %}
