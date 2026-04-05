@@ -9,6 +9,35 @@
  */
 {
   "sections": {
+    "1775428752abb8c182": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_9b6f401_DDJhnt": {
+          "type": "ai_gen_block_9b6f401",
+          "settings": {
+            "glossary_label": "Ingredient Glossary",
+            "glossary_url": "",
+            "breadcrumb_font_size": 13,
+            "breadcrumb_text_color": "#666666",
+            "breadcrumb_link_color": "#333333",
+            "show_back_button": true,
+            "button_label": "Back to Ingredient Glossary",
+            "button_bg_color": "#00b7ff",
+            "button_text_color": "#FFFFFF",
+            "button_font_size": "medium",
+            "button_border_radius": 4,
+            "button_alignment": "center",
+            "desktop_width_percent": 100,
+            "section_padding": 20
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_9b6f401_DDJhnt"
+      ],
+      "settings": {}
+    },
     "ingredient_profile_hero_cmEeGc": {
       "type": "ingredient-profile-hero",
       "name": "Ingredient Hero",
@@ -17,14 +46,14 @@
         "heading_color": "#00b4ff",
         "heading_size": 48,
         "show_origin_badge": true,
-        "badge_background": "#f7ddf3ff",
+        "badge_background": "#f7ddf3",
         "badge_text_active": "#ffffff",
         "badge_background_inactive": "#d4d4d4",
         "badge_text_inactive": "#02151d",
         "overview_heading": "Overview",
         "show_categories": true,
         "benefits_heading": "Key Benefits",
-        "benefits_card_background": "#f7ddf3ff",
+        "benefits_card_background": "#f7ddf3",
         "benefits_text_size": 16,
         "text_color": "#0a506d",
         "body_text_size": 16,
@@ -56,6 +85,7 @@
     }
   },
   "order": [
+    "1775428752abb8c182",
     "ingredient_profile_hero_cmEeGc",
     "ingredient_profile_detail",
     "ingredient-comparison"
