@@ -82,12 +82,33 @@
         "padding_top": 72,
         "padding_bottom": 72
       }
+    },
+    "ingredient_suitability_safety_gxaqeM": {
+      "type": "ingredient-suitability-safety",
+      "name": "Suitability & Safety",
+      "settings": {
+        "good_for_heading": "Good For",
+        "safety_heading": "Safety & Cautions",
+        "badge_skin_bg": "#f7ddf3",
+        "badge_effect_bg": "#fff3e0",
+        "badge_text_size": 13,
+        "badge_gap": 10,
+        "safety_card_bg": "#fffbf0",
+        "border_color": "#ffd54f",
+        "safety_text_size": 15,
+        "text_color": "#006ac7",
+        "section_padding": 40,
+        "section_spacing": 32,
+        "show_pore_clogging": false,
+        "pore_clogging_label": "Potentially pore clogging?"
+      }
     }
   },
   "order": [
     "1775428752abb8c182",
     "ingredient_profile_hero_cmEeGc",
     "ingredient_profile_detail",
-    "ingredient-comparison"
+    "ingredient-comparison",
+    "ingredient_suitability_safety_gxaqeM"
   ]
 }
