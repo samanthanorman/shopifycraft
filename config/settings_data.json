@@ -16,7 +16,7 @@
     "heading_scale": 120,
     "type_body_font": "poppins_n4",
     "body_scale": 120,
-    "page_width": 1500,
+    "page_width": 1200,
     "spacing_sections": 12,
     "spacing_grid_horizontal": 40,
     "spacing_grid_vertical": 12,
@@ -184,12 +184,12 @@
       },
       "scheme-2": {
         "settings": {
-          "background": "#063c7f",
+          "background": "#2f6ebc",
           "background_gradient": "radial-gradient(rgba(201, 217, 255, 1), rgba(253, 250, 240, 1) 62%)",
           "text": "#0d1b3e",
-          "button": "#a7b4d4",
-          "button_label": "#0d1b3e",
-          "secondary_button_label": "#8690aa",
+          "button": "#2f6ebc",
+          "button_label": "#fdfaf0",
+          "secondary_button_label": "#1e497e",
           "shadow": "#f7ddf3"
         }
       },
