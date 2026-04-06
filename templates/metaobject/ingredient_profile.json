@@ -70,6 +70,7 @@
     },
     "ingredient-comparison": {
       "type": "ingredient-comparison",
+      "disabled": true,
       "settings": {
         "eyebrow": "How Does It Compare?",
         "subheading": "See how this ingredient stacks up against similar actives — and whether you can use them together.",
@@ -182,10 +183,6 @@
         "padding_top": 40,
         "padding_bottom": 52
       }
-    },
-    "177543047397834956": {
-      "type": "_blocks",
-      "settings": {}
     },
     "featured_collection_zBUa3Y": {
       "type": "featured-collection",
@@ -348,7 +345,6 @@
     "ingredient_suitability_safety_gxaqeM",
     "ingredient_resources_Eqydyd",
     "rich_text_cd4t4c",
-    "177543047397834956",
     "featured_collection_zBUa3Y",
     "blocks_UM4hW4",
     "newsletter_BAz6HG",

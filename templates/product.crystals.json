@@ -70,38 +70,10 @@
             "current_color": "#999999"
           },
           "blocks": {}
-        },
-        "ai_gen_block_38e2ec8_hmQHCg": {
-          "type": "ai_gen_block_38e2ec8",
-          "settings": {
-            "section_title": "Crystal Identity",
-            "button_text": "Explore this crystal",
-            "max_width": 900,
-            "background_color": "#f5f0e8",
-            "top_border_color": "#0d1b3e",
-            "section_title_color": "#0d1b3e",
-            "heading_color": "#3c3c3a",
-            "caption_color": "#67479a",
-            "card_background": "#e8d5d0",
-            "card_border_color": "#ffffff14",
-            "card_hover_background": "#ffffff0f",
-            "card_hover_border": "#f7ffe8",
-            "label_color": "#67479a",
-            "value_color": "#643d6a",
-            "glow_size": 20,
-            "glow_color": "#f7ffe8",
-            "button_background": "#00d4ff",
-            "button_text_color": "#ffffff",
-            "button_ripple_color": "#ffffff4d",
-            "button_glow_size": 30,
-            "button_glow_color": "#00d4ff99"
-          },
-          "blocks": {}
         }
       },
       "block_order": [
-        "ai_gen_block_6c2c06d_FJhDTF",
-        "ai_gen_block_38e2ec8_hmQHCg"
+        "ai_gen_block_6c2c06d_FJhDTF"
       ],
       "name": "Breadcrumb navigation",
       "settings": {}
@@ -215,7 +187,7 @@
       ],
       "settings": {
         "enable_sticky_info": true,
-        "color_scheme": "scheme-3",
+        "color_scheme": "scheme-1",
         "media_size": "large",
         "constrain_to_viewport": true,
         "media_fit": "contain",
@@ -232,8 +204,82 @@
     "177516040783efe939": {
       "type": "_blocks",
       "blocks": {
+        "ai_gen_block_38e2ec8_FFh6in": {
+          "type": "ai_gen_block_38e2ec8",
+          "settings": {
+            "section_title": "Crystal Identity",
+            "button_text": "",
+            "max_width": 900,
+            "background_color": "#fdfaf0",
+            "top_border_color": "#0d1b3e",
+            "section_title_color": "#0d1b3e",
+            "heading_color": "#3c3c3a",
+            "caption_color": "#67479a",
+            "card_background": "#f7ddf3",
+            "card_border_color": "#ffffff14",
+            "card_hover_background": "#ffffff0f",
+            "card_hover_border": "#f7ffe8",
+            "label_color": "#67479a",
+            "value_color": "#643d6a",
+            "glow_size": 20,
+            "glow_color": "#f7ffe8",
+            "button_background": "#00d4ff",
+            "button_text_color": "#ffffff",
+            "button_ripple_color": "#ffffff4d",
+            "button_glow_size": 30,
+            "button_glow_color": "#00d4ff99"
+          },
+          "blocks": {}
+        },
+        "ai_gen_block_bf691b8_tXUMCL": {
+          "type": "ai_gen_block_bf691b8",
+          "settings": {
+            "show_title": true,
+            "section_title": "Crystal Care & FAQ",
+            "title_font": "raleway_n4",
+            "title_size": 34,
+            "title_color": "#0d1b3e",
+            "title_alignment": "left",
+            "title_spacing": 24,
+            "section_background": "#ffffff",
+            "desktop_width_percent": 75,
+            "section_padding_top": 40,
+            "section_padding_bottom": 40,
+            "section_padding_horizontal": 20,
+            "show_cleanse": true,
+            "cleanse_label": "How to cleanse",
+            "show_recharge": true,
+            "recharge_label": "How to recharge",
+            "show_safety_notes": true,
+            "safety_notes_label": "Safety notes",
+            "show_faq": true,
+            "accent_color": "#fdfaf0",
+            "row_background": "#7c85e2",
+            "row_hover_background": "#f7ffe8",
+            "row_padding": 24,
+            "row_gap": 0,
+            "accordion_spacing": 16,
+            "top_border_thickness": 2,
+            "active_border_thickness": 4,
+            "divider_thickness": 1,
+            "divider_color": "#e5e7eb",
+            "question_font": "poppins_n5",
+            "question_size": 19,
+            "question_color": "#fdfaf0",
+            "question_hover_color": "#8e479a",
+            "chevron_size": 20,
+            "answer_font": "raleway_n3",
+            "answer_size": 16,
+            "answer_color": "#67479a",
+            "enable_glow": true,
+            "glow_intensity": 8,
+            "enable_schema": true
+          },
+          "blocks": {}
+        },
         "ai_gen_block_ea5878f_pKfhkV": {
           "type": "ai_gen_block_ea5878f",
+          "disabled": true,
           "settings": {
             "section_title": "The Energy Within {{ closest.product.metafields.custom.crystal.value.display_name.value }}",
             "desktop_width_percent": 75,
@@ -251,19 +297,19 @@
             "label_letter_spacing": 1,
             "value_size": 18,
             "value_line_height": 1.6,
-            "background_color": "#F9FAFB",
+            "background_color": "#f9fafb",
             "block_background": "rgba(0,0,0,0)",
-            "block_hover_background": "rgba(0, 102, 255, 0.02)",
+            "block_hover_background": "#0066ff05",
             "mineral_name_color": "#0d1b3e",
             "section_title_color": "#666666",
             "label_color": "#67479a",
             "value_color": "#666666",
-            "accent_color": "#0066FF",
-            "divider_color": "#E5E7EB",
+            "accent_color": "#0066ff",
+            "divider_color": "#e5e7eb",
             "top_border_thickness": 1,
             "divider_thickness": 1,
             "enable_hover_effect": true,
-            "hover_border_color": "#0066FF",
+            "hover_border_color": "#0066ff",
             "hover_border_thickness": 3,
             "hover_shift": 4,
             "hover_transition_speed": 0.3
@@ -272,9 +318,49 @@
         }
       },
       "block_order": [
+        "ai_gen_block_38e2ec8_FFh6in",
+        "ai_gen_block_bf691b8_tXUMCL",
         "ai_gen_block_ea5878f_pKfhkV"
       ],
       "settings": {}
+    },
+    "17751636993a291ea4": {
+      "type": "_blocks",
+      "settings": {}
+    },
+    "newsletter_6BJFNF": {
+      "type": "newsletter",
+      "blocks": {
+        "heading_DiNNPd": {
+          "type": "heading",
+          "settings": {
+            "heading": "Subscribe to our emails",
+            "heading_size": "h1"
+          }
+        },
+        "paragraph_MyJiqC": {
+          "type": "paragraph",
+          "settings": {
+            "text": "<p>Be the first to know about new collections and exclusive offers.</p>"
+          }
+        },
+        "email_form_G9BUgy": {
+          "type": "email_form",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "heading_DiNNPd",
+        "paragraph_MyJiqC",
+        "email_form_G9BUgy"
+      ],
+      "name": "t:sections.newsletter.presets.name",
+      "settings": {
+        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
     },
     "related_crystals": {
       "type": "related-products",
@@ -284,7 +370,7 @@
         "products_to_show": 4,
         "columns_desktop": 4,
         "columns_mobile": "2",
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-1",
         "image_ratio": "square",
         "image_shape": "default",
         "show_secondary_image": true,
@@ -296,6 +382,7 @@
     },
     "crystal_blog": {
       "type": "featured-blog",
+      "disabled": true,
       "settings": {
         "blog": "crystals-science-magic",
         "post_limit": 3,
@@ -317,6 +404,8 @@
     "blocks_JgmYaQ",
     "main",
     "177516040783efe939",
+    "17751636993a291ea4",
+    "newsletter_6BJFNF",
     "related_crystals",
     "crystal_blog"
   ]
