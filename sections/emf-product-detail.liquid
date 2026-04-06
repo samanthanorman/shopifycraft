@@ -576,7 +576,7 @@
 
   /* ── BLOCK PADDING ── */
   .emfp-block {
-    padding: {{ section.settings.block_padding | default: 60 }}px 0;
+    padding: {{ section.settings.block_padding | default: 40 }}px 0;
     border-top: 1px solid var(--emfp-border);
   }
 </style>
@@ -687,11 +687,11 @@
         <div class="emfp-features">
           <p class="emfp-features__title">Key Features</p>
           <ul class="emfp-feature-list">
-            {%- if kf1 -%}<li class="emfp-feature-item">{{ kf1.value }}</li>{%- endif -%}
-            {%- if kf2 -%}<li class="emfp-feature-item">{{ kf2.value }}</li>{%- endif -%}
-            {%- if kf3 -%}<li class="emfp-feature-item">{{ kf3.value }}</li>{%- endif -%}
-            {%- if kf4 -%}<li class="emfp-feature-item">{{ kf4.value }}</li>{%- endif -%}
-            {%- if kf5 -%}<li class="emfp-feature-item">{{ kf5.value }}</li>{%- endif -%}
+            {%- if kf1 -%}<li class="emfp-feature-item">{{ kf1 }}</li>{%- endif -%}
+            {%- if kf2 -%}<li class="emfp-feature-item">{{ kf2 }}</li>{%- endif -%}
+            {%- if kf3 -%}<li class="emfp-feature-item">{{ kf3 }}</li>{%- endif -%}
+            {%- if kf4 -%}<li class="emfp-feature-item">{{ kf4 }}</li>{%- endif -%}
+            {%- if kf5 -%}<li class="emfp-feature-item">{{ kf5 }}</li>{%- endif -%}
             {%- unless kf1 -%}
               {%- if key_features -%}
                 {%- for item in key_features.value.children -%}
@@ -821,8 +821,10 @@
 
   {%- comment -%} ── FAQ ── {%- endcomment -%}
   {%- if section.settings.show_faq -%}
+  {%- comment -%} Try product-level faq metaobject first, fall back to global faq_group filter {%- endcomment -%}
+  {%- assign product_faq = p.metafields.custom.faq.value -%}
   {%- assign emf_faqs = shop.metaobjects.faq_group.values | where: "category", "EMF Protection" -%}
-  {%- if emf_faqs.size > 0 -%}
+  {%- if product_faq or emf_faqs.size > 0 -%}
   <div class="emfp-block">
     <div class="emfp-section">
       <div class="emfp-block-header">
@@ -831,15 +833,59 @@
         <p class="emfp-block-subtitle">{{ section.settings.faq_subtitle | default: 'Straight answers to the questions we get asked most.' }}</p>
       </div>
       <div class="emfp-faq-list">
-        {%- for faq in emf_faqs limit: 8 -%}
-        <details class="emfp-faq-item">
-          <summary class="emfp-faq-q">
-            {{ faq.question }}
-            <span class="emfp-faq-chevron">▶</span>
-          </summary>
-          <div class="emfp-faq-a">{{ faq.answer }}</div>
-        </details>
-        {%- endfor -%}
+        {%- if product_faq -%}
+          {%- comment -%} Product has a linked faq metaobject — render its questions/answers {%- endcomment -%}
+          {%- for qa in product_faq.questions_and_answers.value limit: 10 -%}
+          <details class="emfp-faq-item">
+            <summary class="emfp-faq-q">
+              {{ qa.question }}
+              <span class="emfp-faq-chevron">▶</span>
+            </summary>
+            <div class="emfp-faq-a">{{ qa.answer }}</div>
+          </details>
+          {%- endfor -%}
+          {%- comment -%} Also try flat question/answer fields on the faq metaobject {%- endcomment -%}
+          {%- if product_faq.question_1 -%}
+          <details class="emfp-faq-item">
+            <summary class="emfp-faq-q">{{ product_faq.question_1 }}<span class="emfp-faq-chevron">▶</span></summary>
+            <div class="emfp-faq-a">{{ product_faq.answer_1 }}</div>
+          </details>
+          {%- endif -%}
+          {%- if product_faq.question_2 -%}
+          <details class="emfp-faq-item">
+            <summary class="emfp-faq-q">{{ product_faq.question_2 }}<span class="emfp-faq-chevron">▶</span></summary>
+            <div class="emfp-faq-a">{{ product_faq.answer_2 }}</div>
+          </details>
+          {%- endif -%}
+          {%- if product_faq.question_3 -%}
+          <details class="emfp-faq-item">
+            <summary class="emfp-faq-q">{{ product_faq.question_3 }}<span class="emfp-faq-chevron">▶</span></summary>
+            <div class="emfp-faq-a">{{ product_faq.answer_3 }}</div>
+          </details>
+          {%- endif -%}
+          {%- if product_faq.question_4 -%}
+          <details class="emfp-faq-item">
+            <summary class="emfp-faq-q">{{ product_faq.question_4 }}<span class="emfp-faq-chevron">▶</span></summary>
+            <div class="emfp-faq-a">{{ product_faq.answer_4 }}</div>
+          </details>
+          {%- endif -%}
+          {%- if product_faq.question_5 -%}
+          <details class="emfp-faq-item">
+            <summary class="emfp-faq-q">{{ product_faq.question_5 }}<span class="emfp-faq-chevron">▶</span></summary>
+            <div class="emfp-faq-a">{{ product_faq.answer_5 }}</div>
+          </details>
+          {%- endif -%}
+        {%- elsif emf_faqs.size > 0 -%}
+          {%- for faq in emf_faqs limit: 8 -%}
+          <details class="emfp-faq-item">
+            <summary class="emfp-faq-q">
+              {{ faq.question }}
+              <span class="emfp-faq-chevron">▶</span>
+            </summary>
+            <div class="emfp-faq-a">{{ faq.answer }}</div>
+          </details>
+          {%- endfor -%}
+        {%- endif -%}
       </div>
     </div>
   </div>
@@ -947,7 +993,7 @@
     { "type": "range", "id": "section_padding_bottom", "label": "Bottom Padding", "min": 0, "max": 120, "step": 8, "unit": "px", "default": 40 },
     { "type": "range", "id": "side_padding", "label": "Side Padding", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 24 },
     { "type": "range", "id": "main_gap", "label": "Media / Info Gap", "min": 16, "max": 100, "step": 4, "unit": "px", "default": 48 },
-    { "type": "range", "id": "block_padding", "label": "Section Block Padding", "min": 20, "max": 120, "step": 4, "unit": "px", "default": 60 },
+    { "type": "range", "id": "block_padding", "label": "Section Block Padding", "min": 20, "max": 120, "step": 4, "unit": "px", "default": 40 },
 
     { "type": "header", "content": "── EYEBROW ─────────────────────────────" },
     { "type": "text", "id": "eyebrow", "label": "Product Eyebrow Text", "default": "WAX | WANE — EMF PROTECTION _" },
