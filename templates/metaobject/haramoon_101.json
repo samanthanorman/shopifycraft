@@ -9,11 +9,6 @@
  */
 {
   "sections": {
-    "blocks_8rXDae": {
-      "type": "_blocks",
-      "name": "Metaobject breadcrumb",
-      "settings": {}
-    },
     "featured_product_WRY6Kg": {
       "type": "featured-product",
       "blocks": {
@@ -121,52 +116,6 @@
         "padding_bottom": 72
       }
     },
-    "17755012467027b215": {
-      "type": "_blocks",
-      "blocks": {
-        "ai_gen_block_dea7a09_KWEwgA": {
-          "type": "ai_gen_block_dea7a09",
-          "settings": {
-            "header_bg_color": "#f4e4d7",
-            "headline": "The Science Behind HARAMOON",
-            "headline_color": "#000000",
-            "headline_font_size": 36,
-            "subtitle": "Understanding the K-Beauty Difference Compared to Western Formulas",
-            "subtitle_color": "#333333",
-            "subtitle_font_size": 16,
-            "header_padding_top": 48,
-            "header_padding_bottom": 48,
-            "card_bg_color": "#ffffff",
-            "card_border_radius": 12,
-            "card_padding": 40,
-            "card_margin_top": -32,
-            "divider_color": "#e0e0e0",
-            "label_color": "#666666",
-            "label_font_size": 11,
-            "heading_color": "#000000",
-            "heading_font_size": 22,
-            "body_color": "#333333",
-            "body_font_size": 15,
-            "section_max_width": 1200,
-            "section_outer_padding": 24,
-            "col1_label": "THE PROBLEM",
-            "col1_heading": "Weak Barrier",
-            "col1_body": "Compromised skin barrier leads to moisture loss, sensitivity, and visible signs of aging.",
-            "col2_label": "THE SCIENCE",
-            "col2_heading": "HARAMOON's Proprietary Approach",
-            "col2_body": "HARAMOON's proprietary K-Beauty ingredients rebuild the skin's protective barrier, restore lipid balance, and signal deep cellular repair — without the harsh actives found in Western formulas.",
-            "col3_label": "THE RESULT",
-            "col3_heading": "Glass Skin",
-            "col3_body": "Plump, luminous, resilient skin with improved texture and long-lasting hydration."
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_dea7a09_KWEwgA"
-      ],
-      "settings": {}
-    },
     "page_LDRjA9": {
       "type": "page",
       "disabled": true,
@@ -177,40 +126,6 @@
         "color_scheme": "scheme-5",
         "padding_top": 40,
         "padding_bottom": 4
-      }
-    },
-    "hm_ingredient_heroes_L8rtGh": {
-      "type": "hm-ingredient-heroes",
-      "name": "Ingredient Heroes",
-      "settings": {
-        "eyebrow": "What's Inside",
-        "title": "Ingredient Heroes in This Formula",
-        "subtitle": "Tap any ingredient to explore its full profile.",
-        "header_align": "center",
-        "header_gap": 28,
-        "title_size": 24,
-        "subtitle_size": 14,
-        "pill_font_size": 13,
-        "max_width": 900,
-        "padding_top": 48,
-        "padding_bottom": 48,
-        "side_padding": 20,
-        "pill_gap": 12,
-        "pill_padding_v": 14,
-        "pill_padding_h": 16,
-        "pill_radius": 40,
-        "pill_min_height": 52,
-        "bg_color": "#f8faff",
-        "title_color": "#141615",
-        "subtitle_color": "#53585a",
-        "accent_color": "#3498ff",
-        "accent_color_2": "#a78bfa",
-        "pill_bg": "#ffffff",
-        "pill_hover_bg": "#eff6ff",
-        "pill_border": "#e5e7eb",
-        "pill_text_color": "#1e3a8a",
-        "glass_highlight": "#ffffff",
-        "shadow_color": "#141615"
       }
     },
     "blocks_EYAJgJ": {
@@ -325,12 +240,9 @@
     }
   },
   "order": [
-    "blocks_8rXDae",
     "featured_product_WRY6Kg",
     "hm_how_to_layer_EfFEHQ",
-    "17755012467027b215",
     "page_LDRjA9",
-    "hm_ingredient_heroes_L8rtGh",
     "blocks_EYAJgJ",
     "featured_blog_LQA93x",
     "newsletter_HGwxHL"
