@@ -360,6 +360,24 @@
         "padding_bottom": 36
       }
     },
+    "featured_blog_K99Fgf": {
+      "type": "featured-blog",
+      "name": "t:sections.featured-blog.presets.name",
+      "settings": {
+        "blog": "crystals-science-magic",
+        "post_limit": 3,
+        "heading": "Blog posts",
+        "heading_size": "h1",
+        "columns_desktop": 3,
+        "show_view_all": true,
+        "show_image": true,
+        "show_date": true,
+        "show_author": false,
+        "color_scheme": "scheme-3",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
     "newsletter_E4rqTB": {
       "type": "newsletter",
       "blocks": {
@@ -408,6 +426,7 @@
     "mineral_care_instructions_gkpnzn",
     "crystal_pairs_well_with_x7h6Pb",
     "featured_collection_TBczHD",
+    "featured_blog_K99Fgf",
     "newsletter_E4rqTB",
     "1775206862f6267651"
   ]
