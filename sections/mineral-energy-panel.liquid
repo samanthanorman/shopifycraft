@@ -1,0 +1,694 @@
+{% liquid
+  assign sec_id = section.id | replace: '_', '' | downcase
+
+  # Field presence checks
+  assign has_energy      = false
+  assign has_history     = false
+  assign has_modern      = false
+  assign has_grid        = false
+  assign has_pairing     = false
+
+  if metaobject.energy_properties != blank and metaobject.energy_properties.value != blank
+    assign has_energy = true
+  endif
+  if metaobject.history != blank and metaobject.history.value != blank
+    assign has_history = true
+  endif
+  if metaobject.modern_or_scientific_use != blank and metaobject.modern_or_scientific_use.value != blank
+    assign has_modern = true
+  endif
+  if metaobject.grid_design_or_feng_shui_setup != blank and metaobject.grid_design_or_feng_shui_setup.value != blank
+    assign has_grid = true
+  endif
+  if metaobject.best_to_pair_with != blank and metaobject.best_to_pair_with.value != blank and metaobject.best_to_pair_with.value.size > 0
+    assign has_pairing = true
+  endif
+
+  # Pre-compute mobile sizes
+  assign mobile_title_size    = section.settings.title_size | times: 85 | divided_by: 100
+  assign mobile_block_pv      = section.settings.block_padding_vertical | times: 80 | divided_by: 100
+  assign mobile_block_ph      = section.settings.block_padding_horizontal | times: 75 | divided_by: 100
+  assign mobile_hover_pl      = mobile_block_ph | minus: section.settings.hover_border_thickness
+  assign mobile_pairing_pv    = section.settings.pairing_padding_vertical | times: 75 | divided_by: 100
+  assign mobile_pairing_pb    = section.settings.pairing_padding_bottom | times: 80 | divided_by: 100
+  assign mobile_title_pt      = section.settings.title_padding_top | times: 80 | divided_by: 100
+  assign mobile_title_pb      = section.settings.title_padding_bottom | times: 80 | divided_by: 100
+  assign hover_pl             = section.settings.block_padding_horizontal | minus: section.settings.hover_border_thickness
+
+  # line_height: stored as integer (10–20), divide by 10 at render
+  assign lh = section.settings.text_line_height | divided_by: 10.0
+  assign label_ls = section.settings.label_letter_spacing | divided_by: 10.0
+%}
+
+{% style %}
+  .mep-{{ sec_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ section.settings.background_color }};
+    border-top: {{ section.settings.top_border_thickness }}px solid {{ section.settings.accent_color }};
+    padding: 0;
+  }
+
+  .mep-container-{{ sec_id }} {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .mep-title-{{ sec_id }} {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: {{ section.settings.title_size }}px;
+    color: {{ section.settings.accent_color }};
+    text-align: center;
+    padding: {{ section.settings.title_padding_top }}px 20px {{ section.settings.title_padding_bottom }}px;
+    margin: 0;
+  }
+
+  /* ── 2-column grid ── */
+  .mep-columns-{{ sec_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-bottom: {{ section.settings.divider_thickness }}px solid {{ section.settings.divider_color }};
+  }
+
+  .mep-col-{{ sec_id }} {
+    padding: 0;
+  }
+
+  .mep-col-{{ sec_id }}:first-child {
+    border-right: {{ section.settings.divider_thickness }}px solid {{ section.settings.divider_color }};
+  }
+
+  .mep-col-header-{{ sec_id }} {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: {{ section.settings.col_header_size }}px;
+    color: {{ section.settings.accent_color }};
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: {{ section.settings.block_padding_vertical }}px {{ section.settings.block_padding_horizontal }}px {{ section.settings.block_padding_vertical | divided_by: 2 }}px;
+    border-bottom: {{ section.settings.divider_thickness }}px solid {{ section.settings.divider_color }};
+    margin: 0;
+  }
+
+  /* ── Individual content blocks ── */
+  .mep-block-{{ sec_id }} {
+    padding: {{ section.settings.block_padding_vertical }}px {{ section.settings.block_padding_horizontal }}px;
+    border-bottom: {{ section.settings.divider_thickness }}px solid {{ section.settings.divider_color }};
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease, border-left 0.3s ease, padding-left 0.3s ease;
+  }
+
+  .mep-block-{{ sec_id }}:last-child {
+    border-bottom: none;
+  }
+
+  .mep-block-{{ sec_id }}.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .mep-block-{{ sec_id }}:hover {
+    border-left: {{ section.settings.hover_border_thickness }}px solid {{ section.settings.accent_color }};
+    padding-left: {{ hover_pl }}px;
+  }
+
+  .mep-label-{{ sec_id }} {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: {{ section.settings.label_size }}px;
+    text-transform: uppercase;
+    letter-spacing: {{ label_ls }}em;
+    color: {{ section.settings.accent_color }};
+    margin: 0 0 {{ section.settings.label_spacing }}px 0;
+  }
+
+  .mep-text-{{ sec_id }} {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: {{ section.settings.text_size }}px;
+    line-height: {{ lh }};
+    color: {{ section.settings.text_color }};
+    margin: 0;
+  }
+
+  /* ── Pairs Well With — centered ── */
+  .mep-pairing-{{ sec_id }} {
+    padding: {{ section.settings.pairing_padding_vertical }}px {{ section.settings.block_padding_horizontal }}px {{ section.settings.pairing_padding_bottom }}px;
+  }
+
+  .mep-pairing-title-{{ sec_id }} {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: {{ section.settings.label_size }}px;
+    text-transform: uppercase;
+    letter-spacing: {{ label_ls }}em;
+    color: {{ section.settings.accent_color }};
+    text-align: center;
+    margin: 0 0 {{ section.settings.pairing_title_spacing }}px 0;
+  }
+
+  /* Centered flex — wraps and centers any number of cards */
+  .mep-pairing-cards-{{ sec_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: {{ section.settings.card_gap }}px;
+  }
+
+  .mep-pairing-card-{{ sec_id }} {
+    flex-shrink: 0;
+    min-width: {{ section.settings.card_min_width }}px;
+    padding: {{ section.settings.card_padding_vertical }}px {{ section.settings.card_padding_horizontal }}px;
+    background-color: {{ section.settings.card_background }};
+    border: {{ section.settings.card_border_thickness }}px solid {{ section.settings.accent_color }};
+    border-radius: {{ section.settings.card_border_radius }}px;
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .mep-pairing-card-{{ sec_id }}:hover {
+    transform: translateY(-{{ section.settings.card_hover_lift }}px);
+    box-shadow: 0 {{ section.settings.card_hover_lift }}px {{ section.settings.card_hover_lift | times: 3 }}px {{ section.settings.card_shadow_color }};
+  }
+
+  .mep-pairing-card-label-{{ sec_id }} {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 400;
+    font-size: {{ section.settings.card_text_size }}px;
+    color: {{ section.settings.accent_color }};
+    margin: 0;
+    text-align: center;
+  }
+
+  /* ── Mobile ── */
+  @media screen and (max-width: 749px) {
+    .mep-columns-{{ sec_id }} {
+      grid-template-columns: 1fr;
+    }
+    .mep-col-{{ sec_id }}:first-child {
+      border-right: none;
+      border-bottom: {{ section.settings.divider_thickness }}px solid {{ section.settings.divider_color }};
+    }
+    .mep-title-{{ sec_id }} {
+      font-size: {{ mobile_title_size }}px;
+      padding: {{ mobile_title_pt }}px 20px {{ mobile_title_pb }}px;
+    }
+    .mep-block-{{ sec_id }} {
+      padding: {{ mobile_block_pv }}px {{ mobile_block_ph }}px;
+    }
+    .mep-block-{{ sec_id }}:hover {
+      padding-left: {{ mobile_hover_pl }}px;
+    }
+    .mep-pairing-{{ sec_id }} {
+      padding: {{ mobile_pairing_pv }}px {{ mobile_block_ph }}px {{ mobile_pairing_pb }}px;
+    }
+  }
+{% endstyle %}
+
+<mineral-energy-panel-{{ sec_id }}
+  class="mep-{{ sec_id }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="mep-container-{{ sec_id }}">
+
+    {% if section.settings.section_title != blank %}
+      <h2 class="mep-title-{{ sec_id }}">{{ section.settings.section_title }}</h2>
+    {% endif %}
+
+    {%- comment -%}
+      2-column layout:
+      LEFT  (Physical)  → History, Modern & Scientific Use
+      RIGHT (Metaphysical) → Energy Properties, Grid Design & Feng Shui
+    {%- endcomment -%}
+
+    <div class="mep-columns-{{ sec_id }}">
+
+      {%- comment -%} ── LEFT COLUMN: Physical ── {%- endcomment -%}
+      <div class="mep-col-{{ sec_id }}">
+        <h3 class="mep-col-header-{{ sec_id }}">{{ section.settings.left_col_label | default: 'Physical' }}</h3>
+
+        {% if has_history %}
+          <div class="mep-block-{{ sec_id }}" data-mep-block>
+            <div class="mep-label-{{ sec_id }}">History</div>
+            <div class="mep-text-{{ sec_id }}">{{ metaobject.history.value }}</div>
+          </div>
+        {% endif %}
+
+        {% if has_modern %}
+          <div class="mep-block-{{ sec_id }}" data-mep-block>
+            <div class="mep-label-{{ sec_id }}">Modern &amp; Scientific Use</div>
+            <div class="mep-text-{{ sec_id }}">{{ metaobject.modern_or_scientific_use.value }}</div>
+          </div>
+        {% endif %}
+
+        {% unless has_history or has_modern %}
+          <div class="mep-block-{{ sec_id }}" style="opacity:1;transform:none;">
+            <div class="mep-text-{{ sec_id }}" style="opacity:0.4;font-style:italic;">No physical data yet.</div>
+          </div>
+        {% endunless %}
+      </div>
+
+      {%- comment -%} ── RIGHT COLUMN: Metaphysical ── {%- endcomment -%}
+      <div class="mep-col-{{ sec_id }}">
+        <h3 class="mep-col-header-{{ sec_id }}">{{ section.settings.right_col_label | default: 'Metaphysical' }}</h3>
+
+        {% if has_energy %}
+          <div class="mep-block-{{ sec_id }}" data-mep-block>
+            <div class="mep-label-{{ sec_id }}">Energy Properties</div>
+            <div class="mep-text-{{ sec_id }}">{{ metaobject.energy_properties.value }}</div>
+          </div>
+        {% endif %}
+
+        {% if has_grid %}
+          <div class="mep-block-{{ sec_id }}" data-mep-block>
+            <div class="mep-label-{{ sec_id }}">Grid Design &amp; Feng Shui</div>
+            <div class="mep-text-{{ sec_id }}">{{ metaobject.grid_design_or_feng_shui_setup.value }}</div>
+          </div>
+        {% endif %}
+
+        {% unless has_energy or has_grid %}
+          <div class="mep-block-{{ sec_id }}" style="opacity:1;transform:none;">
+            <div class="mep-text-{{ sec_id }}" style="opacity:0.4;font-style:italic;">No metaphysical data yet.</div>
+          </div>
+        {% endunless %}
+      </div>
+
+    </div>{%- comment -%} end .mep-columns {%- endcomment -%}
+
+    {%- comment -%} ── PAIRS WELL WITH — centered ── {%- endcomment -%}
+    {% if has_pairing %}
+      <div class="mep-pairing-{{ sec_id }}">
+        <div class="mep-pairing-title-{{ sec_id }}">{{ section.settings.pairing_label | default: 'Pairs Well With' }}</div>
+        <div class="mep-pairing-cards-{{ sec_id }}">
+          {% for item in metaobject.best_to_pair_with.value %}
+            {% assign item_name = item.display_name.value %}
+            {% if item_name == blank %}{% assign item_name = item.display_name %}{% endif %}
+            {% if item_name == blank %}{% assign item_name = item.handle %}{% endif %}
+            <a
+              href="/pages/crystals/{{ item.system.handle }}"
+              class="mep-pairing-card-{{ sec_id }}"
+            >
+              <p class="mep-pairing-card-label-{{ sec_id }}">{{ item_name }}</p>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+</mineral-energy-panel-{{ sec_id }}>
+
+<script>
+(function() {
+  if (customElements.get('mineral-energy-panel-{{ sec_id }}')) return;
+  class MineralEnergyPanel extends HTMLElement {
+    connectedCallback() {
+      const blocks = this.querySelectorAll('[data-mep-block]');
+      if (!blocks.length) return;
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+          if (entry.isIntersecting) {
+            const idx = Array.from(blocks).indexOf(entry.target);
+            setTimeout(() => entry.target.classList.add('visible'), idx * 100);
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      blocks.forEach(b => obs.observe(b));
+    }
+  }
+  customElements.define('mineral-energy-panel-{{ sec_id }}', MineralEnergyPanel);
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Mineral Energy Panel",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section title"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Title",
+      "default": "Crystal Energy & Properties"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "title_padding_top",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Title top padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "title_padding_bottom",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Title bottom padding",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Column labels"
+    },
+    {
+      "type": "text",
+      "id": "left_col_label",
+      "label": "Left column heading",
+      "default": "Physical"
+    },
+    {
+      "type": "text",
+      "id": "right_col_label",
+      "label": "Right column heading",
+      "default": "Metaphysical"
+    },
+    {
+      "type": "range",
+      "id": "col_header_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Column heading size",
+      "default": 13
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "label": "Maximum width",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "top_border_thickness",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "label": "Top border thickness",
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Content blocks"
+    },
+    {
+      "type": "range",
+      "id": "block_padding_vertical",
+      "min": 12,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Block vertical padding",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "block_padding_horizontal",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Block horizontal padding",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "divider_thickness",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Divider thickness",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "hover_border_thickness",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "label": "Hover left border thickness",
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "Label text"
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Label size",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "label_letter_spacing",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "label": "Label letter spacing (divide by 10 = em value, e.g. 10 = 1.0em)",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "label_spacing",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Label bottom spacing",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Body text"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "text_line_height",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "label": "Text line height (divide by 10, e.g. 16 = 1.6)",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Pairs Well With section"
+    },
+    {
+      "type": "text",
+      "id": "pairing_label",
+      "label": "Section label",
+      "default": "Pairs Well With"
+    },
+    {
+      "type": "range",
+      "id": "pairing_padding_vertical",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "pairing_padding_bottom",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "pairing_title_spacing",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Label bottom spacing",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Card gap",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Pairing cards"
+    },
+    {
+      "type": "range",
+      "id": "card_min_width",
+      "min": 80,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Card minimum width",
+      "default": 160
+    },
+    {
+      "type": "range",
+      "id": "card_padding_vertical",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Card vertical padding",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_padding_horizontal",
+      "min": 12,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Card horizontal padding",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_border_thickness",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Card border thickness",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "card_hover_lift",
+      "min": 2,
+      "max": 16,
+      "step": 2,
+      "unit": "px",
+      "label": "Card hover lift",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "card_text_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Card text size",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent (labels, borders, headings)",
+      "default": "#0066FF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Body text",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider",
+      "default": "#E5E7EB"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "card_shadow_color",
+      "label": "Card hover shadow",
+      "default": "#b3d1ff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mineral Energy Panel"
+    }
+  ]
+}
+{% endschema %}
