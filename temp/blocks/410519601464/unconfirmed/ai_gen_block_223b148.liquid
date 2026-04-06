@@ -1,6 +1,271 @@
+{% doc %}
+  @prompt
+    Build a complete Shopify Liquid section called "SEO Breadcrumb" that displays a breadcrumb navigation trail for Google Search Console structured data recognition. This section should work on any page type: regular pages, blog articles, product pages, collection pages, and metaobject pages.
+    
+    STRUCTURED DATA (most important requirement):
+    - Output a JSON-LD script tag in the section with schema.org BreadcrumbList structured data
+    - The JSON-LD must include @context "https://schema.org", @type "BreadcrumbList", and itemListElement array
+    - Each breadcrumb item must have @type "ListItem", position (1, 2, 3...), name, and item (full absolute URL)
+    - The full URL must use shop.url prepended to the relative path so it is always absolute (e.g. https://waxandwane.store/products/wooden-brush-perfect-size)
+    - This is what Google Search Console reads — it must be valid JSON-LD
+    
+    BREADCRUMB LOGIC — detect page type and build the trail automatically:
+    - On ALL pages: first crumb is always "Home" linking to /
+    - On a PRODUCT page: Home › [Collection Title if available] › [Product Title] — use product.title and product.url; if product.collections is not empty use product.collections.first.title and product.collections.first.url
+    - On a COLLECTION page: Home › [Collection Title]
+    - On a PAGE template: Home › [Page Title]
+    - On a BLOG ARTICLE page: Home › [Blog Title] › [Article Title]
+    - On a METAOBJECT page: Home › [customizable middle label from settings] › [metaobject.display_name]
+    - Use Liquid conditionals on request.page_type to handle each case
+    
+    VISUAL BREADCRUMB DISPLAY:
+    - Render a visible HTML breadcrumb trail
+    - Links separated by › chevron character
+    - Last crumb (current page) is plain text, not a link
+    - Small font size (13px default), muted color
+    - Left-aligned, transparent background
+    
+    SECTION SETTINGS (schema):
+    - show_breadcrumb — checkbox — label "Show visible breadcrumb" — default true — info "Google structured data always outputs regardless of this toggle"
+    - metaobject_parent_label — text — label "Metaobject parent label" — default "Ingredient Glossary"
+    - metaobject_parent_url — text — label "Metaobject parent URL" — default "/pages/ingredient-glossary"
+    - text_color — color — label "Text color" — default #888888
+    - link_color — color — label "Link color" — default #555555
+    - font_size — range — min 10 max 18 step 1 — label "Font size (px)" — default 13
+    - padding_top — range — min 0 max 60 step 4 — label "Padding top" — default 16
+    - padding_bottom — range — min 0 max 60 step 4 — label "Padding bottom" — default 8
+    
+    Output a complete working .liquid section file with all HTML, the JSON-LD script tag, scoped CSS, and a valid {% schema %} block. Write every line of actual working Liquid code — no placeholder comments.
+{% enddoc %}
+{% liquid
+  assign breadcrumb_items = ''
+  assign position = 1
+  assign home_item = '{"@type":"ListItem","position":1,"name":"Home","item":"' | append: shop.url | append: '"}'
+  assign breadcrumb_items = home_item
+  assign position = 2
+%}
+
+{% if request.page_type == 'product' %}
+  {% liquid
+    if product.collections.size > 0
+      assign collection = product.collections.first
+      assign collection_item = '{"@type":"ListItem","position":' | append: position | append: ',"name":"' | append: collection.title | json | append: '","item":"' | append: shop.url | append: collection.url | append: '"}'
+      assign breadcrumb_items = breadcrumb_items | append: ',' | append: collection_item
+      assign position = position | plus: 1
+    endif
+    assign product_item = '{"@type":"ListItem","position":' | append: position | append: ',"name":"' | append: product.title | json | append: '","item":"' | append: shop.url | append: product.url | append: '"}'
+    assign breadcrumb_items = breadcrumb_items | append: ',' | append: product_item
+  %}
+{% elsif request.page_type == 'collection' %}
+  {% liquid
+    assign collection_item = '{"@type":"ListItem","position":' | append: position | append: ',"name":"' | append: collection.title | json | append: '","item":"' | append: shop.url | append: collection.url | append: '"}'
+    assign breadcrumb_items = breadcrumb_items | append: ',' | append: collection_item
+  %}
+{% elsif request.page_type == 'page' %}
+  {% liquid
+    assign page_item = '{"@type":"ListItem","position":' | append: position | append: ',"name":"' | append: page.title | json | append: '","item":"' | append: shop.url | append: page.url | append: '"}'
+    assign breadcrumb_items = breadcrumb_items | append: ',' | append: page_item
+  %}
+{% elsif request.page_type == 'article' %}
+  {% liquid
+    assign blog_item = '{"@type":"ListItem","position":' | append: position | append: ',"name":"' | append: blog.title | json | append: '","item":"' | append: shop.url | append: blog.url | append: '"}'
+    assign breadcrumb_items = breadcrumb_items | append: ',' | append: blog_item
+    assign position = position | plus: 1
+    assign article_item = '{"@type":"ListItem","position":' | append: position | append: ',"name":"' | append: article.title | json | append: '","item":"' | append: shop.url | append: article.url | append: '"}'
+    assign breadcrumb_items = breadcrumb_items | append: ',' | append: article_item
+  %}
+{% elsif request.page_type == 'metaobject' %}
+  {% liquid
+    if section.settings.metaobject_parent_label != blank and section.settings.metaobject_parent_url != blank
+      assign parent_item = '{"@type":"ListItem","position":' | append: position | append: ',"name":"' | append: section.settings.metaobject_parent_label | json | append: '","item":"' | append: shop.url | append: section.settings.metaobject_parent_url | append: '"}'
+      assign breadcrumb_items = breadcrumb_items | append: ',' | append: parent_item
+      assign position = position | plus: 1
+    endif
+    if metaobject.display_name != blank
+      assign metaobject_item = '{"@type":"ListItem","position":' | append: position | append: ',"name":"' | append: metaobject.display_name | json | append: '","item":"' | append: shop.url | append: request.path | append: '"}'
+      assign breadcrumb_items = breadcrumb_items | append: ',' | append: metaobject_item
+    endif
+  %}
+{% endif %}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{{ breadcrumb_items }}]
+}
+</script>
+
+{% if section.settings.show_breadcrumb %}
+  {% style %}
+    .seo-breadcrumb-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+      background-color: transparent;
+    }
+
+    .seo-breadcrumb-container-{{ section.id }} {
+      max-width: {{ settings.page_width }}px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .seo-breadcrumb-nav-{{ section.id }} {
+      font-size: {{ section.settings.font_size }}px;
+      color: {{ section.settings.text_color }};
+      line-height: 1.5;
+    }
+
+    .seo-breadcrumb-nav-{{ section.id }} a {
+      color: {{ section.settings.link_color }};
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .seo-breadcrumb-nav-{{ section.id }} a:hover {
+      opacity: 0.7;
+    }
+
+    .seo-breadcrumb-separator-{{ section.id }} {
+      margin: 0 8px;
+      color: {{ section.settings.text_color }};
+      opacity: 0.5;
+    }
+
+    .seo-breadcrumb-current-{{ section.id }} {
+      color: {{ section.settings.text_color }};
+    }
+  {% endstyle %}
+
+  <div class="seo-breadcrumb-{{ section.id }}">
+    <div class="seo-breadcrumb-container-{{ section.id }}">
+      <nav class="seo-breadcrumb-nav-{{ section.id }}" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+
+        {% if request.page_type == 'product' %}
+          {% if product.collections.size > 0 %}
+            {% assign collection = product.collections.first %}
+            <span class="seo-breadcrumb-separator-{{ section.id }}" aria-hidden="true">›</span>
+            <a href="{{ collection.url }}">{{ collection.title }}</a>
+          {% endif %}
+          <span class="seo-breadcrumb-separator-{{ section.id }}" aria-hidden="true">›</span>
+          <span class="seo-breadcrumb-current-{{ section.id }}" aria-current="page">{{ product.title }}</span>
+
+        {% elsif request.page_type == 'collection' %}
+          <span class="seo-breadcrumb-separator-{{ section.id }}" aria-hidden="true">›</span>
+          <span class="seo-breadcrumb-current-{{ section.id }}" aria-current="page">{{ collection.title }}</span>
+
+        {% elsif request.page_type == 'page' %}
+          <span class="seo-breadcrumb-separator-{{ section.id }}" aria-hidden="true">›</span>
+          <span class="seo-breadcrumb-current-{{ section.id }}" aria-current="page">{{ page.title }}</span>
+
+        {% elsif request.page_type == 'article' %}
+          <span class="seo-breadcrumb-separator-{{ section.id }}" aria-hidden="true">›</span>
+          <a href="{{ blog.url }}">{{ blog.title }}</a>
+          <span class="seo-breadcrumb-separator-{{ section.id }}" aria-hidden="true">›</span>
+          <span class="seo-breadcrumb-current-{{ section.id }}" aria-current="page">{{ article.title }}</span>
+
+        {% elsif request.page_type == 'metaobject' %}
+          {% if section.settings.metaobject_parent_label != blank and section.settings.metaobject_parent_url != blank %}
+            <span class="seo-breadcrumb-separator-{{ section.id }}" aria-hidden="true">›</span>
+            <a href="{{ section.settings.metaobject_parent_url }}">{{ section.settings.metaobject_parent_label }}</a>
+          {% endif %}
+          {% if metaobject.display_name != blank %}
+            <span class="seo-breadcrumb-separator-{{ section.id }}" aria-hidden="true">›</span>
+            <span class="seo-breadcrumb-current-{{ section.id }}" aria-current="page">{{ metaobject.display_name }}</span>
+          {% endif %}
+        {% endif %}
+      </nav>
+    </div>
+  </div>
+{% endif %}
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "SEO breadcrumb",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Visibility"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Show visible breadcrumb",
+      "default": true,
+      "info": "Google structured data always outputs regardless of this toggle"
+    },
+    {
+      "type": "header",
+      "content": "Metaobject pages"
+    },
+    {
+      "type": "text",
+      "id": "metaobject_parent_label",
+      "label": "Metaobject parent label",
+      "default": "Ingredient Glossary"
+    },
+    {
+      "type": "text",
+      "id": "metaobject_parent_url",
+      "label": "Metaobject parent URL",
+      "default": "/pages/ingredient-glossary"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#888888"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#555555"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 13
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "SEO breadcrumb"
+    }
+  ]
+}
 {% endschema %}
