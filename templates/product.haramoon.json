@@ -674,7 +674,7 @@
             "icon_color": "#059bf9",
             "icon_label_color": "#0d1b3e",
             "button_text": "Shop Now",
-            "button_link": "",
+            "button_link": "shopify://collections/haramoon-korean-skincare",
             "button_font_size": 16,
             "button_padding_vertical": 16,
             "button_padding_horizontal": 40,

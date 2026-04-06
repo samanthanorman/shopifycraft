@@ -70,7 +70,6 @@
     },
     "ingredient-comparison": {
       "type": "ingredient-comparison",
-      "disabled": true,
       "settings": {
         "eyebrow": "How Does It Compare?",
         "subheading": "See how this ingredient stacks up against similar actives — and whether you can use them together.",
@@ -101,6 +100,44 @@
         "section_spacing": 32,
         "show_pore_clogging": false,
         "pore_clogging_label": "Potentially pore clogging?"
+      }
+    },
+    "ingredient_resources_Eqydyd": {
+      "type": "ingredient-resources",
+      "disabled": true,
+      "name": "Ingredient Resources",
+      "settings": {
+        "section_padding": 40,
+        "section_spacing": 60,
+        "products_heading": "Find It In",
+        "related_heading": "Related Intel",
+        "heading_size": 28,
+        "heading_color": "#0a506d",
+        "heading_spacing": 24,
+        "card_width": 280,
+        "product_gap": 20,
+        "card_bg_color": "#ffffff",
+        "card_border_color": "#e5e5e5",
+        "card_hover_border_color": "#0a506d",
+        "card_border_width": 1,
+        "card_border_radius": 12,
+        "product_title_size": 16,
+        "product_title_color": "#0a506d",
+        "badge_bg_color": "#0a506d",
+        "badge_text_color": "#ffffff",
+        "related_gap": 12,
+        "link_font_size": 14,
+        "link_padding_vertical": 10,
+        "link_padding_horizontal": 20,
+        "link_bg_color": "#efeeec",
+        "link_text_color": "#0a506d",
+        "link_border_color": "#dbe8ff",
+        "link_hover_bg_color": "#0a506d",
+        "link_hover_text_color": "#ffffff",
+        "link_hover_border_color": "#0a506d",
+        "link_border_width": 1,
+        "link_border_radius": 24,
+        "scrollbar_color": "#0a506d"
       }
     },
     "rich_text_cd4t4c": {
@@ -309,6 +346,7 @@
     "ingredient_profile_detail",
     "ingredient-comparison",
     "ingredient_suitability_safety_gxaqeM",
+    "ingredient_resources_Eqydyd",
     "rich_text_cd4t4c",
     "177543047397834956",
     "featured_collection_zBUa3Y",
