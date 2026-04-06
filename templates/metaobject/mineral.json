@@ -15,10 +15,10 @@
         "ai_gen_block_99a3842_hmmjxz": {
           "type": "ai_gen_block_99a3842",
           "settings": {
-            "back_button_label": "Back to Crystal Compendium",
-            "back_button_url": "",
-            "browse_more_label": "Browse More",
-            "browse_more_url": "",
+            "back_button_label": "Back to Crystal Glossary",
+            "back_button_url": "shopify://pages/crystal-courtesan",
+            "browse_more_label": "Shop Crystals",
+            "browse_more_url": "shopify://collections/natural-crystals-gemstones",
             "center_label_text": "VIEW ALL CRYSTALS & MINERALS",
             "compendium_url": "shopify://pages/crystal-courtesan",
             "background_color": "#faf9f7",
@@ -334,6 +334,29 @@
         "hover_shadow_color": "rgba(212, 175, 55, 0.3)"
       }
     },
+    "crystal_announcement_banner_QmbnYy": {
+      "type": "crystal-announcement-banner",
+      "name": "Crystal Banner",
+      "settings": {
+        "text_1": "✨ Shop our Crystal Collection — healing gemstones for every intention",
+        "link_1": "shopify://collections/natural-crystals-gemstones",
+        "text_2": "💎 Become a Crystal Courtesan — explore the complete crystal glossary",
+        "link_2": "shopify://pages/crystal-courtesan",
+        "font_family": "poppins_n4",
+        "font_size": 16,
+        "background_color": "#e0f7ff",
+        "background_gradient": "",
+        "text_color": "#002c60",
+        "icon_color": "#00adff",
+        "icon_stroke_color": "#002c60",
+        "icon_size": 24,
+        "icon_spacing": 16,
+        "icon_stroke_width_int": 15,
+        "banner_height": 80,
+        "padding_vertical": 16,
+        "padding_horizontal": 32
+      }
+    },
     "featured_collection_TBczHD": {
       "type": "featured-collection",
       "name": "t:sections.featured-collection.presets.name",
@@ -410,6 +433,7 @@
     "1775206006475e31b0",
     "mineral_care_instructions_k4fPUK",
     "crystal_pairs_well_with_x7h6Pb",
+    "crystal_announcement_banner_QmbnYy",
     "featured_collection_TBczHD",
     "newsletter_E4rqTB",
     "1775206862f6267651"
