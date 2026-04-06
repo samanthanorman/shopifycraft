@@ -105,7 +105,7 @@
     "drawer_shadow_blur": 5,
     "badge_position": "bottom left",
     "badge_corner_radius": 6,
-    "sale_badge_color_scheme": "scheme-4",
+    "sale_badge_color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
     "sold_out_badge_color_scheme": "scheme-2",
     "brand_headline": "with good intentions",
     "brand_description": "<p>for those who notice what most overlook — where beauty hides in precision and purpose.</p>",
@@ -184,10 +184,10 @@
       },
       "scheme-2": {
         "settings": {
-          "background": "#2f6ebc",
+          "background": "#76b3ff",
           "background_gradient": "radial-gradient(rgba(201, 217, 255, 1), rgba(253, 250, 240, 1) 62%)",
           "text": "#0d1b3e",
-          "button": "#2f6ebc",
+          "button": "#76b3ff",
           "button_label": "#fdfaf0",
           "secondary_button_label": "#1e497e",
           "shadow": "#f7ddf3"
