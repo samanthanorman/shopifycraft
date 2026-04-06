@@ -59,7 +59,7 @@
           "disabled": true,
           "settings": {
             "nav_height": 60,
-            "background_color": "rgba(255, 255, 255, 0.95)",
+            "background_color": "#fffffff2",
             "blur_amount": 10,
             "border_thickness": 1,
             "border_color": "#0d1b3e",
@@ -318,7 +318,7 @@
             "section_padding_bottom": 60,
             "background_color": "#fafbfc",
             "desktop_width_percent": 100,
-            "accent_color": "#0066FF",
+            "accent_color": "#0066ff",
             "accent_border_thickness": 2,
             "badge_spacing": 40,
             "badge_spacing_mobile": 24,
@@ -590,6 +590,7 @@
       "blocks": {
         "ai_gen_block_f5c708d_RiNANp": {
           "type": "ai_gen_block_f5c708d",
+          "disabled": true,
           "settings": {
             "section_title": "Your Skin's Journey",
             "section_subtitle": "Visible transformation, week by week",

@@ -9,6 +9,11 @@
  */
 {
   "sections": {
+    "blocks_8rXDae": {
+      "type": "_blocks",
+      "name": "Metaobject breadcrumb",
+      "settings": {}
+    },
     "featured_product_WRY6Kg": {
       "type": "featured-product",
       "blocks": {
@@ -79,8 +84,92 @@
         "padding_bottom": 36
       }
     },
+    "hm_how_to_layer_EfFEHQ": {
+      "type": "hm-how-to-layer",
+      "name": "HM How to Layer",
+      "settings": {
+        "eyebrow": "The HARAMOON Method",
+        "heading": "How to Layer Your Routine",
+        "subheading": "Apply each step on damp skin, in order. Each layer prepares your skin to absorb the next.",
+        "step1_emoji": "🫧",
+        "step1_name": "Cleanser",
+        "step1_timing": "AM + PM",
+        "step1_tip": "Massage for 60 seconds on damp skin. Rinse with lukewarm water.",
+        "wait1": "30 sec",
+        "step2_emoji": "💧",
+        "step2_name": "Toner",
+        "step2_timing": "AM + PM",
+        "step2_tip": "Pat gently into skin — don't rub. Apply while skin is still slightly damp.",
+        "wait2": "60 sec",
+        "step3_emoji": "⚗️",
+        "step3_name": "Ampoule",
+        "step3_timing": "AM + PM",
+        "step3_tip": "Press 2–3 drops between palms, then press onto face. Do not rub.",
+        "wait3": "60–90 sec",
+        "step4_emoji": "🌙",
+        "step4_name": "Cream",
+        "step4_timing": "AM + PM",
+        "step4_tip": "Seal everything in. Use upward strokes. SPF on top in the morning.",
+        "show_ampm": true,
+        "am_tip": "<strong>Morning:</strong> Focus on hydration and protection. After your 4 steps, always finish with SPF 30+. HARAMOON's lightweight formula layers perfectly under sunscreen without pilling. Your skin is prepped for the day — barrier strong, moisture locked.",
+        "pm_tip": "<strong>Evening:</strong> This is when your skin repairs itself. The ampoule's peptides and the cream's Centella work while you sleep. No SPF needed at night — let the actives do their job. For best results, apply to slightly damp skin right after cleansing.",
+        "bg_color": "#fdfaf0",
+        "heading_color": "#0e8eff",
+        "subtext_color": "#0d1b3e",
+        "accent_color": "#3498ff",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "17755012467027b215": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_dea7a09_KWEwgA": {
+          "type": "ai_gen_block_dea7a09",
+          "settings": {
+            "header_bg_color": "#f4e4d7",
+            "headline": "The Science Behind HARAMOON",
+            "headline_color": "#000000",
+            "headline_font_size": 36,
+            "subtitle": "Understanding the K-Beauty Difference Compared to Western Formulas",
+            "subtitle_color": "#333333",
+            "subtitle_font_size": 16,
+            "header_padding_top": 48,
+            "header_padding_bottom": 48,
+            "card_bg_color": "#ffffff",
+            "card_border_radius": 12,
+            "card_padding": 40,
+            "card_margin_top": -32,
+            "divider_color": "#e0e0e0",
+            "label_color": "#666666",
+            "label_font_size": 11,
+            "heading_color": "#000000",
+            "heading_font_size": 22,
+            "body_color": "#333333",
+            "body_font_size": 15,
+            "section_max_width": 1200,
+            "section_outer_padding": 24,
+            "col1_label": "THE PROBLEM",
+            "col1_heading": "Weak Barrier",
+            "col1_body": "Compromised skin barrier leads to moisture loss, sensitivity, and visible signs of aging.",
+            "col2_label": "THE SCIENCE",
+            "col2_heading": "HARAMOON's Proprietary Approach",
+            "col2_body": "HARAMOON's proprietary K-Beauty ingredients rebuild the skin's protective barrier, restore lipid balance, and signal deep cellular repair — without the harsh actives found in Western formulas.",
+            "col3_label": "THE RESULT",
+            "col3_heading": "Glass Skin",
+            "col3_body": "Plump, luminous, resilient skin with improved texture and long-lasting hydration."
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_dea7a09_KWEwgA"
+      ],
+      "settings": {}
+    },
     "page_LDRjA9": {
       "type": "page",
+      "disabled": true,
       "name": "t:sections.page.presets.name",
       "settings": {
         "page": "about-haramoon",
@@ -90,20 +179,112 @@
         "padding_bottom": 4
       }
     },
+    "hm_ingredient_heroes_L8rtGh": {
+      "type": "hm-ingredient-heroes",
+      "name": "Ingredient Heroes",
+      "settings": {
+        "eyebrow": "What's Inside",
+        "title": "Ingredient Heroes in This Formula",
+        "subtitle": "Tap any ingredient to explore its full profile.",
+        "header_align": "center",
+        "header_gap": 28,
+        "title_size": 24,
+        "subtitle_size": 14,
+        "pill_font_size": 13,
+        "max_width": 900,
+        "padding_top": 48,
+        "padding_bottom": 48,
+        "side_padding": 20,
+        "pill_gap": 12,
+        "pill_padding_v": 14,
+        "pill_padding_h": 16,
+        "pill_radius": 40,
+        "pill_min_height": 52,
+        "bg_color": "#f8faff",
+        "title_color": "#141615",
+        "subtitle_color": "#53585a",
+        "accent_color": "#3498ff",
+        "accent_color_2": "#a78bfa",
+        "pill_bg": "#ffffff",
+        "pill_hover_bg": "#eff6ff",
+        "pill_border": "#e5e7eb",
+        "pill_text_color": "#1e3a8a",
+        "glass_highlight": "#ffffff",
+        "shadow_color": "#141615"
+      }
+    },
+    "blocks_EYAJgJ": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_f5c708d_LFxGUb": {
+          "type": "ai_gen_block_f5c708d",
+          "settings": {
+            "section_title": "Your Skin's Journey",
+            "section_subtitle": "Visible transformation, week by week",
+            "title_size": 48,
+            "subtitle_size": 16,
+            "title_color": "#0d1b3e",
+            "subtitle_color": "#0d1b3e",
+            "header_spacing": 80,
+            "week_1_label": "Week 1",
+            "week_1_headline": "Skin barrier restored.",
+            "week_1_description": "Immediate hydration and soothing. Redness begins to calm as peptides start their repair work.",
+            "week_1_image": "shopify://shop_images/cleanser1_0ea008d2-78f3-4a18-b80a-2106921b1068.png",
+            "week_2_label": "Week 2",
+            "week_2_headline": "Texture refined.",
+            "week_2_description": "Skin feels smoother and more supple. Fine lines appear softened as cellular turnover accelerates.",
+            "week_2_image": "shopify://shop_images/cleanser0_9211e3c2-2601-4a59-a81e-acc3f3803527.png",
+            "week_3_label": "Week 4",
+            "week_3_headline": "Radiance unlocked.",
+            "week_3_description": "A visible glow emerges. Skin tone appears more even, and elasticity noticeably improves.",
+            "week_3_image": "shopify://shop_images/allfour5.png",
+            "week_4_label": "Week 8",
+            "week_4_headline": "Transformation complete.",
+            "week_4_description": "Skin looks visibly younger, firmer, and deeply nourished. The full power of peptides revealed.",
+            "week_4_image": "shopify://shop_images/allfour6.png",
+            "week_label_size": 14,
+            "headline_size": 32,
+            "description_size": 15,
+            "headline_color": "#0d1b3e",
+            "description_color": "#0d1b3e",
+            "accent_color": "#e2c84b",
+            "desktop_width_percent": 100,
+            "max_width": 1200,
+            "entry_gap": 80,
+            "entry_spacing": 100,
+            "content_padding": 20,
+            "section_padding_top": 80,
+            "section_padding_bottom": 80,
+            "image_aspect_ratio": "0.75",
+            "image_border_radius": 20,
+            "show_connector": true,
+            "connector_color": "#0d1b3e",
+            "dot_color": "#e2c84b",
+            "background_color": "#fdfaf0"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_f5c708d_LFxGUb"
+      ],
+      "name": "Results timeline",
+      "settings": {}
+    },
     "featured_blog_LQA93x": {
       "type": "featured-blog",
       "name": "t:sections.featured-blog.presets.name",
       "settings": {
         "blog": "why-korean-skincare",
-        "post_limit": 3,
+        "post_limit": 4,
         "heading": "The K-Beauty Blog",
         "heading_size": "h1",
-        "columns_desktop": 3,
+        "columns_desktop": 4,
         "show_view_all": true,
         "show_image": true,
         "show_date": true,
         "show_author": false,
-        "color_scheme": "scheme-5",
+        "color_scheme": "scheme-5a71830d-bb14-4361-a5f4-6672bdde5b1f",
         "padding_top": 36,
         "padding_bottom": 36
       }
@@ -136,7 +317,7 @@
       ],
       "name": "t:sections.newsletter.presets.name",
       "settings": {
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
         "full_width": true,
         "padding_top": 40,
         "padding_bottom": 52
@@ -144,8 +325,13 @@
     }
   },
   "order": [
+    "blocks_8rXDae",
     "featured_product_WRY6Kg",
+    "hm_how_to_layer_EfFEHQ",
+    "17755012467027b215",
     "page_LDRjA9",
+    "hm_ingredient_heroes_L8rtGh",
+    "blocks_EYAJgJ",
     "featured_blog_LQA93x",
     "newsletter_HGwxHL"
   ]
