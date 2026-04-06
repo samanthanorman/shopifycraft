@@ -43,7 +43,7 @@
       "name": "Ingredient Hero",
       "settings": {
         "hero_background": "#ffffff",
-        "heading_color": "#00b4ff",
+        "heading_color": "#2f6ebc",
         "heading_size": 48,
         "show_origin_badge": true,
         "badge_background": "#f7ddf3",
@@ -94,55 +94,61 @@
         "badge_text_size": 13,
         "badge_gap": 10,
         "safety_card_bg": "#fffbf0",
-        "border_color": "#ffd54f",
+        "border_color": "#4facff",
         "safety_text_size": 15,
-        "text_color": "#006ac7",
+        "text_color": "#2f6ebc",
         "section_padding": 40,
         "section_spacing": 32,
         "show_pore_clogging": false,
         "pore_clogging_label": "Potentially pore clogging?"
       }
     },
+    "rich_text_cd4t4c": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_EdGw9T": {
+          "type": "heading",
+          "settings": {
+            "heading": "Korean Skincare Tips For Beginners",
+            "heading_size": "h2"
+          }
+        },
+        "text_pUM8Xe": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Start with one new ingredient at a time to test your skin's reaction</p><p>Always patch test new products on a small area first</p><p>Layer products from thinnest to thickest consistency</p><p>Be patient - Korean skincare focuses on long-term skin</p>"
+          }
+        },
+        "button_t8EadD": {
+          "type": "button",
+          "settings": {
+            "button_label": "Back To The Ultimate Ingredient Glossary",
+            "button_link": "shopify://pages/ultimate-korean-skincare-ingredient-glossary",
+            "button_style_secondary": false,
+            "button_label_2": "",
+            "button_link_2": "",
+            "button_style_secondary_2": false
+          }
+        }
+      },
+      "block_order": [
+        "heading_EdGw9T",
+        "text_pUM8Xe",
+        "button_t8EadD"
+      ],
+      "name": "t:sections.rich-text.presets.name",
+      "settings": {
+        "desktop_content_position": "left",
+        "content_alignment": "left",
+        "color_scheme": "scheme-2",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
     "177543047397834956": {
       "type": "_blocks",
       "settings": {}
-    },
-    "ingredient_resources_DdN9kT": {
-      "type": "ingredient-resources",
-      "name": "Ingredient Resources",
-      "settings": {
-        "section_padding": 40,
-        "section_spacing": 60,
-        "products_heading": "Find It In",
-        "related_heading": "Related Intel",
-        "heading_size": 28,
-        "heading_color": "#0a506d",
-        "heading_spacing": 24,
-        "card_width": 280,
-        "product_gap": 20,
-        "card_bg_color": "#ffffff",
-        "card_border_color": "#e5e5e5",
-        "card_hover_border_color": "#0a506d",
-        "card_border_width": 1,
-        "card_border_radius": 12,
-        "product_title_size": 16,
-        "product_title_color": "#0a506d",
-        "badge_bg_color": "#0a506d",
-        "badge_text_color": "#ffffff",
-        "related_gap": 12,
-        "link_font_size": 14,
-        "link_padding_vertical": 10,
-        "link_padding_horizontal": 20,
-        "link_bg_color": "#efeeec",
-        "link_text_color": "#0a506d",
-        "link_border_color": "#dbe8ff",
-        "link_hover_bg_color": "#0a506d",
-        "link_hover_text_color": "#ffffff",
-        "link_hover_border_color": "#0a506d",
-        "link_border_width": 1,
-        "link_border_radius": 24,
-        "scrollbar_color": "#0a506d"
-      }
     },
     "featured_collection_zBUa3Y": {
       "type": "featured-collection",
@@ -172,6 +178,57 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
+    },
+    "blocks_UM4hW4": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_75d5dd9_JyAVHz": {
+          "type": "ai_gen_block_75d5dd9",
+          "settings": {
+            "desktop_width_percent": 100,
+            "color_scheme": "scheme_1",
+            "background_color": "#fdfaf0",
+            "headline_color": "#0d1b3e",
+            "body_text_color": "#0d1b3e",
+            "accent_color": "#f0d84a",
+            "image": "shopify://shop_images/9x16_text_overlay_HARAMOON17_31c64cb9-0d0f-48ee-b02c-2f1f0d8a2c22.png",
+            "image_border_radius": 12,
+            "caption_text": "pH 5.5 · Vegan · Dermatologist Tested",
+            "badge_background_color": "#ffffff",
+            "badge_text_color": "#0d1b3e",
+            "badge_font_size": 13,
+            "badge_border_radius": 20,
+            "category_label": "K-BEAUTY INNOVATION",
+            "category_font_size": 12,
+            "headline": "Born from the Sea. Perfected by Science.",
+            "headline_font": "raleway_n4",
+            "headline_font_size": 42,
+            "story_text": "<p>Deep in the coastal waters of Jeju Island, marine botanicals have thrived for centuries in pristine conditions. Our scientists harness these powerful ingredients, combining traditional Korean wisdom with cutting-edge dermatological research.</p><p>Each formula is meticulously pH-balanced to work in harmony with your skin's natural barrier, delivering transformative results without compromise.</p>",
+            "body_font_size": 15,
+            "badge_1_icon": "vegan",
+            "badge_1_text": "Vegan",
+            "badge_2_icon": "cruelty_free",
+            "badge_2_text": "Cruelty-Free",
+            "badge_3_icon": "ph_balanced",
+            "badge_3_text": "pH Balanced",
+            "badge_4_icon": "sensitive_skin",
+            "badge_4_text": "Sensitive Skin Safe",
+            "trust_badge_color": "#0d1b3e",
+            "trust_badge_font_size": 13,
+            "trust_badge_icon_size": 20,
+            "cta_text": "Discover the full collection",
+            "cta_link": "shopify://collections/haramoon-korean-skincare",
+            "cta_color": "#0d1b3e",
+            "cta_font_size": 14
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_75d5dd9_JyAVHz"
+      ],
+      "name": "Product story",
+      "settings": {}
     },
     "newsletter_BAz6HG": {
       "type": "newsletter",
@@ -252,9 +309,10 @@
     "ingredient_profile_detail",
     "ingredient-comparison",
     "ingredient_suitability_safety_gxaqeM",
+    "rich_text_cd4t4c",
     "177543047397834956",
-    "ingredient_resources_DdN9kT",
     "featured_collection_zBUa3Y",
+    "blocks_UM4hW4",
     "newsletter_BAz6HG",
     "ingredient_resources_fMP4AM"
   ]
