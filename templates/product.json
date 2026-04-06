@@ -9,6 +9,30 @@
  */
 {
   "sections": {
+    "blocks_njyCjb": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_223b148_FxMPB6": {
+          "type": "ai_gen_block_223b148",
+          "settings": {
+            "show_breadcrumb": true,
+            "metaobject_parent_label": "Ingredient Glossary",
+            "metaobject_parent_url": "/pages/ingredient-glossary",
+            "text_color": "#888888",
+            "link_color": "#555555",
+            "font_size": 13,
+            "padding_top": 16,
+            "padding_bottom": 8
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_223b148_FxMPB6"
+      ],
+      "name": "SEO breadcrumb",
+      "settings": {}
+    },
     "main": {
       "type": "main-product",
       "blocks": {
@@ -397,39 +421,16 @@
         "padding_top": 40,
         "padding_bottom": 52
       }
-    },
-    "17755081824d7f6dbc": {
-      "type": "_blocks",
-      "blocks": {
-        "ai_gen_block_223b148_E8BhUF": {
-          "type": "ai_gen_block_223b148",
-          "settings": {
-            "show_breadcrumb": true,
-            "metaobject_parent_label": "Ingredient Glossary",
-            "metaobject_parent_url": "/pages/ingredient-glossary",
-            "text_color": "#888888",
-            "link_color": "#555555",
-            "font_size": 13,
-            "padding_top": 16,
-            "padding_bottom": 8
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_223b148_E8BhUF"
-      ],
-      "settings": {}
     }
   },
   "order": [
+    "blocks_njyCjb",
     "main",
     "related-products",
     "featured_blog_PXQetD",
     "multicolumn_cW6eAw",
     "multirow_9kwR94",
     "rich_text_49tBnU",
-    "newsletter_T8U8FN",
-    "17755081824d7f6dbc"
+    "newsletter_T8U8FN"
   ]
 }
