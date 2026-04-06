@@ -2,293 +2,299 @@
   Ingredient Comparison Block
   "X vs Y — What's the Difference?" side-by-side comparison
   Pulls from related_ingredients field on the current ingredient_profile metaobject
-  Glassmorphism design, hover effects, fully editable in theme editor
+  FIXED: Filters out self-references so the current ingredient never compares against itself
+  Clean light design matching the ingredient_profile page aesthetic (white/cream/teal palette)
   Add to templates/metaobject/ingredient_profile.json
 {% enddoc %}
 
-{% style %}
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+{%- liquid
+  assign ai_gen_id = section.id | replace: '_', '' | downcase
+  assign current = metaobject
 
-  .hm-compare-section {
-    background: {{ section.settings.bg_color }};
-    padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
-    font-family: 'Poppins', sans-serif;
-    position: relative;
-    overflow: hidden;
-  }
-  .hm-compare-section::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 30% 50%, rgba(52,152,255,0.06) 0%, transparent 55%),
-                radial-gradient(ellipse at 70% 50%, rgba(168,212,255,0.04) 0%, transparent 55%);
-    pointer-events: none;
-  }
-  .hm-compare-inner {
-    max-width: 900px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 2;
-  }
-  .hm-compare-eyebrow {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: {{ section.settings.accent_color }};
-    text-align: center;
-    margin: 0 0 10px;
-  }
-  .hm-compare-title {
-    font-size: clamp(20px, 3vw, 32px);
-    font-weight: 700;
-    color: {{ section.settings.heading_color }};
-    text-align: center;
-    margin: 0 0 8px;
-    letter-spacing: -0.02em;
-  }
-  .hm-compare-subtitle {
-    font-size: 14px;
-    color: {{ section.settings.subtext_color }};
-    text-align: center;
-    margin: 0 auto 44px;
-    max-width: 520px;
-  }
+  comment
+    Build a filtered list that excludes the current ingredient itself.
+    Liquid has no native reject filter, so we loop and build manually.
+  endcomment
+  assign filtered_related = '' | split: ''
+  for rel in current.related_ingredients.value
+    if rel.system.handle != current.system.handle
+      assign filtered_related = filtered_related | concat: rel
+    endif
+  endfor
+-%}
 
-  /* Comparison pair selector */
-  .hm-compare-selector {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 36px;
-  }
-  .hm-compare-pair-btn {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    padding: 8px 16px;
-    border-radius: 30px;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(255,255,255,0.04);
-    color: {{ section.settings.subtext_color }};
-    cursor: pointer;
-    transition: all 0.22s ease;
-    backdrop-filter: blur(8px);
-  }
-  .hm-compare-pair-btn:hover,
-  .hm-compare-pair-btn.active {
-    background: {{ section.settings.accent_color }};
-    border-color: {{ section.settings.accent_color }};
-    color: #fff;
-    box-shadow: 0 4px 16px rgba(52,152,255,0.3);
-  }
+{%- if filtered_related.size > 0 -%}
+<section class="hm-ic-section-{{ ai_gen_id }}" id="ingredient-comparison">
 
-  /* Comparison panels */
-  .hm-compare-panel {
-    display: none;
-  }
-  .hm-compare-panel.active {
-    display: block;
-    animation: hm-fade-in 0.3s ease;
-  }
-  @keyframes hm-fade-in {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+  {% style %}
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-  /* VS layout */
-  .hm-compare-vs {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 20px;
-    align-items: start;
-  }
-  @media (max-width: 600px) {
-    .hm-compare-vs {
-      grid-template-columns: 1fr;
+    .hm-ic-section-{{ ai_gen_id }} {
+      background: {{ section.settings.bg_color }};
+      padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
+      font-family: 'Poppins', sans-serif;
     }
-    .hm-compare-vs-divider { display: none; }
-  }
+    .hm-ic-inner-{{ ai_gen_id }} {
+      max-width: 920px;
+      margin: 0 auto;
+    }
 
-  .hm-compare-col {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 18px;
-    padding: 24px 22px;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    transition: box-shadow 0.25s ease, border-color 0.25s ease;
-    position: relative;
-    overflow: hidden;
-  }
-  .hm-compare-col::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, {{ section.settings.accent_color }}60, {{ section.settings.accent_color }});
-    border-radius: 18px 18px 0 0;
-  }
-  .hm-compare-col:hover {
-    box-shadow: 0 12px 40px rgba(0,0,0,0.2);
-    border-color: {{ section.settings.accent_color }}40;
-  }
-  .hm-compare-col.current-ingredient::before {
-    background: linear-gradient(90deg, #ffd70060, #ffd700);
-  }
+    /* Header */
+    .hm-ic-eyebrow-{{ ai_gen_id }} {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: {{ section.settings.accent_color }};
+      text-align: center;
+      margin: 0 0 10px;
+    }
+    .hm-ic-title-{{ ai_gen_id }} {
+      font-size: clamp(20px, 3vw, 30px);
+      font-weight: 700;
+      color: {{ section.settings.heading_color }};
+      text-align: center;
+      margin: 0 0 8px;
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+    }
+    .hm-ic-subtitle-{{ ai_gen_id }} {
+      font-size: 14px;
+      color: {{ section.settings.subtext_color }};
+      text-align: center;
+      margin: 0 auto 40px;
+      max-width: 540px;
+      line-height: 1.6;
+    }
 
-  .hm-compare-col-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: {{ section.settings.accent_color }};
-    margin: 0 0 6px;
-  }
-  .hm-compare-col.current-ingredient .hm-compare-col-label {
-    color: #ffd700;
-  }
-  .hm-compare-col-name {
-    font-size: 18px;
-    font-weight: 700;
-    color: {{ section.settings.heading_color }};
-    margin: 0 0 4px;
-    letter-spacing: -0.01em;
-  }
-  .hm-compare-col-function {
-    font-size: 12px;
-    color: {{ section.settings.accent_color }};
-    font-weight: 500;
-    margin: 0 0 16px;
-  }
-  .hm-compare-col-desc {
-    font-size: 13px;
-    color: {{ section.settings.subtext_color }};
-    line-height: 1.6;
-    margin: 0 0 16px;
-  }
-  .hm-compare-col-benefits {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .hm-compare-col-benefits li {
-    font-size: 12px;
-    color: {{ section.settings.subtext_color }};
-    display: flex;
-    align-items: flex-start;
-    gap: 6px;
-  }
-  .hm-compare-col-benefits li::before {
-    content: '✓';
-    color: {{ section.settings.accent_color }};
-    font-weight: 700;
-    font-size: 11px;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-  .hm-compare-col-link {
-    display: inline-block;
-    margin-top: 16px;
-    font-size: 12px;
-    font-weight: 600;
-    color: {{ section.settings.accent_color }};
-    text-decoration: none;
-    letter-spacing: 0.04em;
-    border-bottom: 1px solid {{ section.settings.accent_color }}40;
-    padding-bottom: 1px;
-    transition: border-color 0.2s ease;
-  }
-  .hm-compare-col-link:hover { border-color: {{ section.settings.accent_color }}; }
+    /* Pair selector tabs */
+    .hm-ic-tabs-{{ ai_gen_id }} {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+    .hm-ic-tab-{{ ai_gen_id }} {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 8px 18px;
+      border-radius: 30px;
+      border: 1.5px solid {{ section.settings.accent_color }}40;
+      background: {{ section.settings.tab_bg }};
+      color: {{ section.settings.subtext_color }};
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: 'Poppins', sans-serif;
+    }
+    .hm-ic-tab-{{ ai_gen_id }}:hover,
+    .hm-ic-tab-{{ ai_gen_id }}.active {
+      background: {{ section.settings.accent_color }};
+      border-color: {{ section.settings.accent_color }};
+      color: #fff;
+      box-shadow: 0 3px 12px {{ section.settings.accent_color }}30;
+    }
 
-  /* VS divider */
-  .hm-compare-vs-divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-top: 60px;
-  }
-  .hm-compare-vs-badge {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: rgba(52,152,255,0.12);
-    border: 1px solid rgba(52,152,255,0.25);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 800;
-    color: {{ section.settings.accent_color }};
-    letter-spacing: 0.05em;
-    backdrop-filter: blur(8px);
-  }
+    /* Panel visibility */
+    .hm-ic-panel-{{ ai_gen_id }} { display: none; }
+    .hm-ic-panel-{{ ai_gen_id }}.active {
+      display: block;
+      animation: hm-ic-fadein-{{ ai_gen_id }} 0.28s ease;
+    }
+    @keyframes hm-ic-fadein-{{ ai_gen_id }} {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
-  /* Bottom note */
-  .hm-compare-note {
-    text-align: center;
-    margin-top: 28px;
-    font-size: 13px;
-    color: {{ section.settings.subtext_color }};
-    line-height: 1.6;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 12px;
-    padding: 16px 24px;
-    max-width: 640px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .hm-compare-note strong { color: {{ section.settings.heading_color }}; }
-{% endstyle %}
+    /* VS grid */
+    .hm-ic-vs-{{ ai_gen_id }} {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    @media (max-width: 620px) {
+      .hm-ic-vs-{{ ai_gen_id }} { grid-template-columns: 1fr; }
+      .hm-ic-divider-{{ ai_gen_id }} { display: none; }
+    }
 
-{%- assign current = metaobject -%}
-{%- assign related = current.related_ingredients.value -%}
+    /* Cards */
+    .hm-ic-card-{{ ai_gen_id }} {
+      background: {{ section.settings.card_bg }};
+      border: 1.5px solid {{ section.settings.card_border }};
+      border-radius: 16px;
+      padding: 24px 22px;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+    .hm-ic-card-{{ ai_gen_id }}:hover {
+      box-shadow: 0 8px 32px {{ section.settings.accent_color }}18;
+      border-color: {{ section.settings.accent_color }}60;
+    }
+    .hm-ic-card-{{ ai_gen_id }}::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: {{ section.settings.accent_color }};
+      border-radius: 16px 16px 0 0;
+    }
+    .hm-ic-card-{{ ai_gen_id }}.is-current::before {
+      background: {{ section.settings.current_accent }};
+    }
+    .hm-ic-card-label-{{ ai_gen_id }} {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: {{ section.settings.accent_color }};
+      margin: 0 0 5px;
+    }
+    .hm-ic-card-{{ ai_gen_id }}.is-current .hm-ic-card-label-{{ ai_gen_id }} {
+      color: {{ section.settings.current_accent }};
+    }
+    .hm-ic-card-name-{{ ai_gen_id }} {
+      font-size: 18px;
+      font-weight: 700;
+      color: {{ section.settings.heading_color }};
+      margin: 0 0 4px;
+      line-height: 1.2;
+    }
+    .hm-ic-card-fn-{{ ai_gen_id }} {
+      font-size: 12px;
+      color: {{ section.settings.accent_color }};
+      font-weight: 500;
+      margin: 0 0 14px;
+    }
+    .hm-ic-card-{{ ai_gen_id }}.is-current .hm-ic-card-fn-{{ ai_gen_id }} {
+      color: {{ section.settings.current_accent }};
+    }
+    .hm-ic-card-desc-{{ ai_gen_id }} {
+      font-size: 13px;
+      color: {{ section.settings.subtext_color }};
+      line-height: 1.65;
+      margin: 0 0 14px;
+    }
+    .hm-ic-benefits-{{ ai_gen_id }} {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .hm-ic-benefits-{{ ai_gen_id }} li {
+      font-size: 12px;
+      color: {{ section.settings.subtext_color }};
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      line-height: 1.5;
+    }
+    .hm-ic-benefits-{{ ai_gen_id }} li::before {
+      content: '\2713';
+      color: {{ section.settings.accent_color }};
+      font-weight: 700;
+      font-size: 11px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .hm-ic-card-{{ ai_gen_id }}.is-current .hm-ic-benefits-{{ ai_gen_id }} li::before {
+      color: {{ section.settings.current_accent }};
+    }
+    .hm-ic-card-link-{{ ai_gen_id }} {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: {{ section.settings.accent_color }};
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid {{ section.settings.accent_color }}40;
+      padding-bottom: 1px;
+      transition: border-color 0.18s ease;
+    }
+    .hm-ic-card-link-{{ ai_gen_id }}:hover { border-color: {{ section.settings.accent_color }}; }
 
-{%- if related and related.size > 0 -%}
-<section class="hm-compare-section" id="ingredient-comparison">
-  <div class="hm-compare-inner">
+    /* VS divider */
+    .hm-ic-divider-{{ ai_gen_id }} {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 56px;
+    }
+    .hm-ic-vs-badge-{{ ai_gen_id }} {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: {{ section.settings.vs_bg }};
+      border: 1.5px solid {{ section.settings.accent_color }}30;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: {{ section.settings.accent_color }};
+      letter-spacing: 0.05em;
+    }
 
-    <p class="hm-compare-eyebrow">{{ section.settings.eyebrow }}</p>
-    <h2 class="hm-compare-title">{{ current.name }} vs. Similar Ingredients</h2>
-    <p class="hm-compare-subtitle">{{ section.settings.subheading }}</p>
+    /* Bottom note */
+    .hm-ic-note-{{ ai_gen_id }} {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 13px;
+      color: {{ section.settings.subtext_color }};
+      line-height: 1.65;
+      background: {{ section.settings.note_bg }};
+      border: 1.5px solid {{ section.settings.card_border }};
+      border-radius: 12px;
+      padding: 16px 24px;
+      max-width: 640px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hm-ic-note-{{ ai_gen_id }} strong { color: {{ section.settings.heading_color }}; }
+  {% endstyle %}
 
-    <!-- Pair selector buttons -->
-    {%- if related.size > 1 -%}
-    <div class="hm-compare-selector" role="group" aria-label="Choose comparison">
-      {%- for rel in related -%}
-        <button class="hm-compare-pair-btn{% if forloop.first %} active{% endif %}"
-                data-pair="{{ forloop.index0 }}"
-                aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">
+  <div class="hm-ic-inner-{{ ai_gen_id }}">
+
+    <p class="hm-ic-eyebrow-{{ ai_gen_id }}">{{ section.settings.eyebrow }}</p>
+    <h2 class="hm-ic-title-{{ ai_gen_id }}">{{ current.name }} vs. Similar Ingredients</h2>
+    <p class="hm-ic-subtitle-{{ ai_gen_id }}">{{ section.settings.subheading }}</p>
+
+    {%- if filtered_related.size > 1 -%}
+    <div class="hm-ic-tabs-{{ ai_gen_id }}" role="group" aria-label="Choose comparison">
+      {%- for rel in filtered_related -%}
+        <button
+          class="hm-ic-tab-{{ ai_gen_id }}{% if forloop.first %} active{% endif %}"
+          data-pair="{{ forloop.index0 }}"
+          aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">
           {{ current.name }} vs. {{ rel.name }}
         </button>
       {%- endfor -%}
     </div>
     {%- endif -%}
 
-    <!-- Comparison panels -->
-    {%- for rel in related -%}
-    <div class="hm-compare-panel{% if forloop.first %} active{% endif %}" id="hm-compare-panel-{{ forloop.index0 }}">
-      <div class="hm-compare-vs">
+    {%- for rel in filtered_related -%}
+    <div class="hm-ic-panel-{{ ai_gen_id }}{% if forloop.first %} active{% endif %}" id="hm-ic-panel-{{ ai_gen_id }}-{{ forloop.index0 }}">
+      <div class="hm-ic-vs-{{ ai_gen_id }}">
 
-        <!-- Current ingredient -->
-        <div class="hm-compare-col current-ingredient">
-          <p class="hm-compare-col-label">You're Viewing</p>
-          <h3 class="hm-compare-col-name">{{ current.name }}</h3>
+        <!-- Current ingredient (You're Viewing) -->
+        <div class="hm-ic-card-{{ ai_gen_id }} is-current">
+          <p class="hm-ic-card-label-{{ ai_gen_id }}">You're Viewing</p>
+          <h3 class="hm-ic-card-name-{{ ai_gen_id }}">{{ current.name }}</h3>
           {%- if current.main_function != blank -%}
-            <p class="hm-compare-col-function">{{ current.main_function }}</p>
+            <p class="hm-ic-card-fn-{{ ai_gen_id }}">{{ current.main_function }}</p>
           {%- endif -%}
           {%- if current.description != blank -%}
-            <p class="hm-compare-col-desc">{{ current.description | truncate: 200 }}</p>
+            <p class="hm-ic-card-desc-{{ ai_gen_id }}">{{ current.description | truncate: 220 }}</p>
           {%- endif -%}
           {%- if current.skin_benefits != blank -%}
-            <ul class="hm-compare-col-benefits">
-              {%- assign benefits_list = current.skin_benefits | split: ',' -%}
-              {%- for b in benefits_list limit: 5 -%}
+            <ul class="hm-ic-benefits-{{ ai_gen_id }}">
+              {%- assign cur_benefits = current.skin_benefits | split: ',' -%}
+              {%- for b in cur_benefits limit: 5 -%}
                 <li>{{ b | strip }}</li>
               {%- endfor -%}
             </ul>
@@ -296,36 +302,36 @@
         </div>
 
         <!-- VS divider -->
-        <div class="hm-compare-vs-divider" aria-hidden="true">
-          <div class="hm-compare-vs-badge">VS</div>
+        <div class="hm-ic-divider-{{ ai_gen_id }}" aria-hidden="true">
+          <div class="hm-ic-vs-badge-{{ ai_gen_id }}">VS</div>
         </div>
 
-        <!-- Related ingredient -->
-        <div class="hm-compare-col">
-          <p class="hm-compare-col-label">Compare With</p>
-          <h3 class="hm-compare-col-name">{{ rel.name }}</h3>
+        <!-- Related ingredient (Compare With) -->
+        <div class="hm-ic-card-{{ ai_gen_id }}">
+          <p class="hm-ic-card-label-{{ ai_gen_id }}">Compare With</p>
+          <h3 class="hm-ic-card-name-{{ ai_gen_id }}">{{ rel.name }}</h3>
           {%- if rel.main_function != blank -%}
-            <p class="hm-compare-col-function">{{ rel.main_function }}</p>
+            <p class="hm-ic-card-fn-{{ ai_gen_id }}">{{ rel.main_function }}</p>
           {%- endif -%}
           {%- if rel.description != blank -%}
-            <p class="hm-compare-col-desc">{{ rel.description | truncate: 200 }}</p>
+            <p class="hm-ic-card-desc-{{ ai_gen_id }}">{{ rel.description | truncate: 220 }}</p>
           {%- endif -%}
           {%- if rel.skin_benefits != blank -%}
-            <ul class="hm-compare-col-benefits">
+            <ul class="hm-ic-benefits-{{ ai_gen_id }}">
               {%- assign rel_benefits = rel.skin_benefits | split: ',' -%}
               {%- for b in rel_benefits limit: 5 -%}
                 <li>{{ b | strip }}</li>
               {%- endfor -%}
             </ul>
           {%- endif -%}
-          <a href="{{ rel.system.url }}" class="hm-compare-col-link">View Full Profile →</a>
+          <a href="{{ rel.system.url }}" class="hm-ic-card-link-{{ ai_gen_id }}">View Full Profile &rarr;</a>
         </div>
 
       </div>
 
       {%- if section.settings.show_note -%}
-      <div class="hm-compare-note">
-        <strong>Can you use both?</strong> In most cases, yes — {{ current.name }} and {{ rel.name }} work through different mechanisms and can complement each other in a layered routine. Always patch test when introducing new actives.
+      <div class="hm-ic-note-{{ ai_gen_id }}">
+        <strong>Can you use both?</strong> In most cases, yes &mdash; {{ current.name }} and {{ rel.name }} work through different mechanisms and can complement each other in a layered routine. Always patch test when introducing new actives.
       </div>
       {%- endif -%}
     </div>
@@ -333,28 +339,30 @@
 
   </div>
 </section>
-{%- endif -%}
 
 <script>
 (function() {
-  var pairBtns  = document.querySelectorAll('.hm-compare-pair-btn');
-  var panels    = document.querySelectorAll('.hm-compare-panel');
-  pairBtns.forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var idx = btn.getAttribute('data-pair');
-      pairBtns.forEach(function(b) {
-        b.classList.remove('active');
-        b.setAttribute('aria-pressed', 'false');
+  var id     = '{{ ai_gen_id }}';
+  var tabs   = document.querySelectorAll('.hm-ic-tab-' + id);
+  var panels = document.querySelectorAll('.hm-ic-panel-' + id);
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var idx = tab.getAttribute('data-pair');
+      tabs.forEach(function(t) {
+        t.classList.remove('active');
+        t.setAttribute('aria-pressed', 'false');
       });
       panels.forEach(function(p) { p.classList.remove('active'); });
-      btn.classList.add('active');
-      btn.setAttribute('aria-pressed', 'true');
-      var panel = document.getElementById('hm-compare-panel-' + idx);
+      tab.classList.add('active');
+      tab.setAttribute('aria-pressed', 'true');
+      var panel = document.getElementById('hm-ic-panel-' + id + '-' + idx);
       if (panel) panel.classList.add('active');
     });
   });
 })();
 </script>
+
+{%- endif -%}
 
 {% schema %}
 {
@@ -362,6 +370,10 @@
   "tag": "section",
   "class": "ingredient-comparison",
   "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
     {
       "type": "text",
       "id": "eyebrow",
@@ -377,32 +389,76 @@
     {
       "type": "checkbox",
       "id": "show_note",
-      "label": "Show 'Can You Use Both?' Note",
+      "label": "Show 'Can You Use Both?' note",
       "default": true
+    },
+    {
+      "type": "header",
+      "content": "Colors"
     },
     {
       "type": "color",
       "id": "bg_color",
-      "label": "Background Color",
-      "default": "#0a1628"
+      "label": "Section Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card Background",
+      "default": "#efeeec"
+    },
+    {
+      "type": "color",
+      "id": "card_border",
+      "label": "Card Border",
+      "default": "#dde4ea"
+    },
+    {
+      "type": "color",
+      "id": "tab_bg",
+      "label": "Tab Background (inactive)",
+      "default": "#efeeec"
     },
     {
       "type": "color",
       "id": "heading_color",
       "label": "Heading Color",
-      "default": "#ffffff"
+      "default": "#0a506d"
     },
     {
       "type": "color",
       "id": "subtext_color",
-      "label": "Subtext Color",
-      "default": "#8fa8c0"
+      "label": "Body / Subtext Color",
+      "default": "#4a6070"
     },
     {
       "type": "color",
       "id": "accent_color",
-      "label": "Accent Color",
-      "default": "#3498ff"
+      "label": "Accent Color (Compare side)",
+      "default": "#0a506d"
+    },
+    {
+      "type": "color",
+      "id": "current_accent",
+      "label": "Accent Color (You're Viewing side)",
+      "default": "#c07a2f"
+    },
+    {
+      "type": "color",
+      "id": "vs_bg",
+      "label": "VS Badge Background",
+      "default": "#efeeec"
+    },
+    {
+      "type": "color",
+      "id": "note_bg",
+      "label": "Bottom Note Background",
+      "default": "#f7f4f0"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
     },
     {
       "type": "range",
@@ -412,7 +468,7 @@
       "step": 4,
       "unit": "px",
       "label": "Padding Top",
-      "default": 72
+      "default": 64
     },
     {
       "type": "range",
@@ -422,7 +478,7 @@
       "step": 4,
       "unit": "px",
       "label": "Padding Bottom",
-      "default": 72
+      "default": 64
     }
   ],
   "presets": [
