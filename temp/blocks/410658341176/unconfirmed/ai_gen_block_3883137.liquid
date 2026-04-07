@@ -1,6 +1,241 @@
+{% doc %}
+  @prompt
+    please generate a breadcrumb that google search console will recognize. please make it customizeable so i can use it long term. it should show all products - then the product title its currentlhy on. let me edit the colors and make it in poppins font
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-breadcrumb-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    padding: {{ block.settings.padding_vertical }}px {{ block.settings.padding_horizontal }}px;
+  }
+
+  .ai-breadcrumb-nav-{{ ai_gen_id }} {
+    font-family: 'Poppins', sans-serif;
+    font-size: {{ block.settings.font_size }}px;
+  }
+
+  .ai-breadcrumb-list-{{ ai_gen_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: {{ block.settings.item_spacing }}px;
+  }
+
+  .ai-breadcrumb-item-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: {{ block.settings.item_spacing }}px;
+  }
+
+  .ai-breadcrumb-link-{{ ai_gen_id }} {
+    color: {{ block.settings.link_color }};
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .ai-breadcrumb-link-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.link_hover_color }};
+    text-decoration: underline;
+  }
+
+  .ai-breadcrumb-separator-{{ ai_gen_id }} {
+    color: {{ block.settings.separator_color }};
+    user-select: none;
+  }
+
+  .ai-breadcrumb-current-{{ ai_gen_id }} {
+    color: {{ block.settings.current_color }};
+  }
+{% endstyle %}
+
+<breadcrumb-navigation-{{ ai_gen_id }} class="ai-breadcrumb-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <nav class="ai-breadcrumb-nav-{{ ai_gen_id }}" aria-label="Breadcrumb">
+    <ol class="ai-breadcrumb-list-{{ ai_gen_id }}" itemscope itemtype="https://schema.org/BreadcrumbList">
+      <li class="ai-breadcrumb-item-{{ ai_gen_id }}" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a href="/" class="ai-breadcrumb-link-{{ ai_gen_id }}" itemprop="item">
+          <span itemprop="name">{{ block.settings.home_text }}</span>
+        </a>
+        <meta itemprop="position" content="1">
+        <span class="ai-breadcrumb-separator-{{ ai_gen_id }}" aria-hidden="true">{{ block.settings.separator }}</span>
+      </li>
+
+      {% if product %}
+        <li class="ai-breadcrumb-item-{{ ai_gen_id }}" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/collections/all" class="ai-breadcrumb-link-{{ ai_gen_id }}" itemprop="item">
+            <span itemprop="name">{{ block.settings.all_products_text }}</span>
+          </a>
+          <meta itemprop="position" content="2">
+          <span class="ai-breadcrumb-separator-{{ ai_gen_id }}" aria-hidden="true">{{ block.settings.separator }}</span>
+        </li>
+
+        <li class="ai-breadcrumb-item-{{ ai_gen_id }}" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="ai-breadcrumb-current-{{ ai_gen_id }}" itemprop="name" aria-current="page">{{ product.title }}</span>
+          <meta itemprop="position" content="3">
+        </li>
+      {% elsif collection %}
+        <li class="ai-breadcrumb-item-{{ ai_gen_id }}" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="ai-breadcrumb-current-{{ ai_gen_id }}" itemprop="name" aria-current="page">{{ collection.title }}</span>
+          <meta itemprop="position" content="2">
+        </li>
+      {% elsif page %}
+        <li class="ai-breadcrumb-item-{{ ai_gen_id }}" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="ai-breadcrumb-current-{{ ai_gen_id }}" itemprop="name" aria-current="page">{{ page.title }}</span>
+          <meta itemprop="position" content="2">
+        </li>
+      {% elsif article %}
+        <li class="ai-breadcrumb-item-{{ ai_gen_id }}" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="{{ blog.url }}" class="ai-breadcrumb-link-{{ ai_gen_id }}" itemprop="item">
+            <span itemprop="name">{{ blog.title }}</span>
+          </a>
+          <meta itemprop="position" content="2">
+          <span class="ai-breadcrumb-separator-{{ ai_gen_id }}" aria-hidden="true">{{ block.settings.separator }}</span>
+        </li>
+
+        <li class="ai-breadcrumb-item-{{ ai_gen_id }}" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="ai-breadcrumb-current-{{ ai_gen_id }}" itemprop="name" aria-current="page">{{ article.title }}</span>
+          <meta itemprop="position" content="3">
+        </li>
+      {% endif %}
+    </ol>
+  </nav>
+</breadcrumb-navigation-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class BreadcrumbNavigation{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.style.display = 'block';
+      }
+    }
+
+    customElements.define('breadcrumb-navigation-{{ ai_gen_id }}', BreadcrumbNavigation{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Breadcrumb navigation",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "home_text",
+      "label": "Home text",
+      "default": "Home"
+    },
+    {
+      "type": "text",
+      "id": "all_products_text",
+      "label": "All products text",
+      "default": "All Products"
+    },
+    {
+      "type": "text",
+      "id": "separator",
+      "label": "Separator",
+      "default": "/"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "item_spacing",
+      "label": "Item spacing",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "label": "Vertical padding",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_color",
+      "label": "Link hover",
+      "default": "#037fff"
+    },
+    {
+      "type": "color",
+      "id": "current_color",
+      "label": "Current page",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "separator_color",
+      "label": "Separator",
+      "default": "#999999"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Breadcrumb navigation"
+    }
+  ]
+}
 {% endschema %}
