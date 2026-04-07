@@ -66,15 +66,68 @@
         "related_heading": "You May Also Need"
       }
     },
+    "featured_blog_nMEGrE": {
+      "type": "featured-blog",
+      "name": "t:sections.featured-blog.presets.name",
+      "settings": {
+        "blog": "electromagnetic-frequency-radiation",
+        "post_limit": 3,
+        "heading": "Learn From The EMF Blog",
+        "heading_size": "h1",
+        "columns_desktop": 3,
+        "show_view_all": true,
+        "show_image": true,
+        "show_date": true,
+        "show_author": false,
+        "color_scheme": "scheme-3",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "newsletter_x9D98V": {
+      "type": "newsletter",
+      "blocks": {
+        "heading_iAFJdR": {
+          "type": "heading",
+          "settings": {
+            "heading": "Subscribe to our emails",
+            "heading_size": "h1"
+          }
+        },
+        "paragraph_F4V6z7": {
+          "type": "paragraph",
+          "settings": {
+            "text": "<p>Be the first to know about new collections and exclusive offers.</p>"
+          }
+        },
+        "email_form_JifAmD": {
+          "type": "email_form",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "heading_iAFJdR",
+        "paragraph_F4V6z7",
+        "email_form_JifAmD"
+      ],
+      "name": "t:sections.newsletter.presets.name",
+      "settings": {
+        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
     "1775520747fed80b30": {
       "type": "apps",
       "blocks": {
         "amazon_mcf_and_buy_with_prime_promise_delivery_HqY7DE": {
           "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promise_delivery/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
+          "disabled": true,
           "settings": {
             "message_variant": "default",
             "show_exception_message": false,
-            "background_color": "#F9F9F9",
+            "background_color": "#f9f9f9",
             "transparent_background": false,
             "color": "#000000",
             "font": "assistant_n4",
@@ -93,6 +146,7 @@
         },
         "amazon_mcf_and_buy_with_prime_promotion_banner_container_TmmXwX": {
           "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promotion-banner-container/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
+          "disabled": true,
           "settings": {
             "horizontal_alignment": "center"
           }
@@ -109,6 +163,8 @@
   },
   "order": [
     "emf_product_main",
+    "featured_blog_nMEGrE",
+    "newsletter_x9D98V",
     "1775520747fed80b30"
   ]
 }
