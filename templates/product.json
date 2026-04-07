@@ -9,30 +9,6 @@
  */
 {
   "sections": {
-    "blocks_njyCjb": {
-      "type": "_blocks",
-      "blocks": {
-        "ai_gen_block_223b148_FxMPB6": {
-          "type": "ai_gen_block_223b148",
-          "settings": {
-            "show_breadcrumb": true,
-            "metaobject_parent_label": "Ingredient Glossary",
-            "metaobject_parent_url": "/pages/ingredient-glossary",
-            "text_color": "#888888",
-            "link_color": "#555555",
-            "font_size": 13,
-            "padding_top": 16,
-            "padding_bottom": 8
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_223b148_FxMPB6"
-      ],
-      "name": "SEO breadcrumb",
-      "settings": {}
-    },
     "main": {
       "type": "main-product",
       "blocks": {
@@ -102,34 +78,6 @@
             "show_gift_card_recipient": true
           }
         },
-        "amazon_mcf_and_buy_with_prime_promise_delivery_EciNfq": {
-          "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promise_delivery/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
-          "settings": {
-            "message_variant": "concise",
-            "show_exception_message": true,
-            "background_color": "#17aef3",
-            "transparent_background": false,
-            "color": "#000000",
-            "font": "anonymous_pro_n4",
-            "font_size": 13,
-            "horizontal_alignment": "center",
-            "corner_radius": 0,
-            "top-padding": -19,
-            "bottom-padding": -29,
-            "left-padding": -27,
-            "right-padding": 6,
-            "top-margin": -30,
-            "bottom-margin": -32,
-            "left-margin": -32,
-            "right-margin": 23
-          }
-        },
-        "amazon_mcf_and_buy_with_prime_promotion_banner_container_thnTWX": {
-          "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promotion-banner-container/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
-          "settings": {
-            "horizontal_alignment": "center"
-          }
-        },
         "complementary_iAXB6M": {
           "type": "complementary",
           "settings": {
@@ -141,6 +89,34 @@
             "pagination_style": "dots",
             "image_ratio": "portrait",
             "enable_quick_add": true
+          }
+        },
+        "amazon_mcf_and_buy_with_prime_promotion_banner_container_KrzdNG": {
+          "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promotion-banner-container/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
+          "settings": {
+            "horizontal_alignment": "center"
+          }
+        },
+        "amazon_mcf_and_buy_with_prime_promise_delivery_byYgxQ": {
+          "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promise_delivery/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
+          "settings": {
+            "message_variant": "default",
+            "show_exception_message": false,
+            "background_color": "#F9F9F9",
+            "transparent_background": false,
+            "color": "#000000",
+            "font": "assistant_n4",
+            "font_size": 16,
+            "horizontal_alignment": "center",
+            "corner_radius": 0,
+            "top-padding": 40,
+            "bottom-padding": 40,
+            "left-padding": 0,
+            "right-padding": 0,
+            "top-margin": 0,
+            "bottom-margin": 0,
+            "left-margin": 0,
+            "right-margin": 0
           }
         },
         "collapsible_tab_p7BjTN": {
@@ -184,9 +160,9 @@
         "description_TKaPMK",
         "share",
         "buy_buttons",
-        "amazon_mcf_and_buy_with_prime_promise_delivery_EciNfq",
-        "amazon_mcf_and_buy_with_prime_promotion_banner_container_thnTWX",
         "complementary_iAXB6M",
+        "amazon_mcf_and_buy_with_prime_promotion_banner_container_KrzdNG",
+        "amazon_mcf_and_buy_with_prime_promise_delivery_byYgxQ",
         "collapsible_tab_p7BjTN",
         "collapsible_tab_PYtnDF",
         "collapsible_tab_jTnw3Y"
@@ -424,7 +400,6 @@
     }
   },
   "order": [
-    "blocks_njyCjb",
     "main",
     "related-products",
     "featured_blog_PXQetD",
