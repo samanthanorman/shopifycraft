@@ -9,6 +9,33 @@
  */
 {
   "sections": {
+    "17755208058373db34": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_3883137_eq6tUK": {
+          "type": "ai_gen_block_3883137",
+          "settings": {
+            "home_text": "Home",
+            "all_products_text": "All Products",
+            "separator": "/",
+            "font_size": 14,
+            "item_spacing": 8,
+            "padding_vertical": 12,
+            "padding_horizontal": 0,
+            "desktop_width_percent": 100,
+            "link_color": "#0d1b3e",
+            "link_hover_color": "#037fff",
+            "current_color": "#666666",
+            "separator_color": "#999999"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_3883137_eq6tUK"
+      ],
+      "settings": {}
+    },
     "main": {
       "type": "main-product",
       "blocks": {
@@ -45,6 +72,15 @@
             "heading": "Benefits",
             "icon": "check_mark",
             "content": "{{ product.metafields.global[\"bullet-point\"] | metafield_tag }}",
+            "page": ""
+          }
+        },
+        "collapsible_tab_jTnw3Y": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Returns and Refunds",
+            "icon": "return",
+            "content": "<p>We provide a 14-day return window for unused items returned in their original packaging. However, we don't issue refunds for used, worn, or damaged items due to normal use or misuse. If you return a non-approved item without a valid reason or outside the 14-day timeframe, we reserve the right to charge a restocking fee of up to 25% of the purchase price and will extend store credit at our discretion.</p>",
             "page": ""
           }
         },
@@ -102,7 +138,7 @@
           "settings": {
             "message_variant": "default",
             "show_exception_message": false,
-            "background_color": "#F9F9F9",
+            "background_color": "#f9f9f9",
             "transparent_background": false,
             "color": "#000000",
             "font": "assistant_n4",
@@ -138,15 +174,6 @@
             "content": "<p></p><p></p>",
             "page": ""
           }
-        },
-        "collapsible_tab_jTnw3Y": {
-          "type": "collapsible_tab",
-          "settings": {
-            "heading": "Returns and Refunds",
-            "icon": "return",
-            "content": "<p>We provide a 14-day return window for unused items returned in their original packaging. However, we don't issue refunds for used, worn, or damaged items due to normal use or misuse. If you return a non-approved item without a valid reason or outside the 14-day timeframe, we reserve the right to charge a restocking fee of up to 25% of the purchase price and will extend store credit at our discretion.</p>",
-            "page": ""
-          }
         }
       },
       "block_order": [
@@ -155,6 +182,7 @@
         "price",
         "collapsible_tab_pnHAGF",
         "collapsible_tab_njky8D",
+        "collapsible_tab_jTnw3Y",
         "variant_picker",
         "quantity_selector",
         "description_TKaPMK",
@@ -164,8 +192,7 @@
         "amazon_mcf_and_buy_with_prime_promotion_banner_container_KrzdNG",
         "amazon_mcf_and_buy_with_prime_promise_delivery_byYgxQ",
         "collapsible_tab_p7BjTN",
-        "collapsible_tab_PYtnDF",
-        "collapsible_tab_jTnw3Y"
+        "collapsible_tab_PYtnDF"
       ],
       "settings": {
         "enable_sticky_info": true,
@@ -400,6 +427,7 @@
     }
   },
   "order": [
+    "17755208058373db34",
     "main",
     "related-products",
     "featured_blog_PXQetD",
