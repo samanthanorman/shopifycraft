@@ -50,8 +50,8 @@
       "settings": {
         "image": "shopify://shop_images/wax_and_wane_starry_night_logo_9ab82cb3-a8b9-47b2-a347-a1f0991b1240.jpg",
         "image_overlay_opacity": 10,
-        "image_height": "adapt",
-        "image_behavior": "fixed",
+        "image_height": "medium",
+        "image_behavior": "none",
         "desktop_content_position": "middle-center",
         "desktop_content_alignment": "center",
         "show_text_box": true,
@@ -100,7 +100,7 @@
       "settings": {
         "desktop_content_position": "center",
         "content_alignment": "center",
-        "color_scheme": "scheme-4",
+        "color_scheme": "scheme-1",
         "full_width": true,
         "padding_top": 40,
         "padding_bottom": 52
