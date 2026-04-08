@@ -1,0 +1,400 @@
+{%- liquid
+  assign ing_list = metaobject.fields.ingredient_profile.value
+  assign ing_count = ing_list | size
+  assign max_cards = section.settings.max_cards
+  assign layout_mode = section.settings.layout_mode
+-%}
+
+{%- if ing_list and ing_count > 0 -%}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Key Ingredients in {{ metaobject.fields.name.value | escape }}",
+  "description": "Active ingredient profiles by HARAMOON Korean Skincare.",
+  "url": "{{ shop.url }}{{ metaobject.system.url }}",
+  "itemListElement": [
+    {%- for ing in ing_list limit: max_cards -%}
+    {
+      "@type": "ListItem",
+      "position": {{ forloop.index }},
+      "name": {{ ing.name | json }},
+      "url": "{{ shop.url }}{{ ing.system.url }}"
+    }{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ]
+}
+</script>
+
+<style>
+  .hm-ho {
+    padding: {{ section.settings.padding_top }}px {{ section.settings.side_padding }}px {{ section.settings.padding_bottom }}px;
+    background: {{ section.settings.bg_color }};
+    position: relative;
+    overflow: hidden;
+  }
+  .hm-ho::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 50%, {{ section.settings.accent_color | color_modify: 'alpha', 0.06 }} 0%, transparent 70%),
+      radial-gradient(ellipse 60% 50% at 80% 50%, {{ section.settings.accent_color_2 | color_modify: 'alpha', 0.06 }} 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hm-ho__inner {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .hm-ho__header {
+    text-align: {{ section.settings.header_align }};
+    margin-bottom: {{ section.settings.header_gap }}px;
+  }
+  .hm-ho__eyebrow {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: {{ section.settings.accent_color }};
+    margin-bottom: 8px;
+  }
+  .hm-ho__title {
+    font-size: {{ section.settings.title_size }}px;
+    font-weight: 700;
+    color: {{ section.settings.title_color }};
+    margin: 0 0 6px;
+    line-height: 1.2;
+  }
+  .hm-ho__subtitle {
+    font-size: {{ section.settings.subtitle_size }}px;
+    color: {{ section.settings.subtitle_color }};
+    margin: 0;
+    line-height: 1.5;
+  }
+  .hm-ho__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: {{ section.settings.card_gap }}px;
+  }
+  .hm-ho__carousel-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hm-ho__carousel {
+    display: flex;
+    gap: {{ section.settings.card_gap }}px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+    flex: 1;
+  }
+  .hm-ho__carousel::-webkit-scrollbar { display: none; }
+  .hm-ho__carousel .hm-ho-card {
+    flex: 0 0 calc(25% - {{ section.settings.card_gap }}px);
+    scroll-snap-align: start;
+  }
+  .hm-ho__arrow {
+    background: {{ section.settings.pill_bg }};
+    border: 1.5px solid {{ section.settings.pill_border }};
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-size: 14px;
+    color: {{ section.settings.pill_text_color }};
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .hm-ho__arrow:hover {
+    background: {{ section.settings.pill_hover_bg }};
+    border-color: {{ section.settings.accent_color }};
+  }
+  .hm-ho-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    padding: {{ section.settings.pill_padding_v }}px {{ section.settings.pill_padding_h }}px;
+    border-radius: {{ section.settings.pill_radius }}px;
+    background: {{ section.settings.pill_bg }};
+    border: 1.5px solid {{ section.settings.pill_border }};
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow:
+      0 4px 20px {{ section.settings.shadow_color | color_modify: 'alpha', 0.08 }},
+      inset 0 1px 0 {{ section.settings.glass_highlight | color_modify: 'alpha', 0.45 }};
+    transition:
+      transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.3s ease,
+      border-color 0.3s ease,
+      background 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    min-height: {{ section.settings.pill_min_height }}px;
+    gap: 10px;
+  }
+  .hm-ho-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+      {{ section.settings.glass_highlight | color_modify: 'alpha', 0.22 }} 0%,
+      transparent 60%);
+    border-radius: inherit;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .hm-ho-card:hover {
+    transform: translateY(-5px) scale(1.04);
+    border-color: {{ section.settings.accent_color }};
+    background: {{ section.settings.pill_hover_bg }};
+    box-shadow:
+      0 10px 32px {{ section.settings.accent_color | color_modify: 'alpha', 0.22 }},
+      0 0 0 1px {{ section.settings.accent_color | color_modify: 'alpha', 0.18 }},
+      inset 0 1px 0 {{ section.settings.glass_highlight | color_modify: 'alpha', 0.6 }};
+  }
+  .hm-ho-card:hover::before { opacity: 0.4; }
+  .hm-ho-card:focus-visible {
+    outline: 2px solid {{ section.settings.accent_color }};
+    outline-offset: 3px;
+  }
+  .hm-ho-card__icon {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+  .hm-ho-card__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+  .hm-ho-card:hover .hm-ho-card__dot { transform: scale(1.4); }
+  .hm-ho-card__dot--natural   { background: #10b981; }
+  .hm-ho-card__dot--synthetic { background: #8b5cf6; }
+  .hm-ho-card__dot--fermented { background: #f59e0b; }
+  .hm-ho-card__dot--biotech   { background: #3b82f6; }
+  .hm-ho-card__dot--marine    { background: #06b6d4; }
+  .hm-ho-card__dot--animal    { background: #ec4899; }
+  .hm-ho-card__dot--mineral   { background: #6b7280; }
+  .hm-ho-card__dot--other     { background: #d1d5db; }
+  .hm-ho-card__name {
+    font-size: {{ section.settings.pill_font_size }}px;
+    font-weight: 600;
+    color: {{ section.settings.pill_text_color }};
+    line-height: 1.25;
+    transition: color 0.25s ease;
+    position: relative;
+    z-index: 1;
+  }
+  .hm-ho-card:hover .hm-ho-card__name { color: {{ section.settings.accent_color }}; }
+  .hm-ho-card__desc {
+    font-size: {{ section.settings.subtitle_size }}px;
+    color: {{ section.settings.subtitle_color }};
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+  .hm-ho-card__arrow {
+    font-size: 11px;
+    color: {{ section.settings.accent_color }};
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    position: relative;
+    z-index: 1;
+  }
+  .hm-ho-card:hover .hm-ho-card__arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  @media (max-width: 768px) {
+    .hm-ho__grid { grid-template-columns: repeat(2, 1fr); }
+    .hm-ho__carousel .hm-ho-card { flex: 0 0 calc(50% - {{ section.settings.card_gap }}px); }
+  }
+  @media (max-width: 480px) {
+    .hm-ho__grid { grid-template-columns: 1fr; }
+    .hm-ho__carousel .hm-ho-card { flex: 0 0 85%; }
+  }
+</style>
+
+<div class="hm-ho">
+  <div class="hm-ho__inner">
+
+    {%- if section.settings.eyebrow != blank or section.settings.title != blank -%}
+      <div class="hm-ho__header">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="hm-ho__eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="hm-ho__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtitle != blank -%}
+          <p class="hm-ho__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if layout_mode == 'carousel' -%}
+      <div class="hm-ho__carousel-wrap">
+        <button class="hm-ho__arrow" onclick="this.nextElementSibling.scrollBy({left:-300,behavior:'smooth'})">‹</button>
+        <div class="hm-ho__carousel">
+          {%- for ing in ing_list limit: max_cards -%}
+            {%- assign idx = forloop.index0 -%}
+            {%- assign block_icon = blank -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'card_icon' -%}
+                {%- assign block_idx = forloop.index0 -%}
+                {%- if block_idx == idx -%}
+                  {%- assign block_icon = block.settings.icon -%}
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {%- assign origin_raw = ing.ingredient_origin | default: '' | downcase | replace: ' ', '' -%}
+            {%- if origin_raw contains 'natural' -%}{%- assign dot_mod = 'natural' -%}
+            {%- elsif origin_raw contains 'synthetic' -%}{%- assign dot_mod = 'synthetic' -%}
+            {%- elsif origin_raw contains 'fermented' -%}{%- assign dot_mod = 'fermented' -%}
+            {%- elsif origin_raw contains 'biotech' or origin_raw contains 'bioengineered' -%}{%- assign dot_mod = 'biotech' -%}
+            {%- elsif origin_raw contains 'marine' -%}{%- assign dot_mod = 'marine' -%}
+            {%- elsif origin_raw contains 'animal' -%}{%- assign dot_mod = 'animal' -%}
+            {%- elsif origin_raw contains 'mineral' -%}{%- assign dot_mod = 'mineral' -%}
+            {%- else -%}{%- assign dot_mod = 'other' -%}
+            {%- endif -%}
+            <a href="{{ ing.system.url }}" class="hm-ho-card" aria-label="Learn about {{ ing.name }}">
+              {%- if block_icon != blank -%}
+                <img src="{{ block_icon | image_url: width: 112 }}" alt="{{ ing.name }}" class="hm-ho-card__icon" width="56" height="56" loading="lazy">
+              {%- endif -%}
+              <span class="hm-ho-card__dot hm-ho-card__dot--{{ dot_mod }}"></span>
+              <span class="hm-ho-card__name">{{ ing.name }}</span>
+              {%- if ing.description != blank -%}
+                <span class="hm-ho-card__desc">{{ ing.description }}</span>
+              {%- endif -%}
+              <span class="hm-ho-card__arrow" aria-hidden="true">→</span>
+            </a>
+          {%- endfor -%}
+        </div>
+        <button class="hm-ho__arrow" onclick="this.previousElementSibling.scrollBy({left:300,behavior:'smooth'})">›</button>
+      </div>
+
+    {%- else -%}
+      <div class="hm-ho__grid">
+        {%- for ing in ing_list limit: max_cards -%}
+          {%- assign idx = forloop.index0 -%}
+          {%- assign block_icon = blank -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'card_icon' -%}
+              {%- assign block_idx = forloop.index0 -%}
+              {%- if block_idx == idx -%}
+                {%- assign block_icon = block.settings.icon -%}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- assign origin_raw = ing.ingredient_origin | default: '' | downcase | replace: ' ', '' -%}
+          {%- if origin_raw contains 'natural' -%}{%- assign dot_mod = 'natural' -%}
+          {%- elsif origin_raw contains 'synthetic' -%}{%- assign dot_mod = 'synthetic' -%}
+          {%- elsif origin_raw contains 'fermented' -%}{%- assign dot_mod = 'fermented' -%}
+          {%- elsif origin_raw contains 'biotech' or origin_raw contains 'bioengineered' -%}{%- assign dot_mod = 'biotech' -%}
+          {%- elsif origin_raw contains 'marine' -%}{%- assign dot_mod = 'marine' -%}
+          {%- elsif origin_raw contains 'animal' -%}{%- assign dot_mod = 'animal' -%}
+          {%- elsif origin_raw contains 'mineral' -%}{%- assign dot_mod = 'mineral' -%}
+          {%- else -%}{%- assign dot_mod = 'other' -%}
+          {%- endif -%}
+          <a href="{{ ing.system.url }}" class="hm-ho-card" aria-label="Learn about {{ ing.name }}">
+            {%- if block_icon != blank -%}
+              <img src="{{ block_icon | image_url: width: 112 }}" alt="{{ ing.name }}" class="hm-ho-card__icon" width="56" height="56" loading="lazy">
+            {%- endif -%}
+            <span class="hm-ho-card__dot hm-ho-card__dot--{{ dot_mod }}"></span>
+            <span class="hm-ho-card__name">{{ ing.name }}</span>
+            {%- if ing.description != blank -%}
+              <span class="hm-ho-card__desc">{{ ing.description }}</span>
+            {%- endif -%}
+            <span class="hm-ho-card__arrow" aria-hidden="true">→</span>
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Ingredient Heroes",
+  "tag": "section",
+  "class": "section",
+  "blocks": [
+    {
+      "type": "card_icon",
+      "name": "Card Icon",
+      "limit": 20,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon image for this card position"
+        }
+      ]
+    }
+  ],
+  "settings": [
+    { "type": "header", "content": "Section header" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow label", "default": "What's Inside" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Hero Ingredients Inside" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Click Each Card To Learn More" },
+    { "type": "select", "id": "header_align", "label": "Header alignment", "options": [{"value":"left","label":"Left"},{"value":"center","label":"Center"},{"value":"right","label":"Right"}], "default": "center" },
+    { "type": "range", "id": "header_gap", "min": 12, "max": 56, "step": 4, "unit": "px", "label": "Space below header", "default": 28 },
+    { "type": "header", "content": "Layout" },
+    { "type": "select", "id": "layout_mode", "label": "Layout mode", "options": [{"value":"grid","label":"3-column grid"},{"value":"carousel","label":"Single row carousel"}], "default": "grid" },
+    { "type": "range", "id": "max_cards", "min": 1, "max": 15, "step": 1, "label": "Max cards to show", "default": 9 },
+    { "type": "range", "id": "max_width", "min": 600, "max": 1400, "step": 50, "unit": "px", "label": "Max content width", "default": 900 },
+    { "type": "range", "id": "padding_top", "min": 16, "max": 80, "step": 4, "unit": "px", "label": "Padding top", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "min": 16, "max": 80, "step": 4, "unit": "px", "label": "Padding bottom", "default": 48 },
+    { "type": "range", "id": "side_padding", "min": 0, "max": 60, "step": 4, "unit": "px", "label": "Side padding", "default": 20 },
+    { "type": "range", "id": "card_gap", "min": 6, "max": 24, "step": 2, "unit": "px", "label": "Gap between cards", "default": 12 },
+    { "type": "range", "id": "pill_padding_v", "min": 8, "max": 28, "step": 2, "unit": "px", "label": "Card vertical padding", "default": 14 },
+    { "type": "range", "id": "pill_padding_h", "min": 10, "max": 32, "step": 2, "unit": "px", "label": "Card horizontal padding", "default": 16 },
+    { "type": "range", "id": "pill_radius", "min": 4, "max": 60, "step": 2, "unit": "px", "label": "Card border radius", "default": 16 },
+    { "type": "range", "id": "pill_min_height", "min": 40, "max": 200, "step": 4, "unit": "px", "label": "Card min height", "default": 120 },
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "title_size", "min": 16, "max": 40, "step": 2, "unit": "px", "label": "Title font size", "default": 24 },
+    { "type": "range", "id": "subtitle_size", "min": 12, "max": 20, "step": 1, "unit": "px", "label": "Subtitle / desc font size", "default": 14 },
+    { "type": "range", "id": "pill_font_size", "min": 11, "max": 18, "step": 1, "unit": "px", "label": "Card name font size", "default": 13 },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "bg_color", "label": "Section background", "default": "#f8faff" },
+    { "type": "color", "id": "title_color", "label": "Title color", "default": "#141615" },
+    { "type": "color", "id": "subtitle_color", "label": "Subtitle color", "default": "#53585a" },
+    { "type": "color", "id": "accent_color", "label": "Accent color (glow / hover)", "default": "#3498ff" },
+    { "type": "color", "id": "accent_color_2", "label": "Accent color 2 (ambient glow)", "default": "#a78bfa" },
+    { "type": "color", "id": "pill_bg", "label": "Card background", "default": "#ffffff" },
+    { "type": "color", "id": "pill_hover_bg", "label": "Card hover background", "default": "#eff6ff" },
+    { "type": "color", "id": "pill_border", "label": "Card border color", "default": "#e5e7eb" },
+    { "type": "color", "id": "pill_text_color", "label": "Card text color", "default": "#1e3a8a" },
+    { "type": "color", "id": "glass_highlight", "label": "Glass highlight", "default": "#ffffff" },
+    { "type": "color", "id": "shadow_color", "label": "Shadow color", "default": "#000000" }
+  ],
+  "presets": [
+    { "name": "Ingredient Heroes" }
+  ]
+}
+{% endschema %}
