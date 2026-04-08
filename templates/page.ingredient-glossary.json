@@ -9,6 +9,111 @@
  */
 {
   "sections": {
+    "ingredient-concern-filter": {
+      "type": "ingredient-concern-filter",
+      "disabled": true,
+      "settings": {
+        "eyebrow": "Find Your Match",
+        "heading": "Browse Ingredients By Skin Concern",
+        "subheading": "Filter all ingredients by what your skin needs most. Star (★) marks ingredients found in HARAMOON products.",
+        "bg_color": "#62a3ea",
+        "heading_color": "#ffffff",
+        "subtext_color": "#befdff",
+        "accent_color": "#00446f",
+        "padding_top": 44,
+        "padding_bottom": 48
+      }
+    },
+    "ingredient_glossary_main": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_69471e8_UtAWGY": {
+          "type": "ai_gen_block_69471e8",
+          "name": "Breadcrumb navigation",
+          "settings": {
+            "left_link_label": "← Shop HARAMOON Skincare",
+            "left_link_url": "shopify://collections/haramoon-korean-skincare",
+            "right_link_label": "Read Our K-Beauty Blog →",
+            "right_link_url": "shopify://blogs/why-korean-skincare",
+            "desktop_width_percent": 100,
+            "max_width": 1200,
+            "padding_vertical": 20,
+            "padding_horizontal": 40,
+            "button_gap": 30,
+            "background_color": "#f0f8ff",
+            "pill_padding_vertical": 12,
+            "pill_padding_horizontal": 30,
+            "pill_border_radius": 30,
+            "pill_border_width": 1,
+            "pill_background_color": "#ffffff",
+            "pill_border_color": "#0d1b3e",
+            "font_size": 14,
+            "font_weight": "500",
+            "text_color": "#0d1b3e",
+            "hover_text_color": "#ffffff",
+            "hover_background_color": "#037fff",
+            "hover_border_color": "#037fff",
+            "hover_lift_distance": -3,
+            "hover_shadow_vertical": 8,
+            "hover_shadow_blur": 20,
+            "hover_shadow_opacity": 15,
+            "hover_transition_speed": 0.3,
+            "enable_structured_data": true
+          },
+          "blocks": {}
+        },
+        "glossary_ai_gen_main": {
+          "type": "glossary_ai_gen",
+          "settings": {
+            "heading": "The Ultimate Korean Skincare Ingredient Glossary",
+            "heading_size": 36,
+            "heading_color": "#2082ff",
+            "search_label": "Search by name",
+            "origin_label": "Origin",
+            "function_label": "Function",
+            "filter_label_size": 14,
+            "filter_label_color": "#374151",
+            "card_border_color": "#1e3a8a"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_69471e8_UtAWGY",
+        "glossary_ai_gen_main"
+      ],
+      "name": "Ingredient Glossary",
+      "settings": {}
+    },
+    "featured_collection_haramoon": {
+      "type": "featured-collection",
+      "name": "HARAMOON Collection",
+      "settings": {
+        "collection": "haramoon-korean-skincare",
+        "products_to_show": 4,
+        "title": "Shop HARAMOON",
+        "heading_size": "h2",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
+        "columns_desktop": 4,
+        "enable_desktop_slider": true,
+        "full_width": false,
+        "show_view_all": true,
+        "view_all_style": "solid",
+        "color_scheme": "scheme-2",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "quick_add": "standard",
+        "columns_mobile": "2",
+        "swipe_on_mobile": true,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
     "ingredient_carousel": {
       "type": "ingredient-carousel-banner",
       "name": "Ingredient Carousel Banner",
@@ -33,52 +138,6 @@
         "card_border": "#e5e7eb",
         "card_name_color": "#1e3a8a",
         "card_fn_color": "#6b7280"
-      }
-    },
-    "ingredient_glossary_main": {
-      "type": "_blocks",
-      "blocks": {
-        "glossary_ai_gen_main": {
-          "type": "glossary_ai_gen",
-          "settings": {
-            "heading": "Ultimate Korean Skincare Ingredient Glossary",
-            "heading_size": 36,
-            "heading_color": "#1e3a8a",
-            "search_label": "Search by name",
-            "origin_label": "Origin",
-            "function_label": "Function",
-            "filter_label_size": 14,
-            "filter_label_color": "#374151",
-            "card_border_color": "#1e3a8a"
-          }
-        }
-      },
-      "block_order": [
-        "glossary_ai_gen_main"
-      ],
-      "name": "Ingredient Glossary",
-      "settings": {}
-    },
-    "featured_collection_haramoon": {
-      "type": "featured-collection",
-      "name": "HARAMOON Collection",
-      "settings": {
-        "collection": "haramoon-korean-skincare",
-        "products_to_show": 4,
-        "title": "Shop HARAMOON",
-        "heading_size": "h2",
-        "columns_desktop": 4,
-        "enable_desktop_slider": true,
-        "show_view_all": true,
-        "view_all_style": "solid",
-        "color_scheme": "scheme-2",
-        "image_ratio": "square",
-        "show_secondary_image": true,
-        "quick_add": "standard",
-        "columns_mobile": "2",
-        "swipe_on_mobile": true,
-        "padding_top": 36,
-        "padding_bottom": 36
       }
     },
     "radiant_skin_cta": {
@@ -116,17 +175,13 @@
       ],
       "name": "Radiant Skin CTA",
       "settings": {}
-    },
-    "ingredient-concern-filter": {
-      "type": "ingredient-concern-filter",
-      "settings": {}
     }
   },
   "order": [
     "ingredient-concern-filter",
-    "ingredient_carousel",
     "ingredient_glossary_main",
     "featured_collection_haramoon",
+    "ingredient_carousel",
     "radiant_skin_cta"
   ]
 }
