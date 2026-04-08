@@ -1,6 +1,314 @@
+{% doc %}
+  @prompt
+    Create a custom Liquid block with two columns side by side (Morning and Evening). This is a static content block — no metafields needed.
+    
+    Layout: Two equal columns on desktop, stacked on mobile. Each column has a small label at the top (Morning / Evening), a subtle divider or icon, and a short paragraph of text below. Compact and elegant — this should not be a large section, think of it as an informational callout card, not a hero.
+    
+    Content (hardcode this text exactly):
+    
+    Morning column label: "Morning" Morning text: "Focus on hydration and protection. HARAMOON's lightweight formula layers perfectly under sunscreen and makeup without pilling. Your skin is prepped for the day — barrier strong, moisture locked."
+    
+    Evening column label: "Evening" Evening text: "This is when your skin repairs itself. The ampoule's peptides and the cream's Centella work while you sleep. No SPF needed at night — let the actives do their job. For best results, apply to slightly damp skin right after cleansing."
+    
+    Style:
+    
+    Each column has a small decorative icon or sun/moon emoji before the label (☀️ for Morning, 🌙 for Evening) — make these schema settings (text field) so they can be swapped
+    Column labels are small, uppercase, letter-spaced — like a category tag
+    Body text is small, muted color, readable
+    Columns sit inside a lightly bordered or softly shaded container card — subtle, not heavy
+    Overall feel: spa editorial, minimal, premium
+    Schema settings: Morning label, morning body text, evening label, evening body text, morning icon emoji, evening icon emoji — all text fields so copy can be edited from the theme sidebar without touching code.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-routine-card-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .ai-routine-card__container-{{ ai_gen_id }} {
+    background-color: {{ block.settings.background_color }};
+    border: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+    padding: {{ block.settings.padding }}px;
+    display: flex;
+    gap: {{ block.settings.column_gap }}px;
+  }
+
+  .ai-routine-card__column-{{ ai_gen_id }} {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ai-routine-card__divider-{{ ai_gen_id }} {
+    width: 1px;
+    background-color: {{ block.settings.divider_color }};
+    opacity: {{ block.settings.divider_opacity | divided_by: 100.0 }};
+  }
+
+  .ai-routine-card__label-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ai-routine-card__icon-{{ ai_gen_id }} {
+    font-size: {{ block.settings.icon_size }}px;
+    line-height: 1;
+  }
+
+  .ai-routine-card__label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.label_size }}px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: {{ block.settings.label_color }};
+    margin: 0;
+  }
+
+  .ai-routine-card__text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    line-height: 1.6;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-routine-card__container-{{ ai_gen_id }} {
+      flex-direction: column;
+      gap: {{ block.settings.mobile_gap }}px;
+    }
+
+    .ai-routine-card__divider-{{ ai_gen_id }} {
+      width: 100%;
+      height: 1px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-routine-card-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-routine-card__container-{{ ai_gen_id }}">
+    <div class="ai-routine-card__column-{{ ai_gen_id }}">
+      <div class="ai-routine-card__label-wrapper-{{ ai_gen_id }}">
+        <span class="ai-routine-card__icon-{{ ai_gen_id }}">{{ block.settings.morning_icon }}</span>
+        <h3 class="ai-routine-card__label-{{ ai_gen_id }}">{{ block.settings.morning_label }}</h3>
+      </div>
+      <p class="ai-routine-card__text-{{ ai_gen_id }}">{{ block.settings.morning_text }}</p>
+    </div>
+
+    <div class="ai-routine-card__divider-{{ ai_gen_id }}"></div>
+
+    <div class="ai-routine-card__column-{{ ai_gen_id }}">
+      <div class="ai-routine-card__label-wrapper-{{ ai_gen_id }}">
+        <span class="ai-routine-card__icon-{{ ai_gen_id }}">{{ block.settings.evening_icon }}</span>
+        <h3 class="ai-routine-card__label-{{ ai_gen_id }}">{{ block.settings.evening_label }}</h3>
+      </div>
+      <p class="ai-routine-card__text-{{ ai_gen_id }}">{{ block.settings.evening_text }}</p>
+    </div>
+  </div>
+</div>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Routine guide",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Morning column"
+    },
+    {
+      "type": "text",
+      "id": "morning_icon",
+      "label": "Icon",
+      "default": "☀️"
+    },
+    {
+      "type": "text",
+      "id": "morning_label",
+      "label": "Label",
+      "default": "Morning"
+    },
+    {
+      "type": "textarea",
+      "id": "morning_text",
+      "label": "Text",
+      "default": "Focus on hydration and protection. HARAMOON's lightweight formula layers perfectly under sunscreen and makeup without pilling. Your skin is prepped for the day — barrier strong, moisture locked."
+    },
+    {
+      "type": "header",
+      "content": "Evening column"
+    },
+    {
+      "type": "text",
+      "id": "evening_icon",
+      "label": "Icon",
+      "default": "🌙"
+    },
+    {
+      "type": "text",
+      "id": "evening_label",
+      "label": "Label",
+      "default": "Evening"
+    },
+    {
+      "type": "textarea",
+      "id": "evening_text",
+      "label": "Text",
+      "default": "This is when your skin repairs itself. The ampoule's peptides and the cream's Centella work while you sleep. No SPF needed at night — let the actives do their job. For best results, apply to slightly damp skin right after cleansing."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Column gap",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "mobile_gap",
+      "label": "Mobile gap",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "label": "Padding",
+      "min": 15,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#fdfaf0"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e8d5d0"
+    },
+    {
+      "type": "range",
+      "id": "border_thickness",
+      "label": "Border thickness",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#e8d5d0"
+    },
+    {
+      "type": "range",
+      "id": "divider_opacity",
+      "label": "Divider opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 12,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "label": "Label size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#5a5a5a"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Routine guide"
+    }
+  ]
+}
 {% endschema %}
