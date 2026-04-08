@@ -196,18 +196,75 @@
         "padding_bottom": 72
       }
     },
+    "haramoon_carousel_C9atb8": {
+      "type": "haramoon-carousel",
+      "name": "HARAMOON Carousel",
+      "settings": {
+        "max_products": 12,
+        "show_heading": true,
+        "heading": "HARAMOON Collection",
+        "subheading": "Discover premium K-beauty skincare",
+        "heading_alignment": "center",
+        "heading_size": 40,
+        "subheading_size": 16,
+        "heading_spacing": 40,
+        "layout_style": "carousel",
+        "container_width": 75,
+        "card_width": 300,
+        "card_gap": 20,
+        "enable_autoplay": true,
+        "autoplay_speed": 3000,
+        "scroll_direction": "left",
+        "card_style": "shadow",
+        "card_border_radius": 16,
+        "card_padding": 20,
+        "hover_lift": 8,
+        "hover_scale_percent": 102,
+        "glass_blur": 0,
+        "show_badge": true,
+        "badge_text": "K-Beauty",
+        "badge_background": "rgba(255, 255, 255, 0.85)",
+        "badge_text_color": "#0a506d",
+        "badge_border_color": "rgba(10, 80, 109, 0.2)",
+        "product_type_size": 12,
+        "product_name_size": 16,
+        "claims_size": 13,
+        "price_size": 16,
+        "show_price": true,
+        "cta_text": "Shop Now",
+        "cta_border_radius": 24,
+        "cta_background": "#0a506d",
+        "cta_text_color": "#ffffff",
+        "cta_hover_background": "#002c60",
+        "cta_hover_text_color": "#ffffff",
+        "cta_border_color": "rgba(255, 255, 255, 0.2)",
+        "show_controls": true,
+        "control_background": "rgba(255, 255, 255, 0.9)",
+        "control_hover_background": "rgba(255, 255, 255, 1)",
+        "control_icon_color": "#0a506d",
+        "control_border_color": "rgba(10, 80, 109, 0.2)",
+        "background_color": "#ffffff",
+        "heading_color": "#0a506d",
+        "subheading_color": "#0a506d",
+        "card_background": "#ffffff",
+        "card_border_color": "#e0e0e0",
+        "neon_glow_color": "#ff6b9d",
+        "image_background": "#f4f4f4",
+        "content_background": "rgba(255, 255, 255, 0.95)",
+        "gradient_overlay_start": "#0a506d",
+        "gradient_overlay_end": "#ff6b9d",
+        "gradient_opacity_hex": "20",
+        "product_type_color": "#999999",
+        "product_name_color": "#0071ff",
+        "claims_color": "#666666",
+        "price_color": "#160272",
+        "section_padding_top": 40,
+        "section_padding_bottom": 44
+      }
+    },
     "rich_text_VdaTVX": {
       "type": "rich-text",
       "blocks": {
-        "caption_7dBJNj": {
-          "type": "caption",
-          "disabled": true,
-          "settings": {
-            "caption": "ROUTINE TIPS",
-            "text_style": "caption-with-letter-spacing",
-            "text_size": "medium"
-          }
-        },
         "text_rWqkCw": {
           "type": "text",
           "settings": {
@@ -216,7 +273,6 @@
         }
       },
       "block_order": [
-        "caption_7dBJNj",
         "text_rWqkCw"
       ],
       "name": "t:sections.rich-text.presets.name",
@@ -405,6 +461,7 @@
     "rich_text_VdaTVX",
     "page_LDRjA9",
     "blocks_EYAJgJ",
+    "haramoon_carousel_C9atb8",
     "featured_blog_LQA93x",
     "newsletter_HGwxHL"
   ]
