@@ -34,13 +34,13 @@
       "name": "t:sections.image-banner.presets.name",
       "settings": {
         "image": "shopify://shop_images/Illustration_of_hands_holding_a_crescent_moon_and_a_full_moon_against_a_white_background.png",
-        "image_overlay_opacity": 20,
+        "image_overlay_opacity": 10,
         "image_height": "small",
         "image_behavior": "fixed",
         "desktop_content_position": "middle-center",
         "desktop_content_alignment": "center",
         "show_text_box": true,
-        "color_scheme": "scheme-5a71830d-bb14-4361-a5f4-6672bdde5b1f",
+        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
         "stack_images_on_mobile": true,
         "mobile_content_alignment": "center",
         "show_text_below": true
