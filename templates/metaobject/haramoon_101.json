@@ -157,8 +157,94 @@
     },
     "177567291273d8e886": {
       "type": "_blocks",
+      "settings": {}
+    },
+    "hm_how_to_layer_EfFEHQ": {
+      "type": "hm-how-to-layer",
+      "name": "HM How to Layer",
+      "settings": {
+        "eyebrow": "The HARAMOON Method",
+        "heading": "How to Layer Your Routine",
+        "subheading": "Apply each step on damp skin, in order. Each layer prepares your skin to absorb the next.",
+        "step1_emoji": "🫧",
+        "step1_name": "{{ metaobjects.haramoon_101[\"pure-moisture-cleanser\"].product_name_type.value }}",
+        "step1_timing": "{{ metaobjects.haramoon_101[\"pure-moisture-cleanser\"].best_for_time_of_day | metafield_text }}",
+        "step1_tip": "Massage for 60 seconds on damp skin. Rinse with lukewarm water.",
+        "wait1": "30 sec",
+        "step2_emoji": "💎",
+        "step2_name": "{{ metaobjects.haramoon_101[\"clean-and-clear-toner\"].product_name_type.value }}",
+        "step2_timing": "{{ metaobjects.haramoon_101[\"clean-and-clear-toner\"].best_for_time_of_day | metafield_text }}",
+        "step2_tip": "Pat gently into skin — don't rub. Apply while skin is still slightly damp.",
+        "wait2": "60 sec",
+        "step3_emoji": "💧",
+        "step3_name": "{{ metaobjects.haramoon_101[\"silky-hydration-ampoule-1\"].product_name_type.value }}",
+        "step3_timing": "{{ metaobjects.haramoon_101[\"silky-hydration-ampoule-1\"].best_for_time_of_day | metafield_text }}",
+        "step3_tip": "Press 2–3 drops between palms, then press onto face. Do not rub.",
+        "wait3": "60–90 sec",
+        "step4_emoji": "🪩",
+        "step4_name": "{{ metaobjects.haramoon_101[\"centella-moisture-cream\"].product_name_type.value }}",
+        "step4_timing": "{{ metaobjects.haramoon_101[\"centella-moisture-cream\"].best_for_time_of_day | metafield_text }}",
+        "step4_tip": "Seal everything in. Use upward strokes. SPF on top in the morning.",
+        "show_ampm": false,
+        "am_tip": "<strong>Morning:</strong> Focus on hydration and protection. HARAMOON's lightweight formula layers perfectly under sunscreen and makeup without pilling. Your skin is prepped for the day — barrier strong, moisture locked.",
+        "pm_tip": "<strong>Evening:</strong> This is when your skin repairs itself. The ampoule's peptides and the cream's Centella work while you sleep. No SPF needed at night — let the actives do their job. For best results, apply to slightly damp skin right after cleansing.",
+        "bg_color": "#fdfaf0",
+        "heading_color": "#0e8eff",
+        "subtext_color": "#0d1b3e",
+        "accent_color": "#3498ff",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "rich_text_VdaTVX": {
+      "type": "rich-text",
       "blocks": {
-        "ai_gen_block_f5f4af9_8FknnH": {
+        "caption_7dBJNj": {
+          "type": "caption",
+          "disabled": true,
+          "settings": {
+            "caption": "ROUTINE TIPS",
+            "text_style": "caption-with-letter-spacing",
+            "text_size": "medium"
+          }
+        },
+        "text_rWqkCw": {
+          "type": "text",
+          "settings": {
+            "text": "<h2>TIMING TIPS FOR YOUR  ROUTINE ⏲</h2>"
+          }
+        }
+      },
+      "block_order": [
+        "caption_7dBJNj",
+        "text_rWqkCw"
+      ],
+      "name": "t:sections.rich-text.presets.name",
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "",
+        "full_width": false,
+        "padding_top": 32,
+        "padding_bottom": 16
+      }
+    },
+    "page_LDRjA9": {
+      "type": "page",
+      "disabled": true,
+      "name": "t:sections.page.presets.name",
+      "settings": {
+        "page": "about-haramoon",
+        "heading_size": "h2",
+        "color_scheme": "scheme-5",
+        "padding_top": 40,
+        "padding_bottom": 4
+      }
+    },
+    "blocks_EYAJgJ": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_f5f4af9_TAVBjU": {
           "type": "ai_gen_block_f5f4af9",
           "settings": {
             "morning_icon": "☀️",
@@ -199,65 +285,7 @@
             "text_color": "#5a5a5a"
           },
           "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_f5f4af9_8FknnH"
-      ],
-      "settings": {}
-    },
-    "hm_how_to_layer_EfFEHQ": {
-      "type": "hm-how-to-layer",
-      "name": "HM How to Layer",
-      "settings": {
-        "eyebrow": "The HARAMOON Method",
-        "heading": "How to Layer Your Routine",
-        "subheading": "Apply each step on damp skin, in order. Each layer prepares your skin to absorb the next.",
-        "step1_emoji": "🫧",
-        "step1_name": "{{ metaobjects.haramoon_101[\"pure-moisture-cleanser\"].product_name_type.value }}",
-        "step1_timing": "{{ metaobjects.haramoon_101[\"pure-moisture-cleanser\"].best_for_time_of_day | metafield_text }}",
-        "step1_tip": "Massage for 60 seconds on damp skin. Rinse with lukewarm water.",
-        "wait1": "30 sec",
-        "step2_emoji": "💎",
-        "step2_name": "{{ metaobjects.haramoon_101[\"clean-and-clear-toner\"].product_name_type.value }}",
-        "step2_timing": "{{ metaobjects.haramoon_101[\"clean-and-clear-toner\"].best_for_time_of_day | metafield_text }}",
-        "step2_tip": "Pat gently into skin — don't rub. Apply while skin is still slightly damp.",
-        "wait2": "60 sec",
-        "step3_emoji": "💧",
-        "step3_name": "{{ metaobjects.haramoon_101[\"silky-hydration-ampoule-1\"].product_name_type.value }}",
-        "step3_timing": "{{ metaobjects.haramoon_101[\"silky-hydration-ampoule-1\"].best_for_time_of_day | metafield_text }}",
-        "step3_tip": "Press 2–3 drops between palms, then press onto face. Do not rub.",
-        "wait3": "60–90 sec",
-        "step4_emoji": "🪩",
-        "step4_name": "{{ metaobjects.haramoon_101[\"centella-moisture-cream\"].product_name_type.value }}",
-        "step4_timing": "{{ metaobjects.haramoon_101[\"centella-moisture-cream\"].best_for_time_of_day | metafield_text }}",
-        "step4_tip": "Seal everything in. Use upward strokes. SPF on top in the morning.",
-        "show_ampm": false,
-        "am_tip": "<strong>Morning:</strong> Focus on hydration and protection. HARAMOON's lightweight formula layers perfectly under sunscreen and makeup without pilling. Your skin is prepped for the day — barrier strong, moisture locked.",
-        "pm_tip": "<strong>Evening:</strong> This is when your skin repairs itself. The ampoule's peptides and the cream's Centella work while you sleep. No SPF needed at night — let the actives do their job. For best results, apply to slightly damp skin right after cleansing.",
-        "bg_color": "#fdfaf0",
-        "heading_color": "#0e8eff",
-        "subtext_color": "#0d1b3e",
-        "accent_color": "#3498ff",
-        "padding_top": 72,
-        "padding_bottom": 72
-      }
-    },
-    "page_LDRjA9": {
-      "type": "page",
-      "disabled": true,
-      "name": "t:sections.page.presets.name",
-      "settings": {
-        "page": "about-haramoon",
-        "heading_size": "h2",
-        "color_scheme": "scheme-5",
-        "padding_top": 40,
-        "padding_bottom": 4
-      }
-    },
-    "blocks_EYAJgJ": {
-      "type": "_blocks",
-      "blocks": {
+        },
         "ai_gen_block_f5c708d_LFxGUb": {
           "type": "ai_gen_block_f5c708d",
           "settings": {
@@ -308,6 +336,7 @@
         }
       },
       "block_order": [
+        "ai_gen_block_f5f4af9_TAVBjU",
         "ai_gen_block_f5c708d_LFxGUb"
       ],
       "name": "Results timeline",
@@ -373,6 +402,7 @@
     "hm_ingredient_heroes_WkpDLF",
     "177567291273d8e886",
     "hm_how_to_layer_EfFEHQ",
+    "rich_text_VdaTVX",
     "page_LDRjA9",
     "blocks_EYAJgJ",
     "featured_blog_LQA93x",
