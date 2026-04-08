@@ -6,17 +6,19 @@ Run this ONCE to get your TikTok Shop access token and save it to .env.
 After that, the auto-refresh in the main scripts handles renewals.
 
 HOW TO USE:
-1. Open this URL in your browser and log in as the Wax and Wane shop seller:
-   https://services.tiktokshops.us/open/authorize?service_id=7618493139276334862
+1. Open this URL in your browser while logged into TikTok Shop as Wax and Wane:
+   https://auth.tiktok-shops.com/oauth/authorize?app_key=6jdqlj8pcfdru&state=waxwane
 
-2. After you click "Authorize", TikTok will redirect you to a URL that looks like:
-   https://your-redirect-url.com/?code=TTP_xxxxxxxx&state=...
+2. Log in with your TikTok Shop seller account and click "Authorize".
 
-3. Copy the code value (everything after code= and before &state)
+3. TikTok will redirect you to a URL that looks like:
+   https://your-redirect-url.com/?code=TTP_xxxxxxxx&state=waxwane
 
-4. Paste it when this script asks for it.
+4. Copy the ENTIRE redirect URL (or just the code= value after it)
 
-5. The script saves your access_token and refresh_token to .env automatically.
+5. Paste it when this script asks for it.
+
+6. The script saves your access_token and refresh_token to .env automatically.
 """
 
 import os
@@ -36,7 +38,7 @@ APP_KEY = os.getenv('TIKTOK_APP_KEY', '6jdqlj8pcfdru')
 APP_SECRET = os.getenv('TIKTOK_APP_SECRET', 'cf5952205ccd155be4d313cdb5d0d9f68cfbb31b')
 APP_ID = os.getenv('TIKTOK_APP_ID', '7618493139276334862')
 
-AUTH_URL = f'https://services.tiktokshops.us/open/authorize?service_id={APP_ID}'
+AUTH_URL = f'https://auth.tiktok-shops.com/oauth/authorize?app_key={APP_KEY}&state=waxwane'
 TOKEN_URL = 'https://auth.tiktok-shops.com/api/v2/token/get'
 REFRESH_URL = 'https://auth.tiktok-shops.com/api/v2/token/refresh'
 
