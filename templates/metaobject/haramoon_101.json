@@ -26,7 +26,7 @@
             "separator_color": "#999999",
             "current_text_color": "#0d1b3e",
             "cta_label": "Explore Ingredient Glossary",
-            "cta_url": "",
+            "cta_url": "shopify://pages/ultimate-korean-skincare-ingredient-glossary",
             "button_font_size": 12,
             "button_padding_vertical": 8,
             "button_padding_horizontal": 16,
@@ -117,6 +117,10 @@
         "padding_bottom": 36
       }
     },
+    "1775671183c97e3322": {
+      "type": "_blocks",
+      "settings": {}
+    },
     "hm_how_to_layer_EfFEHQ": {
       "type": "hm-how-to-layer",
       "name": "HM How to Layer",
@@ -125,26 +129,26 @@
         "heading": "How to Layer Your Routine",
         "subheading": "Apply each step on damp skin, in order. Each layer prepares your skin to absorb the next.",
         "step1_emoji": "🫧",
-        "step1_name": "Cleanser",
-        "step1_timing": "AM + PM",
+        "step1_name": "{{ metaobjects.haramoon_101[\"pure-moisture-cleanser\"].product_name_type.value }}",
+        "step1_timing": "{{ metaobjects.haramoon_101[\"pure-moisture-cleanser\"].best_for_time_of_day | metafield_text }}",
         "step1_tip": "Massage for 60 seconds on damp skin. Rinse with lukewarm water.",
         "wait1": "30 sec",
-        "step2_emoji": "💧",
-        "step2_name": "Toner",
-        "step2_timing": "AM + PM",
+        "step2_emoji": "💎",
+        "step2_name": "{{ metaobjects.haramoon_101[\"clean-and-clear-toner\"].product_name_type.value }}",
+        "step2_timing": "{{ metaobjects.haramoon_101[\"clean-and-clear-toner\"].best_for_time_of_day | metafield_text }}",
         "step2_tip": "Pat gently into skin — don't rub. Apply while skin is still slightly damp.",
         "wait2": "60 sec",
-        "step3_emoji": "⚗️",
-        "step3_name": "Ampoule",
-        "step3_timing": "AM + PM",
+        "step3_emoji": "💧",
+        "step3_name": "{{ metaobjects.haramoon_101[\"silky-hydration-ampoule-1\"].product_name_type.value }}",
+        "step3_timing": "{{ metaobjects.haramoon_101[\"silky-hydration-ampoule-1\"].best_for_time_of_day | metafield_text }}",
         "step3_tip": "Press 2–3 drops between palms, then press onto face. Do not rub.",
         "wait3": "60–90 sec",
-        "step4_emoji": "🌙",
-        "step4_name": "Cream",
-        "step4_timing": "AM + PM",
+        "step4_emoji": "🪩",
+        "step4_name": "{{ metaobjects.haramoon_101[\"centella-moisture-cream\"].product_name_type.value }}",
+        "step4_timing": "{{ metaobjects.haramoon_101[\"centella-moisture-cream\"].best_for_time_of_day | metafield_text }}",
         "step4_tip": "Seal everything in. Use upward strokes. SPF on top in the morning.",
-        "show_ampm": true,
-        "am_tip": "<strong>Morning:</strong> Focus on hydration and protection. After your 4 steps, always finish with SPF 30+. HARAMOON's lightweight formula layers perfectly under sunscreen without pilling. Your skin is prepped for the day — barrier strong, moisture locked.",
+        "show_ampm": false,
+        "am_tip": "<strong>Morning:</strong> Focus on hydration and protection. HARAMOON's lightweight formula layers perfectly under sunscreen and makeup without pilling. Your skin is prepped for the day — barrier strong, moisture locked.",
         "pm_tip": "<strong>Evening:</strong> This is when your skin repairs itself. The ampoule's peptides and the cream's Centella work while you sleep. No SPF needed at night — let the actives do their job. For best results, apply to slightly damp skin right after cleansing.",
         "bg_color": "#fdfaf0",
         "heading_color": "#0e8eff",
@@ -213,7 +217,7 @@
             "show_connector": true,
             "connector_color": "#0d1b3e",
             "dot_color": "#e2c84b",
-            "background_color": "#fdfaf0"
+            "background_color": "#e7f1ff"
           },
           "blocks": {}
         }
@@ -280,6 +284,7 @@
   "order": [
     "1775670733871a4c61",
     "featured_product_WRY6Kg",
+    "1775671183c97e3322",
     "hm_how_to_layer_EfFEHQ",
     "page_LDRjA9",
     "blocks_EYAJgJ",
