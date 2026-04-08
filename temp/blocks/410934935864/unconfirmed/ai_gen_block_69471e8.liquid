@@ -1,6 +1,414 @@
+{% doc %}
+  @prompt
+    Create a breadcrumb navigation section with two navigation buttons — one on the left and one on the right — each linkable to any page (e.g., a collection page or a blog). Design requirements: clean modern style, Poppins font loaded via Google Fonts, Title Case (every word capitalized using CSS text-transform: capitalize). Include JSON-LD BreadcrumbList structured data markup so Google Search Console recognizes it as breadcrumb navigation. The section should have settings to customize the label and URL for each button. Buttons should be styled as subtle underline-style breadcrumb links, not heavy CTAs. Make it responsive and minimal., perfect please add pill boxes around the two buttons so they stand out on the page. please center entire section on the screen , add hover effects that i can customize please
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+{% style %}
+  .ai-breadcrumb-nav-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    padding: {{ block.settings.padding_vertical }}px {{ block.settings.padding_horizontal }}px;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .ai-breadcrumb-nav__container-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: {{ block.settings.button_gap }}px;
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-breadcrumb-nav__link-{{ ai_gen_id }} {
+    font-family: 'Poppins', sans-serif;
+    font-size: {{ block.settings.font_size }}px;
+    font-weight: {{ block.settings.font_weight }};
+    color: {{ block.settings.text_color }};
+    text-decoration: none;
+    text-transform: capitalize;
+    padding: {{ block.settings.pill_padding_vertical }}px {{ block.settings.pill_padding_horizontal }}px;
+    border: {{ block.settings.pill_border_width }}px solid {{ block.settings.pill_border_color }};
+    border-radius: {{ block.settings.pill_border_radius }}px;
+    background-color: {{ block.settings.pill_background_color }};
+    transition: all {{ block.settings.hover_transition_speed }}s ease;
+    display: inline-block;
+  }
+
+  .ai-breadcrumb-nav__link-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.hover_text_color }};
+    background-color: {{ block.settings.hover_background_color }};
+    border-color: {{ block.settings.hover_border_color }};
+    transform: translateY({{ block.settings.hover_lift_distance }}px);
+    box-shadow: 0 {{ block.settings.hover_shadow_vertical }}px {{ block.settings.hover_shadow_blur }}px rgba(0, 0, 0, {{ block.settings.hover_shadow_opacity | divided_by: 100.0 }});
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-breadcrumb-nav__container-{{ ai_gen_id }} {
+      flex-direction: column;
+      gap: {{ block.settings.button_gap | times: 0.8 }}px;
+    }
+
+    .ai-breadcrumb-nav__link-{{ ai_gen_id }} {
+      font-size: {{ block.settings.font_size | times: 0.9 }}px;
+      width: 100%;
+      text-align: center;
+    }
+  }
+{% endstyle %}
+
+<breadcrumb-navigation-{{ ai_gen_id }}
+  class="ai-breadcrumb-nav-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <nav class="ai-breadcrumb-nav__container-{{ ai_gen_id }}" aria-label="Breadcrumb navigation">
+    {% if block.settings.left_link_label != blank %}
+      <a
+        href="{{ block.settings.left_link_url }}"
+        class="ai-breadcrumb-nav__link-{{ ai_gen_id }}"
+      >
+        {{ block.settings.left_link_label }}
+      </a>
+    {% endif %}
+
+    {% if block.settings.right_link_label != blank %}
+      <a
+        href="{{ block.settings.right_link_url }}"
+        class="ai-breadcrumb-nav__link-{{ ai_gen_id }}"
+      >
+        {{ block.settings.right_link_label }}
+      </a>
+    {% endif %}
+  </nav>
+</breadcrumb-navigation-{{ ai_gen_id }}>
+
+{% if block.settings.enable_structured_data %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {% if block.settings.left_link_label != blank and block.settings.left_link_url != blank %}
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": {{ block.settings.left_link_label | json }},
+        "item": "{{ shop.url }}{{ block.settings.left_link_url }}"
+      }{% if block.settings.right_link_label != blank and block.settings.right_link_url != blank %},{% endif %}
+      {% endif %}
+      {% if block.settings.right_link_label != blank and block.settings.right_link_url != blank %}
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ block.settings.right_link_label | json }},
+        "item": "{{ shop.url }}{{ block.settings.right_link_url }}"
+      }
+      {% endif %}
+    ]
+  }
+  </script>
+{% endif %}
+
+<script>
+  (function() {
+    class BreadcrumbNavigation{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.links = this.querySelectorAll('.ai-breadcrumb-nav__link-{{ ai_gen_id }}');
+      }
+    }
+
+    customElements.define('breadcrumb-navigation-{{ ai_gen_id }}', BreadcrumbNavigation{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Breadcrumb navigation",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Left navigation button"
+    },
+    {
+      "type": "text",
+      "id": "left_link_label",
+      "label": "Label",
+      "default": "Shop All Products"
+    },
+    {
+      "type": "url",
+      "id": "left_link_url",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Right navigation button"
+    },
+    {
+      "type": "text",
+      "id": "right_link_label",
+      "label": "Label",
+      "default": "Read Our Blog"
+    },
+    {
+      "type": "url",
+      "id": "right_link_url",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 600,
+      "max": 1600,
+      "step": 100,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "label": "Vertical padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "button_gap",
+      "label": "Space between buttons",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Pill style"
+    },
+    {
+      "type": "range",
+      "id": "pill_padding_vertical",
+      "label": "Vertical padding",
+      "min": 5,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "pill_padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "pill_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "pill_border_width",
+      "label": "Border width",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "pill_background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "pill_border_color",
+      "label": "Border color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "font_weight",
+      "label": "Font weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Regular"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semibold"
+        }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "header",
+      "content": "Hover effects"
+    },
+    {
+      "type": "color",
+      "id": "hover_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "hover_background_color",
+      "label": "Background color",
+      "default": "#037fff"
+    },
+    {
+      "type": "color",
+      "id": "hover_border_color",
+      "label": "Border color",
+      "default": "#037fff"
+    },
+    {
+      "type": "range",
+      "id": "hover_lift_distance",
+      "label": "Lift distance",
+      "min": -10,
+      "max": 0,
+      "step": 1,
+      "unit": "px",
+      "default": -3
+    },
+    {
+      "type": "range",
+      "id": "hover_shadow_vertical",
+      "label": "Shadow vertical offset",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "hover_shadow_blur",
+      "label": "Shadow blur",
+      "min": 0,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "hover_shadow_opacity",
+      "label": "Shadow opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "hover_transition_speed",
+      "label": "Transition speed",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "unit": "s",
+      "default": 0.3
+    },
+    {
+      "type": "header",
+      "content": "Structured data"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_structured_data",
+      "label": "Enable JSON-LD breadcrumb markup",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Breadcrumb navigation"
+    }
+  ]
+}
 {% endschema %}
