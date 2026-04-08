@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "name": "t:sections.footer.name",
   "type": "footer",
@@ -31,7 +40,7 @@
           "type": "text",
           "settings": {
             "heading": "About Wax | Wane",
-            "subtext": "<p>Based in Lincoln, Nebraska, Wax | Wane is a woman-owned shop curating Korean skincare, authentic crystals, and design-forward EMF protection \u2014 all chosen for integrity, function, and form. We carry HARAMOON skincare, hand-selected healing minerals, and science-backed EMF gear. Our shelves change slowly, on purpose. We add only what we'd keep ourselves.</p>"
+            "subtext": "<p>Based in Lincoln, Nebraska, Wax | Wane is a woman-owned shop curating Korean skincare, authentic crystals, and design-forward EMF protection — all chosen for integrity, function, and form. We carry HARAMOON skincare, hand-selected healing minerals, and science-backed EMF gear. Our shelves change slowly, on purpose. We add only what we'd keep ourselves.</p>"
           }
         }
       },
@@ -41,7 +50,6 @@
         "link_list_w3V6wW",
         "text_znkdnQ"
       ],
-      "disabled": false,
       "custom_css": [],
       "settings": {
         "color_scheme": "scheme-2",
@@ -57,9 +65,44 @@
         "padding_top": 28,
         "padding_bottom": 12
       }
+    },
+    "newsletter_b4pWXD": {
+      "type": "newsletter",
+      "blocks": {
+        "heading_Xt8FTC": {
+          "type": "heading",
+          "settings": {
+            "heading": "Subscribe to our emails",
+            "heading_size": "h1"
+          }
+        },
+        "paragraph_BLb33M": {
+          "type": "paragraph",
+          "settings": {
+            "text": "<p>Be the first to know about new collections and exclusive offers.</p>"
+          }
+        },
+        "email_form_YWXU6c": {
+          "type": "email_form",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "heading_Xt8FTC",
+        "paragraph_BLb33M",
+        "email_form_YWXU6c"
+      ],
+      "name": "t:sections.newsletter.presets.name",
+      "settings": {
+        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
     }
   },
   "order": [
+    "newsletter_b4pWXD",
     "footer"
   ]
 }

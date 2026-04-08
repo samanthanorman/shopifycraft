@@ -69,6 +69,7 @@
     },
     "featured_collection_pJwzB4": {
       "type": "featured-collection",
+      "disabled": true,
       "name": "t:sections.featured-collection.presets.name",
       "settings": {
         "collection": "natural-crystals-gemstones",
@@ -98,6 +99,7 @@
     },
     "featured_blog_EnHwFg": {
       "type": "featured-blog",
+      "disabled": true,
       "name": "t:sections.featured-blog.presets.name",
       "settings": {
         "blog": "crystals-science-magic",
@@ -113,12 +115,75 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
+    },
+    "blocks_iM9Acy": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_69471e8_rUaF4n": {
+          "type": "ai_gen_block_69471e8",
+          "settings": {
+            "left_link_label": "← Shop All Crystals",
+            "left_link_url": "shopify://collections/natural-crystals-gemstones",
+            "right_link_label": "Visit Our Crystal Blog →",
+            "right_link_url": "shopify://blogs/crystals-science-magic",
+            "desktop_width_percent": 100,
+            "max_width": 1200,
+            "padding_vertical": 20,
+            "padding_horizontal": 40,
+            "button_gap": 30,
+            "background_color": "#ffffff",
+            "pill_padding_vertical": 12,
+            "pill_padding_horizontal": 30,
+            "pill_border_radius": 30,
+            "pill_border_width": 1,
+            "pill_background_color": "#f7ddf3",
+            "pill_border_color": "#ff4be5",
+            "font_size": 14,
+            "font_weight": "500",
+            "text_color": "#0d1b3e",
+            "hover_text_color": "#ffffff",
+            "hover_background_color": "#bb74ff",
+            "hover_border_color": "#8303ff",
+            "hover_lift_distance": -3,
+            "hover_shadow_vertical": 8,
+            "hover_shadow_blur": 20,
+            "hover_shadow_opacity": 15,
+            "hover_transition_speed": 0.3,
+            "enable_structured_data": true
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_69471e8_rUaF4n"
+      ],
+      "name": "Breadcrumb navigation",
+      "settings": {}
+    },
+    "contact_form_MJqLWp": {
+      "type": "contact-form",
+      "name": "t:sections.contact-form.presets.name",
+      "settings": {
+        "heading": "Questions or Comments?",
+        "heading_size": "h1",
+        "color_scheme": "scheme-3",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "blocks_zC7tTA": {
+      "type": "_blocks",
+      "name": "Crystal care & FAQ",
+      "settings": {}
     }
   },
   "order": [
     "blocks_kmFPMA",
     "crystal_compendium_main",
     "featured_collection_pJwzB4",
-    "featured_blog_EnHwFg"
+    "featured_blog_EnHwFg",
+    "blocks_iM9Acy",
+    "contact_form_MJqLWp",
+    "blocks_zC7tTA"
   ]
 }
