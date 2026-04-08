@@ -9,6 +9,49 @@
  */
 {
   "sections": {
+    "1775674849f902f8d2": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_69471e8_fpabMJ": {
+          "type": "ai_gen_block_69471e8",
+          "settings": {
+            "left_link_label": "← Shop All Crystals",
+            "left_link_url": "shopify://collections/natural-crystals-gemstones",
+            "right_link_label": "Visit Our Crystal Blog →",
+            "right_link_url": "shopify://blogs/crystals-science-magic",
+            "desktop_width_percent": 100,
+            "max_width": 1200,
+            "padding_vertical": 20,
+            "padding_horizontal": 30,
+            "button_gap": 100,
+            "background_color": "#ffffff",
+            "pill_padding_vertical": 12,
+            "pill_padding_horizontal": 30,
+            "pill_border_radius": 30,
+            "pill_border_width": 1,
+            "pill_background_color": "#f7ddf3",
+            "pill_border_color": "#ff4be5",
+            "font_size": 14,
+            "font_weight": "500",
+            "text_color": "#0d1b3e",
+            "hover_text_color": "#ffffff",
+            "hover_background_color": "#bb74ff",
+            "hover_border_color": "#160272",
+            "hover_lift_distance": -3,
+            "hover_shadow_vertical": 8,
+            "hover_shadow_blur": 20,
+            "hover_shadow_opacity": 15,
+            "hover_transition_speed": 0.3,
+            "enable_structured_data": true
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_69471e8_fpabMJ"
+      ],
+      "settings": {}
+    },
     "image_banner_Ryjafq": {
       "type": "image-banner",
       "blocks": {
@@ -519,6 +562,7 @@
     }
   },
   "order": [
+    "1775674849f902f8d2",
     "image_banner_Ryjafq",
     "rich_text_GrkV8i",
     "collection_list_zK6tVp",
