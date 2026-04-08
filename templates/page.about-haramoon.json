@@ -18,11 +18,62 @@
     },
     "hm-why-we-chose": {
       "type": "hm-why-we-chose",
-      "settings": {}
+      "settings": {
+        "eyebrow": "Our Vetting Process",
+        "heading": "What Makes HARAMOON So Special?",
+        "quote_text": "I have always been the person in the room who reads the label. After years of After spending decades subscribing to Western skincare brands and chasing claims without any improvement, I finally decided to give K-Beauty a try. At first I was hesitant, with the same frontliner ingredients like Hyaluronic Acid and Retinol, I couldn't imagine brands from Korea figured something out that Western formulas hadn't already. Little did I know how wrong I was, and to my surprise and delight, as my skin healed, improved, and yes, even glowed, I decided I was a proud convert. \n\n At the time K-Beauty was a brand new concept, and any Korean brands I was able to find at big box retailers were altered before hitting the shelves. Formulas tweaked, ingredients substituted here and there, and sometimes entire product lines were bought to then be sunsetted completely, I felt cheated for not having the kind of access most Americans expect. I decided I had to bring more of it to the states myself. After scouring dozens of brands and endless ingredient labels, I found HARAMOON.\n\nWhat initially attracted us to HARAMOON was their clean and minimalist formulas. Having oily, clog-prone skin, avoiding unnecessary ingredients was my main goal. \n\nSecond, Haramoon merges clinical results with natural care — skin-friendly and earth conscious. Formulated intentionally to strengthen the skin barrier, HARAMOON acts like a multivitamin, meeting the foundational needs for long term skin health and longevity. This attitude was something new to my Western eyes, something special.",
+        "body_text": "I tested every product in the line on my own skin before I agreed to carry it, and today it's what I continue to use. The first thing I noticed? It was what I did not notice — no tightness after cleansing, no breakouts from switching, no fragrance headaches, no enlarged pores at the end of the day. That absence of reaction is the hardest thing to find in skincare, and it told me the formulas were doing exactly what they claimed. That is why Wax | Wane carries HARAMOON and is proud to be their first retail partner in the U.S.A.",
+        "sig_name": "Samantha",
+        "sig_title": "Founder, Wax | Wane Store",
+        "criteria1_show": true,
+        "criteria1_icon": "🔬",
+        "criteria1_name": "EWG Verified Ingredients",
+        "criteria1_desc": "Every ingredient independently reviewed by the Environmental Working Group for safety and full transparency.",
+        "criteria2_show": true,
+        "criteria2_icon": "🇰🇷",
+        "criteria2_name": "Korean R&D Formulation",
+        "criteria2_desc": "Developed by Korean dermatological researchers with decades of skin barrier science expertise.",
+        "criteria3_show": true,
+        "criteria3_icon": "🌱",
+        "criteria3_name": "Vegan & Cruelty-Free",
+        "criteria3_desc": "No animal-derived ingredients. Never tested on animals. Certified by recognized third-party organizations.",
+        "criteria4_show": true,
+        "criteria4_icon": "⚗️",
+        "criteria4_name": "pH 5.5 Skin-Matched",
+        "criteria4_desc": "Formulated to match the skin's natural acid mantle — protecting the barrier instead of disrupting it.",
+        "criteria5_show": true,
+        "criteria5_icon": "🤝",
+        "criteria5_name": "Exclusive US Partnership",
+        "criteria5_desc": "Wax | Wane is an authorized exclusive US distributor — every product is authentic, directly sourced.",
+        "bg_color": "#f0f8ff",
+        "heading_color": "#160272",
+        "body_color": "#d0e4f7",
+        "subtext_color": "#8fa8c0",
+        "accent_color": "#3498ff",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
     },
     "hm-founder-block": {
       "type": "hm-founder-block",
-      "settings": {}
+      "settings": {
+        "eyebrow": "The Curator Behind the Brand",
+        "heading": "Curated by Samantha",
+        "badge_text": "Founder & Curator",
+        "name": "Samantha",
+        "role": "Founder, Wax | Wane Store · The Happiest Hour LLC",
+        "bio_text": "I started Wax | Wane because I was tired of spending money on products that did not work and wellness advice that was either too complicated or too expensive to act on. I am not a dermatologist or a scientist — I am someone who did the research so you do not have to, and built a store around only the things I would actually put on my own face and in my own home.",
+        "bio_text_2": "Korean skincare changed my skin in a way that years of Western products never did. Crystals gave me a ritual that made self-care feel intentional instead of performative. And once I understood what EMFs actually are, I could not un-know it — so I found products that address it without the fear-mongering. Everything in this store is something I use, trust, and would recommend to my best friend.",
+        "mission_text": "I built Wax | Wane because I believe that living well should be accessible, honest, and a little bit fun — and because the products that actually work deserve to be found.",
+        "tags": "Korean Skincare Advocate, Clean Beauty, Crystal Wellness, EMF Awareness, Wax | Wane",
+        "bg_color": "#111827",
+        "heading_color": "#ffffff",
+        "body_color": "#d0e4f7",
+        "subtext_color": "#8fa8c0",
+        "accent_color": "#3498ff",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
     }
   },
   "order": [
