@@ -1,6 +1,317 @@
+{% doc %}
+  @prompt
+    Add a custom Liquid breadcrumb to this metaobject page template. The breadcrumb should read left to right in this order: All Products › HARAMOON Korean Skincare › [Metaobject Name], with a CTA button on the far right side.
+    
+    Requirements:
+    
+    "All Products" links to /collections/all
+    "HARAMOON Korean Skincare" links to /collections/haramoon-korean-skincare
+    The final crumb is the current metaobject's name/title field pulled dynamically from the metaobject entry being displayed — do NOT hardcode it
+    Use a › separator between each crumb
+    The last crumb (metaobject name) should NOT be a link — just plain text
+    On the far right side of the breadcrumb bar, add a small CTA button with customizable label and URL via theme editor settings (schema settings: one text field for button label defaulting to "Explore Ingredient Glossary", one URL field for button link)
+    Style the breadcrumb minimally to match a premium editorial aesthetic — small font, muted/light color, vertically centered
+    Style the CTA button as a small outlined or ghost button (border, no fill) that fits the editorial aesthetic — not bold or loud
+    The breadcrumb and CTA button should sit on the same row using flexbox: breadcrumb crumbs on the left, button on the right
+    Place the entire bar at the top of the metaobject template section, above all other content
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-breadcrumb-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    padding: {{ block.settings.vertical_padding }}px {{ block.settings.horizontal_padding }}px;
+    background-color: {{ block.settings.background_color }};
+    gap: 20px;
+  }
+
+  .ai-breadcrumb-nav-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: {{ block.settings.font_size }}px;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-breadcrumb-link-{{ ai_gen_id }} {
+    color: {{ block.settings.link_color }};
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .ai-breadcrumb-link-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.link_hover_color }};
+  }
+
+  .ai-breadcrumb-separator-{{ ai_gen_id }} {
+    color: {{ block.settings.separator_color }};
+    user-select: none;
+  }
+
+  .ai-breadcrumb-current-{{ ai_gen_id }} {
+    color: {{ block.settings.current_text_color }};
+  }
+
+  .ai-breadcrumb-cta-{{ ai_gen_id }} {
+    padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;
+    border: {{ block.settings.button_border_width }}px solid {{ block.settings.button_border_color }};
+    border-radius: {{ block.settings.button_border_radius }}px;
+    background-color: {{ block.settings.button_background_color }};
+    color: {{ block.settings.button_text_color }};
+    font-size: {{ block.settings.button_font_size }}px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+
+  .ai-breadcrumb-cta-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_background_color }};
+    color: {{ block.settings.button_hover_text_color }};
+    border-color: {{ block.settings.button_hover_border_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-breadcrumb-wrapper-{{ ai_gen_id }} {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .ai-breadcrumb-nav-{{ ai_gen_id }} {
+      font-size: {{ block.settings.font_size | times: 0.9 }}px;
+    }
+
+    .ai-breadcrumb-cta-{{ ai_gen_id }} {
+      width: 100%;
+      text-align: center;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-breadcrumb-wrapper-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <nav class="ai-breadcrumb-nav-{{ ai_gen_id }}" aria-label="Breadcrumb">
+    <a href="/collections/all" class="ai-breadcrumb-link-{{ ai_gen_id }}">All Products</a>
+    <span class="ai-breadcrumb-separator-{{ ai_gen_id }}" aria-hidden="true">›</span>
+    <a href="/collections/haramoon-korean-skincare" class="ai-breadcrumb-link-{{ ai_gen_id }}">HARAMOON Korean Skincare</a>
+    <span class="ai-breadcrumb-separator-{{ ai_gen_id }}" aria-hidden="true">›</span>
+    <span class="ai-breadcrumb-current-{{ ai_gen_id }}" aria-current="page">
+      {% if metaobject.name %}
+        {{ metaobject.name }}
+      {% elsif metaobject.title %}
+        {{ metaobject.title }}
+      {% else %}
+        {{ metaobject.system.handle }}
+      {% endif %}
+    </span>
+  </nav>
+
+  {% if block.settings.cta_label != blank and block.settings.cta_url != blank %}
+    <a href="{{ block.settings.cta_url }}" class="ai-breadcrumb-cta-{{ ai_gen_id }}">
+      {{ block.settings.cta_label }}
+    </a>
+  {% endif %}
+</div>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Breadcrumb with CTA",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "label": "Vertical padding",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "horizontal_padding",
+      "label": "Horizontal padding",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Breadcrumb style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_color",
+      "label": "Link hover color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "separator_color",
+      "label": "Separator color",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "current_text_color",
+      "label": "Current page color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "header",
+      "content": "CTA button"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Explore Ingredient Glossary"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button link"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "label": "Vertical padding",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_border_width",
+      "label": "Border width",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "color",
+      "id": "button_background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Border color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_background_color",
+      "label": "Hover background color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_border_color",
+      "label": "Hover border color",
+      "default": "#0d1b3e"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Breadcrumb with CTA"
+    }
+  ]
+}
 {% endschema %}
