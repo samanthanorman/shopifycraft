@@ -123,6 +123,12 @@
             "collection": "natural-crystals-gemstones"
           }
         },
+        "featured_collection_MjptQn": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "emf-shielding-faraday-protection"
+          }
+        },
         "featured_collection_D8xeTw": {
           "type": "featured_collection",
           "source": "{{ metaobjects.brand[\"wax-wane\"] }}",
@@ -134,22 +140,16 @@
           "type": "featured_collection",
           "source": "{{ metaobjects.brand[\"wax-wane\"] }}",
           "settings": {
-            "collection": "current-favorites-recommendations"
-          }
-        },
-        "featured_collection_MjptQn": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "emf-shielding-faraday-protection"
+            "collection": "jewelry-and-accessories"
           }
         }
       },
       "block_order": [
         "featured_collection_LFekwU",
         "featured_collection_6TMKr3",
+        "featured_collection_MjptQn",
         "featured_collection_D8xeTw",
-        "featured_collection_kifp7E",
-        "featured_collection_MjptQn"
+        "featured_collection_kifp7E"
       ],
       "name": "t:sections.collection-list.presets.name",
       "settings": {
@@ -187,12 +187,94 @@
         "text_RLEYji"
       ],
       "settings": {
-        "desktop_content_position": "center",
-        "content_alignment": "center",
+        "desktop_content_position": "left",
+        "content_alignment": "left",
         "color_scheme": "scheme-3",
         "full_width": true,
         "padding_top": 16,
         "padding_bottom": 16
+      }
+    },
+    "crystal_announcement_banner_dfrf8p": {
+      "type": "crystal-announcement-banner",
+      "disabled": true,
+      "name": "Crystal Banner",
+      "settings": {
+        "text_1": "✨ Shop our Crystal Collection — healing gemstones for every intention",
+        "link_1": "/collections/natural-crystals-gemstones",
+        "text_2": "💎 Become a Crystal Courtesan — explore the complete crystal glossary",
+        "link_2": "/pages/crystal-courtesan",
+        "font_family": "poppins_n4",
+        "font_size": 16,
+        "background_color": "#d9dfe0",
+        "background_gradient": "",
+        "text_color": "#002c60",
+        "icon_color": "#fc87ea",
+        "icon_stroke_color": "#002c60",
+        "icon_size": 24,
+        "icon_spacing": 16,
+        "icon_stroke_width_int": 15,
+        "banner_height": 80,
+        "padding_vertical": 16,
+        "padding_horizontal": 32
+      }
+    },
+    "multicolumn_JAYaPA": {
+      "type": "multicolumn",
+      "blocks": {
+        "column_ewTfQf": {
+          "type": "column",
+          "settings": {
+            "image": "shopify://shop_images/Set_of_colorful_crystal_points_on_a_white_background.jpg",
+            "title": "{{ metaobjects.mineral.fluorite.display_name.value }}",
+            "text": "<p> {{ metaobjects.mineral.fluorite.one_liner.value }}</p>",
+            "link_label": "Click To Learn More",
+            "link": "shopify://metaobjects/mineral/fluorite"
+          }
+        },
+        "column_xkQhGt": {
+          "type": "column",
+          "disabled": true,
+          "settings": {
+            "image": "shopify://shop_images/LapisIMG_2846.jpg",
+            "title": "{{ metaobjects.mineral[\"lapis-lazuli\"].display_name.value }}",
+            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "column_BjTqrM": {
+          "type": "column",
+          "settings": {
+            "title": "Column",
+            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "link_label": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "column_ewTfQf",
+        "column_xkQhGt",
+        "column_BjTqrM"
+      ],
+      "disabled": true,
+      "name": "t:sections.multicolumn.presets.name",
+      "settings": {
+        "title": "Elevate Your Space And Spirit With Crystals",
+        "heading_size": "h2",
+        "image_width": "full",
+        "image_ratio": "square",
+        "button_label": "Shop Crystals",
+        "button_link": "shopify://collections/natural-crystals-gemstones",
+        "columns_desktop": 3,
+        "column_alignment": "left",
+        "background_style": "primary",
+        "color_scheme": "scheme-3",
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 36
       }
     },
     "multirow_46HGgx": {
@@ -441,6 +523,8 @@
     "rich_text_GrkV8i",
     "collection_list_zK6tVp",
     "rich_text",
+    "crystal_announcement_banner_dfrf8p",
+    "multicolumn_JAYaPA",
     "multirow_46HGgx",
     "rich_text_e4bEaM",
     "collage_rjbxCk",

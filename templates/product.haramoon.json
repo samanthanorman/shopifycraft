@@ -253,7 +253,7 @@
           "settings": {
             "message_variant": "default",
             "show_exception_message": false,
-            "background_color": "#F9F9F9",
+            "background_color": "#f9f9f9",
             "transparent_background": false,
             "color": "#000000",
             "font": "assistant_n4",
@@ -549,7 +549,7 @@
           "type": "ai_gen_block_c5b0ac8",
           "settings": {
             "button_text": "Deeper Dive",
-            "metaobject_link": "shopify://metaobjects/haramoon_101/immortal-peptide-serum",
+            "metaobject_link": "{{ closest.product.metafields.custom.haramoon.value.system.url }}",
             "button_color": "#4ab2f0",
             "button_hover_color": "#f7ffe8",
             "button_text_color": "#0d1b3e",
