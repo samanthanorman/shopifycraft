@@ -14,6 +14,7 @@
       "blocks": {
         "ai_gen_block_69471e8_fpabMJ": {
           "type": "ai_gen_block_69471e8",
+          "disabled": true,
           "settings": {
             "left_link_label": "← Shop All Crystals",
             "left_link_url": "shopify://collections/natural-crystals-gemstones",
