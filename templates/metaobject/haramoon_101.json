@@ -117,6 +117,75 @@
         "padding_bottom": 36
       }
     },
+    "17756717564eaf1a76": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_7cffb8d_ENpQnV": {
+          "type": "ai_gen_block_7cffb8d",
+          "settings": {
+            "heading": "Hero Ingredients Inside",
+            "heading_emoji": "👁️",
+            "heading_size": 32,
+            "heading_color": "#0d1b3e",
+            "subheading": "Click Each Card To Learn More",
+            "subheading_size": 16,
+            "subheading_color": "#666666",
+            "max_cards": 20,
+            "show_card_1": true,
+            "show_card_2": true,
+            "show_card_3": true,
+            "show_card_4": true,
+            "show_card_5": true,
+            "show_card_6": true,
+            "show_card_7": true,
+            "show_card_8": true,
+            "show_card_9": true,
+            "show_card_10": true,
+            "show_card_11": true,
+            "show_card_12": true,
+            "show_card_13": true,
+            "show_card_14": true,
+            "show_card_15": true,
+            "show_card_16": true,
+            "show_card_17": true,
+            "show_card_18": true,
+            "show_card_19": true,
+            "show_card_20": true,
+            "background_color": "#ffffff",
+            "card_background": "#ffffff",
+            "card_border_color": "#e0e0e0",
+            "name_color": "#0d1b3e",
+            "description_color": "#666666",
+            "card_padding": 24,
+            "card_gap": 20,
+            "card_border_width": 1,
+            "card_border_radius": 12,
+            "icon_size": 80,
+            "name_size": 18,
+            "description_size": 14,
+            "card_shadow_opacity": 0,
+            "card_shadow_vertical": 8,
+            "card_shadow_blur": 16,
+            "card_hover_lift": -4,
+            "card_hover_glow_opacity": 10,
+            "card_hover_glow_color": "#000000",
+            "card_hover_glow_spread": 8,
+            "card_hover_glow_blur": 16,
+            "arrow_size": 40,
+            "arrow_background": "#ffffff",
+            "arrow_border_color": "#e0e0e0",
+            "arrow_color": "#000000",
+            "arrow_hover_background": "#f4f4f4",
+            "arrow_hover_border": "#cccccc"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_7cffb8d_ENpQnV"
+      ],
+      "settings": {}
+    },
     "1775671183c97e3322": {
       "type": "_blocks",
       "settings": {}
@@ -284,6 +353,7 @@
   "order": [
     "1775670733871a4c61",
     "featured_product_WRY6Kg",
+    "17756717564eaf1a76",
     "1775671183c97e3322",
     "hm_how_to_layer_EfFEHQ",
     "page_LDRjA9",
