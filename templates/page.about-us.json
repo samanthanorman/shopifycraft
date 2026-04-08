@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "image_banner_cDQWgU": {
@@ -40,8 +49,8 @@
     "main": {
       "type": "main-page",
       "settings": {
-        "padding_top": 36,
-        "padding_bottom": 36
+        "padding_top": 12,
+        "padding_bottom": 12
       }
     },
     "multirow_QHY7c8": {
@@ -50,33 +59,33 @@
         "row_jQPUma": {
           "type": "row",
           "settings": {
-            "image": "shopify://shop_images/ChatGPT_Image_Aug_26_2025_05_21_43_PM.png",
+            "image": "shopify://shop_images/6_bd1f1f01-7b9f-40ef-b171-4940441e8887.png",
             "caption": "Our Story",
-            "heading": "<strong>From Lincoln, Nebraska \u2014 With Love and Intention</strong>",
-            "text": "<p>Born in the heartland, Wax | Wane reflects the grounded pace and quiet integrity of Nebraska life. Founded and owned by a woman with a lifelong fascination for design and detail, the store began as a small experiment in thoughtful living. Today, it connects the heartland\u2019s sense of honesty with a modern, global reach \u2014 from Korean skincare to handcrafted goods and authentic crystals, all selected for their usefulness and beauty.</p>",
-            "button_label": "Our Story",
+            "heading": "<strong>From Lincoln, Nebraska — With Good Intentions</strong>",
+            "text": "<p>Born in the heartland of America, Wax | Wane reflects the grounded pace and quiet integrity of Nebraska life. With a lifelong fascination for design and detail, the store began as a small experiment in thoughtful living. Today, it connects the heartland’s sense of honesty with a modern, global reach — from Korean skincare, to natural crystals, to EMF shielding, every niche wellness item is selected for both its form and function.</p>",
+            "button_label": "",
             "button_link": "shopify://pages/about-us"
           }
         },
         "row_hXbMeX": {
           "type": "row",
           "settings": {
-            "image": "shopify://shop_images/witch_stained_glass_image.png",
+            "image": "shopify://shop_images/15_00e8df41-9c1b-419a-a4aa-3d15582f53be.png",
             "caption": "OUR CORE VALUES",
             "heading": "<strong>Why Shop Wax | Wane?</strong>",
-            "text": "<p>Like the moon, we move through phases \u2014 growth, rest, reflection. Our collection mirrors that rhythm: Korean skincare for renewal, natural crystals for grounding, and EMF shielding for balance in a modern, connected world. Each category is chosen with precision, sourced ethically, and shared with transparency.</p>",
-            "button_label": "Shop Wax | Wane",
+            "text": "<p>Like the moon, we move through phases — growth, rest, reflection. Our collection mirrors that rhythm: Korean skincare for renewal, natural crystals for grounding, and EMF shielding for balance in a modern, connected world. Each category is chosen with precision, sourced ethically, and shared with transparency.</p>",
+            "button_label": "",
             "button_link": "shopify://collections/all"
           }
         },
         "row_cXBX7V": {
           "type": "row",
           "settings": {
-            "image": "shopify://shop_images/A78A8E28-9A81-4796-A8C6-EE4EC324FB35_f35e7db0-29f3-4718-83d1-43114cef7238.png",
+            "image": "shopify://shop_images/10_759c2e22-185e-47bc-9485-e9cd79621b24.png",
             "caption": "How We Source & Create",
             "heading": "<strong>Quality, Provenance, and Proof Over Hype</strong>",
-            "text": "<p>We work only with trusted suppliers and makers who value authenticity over trend. Every crystal is <strong>undyed, naturally formed</strong>, and evaluated for clarity and structure. Our EMF gear is <strong>tested for real shielding</strong>, refined for design, and ready to ship quickly through <strong>Amazon and Walmart Prime</strong>. Even our skincare partners are selected for <strong>clinical integrity</strong> and gentle formulations.</p>",
-            "button_label": "Visit The Blog",
+            "text": "<p>We work only with trusted suppliers and makers who value authenticity over trend. Every crystal is <strong>undyed, naturally formed</strong>, and evaluated for clarity and structure. Our EMF gear is <strong>tested for real shielding</strong>, refined for design, and ready to ship quickly through <strong>Amazon Prime and Walmart Fulfillment</strong>. Even our skincare items are selected after thorough testing from a clinical integrity and personal satisfaction perspective.</p>",
+            "button_label": "",
             "button_link": "shopify://blogs/wax-wane"
           }
         }
@@ -97,8 +106,8 @@
         "desktop_content_position": "middle",
         "desktop_content_alignment": "left",
         "mobile_content_alignment": "left",
-        "section_color_scheme": "",
-        "row_color_scheme": "",
+        "section_color_scheme": "scheme-3",
+        "row_color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
         "padding_top": 36,
         "padding_bottom": 36
       }
@@ -116,7 +125,7 @@
         "text_mD3Ggt": {
           "type": "text",
           "settings": {
-            "text": "<p>Wax | Wane is a woman-owned small business rooted in Lincoln, Nebraska \u2014 a place that values honesty, craftsmanship, and patience. What began as a passion for beautiful, functional things has grown into a space where modern design meets mindful living.</p><p>Whether you\u2019re discovering authentic crystals, science-led Korean skincare, or reliable EMF shielding, we\u2019re honored to be part of your search for what feels true. Take your time exploring. Everything here was chosen with care, made to last, and meant to be used.</p><p><strong>Shop intentionally. Live thoughtfully. From the heartland, with love.</strong></p>"
+            "text": "<p>Wax | Wane is a woman-owned small business rooted in Lincoln, Nebraska — a place that values honesty, craftsmanship, and patience. What began as a passion for beautiful, functional things has grown into a space where modern design meets mindful living.</p><p>Whether you’re discovering authentic crystals, science-led Korean skincare, or reliable EMF shielding, we’re honored to be part of your search for what feels true. Take your time exploring. Everything here was chosen with care, made to last, and meant to be used.</p><p><strong>Shop intentionally. Live thoughtfully. From the heartland, with love.</strong></p>"
           }
         },
         "button_f4PFiB": {
@@ -140,7 +149,7 @@
       "settings": {
         "desktop_content_position": "center",
         "content_alignment": "center",
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
         "full_width": true,
         "padding_top": 40,
         "padding_bottom": 52
@@ -193,40 +202,6 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
-    },
-    "newsletter_LRGE8R": {
-      "type": "newsletter",
-      "blocks": {
-        "heading_tkiVd3": {
-          "type": "heading",
-          "settings": {
-            "heading": "Subscribe to our emails",
-            "heading_size": "h1"
-          }
-        },
-        "paragraph_MNKCM8": {
-          "type": "paragraph",
-          "settings": {
-            "text": "<p>Be the first to know about new collections and exclusive offers.</p>"
-          }
-        },
-        "email_form_dYDd4P": {
-          "type": "email_form",
-          "settings": {}
-        }
-      },
-      "block_order": [
-        "heading_tkiVd3",
-        "paragraph_MNKCM8",
-        "email_form_dYDd4P"
-      ],
-      "name": "t:sections.newsletter.presets.name",
-      "settings": {
-        "color_scheme": "scheme-1",
-        "full_width": true,
-        "padding_top": 40,
-        "padding_bottom": 52
-      }
     }
   },
   "order": [
@@ -234,7 +209,6 @@
     "main",
     "multirow_QHY7c8",
     "rich_text_xmqEQR",
-    "collection_list_UrfLPw",
-    "newsletter_LRGE8R"
+    "collection_list_UrfLPw"
   ]
 }
