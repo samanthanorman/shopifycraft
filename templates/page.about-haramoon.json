@@ -66,19 +66,19 @@
         "bio_text_2": "Korean skincare changed my skin in a way that years of Western products never did. Crystals gave me a ritual that made self-care feel intentional instead of performative. And once I understood what EMFs actually are, I could not un-know it — so I found products that address it without the fear-mongering. Everything in this store is something I use, trust, and would recommend to my best friend.",
         "mission_text": "I built Wax | Wane because I believe that living well should be accessible, honest, and a little bit fun — and because the products that actually work deserve to be found.",
         "tags": "Korean Skincare Advocate, Clean Beauty, Crystal Wellness, EMF Awareness, Wax | Wane",
-        "bg_color": "#111827",
-        "heading_color": "#ffffff",
-        "body_color": "#d0e4f7",
-        "subtext_color": "#8fa8c0",
+        "bg_color": "#f0f8ff",
+        "heading_color": "#003870",
+        "body_color": "#6f808f",
+        "subtext_color": "#0053b6",
         "accent_color": "#3498ff",
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 20
       }
     }
   },
   "order": [
-    "main",
     "hm-why-we-chose",
+    "main",
     "hm-founder-block"
   ]
 }
