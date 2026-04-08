@@ -121,44 +121,6 @@
       "type": "_blocks",
       "settings": {}
     },
-    "hm_ingredient_heroes_WkpDLF": {
-      "type": "hm-ingredient-heroes",
-      "name": "Ingredient Heroes",
-      "settings": {
-        "eyebrow": "What's Inside",
-        "title": "Ingredient Heroes in This Formula",
-        "subtitle": "Tap any ingredient to explore its full profile.",
-        "header_align": "center",
-        "header_gap": 28,
-        "title_size": 24,
-        "subtitle_size": 14,
-        "pill_font_size": 13,
-        "max_width": 900,
-        "padding_top": 48,
-        "padding_bottom": 48,
-        "side_padding": 20,
-        "pill_gap": 12,
-        "pill_padding_v": 14,
-        "pill_padding_h": 16,
-        "pill_radius": 40,
-        "pill_min_height": 52,
-        "bg_color": "#f8faff",
-        "title_color": "#141615",
-        "subtitle_color": "#53585a",
-        "accent_color": "#3498ff",
-        "accent_color_2": "#a78bfa",
-        "pill_bg": "#ffffff",
-        "pill_hover_bg": "#eff6ff",
-        "pill_border": "#e5e7eb",
-        "pill_text_color": "#1e3a8a",
-        "glass_highlight": "#ffffff",
-        "shadow_color": "#141615"
-      }
-    },
-    "177567291273d8e886": {
-      "type": "_blocks",
-      "settings": {}
-    },
     "hm_how_to_layer_EfFEHQ": {
       "type": "hm-how-to-layer",
       "name": "HM How to Layer",
@@ -455,8 +417,6 @@
     "1775670733871a4c61",
     "featured_product_WRY6Kg",
     "17756717564eaf1a76",
-    "hm_ingredient_heroes_WkpDLF",
-    "177567291273d8e886",
     "hm_how_to_layer_EfFEHQ",
     "rich_text_VdaTVX",
     "page_LDRjA9",
