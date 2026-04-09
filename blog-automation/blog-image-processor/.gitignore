@@ -1,0 +1,5 @@
+# Keep the input/ and output/ folders tracked but ignore macOS junk
+.DS_Store
+__pycache__/
+*.pyc
+*.pyo

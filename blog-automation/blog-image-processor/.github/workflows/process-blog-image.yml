@@ -1,0 +1,96 @@
+name: Process Blog Featured Image
+
+# ---------------------------------------------------------------
+# TRIGGER: Runs automatically whenever a new image is pushed into
+#          blog-automation/blog-image-processor/input/
+#
+# You can also trigger it manually from the GitHub Actions tab
+# (Actions > Process Blog Featured Image > Run workflow) and
+# supply a custom image filename.
+# ---------------------------------------------------------------
+
+on:
+  push:
+    paths:
+      - "blog-automation/blog-image-processor/input/**"
+  workflow_dispatch:
+    inputs:
+      image_filename:
+        description: "Filename of the image in the input/ folder (e.g. my-ingredient.png)"
+        required: false
+        default: ""
+      direction:
+        description: "Rotation direction: right | left | both"
+        required: false
+        default: "both"
+
+jobs:
+  process-image:
+    name: Rotate & Crop to Blog Dimensions
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # 3. Install Pillow
+      - name: Install dependencies
+        run: pip install Pillow
+
+      # 4. Determine which image(s) to process
+      - name: Detect changed images
+        id: detect
+        run: |
+          cd blog-automation/blog-image-processor
+          if [ -n "${{ github.event.inputs.image_filename }}" ]; then
+            # Manual run with explicit filename
+            echo "images=${{ github.event.inputs.image_filename }}" >> $GITHUB_OUTPUT
+          else
+            # Auto-detect images added/changed in this push
+            CHANGED=$(git diff --name-only HEAD~1 HEAD -- input/ | xargs -I{} basename {} | tr '\n' ' ')
+            echo "images=${CHANGED}" >> $GITHUB_OUTPUT
+          fi
+          echo "direction=${{ github.event.inputs.direction || 'both' }}" >> $GITHUB_OUTPUT
+
+      # 5. Run the rotation script on each detected image
+      - name: Process images
+        run: |
+          cd blog-automation/blog-image-processor
+          DIRECTION="${{ steps.detect.outputs.direction }}"
+          for img in ${{ steps.detect.outputs.images }}; do
+            if [ -f "input/$img" ]; then
+              echo "Processing: $img (direction: $DIRECTION)"
+              python rotate_blog_image.py \
+                --input "input/$img" \
+                --direction "$DIRECTION" \
+                --output output
+            else
+              echo "WARNING: input/$img not found — skipping."
+            fi
+          done
+
+      # 6. Commit the processed output images back to the repo
+      - name: Commit processed images
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add blog-automation/blog-image-processor/output/
+          git diff --cached --quiet || git commit -m "chore: auto-processed blog image(s) [skip ci]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 7. Upload processed images as a downloadable artifact (30-day retention)
+      - name: Upload output as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: blog-images-processed
+          path: blog-automation/blog-image-processor/output/
+          retention-days: 30
