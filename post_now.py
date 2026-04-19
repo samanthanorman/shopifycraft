@@ -28,6 +28,27 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 # ─────────────────────────────────────────────
+# RETRY HELPER — retries on network errors
+# ─────────────────────────────────────────────
+def api_post(url, data, retries=4, backoff=10):
+    """POST with automatic retry on connection errors (WiFi blips, DNS failures)."""
+    for attempt in range(1, retries + 1):
+        try:
+            r = requests.post(url, data=data, timeout=30)
+            r.raise_for_status()
+            return r
+        except (requests.exceptions.ConnectionError,
+                requests.exceptions.Timeout) as e:
+            if attempt == retries:
+                raise
+            wait = backoff * attempt
+            print(f"  Network hiccup (attempt {attempt}/{retries}). Retrying in {wait}s...")
+            time.sleep(wait)
+        except requests.exceptions.HTTPError as e:
+            # Don't retry on HTTP errors (bad token, rate limit, etc)
+            raise
+
+# ─────────────────────────────────────────────
 # CONFIGURATION — edit these if needed
 # ─────────────────────────────────────────────
 # Wax | Wane credentials (confirmed working Apr 17 2026)
@@ -186,34 +207,31 @@ def save_state(state):
 def ig_post_single(image_url, caption):
     """Post a single image to Instagram via Graph API."""
     # Step 1: Create container
-    r = requests.post(
+    r = api_post(
         f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media",
         data={"image_url": image_url, "caption": caption, "access_token": IG_TOKEN}
     )
-    r.raise_for_status()
     container_id = r.json()["id"]
     time.sleep(3)
     # Step 2: Publish
-    r2 = requests.post(
+    r2 = api_post(
         f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish",
         data={"creation_id": container_id, "access_token": IG_TOKEN}
     )
-    r2.raise_for_status()
     return r2.json().get("id")
 
 def ig_post_carousel(image_urls, caption):
     """Post a carousel to Instagram via Graph API."""
     child_ids = []
     for url in image_urls:
-        r = requests.post(
+        r = api_post(
             f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media",
             data={"image_url": url, "is_carousel_item": "true", "access_token": IG_TOKEN}
         )
-        r.raise_for_status()
         child_ids.append(r.json()["id"])
         time.sleep(2)
     # Create carousel container
-    r2 = requests.post(
+    r2 = api_post(
         f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media",
         data={
             "media_type": "CAROUSEL",
@@ -222,29 +240,24 @@ def ig_post_carousel(image_urls, caption):
             "access_token": IG_TOKEN
         }
     )
-    r2.raise_for_status()
     container_id = r2.json()["id"]
     time.sleep(3)
     # Publish
-    r3 = requests.post(
+    r3 = api_post(
         f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish",
         data={"creation_id": container_id, "access_token": IG_TOKEN}
     )
-    r3.raise_for_status()
     return r3.json().get("id")
 
 def fb_post(image_url, caption):
     """Cross-post a single image to the Niche Wellness Facebook Page."""
     try:
-        r = requests.post(
+        r = api_post(
             f"https://graph.facebook.com/v19.0/{FB_PAGE_ID}/photos",
             data={"url": image_url, "caption": caption, "access_token": FB_PAGE_TOKEN}
         )
-        if r.status_code == 200:
-            fb_id = r.json().get("post_id", r.json().get("id", ""))
-            print(f"  Facebook: https://www.facebook.com/{FB_PAGE_ID}/posts/{fb_id.split('_')[-1] if '_' in str(fb_id) else fb_id}")
-        else:
-            print(f"  Facebook: skipped ({r.status_code} — {r.json().get('error', {}).get('message', 'unknown error')})")
+        fb_id = r.json().get("post_id", r.json().get("id", ""))
+        print(f"  Facebook: https://www.facebook.com/{FB_PAGE_ID}/posts/{fb_id.split('_')[-1] if '_' in str(fb_id) else fb_id}")
     except Exception as e:
         print(f"  Facebook: skipped (error: {e})")
 
