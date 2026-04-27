@@ -144,7 +144,7 @@
       "settings": {
         "desktop_content_position": "center",
         "content_alignment": "center",
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-3",
         "full_width": true,
         "padding_top": 40,
         "padding_bottom": 52
@@ -239,62 +239,87 @@
         "padding_bottom": 16
       }
     },
-    "multicolumn_JAYaPA": {
-      "type": "multicolumn",
+    "collage_rjbxCk": {
+      "type": "collage",
       "blocks": {
-        "column_ewTfQf": {
-          "type": "column",
+        "image_XHwAyz": {
+          "type": "image",
           "settings": {
-            "image": "shopify://shop_images/Set_of_colorful_crystal_points_on_a_white_background.jpg",
-            "title": "{{ metaobjects.mineral.fluorite.display_name.value }}",
-            "text": "<p> {{ metaobjects.mineral.fluorite.one_liner.value }}</p>",
-            "link_label": "Click To Learn More",
-            "link": "shopify://metaobjects/mineral/fluorite"
+            "image": "shopify://shop_images/IMG_8820_11zon.webp"
           }
         },
-        "column_xkQhGt": {
-          "type": "column",
-          "disabled": true,
+        "collection_F9KxBJ": {
+          "type": "collection",
           "settings": {
-            "image": "shopify://shop_images/LapisIMG_2846.jpg",
-            "title": "{{ metaobjects.mineral[\"lapis-lazuli\"].display_name.value }}",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
-            "link_label": "",
-            "link": ""
+            "collection": "haramoon-korean-skincare"
           }
         },
-        "column_BjTqrM": {
-          "type": "column",
+        "product_qccanY": {
+          "type": "product",
           "settings": {
-            "title": "Column",
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
-            "link_label": "",
-            "link": ""
+            "product": "haramoon-ph-balanced-pure-moisture-cleanser-korean-and-soften-natural-vegan-korean-skincare-150ml-copy",
+            "second_image": true
           }
         }
       },
       "block_order": [
-        "column_ewTfQf",
-        "column_xkQhGt",
-        "column_BjTqrM"
+        "image_XHwAyz",
+        "collection_F9KxBJ",
+        "product_qccanY"
       ],
-      "disabled": true,
-      "name": "t:sections.multicolumn.presets.name",
+      "name": "t:sections.collage.presets.name",
       "settings": {
-        "title": "Elevate Your Space And Spirit With Crystals",
-        "heading_size": "h2",
-        "image_width": "full",
-        "image_ratio": "square",
-        "button_label": "Shop Crystals",
-        "button_link": "shopify://collections/natural-crystals-gemstones",
-        "columns_desktop": 3,
-        "column_alignment": "left",
-        "background_style": "primary",
-        "color_scheme": "scheme-3",
-        "columns_mobile": "1",
-        "swipe_on_mobile": false,
+        "heading": "<strong>From Seoul 🛬 To  Skin </strong>",
+        "heading_size": "hxl",
+        "desktop_layout": "left",
+        "mobile_layout": "column",
+        "card_styles": "product-card-wrapper",
+        "color_scheme": "scheme-2",
         "padding_top": 36,
         "padding_bottom": 36
+      }
+    },
+    "rich_text_VJcFyC": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_zcwkxR": {
+          "type": "heading",
+          "settings": {
+            "heading": "Why We Love Haramoon ✨",
+            "heading_size": "h2"
+          }
+        },
+        "text_gBWHdp": {
+          "type": "text",
+          "settings": {
+            "text": "<h3><strong>High-function skincare, gentle enough for sensitive skin. </strong></h3><p>Vegan, hypoallergenic, and EWG verified ingredient formulas are just the beginning.</p><p>Scientifically, intentionally formulated to be a foundation any age can trust to promote  skin longevity and barrier health. </p>"
+          }
+        },
+        "button_9cnaYi": {
+          "type": "button",
+          "settings": {
+            "button_label": "HARAMOON Korea ↗️",
+            "button_link": "https://store.haramoon.co.kr/aboutus",
+            "button_style_secondary": false,
+            "button_label_2": "About The Products",
+            "button_link_2": "shopify://pages/about-haramoon",
+            "button_style_secondary_2": false
+          }
+        }
+      },
+      "block_order": [
+        "heading_zcwkxR",
+        "text_gBWHdp",
+        "button_9cnaYi"
+      ],
+      "name": "t:sections.rich-text.presets.name",
+      "settings": {
+        "desktop_content_position": "left",
+        "content_alignment": "left",
+        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
+        "full_width": true,
+        "padding_top": 68,
+        "padding_bottom": 32
       }
     },
     "multirow_46HGgx": {
@@ -350,113 +375,10 @@
         "desktop_content_position": "middle",
         "desktop_content_alignment": "center",
         "mobile_content_alignment": "center",
-        "section_color_scheme": "scheme-2",
+        "section_color_scheme": "scheme-5",
         "row_color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
         "padding_top": 16,
         "padding_bottom": 16
-      }
-    },
-    "1777260382f1d59d37": {
-      "type": "_blocks",
-      "blocks": {
-        "ai_gen_block_4c0d1b4_rna3ma": {
-          "type": "ai_gen_block_4c0d1b4",
-          "settings": {
-            "heading": "All About EMFs and Radiation",
-            "heading_color": "#0d1b3e",
-            "text_alignment": "center",
-            "show_card_1": true,
-            "card_1_title": "What are EMFs?",
-            "card_1_body": "<p>Electromagnetic fields (EMFs) are invisible areas of energy produced by electricity. Learn how they affect your daily life.</p>",
-            "card_1_background": "#ffffff",
-            "show_card_2": true,
-            "card_2_title": "Sources of Radiation",
-            "card_2_body": "<p>From cell phones to WiFi routers, discover the common sources of EMF radiation in your home and workplace.</p>",
-            "card_2_background": "#ffffff",
-            "show_card_3": true,
-            "card_3_title": "Protection Solutions",
-            "card_3_body": "<p>Explore science-backed methods to reduce your exposure and create a healthier living environment.</p>",
-            "card_3_background": "#ffffff",
-            "show_cta_button": true,
-            "cta_label": "Learn More",
-            "cta_link": "",
-            "button_background_color": "#160272",
-            "button_text_color": "#fdfaf0",
-            "button_hover_color": "#0d1b3e",
-            "background_color": "#fdfaf0",
-            "background_gradient": "",
-            "padding_top": 60,
-            "padding_bottom": 60
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_4c0d1b4_rna3ma"
-      ],
-      "settings": {}
-    },
-    "crystal_announcement_banner_dfrf8p": {
-      "type": "crystal-announcement-banner",
-      "name": "Crystal Banner",
-      "settings": {
-        "text_1": "✨ Shop our Crystal Collection — healing gemstones for every intention",
-        "link_1": "/collections/natural-crystals-gemstones",
-        "text_2": "💎 Become a Crystal Courtesan — explore the complete crystal glossary",
-        "link_2": "/pages/crystal-courtesan",
-        "font_family": "poppins_n4",
-        "font_size": 16,
-        "background_color": "#ffe876",
-        "background_gradient": "linear-gradient(133deg, rgba(250, 220, 54, 0.51) 11%, rgba(254, 98, 146, 0.18) 49%, rgba(250, 220, 54, 0.56) 87%)",
-        "text_color": "#002c60",
-        "icon_color": "#fc87ea",
-        "icon_stroke_color": "#002c60",
-        "icon_size": 24,
-        "icon_spacing": 16,
-        "icon_stroke_width_int": 15,
-        "banner_height": 80,
-        "padding_vertical": 16,
-        "padding_horizontal": 32
-      }
-    },
-    "collage_rjbxCk": {
-      "type": "collage",
-      "blocks": {
-        "image_XHwAyz": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/IMG_8820_11zon.webp"
-          }
-        },
-        "collection_F9KxBJ": {
-          "type": "collection",
-          "settings": {
-            "collection": "haramoon-korean-skincare"
-          }
-        },
-        "product_qccanY": {
-          "type": "product",
-          "settings": {
-            "product": "haramoon-ph-balanced-pure-moisture-cleanser-korean-and-soften-natural-vegan-korean-skincare-150ml-copy",
-            "second_image": true
-          }
-        }
-      },
-      "block_order": [
-        "image_XHwAyz",
-        "collection_F9KxBJ",
-        "product_qccanY"
-      ],
-      "name": "t:sections.collage.presets.name",
-      "settings": {
-        "heading": "<strong>From Seoul 🛬 To  Skin </strong>",
-        "heading_size": "hxl",
-        "desktop_layout": "left",
-        "mobile_layout": "column",
-        "card_styles": "product-card-wrapper",
-        "color_scheme": "",
-        "padding_top": 36,
-        "padding_bottom": 36
       }
     },
     "rich_text_e4bEaM": {
@@ -528,11 +450,9 @@
     "rich_text_GrkV8i",
     "collection_list_zK6tVp",
     "rich_text",
-    "multicolumn_JAYaPA",
-    "multirow_46HGgx",
-    "1777260382f1d59d37",
-    "crystal_announcement_banner_dfrf8p",
     "collage_rjbxCk",
+    "rich_text_VJcFyC",
+    "multirow_46HGgx",
     "rich_text_e4bEaM",
     "featured_blog_4mHUQR"
   ]

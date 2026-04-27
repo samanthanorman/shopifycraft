@@ -9,7 +9,7 @@
  */
 {
   "current": {
-    "logo": "shopify://shop_images/6_8e715715-0d2b-42fd-ad70-0d2c795f94c7.png",
+    "logo": "shopify://shop_images/Illustration_of_hands_holding_a_crescent_moon_and_a_full_moon_against_a_white_background_7a2430bf-d0aa-4b1b-8853-d6cb58d8baa5.png",
     "logo_width": 130,
     "favicon": "shopify://shop_images/BCB19F48-7EF6-4C3B-A09C-68E93DF8E32F.gif",
     "type_header_font": "raleway_n4",
@@ -145,11 +145,6 @@
     },
     "content_for_index": [],
     "blocks": {
-      "13768625480086291342": {
-        "type": "shopify://apps/forms/blocks/forms/8744a304-fcb1-4347-b211-bb6b4759a76a",
-        "disabled": false,
-        "settings": {}
-      },
       "2353461558643755616": {
         "type": "shopify://apps/tinyseo/blocks/breadcrumbs-json-ld-embed/0605268f-f7c4-4e95-b560-e43df7d59ae4",
         "disabled": false,
@@ -200,11 +195,6 @@
       },
       "15154131639906026026": {
         "type": "shopify://apps/tinyseo/blocks/broken-link-embed/0605268f-f7c4-4e95-b560-e43df7d59ae4",
-        "disabled": false,
-        "settings": {}
-      },
-      "855628211100114053": {
-        "type": "shopify://apps/klaviyo-email-marketing-sms/blocks/klaviyo-onsite-embed/2632fe16-c075-4321-a88b-50b567f42507",
         "disabled": false,
         "settings": {}
       }
