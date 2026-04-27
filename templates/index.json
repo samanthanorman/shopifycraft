@@ -406,8 +406,8 @@
         "link_2": "/pages/crystal-courtesan",
         "font_family": "poppins_n4",
         "font_size": 16,
-        "background_color": "#d9dfe0",
-        "background_gradient": "",
+        "background_color": "#ffe876",
+        "background_gradient": "linear-gradient(133deg, rgba(250, 220, 54, 0.51) 11%, rgba(254, 98, 146, 0.18) 49%, rgba(250, 220, 54, 0.56) 87%)",
         "text_color": "#002c60",
         "icon_color": "#fc87ea",
         "icon_stroke_color": "#002c60",
@@ -417,6 +417,46 @@
         "banner_height": 80,
         "padding_vertical": 16,
         "padding_horizontal": 32
+      }
+    },
+    "collage_rjbxCk": {
+      "type": "collage",
+      "blocks": {
+        "image_XHwAyz": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/IMG_8820_11zon.webp"
+          }
+        },
+        "collection_F9KxBJ": {
+          "type": "collection",
+          "settings": {
+            "collection": "haramoon-korean-skincare"
+          }
+        },
+        "product_qccanY": {
+          "type": "product",
+          "settings": {
+            "product": "haramoon-ph-balanced-pure-moisture-cleanser-korean-and-soften-natural-vegan-korean-skincare-150ml-copy",
+            "second_image": true
+          }
+        }
+      },
+      "block_order": [
+        "image_XHwAyz",
+        "collection_F9KxBJ",
+        "product_qccanY"
+      ],
+      "name": "t:sections.collage.presets.name",
+      "settings": {
+        "heading": "<strong>From Seoul 🛬 To  Skin </strong>",
+        "heading_size": "hxl",
+        "desktop_layout": "left",
+        "mobile_layout": "column",
+        "card_styles": "product-card-wrapper",
+        "color_scheme": "",
+        "padding_top": 36,
+        "padding_bottom": 36
       }
     },
     "rich_text_e4bEaM": {
@@ -462,46 +502,6 @@
         "padding_bottom": 60
       }
     },
-    "collage_rjbxCk": {
-      "type": "collage",
-      "blocks": {
-        "image_XHwAyz": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/IMG_8820_11zon.webp"
-          }
-        },
-        "collection_F9KxBJ": {
-          "type": "collection",
-          "settings": {
-            "collection": "haramoon-korean-skincare"
-          }
-        },
-        "product_qccanY": {
-          "type": "product",
-          "settings": {
-            "product": "haramoon-ph-balanced-pure-moisture-cleanser-korean-and-soften-natural-vegan-korean-skincare-150ml-copy",
-            "second_image": true
-          }
-        }
-      },
-      "block_order": [
-        "image_XHwAyz",
-        "collection_F9KxBJ",
-        "product_qccanY"
-      ],
-      "name": "t:sections.collage.presets.name",
-      "settings": {
-        "heading": "<strong>From Seoul ➡️ Your Skin </strong>",
-        "heading_size": "hxl",
-        "desktop_layout": "left",
-        "mobile_layout": "column",
-        "card_styles": "product-card-wrapper",
-        "color_scheme": "",
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
     "featured_blog_4mHUQR": {
       "type": "featured-blog",
       "disabled": true,
@@ -532,8 +532,8 @@
     "multirow_46HGgx",
     "1777260382f1d59d37",
     "crystal_announcement_banner_dfrf8p",
-    "rich_text_e4bEaM",
     "collage_rjbxCk",
+    "rich_text_e4bEaM",
     "featured_blog_4mHUQR"
   ]
 }
