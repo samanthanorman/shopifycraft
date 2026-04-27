@@ -1,6 +1,414 @@
+{% doc %}
+  @prompt
+    Create a fully customizable Liquid section called "EMF Education Cards" with a heading, a 3-column card grid layout, and a centered CTA button below. The section should include:
+    
+    A large section heading (schema setting: text, default: "All About EMFs and Radiation")
+    3 content cards, each with:
+    A card title (text setting)
+    A card body text (textarea/richtext setting)
+    A card background color picker
+    A toggle to show/hide each individual card
+    A CTA button below the cards with:
+    Button label (text setting)
+    Button link (URL setting)
+    Toggle to show/hide the button
+    Section-level settings for:
+    Background color or gradient
+    Heading color
+    Text alignment (center/left)
+    Padding (top/bottom)
+    Cards should have rounded corners, a subtle box shadow, and centered text
+    Match a premium wellness brand aesthetic — clean, minimal, light background with dark navy text
+    Use blocks for the cards so the merchant can reorder, add, or remove them freely in the theme editor
+{% enddoc %}
+{% assign ai_gen_id = section.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .emf-education-cards-{{ ai_gen_id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    background: {{ section.settings.background_color }};
+    {% if section.settings.background_gradient != blank %}
+      background: {{ section.settings.background_gradient }};
+    {% endif %}
+  }
+
+  .emf-education-cards__container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .emf-education-cards__heading-{{ ai_gen_id }} {
+    color: {{ section.settings.heading_color }};
+    text-align: {{ section.settings.text_alignment }};
+    margin: 0 0 40px;
+    font-size: 2.5rem;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
+
+  .emf-education-cards__grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+
+  .emf-education-card-{{ ai_gen_id }} {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(13, 27, 62, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .emf-education-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(13, 27, 62, 0.12);
+  }
+
+  .emf-education-card__title-{{ ai_gen_id }} {
+    color: {{ section.settings.heading_color }};
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin: 0 0 16px;
+    letter-spacing: 0.3px;
+  }
+
+  .emf-education-card__body-{{ ai_gen_id }} {
+    color: {{ section.settings.heading_color }};
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+    opacity: 0.85;
+  }
+
+  .emf-education-card__body-{{ ai_gen_id }} p {
+    margin: 0 0 12px;
+  }
+
+  .emf-education-card__body-{{ ai_gen_id }} p:last-child {
+    margin-bottom: 0;
+  }
+
+  .emf-education-cards__cta-wrapper-{{ ai_gen_id }} {
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  .emf-education-cards__cta-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 14px 32px;
+    background-color: {{ section.settings.button_background_color }};
+    color: {{ section.settings.button_text_color }};
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(13, 27, 62, 0.1);
+  }
+
+  .emf-education-cards__cta-{{ ai_gen_id }}:hover {
+    background-color: {{ section.settings.button_hover_color }};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(13, 27, 62, 0.15);
+  }
+
+  @media screen and (max-width: 989px) {
+    .emf-education-cards__grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .emf-education-cards__heading-{{ ai_gen_id }} {
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+
+    .emf-education-cards__grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .emf-education-card-{{ ai_gen_id }} {
+      padding: 24px 20px;
+    }
+
+    .emf-education-card__title-{{ ai_gen_id }} {
+      font-size: 1.3rem;
+    }
+  }
+{% endstyle %}
+
+<div class="emf-education-cards-{{ ai_gen_id }}">
+  <div class="emf-education-cards__container-{{ ai_gen_id }}">
+    {% if section.settings.heading != blank %}
+      <h2 class="emf-education-cards__heading-{{ ai_gen_id }}">
+        {{ section.settings.heading }}
+      </h2>
+    {% endif %}
+
+    <div class="emf-education-cards__grid-{{ ai_gen_id }}">
+      {% if section.settings.show_card_1 %}
+        <div class="emf-education-card-{{ ai_gen_id }}" style="background-color: {{ section.settings.card_1_background }};">
+          {% if section.settings.card_1_title != blank %}
+            <h3 class="emf-education-card__title-{{ ai_gen_id }}">
+              {{ section.settings.card_1_title }}
+            </h3>
+          {% endif %}
+          {% if section.settings.card_1_body != blank %}
+            <div class="emf-education-card__body-{{ ai_gen_id }}">
+              {{ section.settings.card_1_body }}
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if section.settings.show_card_2 %}
+        <div class="emf-education-card-{{ ai_gen_id }}" style="background-color: {{ section.settings.card_2_background }};">
+          {% if section.settings.card_2_title != blank %}
+            <h3 class="emf-education-card__title-{{ ai_gen_id }}">
+              {{ section.settings.card_2_title }}
+            </h3>
+          {% endif %}
+          {% if section.settings.card_2_body != blank %}
+            <div class="emf-education-card__body-{{ ai_gen_id }}">
+              {{ section.settings.card_2_body }}
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if section.settings.show_card_3 %}
+        <div class="emf-education-card-{{ ai_gen_id }}" style="background-color: {{ section.settings.card_3_background }};">
+          {% if section.settings.card_3_title != blank %}
+            <h3 class="emf-education-card__title-{{ ai_gen_id }}">
+              {{ section.settings.card_3_title }}
+            </h3>
+          {% endif %}
+          {% if section.settings.card_3_body != blank %}
+            <div class="emf-education-card__body-{{ ai_gen_id }}">
+              {{ section.settings.card_3_body }}
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+
+    {% if section.settings.show_cta_button and section.settings.cta_label != blank %}
+      <div class="emf-education-cards__cta-wrapper-{{ ai_gen_id }}">
+        <a href="{{ section.settings.cta_link }}" class="emf-education-cards__cta-{{ ai_gen_id }}">
+          {{ section.settings.cta_label }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "EMF education cards",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "All About EMFs and Radiation"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Card 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_card_1",
+      "label": "Show card 1",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "card_1_title",
+      "label": "Title",
+      "default": "What are EMFs?"
+    },
+    {
+      "type": "richtext",
+      "id": "card_1_body",
+      "label": "Body text",
+      "default": "<p>Electromagnetic fields (EMFs) are invisible areas of energy produced by electricity. Learn how they affect your daily life.</p>"
+    },
+    {
+      "type": "color",
+      "id": "card_1_background",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Card 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_card_2",
+      "label": "Show card 2",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "card_2_title",
+      "label": "Title",
+      "default": "Sources of Radiation"
+    },
+    {
+      "type": "richtext",
+      "id": "card_2_body",
+      "label": "Body text",
+      "default": "<p>From cell phones to WiFi routers, discover the common sources of EMF radiation in your home and workplace.</p>"
+    },
+    {
+      "type": "color",
+      "id": "card_2_background",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Card 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_card_3",
+      "label": "Show card 3",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "card_3_title",
+      "label": "Title",
+      "default": "Protection Solutions"
+    },
+    {
+      "type": "richtext",
+      "id": "card_3_body",
+      "label": "Body text",
+      "default": "<p>Explore science-backed methods to reduce your exposure and create a healthier living environment.</p>"
+    },
+    {
+      "type": "color",
+      "id": "card_3_background",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "CTA button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta_button",
+      "label": "Show CTA button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "button_background_color",
+      "label": "Button background",
+      "default": "#160272"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text",
+      "default": "#fdfaf0"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Button hover background",
+      "default": "#0d1b3e"
+    },
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#fdfaf0"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background gradient"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "EMF education cards"
+    }
+  ]
+}
 {% endschema %}
