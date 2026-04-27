@@ -239,30 +239,6 @@
         "padding_bottom": 16
       }
     },
-    "crystal_announcement_banner_dfrf8p": {
-      "type": "crystal-announcement-banner",
-      "disabled": true,
-      "name": "Crystal Banner",
-      "settings": {
-        "text_1": "✨ Shop our Crystal Collection — healing gemstones for every intention",
-        "link_1": "/collections/natural-crystals-gemstones",
-        "text_2": "💎 Become a Crystal Courtesan — explore the complete crystal glossary",
-        "link_2": "/pages/crystal-courtesan",
-        "font_family": "poppins_n4",
-        "font_size": 16,
-        "background_color": "#d9dfe0",
-        "background_gradient": "",
-        "text_color": "#002c60",
-        "icon_color": "#fc87ea",
-        "icon_stroke_color": "#002c60",
-        "icon_size": 24,
-        "icon_spacing": 16,
-        "icon_stroke_width_int": 15,
-        "banner_height": 80,
-        "padding_vertical": 16,
-        "padding_horizontal": 32
-      }
-    },
     "multicolumn_JAYaPA": {
       "type": "multicolumn",
       "blocks": {
@@ -380,6 +356,69 @@
         "padding_bottom": 16
       }
     },
+    "1777260382f1d59d37": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_4c0d1b4_rna3ma": {
+          "type": "ai_gen_block_4c0d1b4",
+          "settings": {
+            "heading": "All About EMFs and Radiation",
+            "heading_color": "#0d1b3e",
+            "text_alignment": "center",
+            "show_card_1": true,
+            "card_1_title": "What are EMFs?",
+            "card_1_body": "<p>Electromagnetic fields (EMFs) are invisible areas of energy produced by electricity. Learn how they affect your daily life.</p>",
+            "card_1_background": "#ffffff",
+            "show_card_2": true,
+            "card_2_title": "Sources of Radiation",
+            "card_2_body": "<p>From cell phones to WiFi routers, discover the common sources of EMF radiation in your home and workplace.</p>",
+            "card_2_background": "#ffffff",
+            "show_card_3": true,
+            "card_3_title": "Protection Solutions",
+            "card_3_body": "<p>Explore science-backed methods to reduce your exposure and create a healthier living environment.</p>",
+            "card_3_background": "#ffffff",
+            "show_cta_button": true,
+            "cta_label": "Learn More",
+            "cta_link": "",
+            "button_background_color": "#160272",
+            "button_text_color": "#fdfaf0",
+            "button_hover_color": "#0d1b3e",
+            "background_color": "#fdfaf0",
+            "background_gradient": "",
+            "padding_top": 60,
+            "padding_bottom": 60
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_4c0d1b4_rna3ma"
+      ],
+      "settings": {}
+    },
+    "crystal_announcement_banner_dfrf8p": {
+      "type": "crystal-announcement-banner",
+      "name": "Crystal Banner",
+      "settings": {
+        "text_1": "✨ Shop our Crystal Collection — healing gemstones for every intention",
+        "link_1": "/collections/natural-crystals-gemstones",
+        "text_2": "💎 Become a Crystal Courtesan — explore the complete crystal glossary",
+        "link_2": "/pages/crystal-courtesan",
+        "font_family": "poppins_n4",
+        "font_size": 16,
+        "background_color": "#d9dfe0",
+        "background_gradient": "",
+        "text_color": "#002c60",
+        "icon_color": "#fc87ea",
+        "icon_stroke_color": "#002c60",
+        "icon_size": 24,
+        "icon_spacing": 16,
+        "icon_stroke_width_int": 15,
+        "banner_height": 80,
+        "padding_vertical": 16,
+        "padding_horizontal": 32
+      }
+    },
     "rich_text_e4bEaM": {
       "type": "rich-text",
       "blocks": {
@@ -432,80 +471,35 @@
             "image": "shopify://shop_images/IMG_8820_11zon.webp"
           }
         },
-        "product_qccanY": {
-          "type": "product",
-          "settings": {
-            "product": "haramoon-korean-toner-ph-5-5-vegan-hydrating-and-calming-solution-200ml",
-            "second_image": true
-          }
-        },
         "collection_F9KxBJ": {
           "type": "collection",
           "settings": {
-            "collection": "haramoon-skincare-sensitive-skin-korean-beauty"
+            "collection": "haramoon-korean-skincare"
+          }
+        },
+        "product_qccanY": {
+          "type": "product",
+          "settings": {
+            "product": "haramoon-ph-balanced-pure-moisture-cleanser-korean-and-soften-natural-vegan-korean-skincare-150ml-copy",
+            "second_image": true
           }
         }
       },
       "block_order": [
         "image_XHwAyz",
-        "product_qccanY",
-        "collection_F9KxBJ"
+        "collection_F9KxBJ",
+        "product_qccanY"
       ],
-      "disabled": true,
       "name": "t:sections.collage.presets.name",
       "settings": {
-        "heading": "<strong>Seoul to Glass Skin : Glow with HARAMOON</strong>",
-        "heading_size": "h1",
+        "heading": "<strong>From Seoul ➡️ Your Skin </strong>",
+        "heading_size": "hxl",
         "desktop_layout": "left",
         "mobile_layout": "column",
         "card_styles": "product-card-wrapper",
         "color_scheme": "",
         "padding_top": 36,
         "padding_bottom": 36
-      }
-    },
-    "rich_text_fpDcyR": {
-      "type": "rich-text",
-      "blocks": {
-        "heading_CxJKGg": {
-          "type": "heading",
-          "settings": {
-            "heading": "<strong>Crafted Wellness for Skin, Soul & Space</strong>",
-            "heading_size": "h1"
-          }
-        },
-        "text_WjBJ9E": {
-          "type": "text",
-          "settings": {
-            "text": "<p>Discover one-of-a-kind skincare, energy-balancing crystals, and conscious living tools that align beauty with purpose.</p>"
-          }
-        },
-        "button_eBxVnD": {
-          "type": "button",
-          "settings": {
-            "button_label": "Explore the Collection",
-            "button_link": "shopify://collections/skin-care-cosmetics",
-            "button_style_secondary": false,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
-          }
-        }
-      },
-      "block_order": [
-        "heading_CxJKGg",
-        "text_WjBJ9E",
-        "button_eBxVnD"
-      ],
-      "disabled": true,
-      "name": "t:sections.rich-text.presets.name",
-      "settings": {
-        "desktop_content_position": "center",
-        "content_alignment": "center",
-        "color_scheme": "scheme-5",
-        "full_width": true,
-        "padding_top": 40,
-        "padding_bottom": 52
       }
     },
     "featured_blog_4mHUQR": {
@@ -534,12 +528,12 @@
     "rich_text_GrkV8i",
     "collection_list_zK6tVp",
     "rich_text",
-    "crystal_announcement_banner_dfrf8p",
     "multicolumn_JAYaPA",
     "multirow_46HGgx",
+    "1777260382f1d59d37",
+    "crystal_announcement_banner_dfrf8p",
     "rich_text_e4bEaM",
     "collage_rjbxCk",
-    "rich_text_fpDcyR",
     "featured_blog_4mHUQR"
   ]
 }
