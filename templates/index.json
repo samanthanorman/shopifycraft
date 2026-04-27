@@ -201,42 +201,12 @@
         "heading_size": "h1",
         "image_ratio": "square",
         "columns_desktop": 5,
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
         "show_view_all": true,
         "columns_mobile": "1",
         "swipe_on_mobile": true,
         "padding_top": 36,
         "padding_bottom": 36
-      }
-    },
-    "rich_text": {
-      "type": "rich-text",
-      "blocks": {
-        "heading": {
-          "type": "heading",
-          "settings": {
-            "heading": "For Those Who Notice What Most People Miss",
-            "heading_size": "h1"
-          }
-        },
-        "text_RLEYji": {
-          "type": "text",
-          "settings": {
-            "text": "<p>The reward? Products that return the favor — considered, tested, beautiful, and quietly brilliant.</p>"
-          }
-        }
-      },
-      "block_order": [
-        "heading",
-        "text_RLEYji"
-      ],
-      "settings": {
-        "desktop_content_position": "left",
-        "content_alignment": "left",
-        "color_scheme": "scheme-3",
-        "full_width": true,
-        "padding_top": 16,
-        "padding_bottom": 16
       }
     },
     "collage_rjbxCk": {
@@ -381,6 +351,36 @@
         "padding_bottom": 16
       }
     },
+    "rich_text": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "For Those Who Notice What Most People Miss",
+            "heading_size": "h1"
+          }
+        },
+        "text_RLEYji": {
+          "type": "text",
+          "settings": {
+            "text": "<p>The reward? Products that return the favor — considered, tested, beautiful, and quietly brilliant.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "text_RLEYji"
+      ],
+      "settings": {
+        "desktop_content_position": "left",
+        "content_alignment": "left",
+        "color_scheme": "scheme-3",
+        "full_width": true,
+        "padding_top": 16,
+        "padding_bottom": 16
+      }
+    },
     "rich_text_e4bEaM": {
       "type": "rich-text",
       "blocks": {
@@ -414,6 +414,7 @@
         "text_ewBnHk",
         "button_NeWhjG"
       ],
+      "disabled": true,
       "name": "t:sections.rich-text.presets.name",
       "settings": {
         "desktop_content_position": "center",
@@ -449,10 +450,10 @@
     "image_banner_Ryjafq",
     "rich_text_GrkV8i",
     "collection_list_zK6tVp",
-    "rich_text",
     "collage_rjbxCk",
     "rich_text_VJcFyC",
     "multirow_46HGgx",
+    "rich_text",
     "rich_text_e4bEaM",
     "featured_blog_4mHUQR"
   ]
