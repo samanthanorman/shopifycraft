@@ -136,10 +136,34 @@
             "current_color": "#999999"
           },
           "blocks": {}
+        },
+        "ai_gen_block_a00323c_JQ4Xxc": {
+          "type": "ai_gen_block_a00323c",
+          "settings": {
+            "font": "poppins_n4",
+            "font_size": 16,
+            "letter_spacing": 1,
+            "text_color": "#ffffff",
+            "dot_size": 8,
+            "dot_color": "#f0d84a",
+            "enable_glow": true,
+            "glow_color": "#f0d84a",
+            "glow_intensity": 8,
+            "pulse_speed": 2,
+            "desktop_width_percent": 70,
+            "item_spacing": 40,
+            "vertical_padding": 16,
+            "animation_speed": 35,
+            "background_color": "#0d1b3e",
+            "border_thickness": 1,
+            "border_color": "#f0d84a"
+          },
+          "blocks": {}
         }
       },
       "block_order": [
-        "ai_gen_block_6c2c06d_AXyeXn"
+        "ai_gen_block_6c2c06d_AXyeXn",
+        "ai_gen_block_a00323c_JQ4Xxc"
       ],
       "settings": {}
     },
@@ -242,18 +266,12 @@
             "show_inventory_quantity": true
           }
         },
-        "amazon_mcf_and_buy_with_prime_promotion_banner_container_83CJeG": {
-          "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promotion-banner-container/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
-          "settings": {
-            "horizontal_alignment": "right"
-          }
-        },
-        "amazon_mcf_and_buy_with_prime_promise_delivery_E8p9ie": {
+        "amazon_mcf_and_buy_with_prime_promise_delivery_9QfkBT": {
           "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promise_delivery/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
           "settings": {
             "message_variant": "default",
             "show_exception_message": false,
-            "background_color": "#f9f9f9",
+            "background_color": "#F9F9F9",
             "transparent_background": false,
             "color": "#000000",
             "font": "assistant_n4",
@@ -268,6 +286,12 @@
             "bottom-margin": 0,
             "left-margin": 0,
             "right-margin": 0
+          }
+        },
+        "amazon_mcf_and_buy_with_prime_promotion_banner_container_kRVVKD": {
+          "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promotion-banner-container/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
+          "settings": {
+            "horizontal_alignment": "center"
           }
         }
       },
@@ -284,8 +308,8 @@
         "price",
         "quantity_selector",
         "inventory_emWWFE",
-        "amazon_mcf_and_buy_with_prime_promotion_banner_container_83CJeG",
-        "amazon_mcf_and_buy_with_prime_promise_delivery_E8p9ie"
+        "amazon_mcf_and_buy_with_prime_promise_delivery_9QfkBT",
+        "amazon_mcf_and_buy_with_prime_promotion_banner_container_kRVVKD"
       ],
       "settings": {
         "enable_sticky_info": true,
@@ -305,8 +329,46 @@
     },
     "17751206102947ed3d": {
       "type": "_blocks",
+      "settings": {}
+    },
+    "hm_ingredient_heroes": {
+      "type": "hm-ingredient-heroes",
+      "name": "BEST Ingredient Heroes",
+      "settings": {
+        "eyebrow": "What's Inside",
+        "title": "Ingredient Heroes in This Formula",
+        "subtitle": "Tap any ingredient to explore its full science-backed profile.",
+        "header_align": "center",
+        "header_gap": 40,
+        "title_size": 30,
+        "subtitle_size": 15,
+        "pill_font_size": 15,
+        "max_width": 1350,
+        "padding_top": 32,
+        "padding_bottom": 48,
+        "side_padding": 24,
+        "pill_gap": 12,
+        "pill_padding_v": 10,
+        "pill_padding_h": 14,
+        "pill_radius": 32,
+        "pill_min_height": 60,
+        "bg_color": "#edf8ff",
+        "title_color": "#141615",
+        "subtitle_color": "#53585a",
+        "accent_color": "#3498ff",
+        "accent_color_2": "#a78bfa",
+        "pill_bg": "#ffffff",
+        "pill_hover_bg": "#eff6ff",
+        "pill_border": "#dbeafe",
+        "pill_text_color": "#1e3a8a",
+        "glass_highlight": "#ffffff",
+        "shadow_color": "#141615"
+      }
+    },
+    "177511709462da6ba1": {
+      "type": "_blocks",
       "blocks": {
-        "ai_gen_block_95d9cb1_DEJ37x": {
+        "ai_gen_block_95d9cb1_VMF9tG": {
           "type": "ai_gen_block_95d9cb1",
           "settings": {
             "section_title": "",
@@ -357,76 +419,6 @@
           },
           "blocks": {}
         },
-        "ai_gen_block_a00323c_wTqNdn": {
-          "type": "ai_gen_block_a00323c",
-          "settings": {
-            "font": "poppins_n4",
-            "font_size": 16,
-            "letter_spacing": 1,
-            "text_color": "#ffffff",
-            "dot_size": 8,
-            "dot_color": "#f0d84a",
-            "enable_glow": true,
-            "glow_color": "#f0d84a",
-            "glow_intensity": 8,
-            "pulse_speed": 2,
-            "desktop_width_percent": 70,
-            "item_spacing": 40,
-            "vertical_padding": 16,
-            "animation_speed": 35,
-            "background_color": "#0d1b3e",
-            "border_thickness": 1,
-            "border_color": "#f0d84a"
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_95d9cb1_DEJ37x",
-        "ai_gen_block_a00323c_wTqNdn"
-      ],
-      "settings": {}
-    },
-    "hm_ingredient_heroes": {
-      "type": "hm-ingredient-heroes",
-      "settings": {
-        "eyebrow": "What's Inside",
-        "title": "Ingredient Heroes in This Formula",
-        "subtitle": "Tap any ingredient to explore its full science-backed profile.",
-        "header_align": "center",
-        "header_gap": 40,
-        "title_size": 30,
-        "subtitle_size": 15,
-        "pill_font_size": 15,
-        "max_width": 1350,
-        "padding_top": 32,
-        "padding_bottom": 48,
-        "side_padding": 24,
-        "pill_gap": 12,
-        "pill_padding_v": 10,
-        "pill_padding_h": 14,
-        "pill_radius": 32,
-        "pill_min_height": 60,
-        "bg_color": "#edf8ff",
-        "title_color": "#141615",
-        "subtitle_color": "#53585a",
-        "accent_color": "#3498ff",
-        "accent_color_2": "#a78bfa",
-        "pill_bg": "#ffffff",
-        "pill_hover_bg": "#eff6ff",
-        "pill_border": "#dbeafe",
-        "pill_text_color": "#1e3a8a",
-        "glass_highlight": "#ffffff",
-        "shadow_color": "#141615"
-      }
-    },
-    "1775114978c36d3c55": {
-      "type": "_blocks",
-      "settings": {}
-    },
-    "177511709462da6ba1": {
-      "type": "_blocks",
-      "blocks": {
         "ai_gen_block_44f3bc0_H34FhF": {
           "type": "ai_gen_block_44f3bc0",
           "disabled": true,
@@ -479,6 +471,7 @@
         }
       },
       "block_order": [
+        "ai_gen_block_95d9cb1_VMF9tG",
         "ai_gen_block_44f3bc0_H34FhF"
       ],
       "settings": {}
@@ -739,24 +732,6 @@
         "padding_bottom": 52
       }
     },
-    "featured_blog_GCgTFE": {
-      "type": "featured-blog",
-      "name": "t:sections.featured-blog.presets.name",
-      "settings": {
-        "blog": "why-korean-skincare",
-        "post_limit": 3,
-        "heading": "The K-Beauty blog",
-        "heading_size": "h2",
-        "columns_desktop": 3,
-        "show_view_all": true,
-        "show_image": true,
-        "show_date": true,
-        "show_author": true,
-        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
-        "padding_top": 20,
-        "padding_bottom": 24
-      }
-    },
     "177511950460308308": {
       "type": "_blocks",
       "blocks": {
@@ -832,8 +807,8 @@
         "ai_gen_block_06397d4_keCTV8": {
           "type": "ai_gen_block_06397d4",
           "settings": {
-            "section_title": "Frequently Asked Questions",
-            "desktop_width_percent": 100
+            "section_title": "K-BEAUTY FAQ",
+            "desktop_width_percent": 85
           },
           "blocks": {}
         }
@@ -842,6 +817,24 @@
         "ai_gen_block_06397d4_keCTV8"
       ],
       "settings": {}
+    },
+    "featured_blog_GCgTFE": {
+      "type": "featured-blog",
+      "name": "t:sections.featured-blog.presets.name",
+      "settings": {
+        "blog": "why-korean-skincare",
+        "post_limit": 3,
+        "heading": "The K-Beauty blog",
+        "heading_size": "h2",
+        "columns_desktop": 3,
+        "show_view_all": true,
+        "show_image": true,
+        "show_date": true,
+        "show_author": true,
+        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
+        "padding_top": 20,
+        "padding_bottom": 24
+      }
     }
   },
   "order": [
@@ -851,16 +844,15 @@
     "main",
     "17751206102947ed3d",
     "hm_ingredient_heroes",
-    "1775114978c36d3c55",
     "177511709462da6ba1",
     "related-products",
     "1775117298efe8a265",
     "1775113417ff4f0d38",
     "1761606515075c8768",
     "rich_text_49tBnU",
-    "featured_blog_GCgTFE",
     "177511950460308308",
     "hm_faq_product",
-    "177512131741afeff0"
+    "177512131741afeff0",
+    "featured_blog_GCgTFE"
   ]
 }
