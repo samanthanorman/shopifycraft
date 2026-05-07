@@ -25,6 +25,13 @@
     {{ 'component-volume-pricing.css' | asset_url | stylesheet_tag }}
   {%- endif -%}
 
+<!-- Beginning of Buy With Prime Widget -->
+<amazon-purchase-button
+  product-sku="{{product.sku}}">
+</amazon-purchase-button>
+<amazon-cart></amazon-cart>
+<!-- End of Buy With Prime Widget -->
+
   {%- style -%}
     .section-{{ section.id }}-padding {
       padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
