@@ -235,6 +235,46 @@
         "padding_bottom": 36
       }
     },
+    "blocks_jima8j": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_229f1fa_3Mriw8": {
+          "type": "ai_gen_block_229f1fa",
+          "settings": {
+            "announcement_text": "Buy 2+ HARAMOON products (excluding bundles) and get 15% off at checkout with code",
+            "show_code": true,
+            "coupon_code": "HARAMOON15",
+            "show_button": false,
+            "button_label": "Shop now",
+            "button_link": "shopify://collections/haramoon-korean-skincare",
+            "background_color": "#ffa7c5",
+            "text_color": "#ffffff",
+            "font_family": "poppins_n4",
+            "font_size": 16,
+            "padding_vertical": 16,
+            "padding_horizontal": 20,
+            "code_background_color": "#ffffff",
+            "code_text_color": "#ff6b9d",
+            "code_border_radius": 20,
+            "button_background_color": "#ffffff",
+            "button_text_color": "#ff6b9d",
+            "button_hover_color": "#ffe0eb",
+            "button_border_radius": 20,
+            "enable_animation": true,
+            "animation_style": "glow",
+            "animation_speed": 2,
+            "glow_color": "#f2ff99",
+            "shimmer_color": "#ffeb3b"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_229f1fa_3Mriw8"
+      ],
+      "name": "Announcement banner",
+      "settings": {}
+    },
     "rich_text_VJcFyC": {
       "type": "rich-text",
       "blocks": {
@@ -288,11 +328,11 @@
         "link_2": "/pages/crystal-courtesan",
         "font_family": "poppins_n4",
         "font_size": 16,
-        "background_color": "#e0f7ff",
+        "background_color": "#f7ddf3",
         "background_gradient": "",
-        "text_color": "#002c60",
-        "icon_color": "#00adff",
-        "icon_stroke_color": "#002c60",
+        "text_color": "#ff40b1",
+        "icon_color": "#f6ff76",
+        "icon_stroke_color": "#160272",
         "icon_size": 24,
         "icon_spacing": 16,
         "icon_stroke_width_int": 15,
@@ -459,6 +499,7 @@
     "rich_text_GrkV8i",
     "collection_list_6KJkGj",
     "collage_rjbxCk",
+    "blocks_jima8j",
     "rich_text_VJcFyC",
     "crystal_announcement_banner_LjTEDW",
     "multirow_46HGgx",
