@@ -423,8 +423,8 @@
       ],
       "settings": {
         "desktop_content_position": "center",
-        "content_alignment": "right",
-        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
+        "content_alignment": "left",
+        "color_scheme": "scheme-1",
         "full_width": true,
         "padding_top": 16,
         "padding_bottom": 16
@@ -487,7 +487,7 @@
         "show_image": true,
         "show_date": false,
         "show_author": false,
-        "color_scheme": "scheme-4",
+        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
         "padding_top": 36,
         "padding_bottom": 36
       }
