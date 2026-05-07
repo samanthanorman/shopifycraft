@@ -1,6 +1,396 @@
+{% doc %}
+  @prompt
+    Create an animated announcement banner section for a K-beauty brand targeting Gen Z audiences. The banner should display the message: "Buy 2+ HARAMOON products (excluding bundles) and get 15% off at checkout with code HARAMOON15!"
+    
+    Requirements:
+    - Fully customizable via theme editor settings: background color, text color, font size, font family, padding/spacing, border radius
+    - Coupon code "HARAMOON15" should be visually highlighted (e.g., pill/badge style) with its own customizable background and text color
+    - Eye-catching Gen Z-friendly animations: options for a strobe/pulse glow effect, shimmer/glitter text animation, and a scrolling marquee or slide-in animation
+    - Settings to toggle animations on/off and choose animation style (glow pulse, shimmer, marquee scroll)
+    - Customizable animation speed and glow color
+    - Optional CTA button (e.g., "Shop Now") with customizable label, link, color, and hover effect
+    - Mobile responsive and accessible
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-announcement-banner-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.padding_vertical }}px {{ block.settings.padding_horizontal }}px;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .ai-announcement-banner-content-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-family: {{ block.settings.font_family.family }}, {{ block.settings.font_family.fallback_families }};
+    font-size: {{ block.settings.font_size }}px;
+    color: {{ block.settings.text_color }};
+    font-weight: {{ block.settings.font_family.weight }};
+  }
+
+  .ai-announcement-banner-text-{{ ai_gen_id }} {
+    display: inline-block;
+  }
+
+  .ai-announcement-banner-code-{{ ai_gen_id }} {
+    display: inline-block;
+    background-color: {{ block.settings.code_background_color }};
+    color: {{ block.settings.code_text_color }};
+    padding: 6px 16px;
+    border-radius: {{ block.settings.code_border_radius }}px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .ai-announcement-banner-button-{{ ai_gen_id }} {
+    display: inline-block;
+    background-color: {{ block.settings.button_background_color }};
+    color: {{ block.settings.button_text_color }};
+    padding: 8px 20px;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+  }
+
+  .ai-announcement-banner-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_color }};
+  }
+
+  {% if block.settings.enable_animation %}
+    {% if block.settings.animation_style == 'glow' %}
+      @keyframes ai-glow-pulse-{{ ai_gen_id }} {
+        0%, 100% {
+          box-shadow: 0 0 5px {{ block.settings.glow_color }}, 0 0 10px {{ block.settings.glow_color }};
+        }
+        50% {
+          box-shadow: 0 0 20px {{ block.settings.glow_color }}, 0 0 30px {{ block.settings.glow_color }}, 0 0 40px {{ block.settings.glow_color }};
+        }
+      }
+
+      .ai-announcement-banner-code-{{ ai_gen_id }} {
+        animation: ai-glow-pulse-{{ ai_gen_id }} {{ block.settings.animation_speed }}s ease-in-out infinite;
+      }
+    {% elsif block.settings.animation_style == 'shimmer' %}
+      @keyframes ai-shimmer-{{ ai_gen_id }} {
+        0% {
+          background-position: -200% center;
+        }
+        100% {
+          background-position: 200% center;
+        }
+      }
+
+      .ai-announcement-banner-text-{{ ai_gen_id }} {
+        background: linear-gradient(
+          90deg,
+          {{ block.settings.text_color }} 0%,
+          {{ block.settings.shimmer_color }} 50%,
+          {{ block.settings.text_color }} 100%
+        );
+        background-size: 200% auto;
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: ai-shimmer-{{ ai_gen_id }} {{ block.settings.animation_speed }}s linear infinite;
+      }
+    {% elsif block.settings.animation_style == 'marquee' %}
+      @keyframes ai-marquee-{{ ai_gen_id }} {
+        0% {
+          transform: translateX(100%);
+        }
+        100% {
+          transform: translateX(-100%);
+        }
+      }
+
+      .ai-announcement-banner-content-{{ ai_gen_id }} {
+        animation: ai-marquee-{{ ai_gen_id }} {{ block.settings.animation_speed }}s linear infinite;
+        white-space: nowrap;
+        flex-wrap: nowrap;
+      }
+    {% endif %}
+  {% endif %}
+
+  @media screen and (max-width: 749px) {
+    .ai-announcement-banner-content-{{ ai_gen_id }} {
+      font-size: {{ block.settings.font_size | times: 0.85 }}px;
+    }
+
+    .ai-announcement-banner-code-{{ ai_gen_id }} {
+      padding: 4px 12px;
+    }
+
+    .ai-announcement-banner-button-{{ ai_gen_id }} {
+      padding: 6px 16px;
+    }
+  }
+{% endstyle %}
+
+<announcement-banner-{{ ai_gen_id }} class="ai-announcement-banner-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-announcement-banner-content-{{ ai_gen_id }}">
+    <span class="ai-announcement-banner-text-{{ ai_gen_id }}">
+      {{ block.settings.announcement_text }}
+    </span>
+    {% if block.settings.show_code %}
+      <span class="ai-announcement-banner-code-{{ ai_gen_id }}">
+        {{ block.settings.coupon_code }}
+      </span>
+    {% endif %}
+    {% if block.settings.show_button and block.settings.button_link != blank %}
+      <a href="{{ block.settings.button_link }}" class="ai-announcement-banner-button-{{ ai_gen_id }}">
+        {{ block.settings.button_label }}
+      </a>
+    {% endif %}
+  </div>
+</announcement-banner-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class AnnouncementBanner{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.setupAccessibility();
+      }
+
+      setupAccessibility() {
+        const banner = this.querySelector('.ai-announcement-banner-content-{{ ai_gen_id }}');
+        if (banner) {
+          banner.setAttribute('role', 'region');
+          banner.setAttribute('aria-label', 'Announcement');
+        }
+      }
+    }
+
+    customElements.define('announcement-banner-{{ ai_gen_id }}', AnnouncementBanner{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Announcement banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "textarea",
+      "id": "announcement_text",
+      "label": "Announcement text",
+      "default": "Buy 2+ HARAMOON products (excluding bundles) and get 15% off at checkout with code"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_code",
+      "label": "Show coupon code",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "coupon_code",
+      "label": "Coupon code",
+      "default": "HARAMOON15"
+    },
+    {
+      "type": "header",
+      "content": "Call to action button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_button",
+      "label": "Show button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ff6b9d"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "font_picker",
+      "id": "font_family",
+      "label": "Font",
+      "default": "poppins_n4"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "label": "Vertical padding",
+      "min": 8,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 8,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Coupon code style"
+    },
+    {
+      "type": "color",
+      "id": "code_background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "code_text_color",
+      "label": "Text color",
+      "default": "#ff6b9d"
+    },
+    {
+      "type": "range",
+      "id": "code_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "color",
+      "id": "button_background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#ff6b9d"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Hover background color",
+      "default": "#ffe0eb"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animation",
+      "label": "Enable animation",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "animation_style",
+      "label": "Animation style",
+      "options": [
+        {
+          "value": "glow",
+          "label": "Glow pulse"
+        },
+        {
+          "value": "shimmer",
+          "label": "Shimmer"
+        },
+        {
+          "value": "marquee",
+          "label": "Marquee scroll"
+        }
+      ],
+      "default": "glow"
+    },
+    {
+      "type": "range",
+      "id": "animation_speed",
+      "label": "Animation speed",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 2
+    },
+    {
+      "type": "color",
+      "id": "glow_color",
+      "label": "Glow color",
+      "default": "#ffeb3b"
+    },
+    {
+      "type": "color",
+      "id": "shimmer_color",
+      "label": "Shimmer color",
+      "default": "#ffeb3b"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement banner"
+    }
+  ]
+}
 {% endschema %}
