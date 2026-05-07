@@ -24,12 +24,13 @@
         "ann_haramoon": {
           "type": "announcement",
           "settings": {
-            "text": "🌙 NEW: HARAMOON 4-Step Glass Skin Routine — Shop the Bundle →",
-            "link": "shopify://pages/radiant-skin-starts-here"
+            "text": "USE CODE: HARAMOON15 FOR 15% OFF YOUR ORDER OF 2+ PRODUCTS 🌙",
+            "link": "shopify://collections/haramoon-korean-skincare"
           }
         },
         "ann_crystals": {
           "type": "announcement",
+          "disabled": true,
           "settings": {
             "text": "🔮 Explore the Crystal Compendium — 50+ minerals with full metaphysical profiles",
             "link": "/pages/crystal-compendium"
@@ -44,17 +45,13 @@
       "name": "t:sections.announcement-bar.presets.name",
       "settings": {
         "auto_rotate": true,
-        "change_slides_speed": 4,
-        "color_scheme": "scheme-4",
+        "change_slides_speed": 5,
+        "color_scheme": "scheme-3",
         "show_line_separator": true,
-        "show_social": true,
+        "show_social": false,
         "enable_country_selector": false,
         "enable_language_selector": false
       }
-    },
-    "17751158357ecdbadf": {
-      "type": "_blocks",
-      "settings": {}
     },
     "header": {
       "type": "header",
@@ -64,7 +61,7 @@
         "mobile_logo_position": "center",
         "menu": "main-menu-1",
         "menu_type_desktop": "dropdown",
-        "sticky_header_type": "reduce-logo-size",
+        "sticky_header_type": "always",
         "show_line_separator": true,
         "color_scheme": "scheme-5",
         "menu_color_scheme": "scheme-1",
@@ -79,7 +76,6 @@
   },
   "order": [
     "announcement_bar_4MYDXL",
-    "17751158357ecdbadf",
     "header"
   ]
 }

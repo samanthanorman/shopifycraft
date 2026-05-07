@@ -9,47 +9,43 @@
  */
 {
   "sections": {
-    "1775674849f902f8d2": {
+    "177818494650066ef0": {
       "type": "_blocks",
       "blocks": {
-        "ai_gen_block_69471e8_fpabMJ": {
-          "type": "ai_gen_block_69471e8",
+        "ai_gen_block_229f1fa_cKBWn8": {
+          "type": "ai_gen_block_229f1fa",
           "disabled": true,
           "settings": {
-            "left_link_label": "← Shop All Crystals",
-            "left_link_url": "shopify://collections/natural-crystals-gemstones",
-            "right_link_label": "Visit Our Crystal Blog →",
-            "right_link_url": "shopify://blogs/crystals-science-magic",
-            "desktop_width_percent": 100,
-            "max_width": 1200,
-            "padding_vertical": 20,
-            "padding_horizontal": 30,
-            "button_gap": 100,
-            "background_color": "#ffffff",
-            "pill_padding_vertical": 12,
-            "pill_padding_horizontal": 30,
-            "pill_border_radius": 30,
-            "pill_border_width": 1,
-            "pill_background_color": "#f7ddf3",
-            "pill_border_color": "#ff4be5",
-            "font_size": 14,
-            "font_weight": "500",
-            "text_color": "#0d1b3e",
-            "hover_text_color": "#ffffff",
-            "hover_background_color": "#bb74ff",
-            "hover_border_color": "#160272",
-            "hover_lift_distance": -3,
-            "hover_shadow_vertical": 8,
-            "hover_shadow_blur": 20,
-            "hover_shadow_opacity": 15,
-            "hover_transition_speed": 0.3,
-            "enable_structured_data": true
+            "announcement_text": "Buy 2+ HARAMOON products (excluding bundles) and get 15% off at checkout with code",
+            "show_code": true,
+            "coupon_code": "HARAMOON15",
+            "show_button": true,
+            "button_label": "Shop now",
+            "button_link": "",
+            "background_color": "#ff6b9d",
+            "text_color": "#ffffff",
+            "font_family": "poppins_n4",
+            "font_size": 16,
+            "padding_vertical": 16,
+            "padding_horizontal": 20,
+            "code_background_color": "#ffffff",
+            "code_text_color": "#ff6b9d",
+            "code_border_radius": 20,
+            "button_background_color": "#ffffff",
+            "button_text_color": "#ff6b9d",
+            "button_hover_color": "#ffe0eb",
+            "button_border_radius": 6,
+            "enable_animation": true,
+            "animation_style": "glow",
+            "animation_speed": 2,
+            "glow_color": "#ffeb3b",
+            "shimmer_color": "#ffeb3b"
           },
           "blocks": {}
         }
       },
       "block_order": [
-        "ai_gen_block_69471e8_fpabMJ"
+        "ai_gen_block_229f1fa_cKBWn8"
       ],
       "settings": {}
     },
@@ -90,9 +86,11 @@
         "text_pCV4XY",
         "buttons_jGFGYf"
       ],
+      "disabled": true,
       "name": "t:sections.image-banner.presets.name",
       "settings": {
-        "image": "shopify://shop_images/wax_and_wane_starry_night_logo_9ab82cb3-a8b9-47b2-a347-a1f0991b1240.jpg",
+        "image": "shopify://shop_images/IMG_6413.jpg",
+        "image_2": "shopify://shop_images/crystals.png",
         "image_overlay_opacity": 10,
         "image_height": "medium",
         "image_behavior": "none",
@@ -108,35 +106,34 @@
     "rich_text_GrkV8i": {
       "type": "rich-text",
       "blocks": {
-        "heading_cPqrtx": {
-          "type": "heading",
+        "text_HATxUq": {
+          "type": "text",
+          "disabled": true,
           "settings": {
-            "heading": "Where Curiosity Outshines Routine.",
-            "heading_size": "h1"
+            "text": "<h2>Wax | Wane </h2>"
           }
         },
         "text_pXf9B3": {
           "type": "text",
-          "disabled": true,
           "settings": {
-            "text": "<p>Where Curiosity Outshines Routine.</p>"
+            "text": "<p>Where Curiosity Outshines Routine ✨</p>"
           }
         },
         "button_YgxRbh": {
           "type": "button",
           "disabled": true,
           "settings": {
-            "button_label": "Our Intentions",
-            "button_link": "shopify://pages/about-us",
-            "button_style_secondary": true,
-            "button_label_2": "",
-            "button_link_2": "",
+            "button_label": "SHOP HARAMOON",
+            "button_link": "shopify://collections/haramoon-korean-skincare",
+            "button_style_secondary": false,
+            "button_label_2": "SHOP CRYSTALS",
+            "button_link_2": "shopify://collections/natural-crystals-gemstones",
             "button_style_secondary_2": false
           }
         }
       },
       "block_order": [
-        "heading_cPqrtx",
+        "text_HATxUq",
         "text_pXf9B3",
         "button_YgxRbh"
       ],
@@ -144,67 +141,56 @@
       "settings": {
         "desktop_content_position": "center",
         "content_alignment": "center",
-        "color_scheme": "scheme-3",
+        "color_scheme": "scheme-1",
         "full_width": true,
-        "padding_top": 40,
-        "padding_bottom": 52
+        "padding_top": 16,
+        "padding_bottom": 20
       }
     },
-    "collection_list_zK6tVp": {
+    "collection_list_6KJkGj": {
       "type": "collection-list",
       "blocks": {
-        "featured_collection_LFekwU": {
+        "featured_collection_ViDthp": {
           "type": "featured_collection",
-          "source": "{{ metaobjects.brand.haramoon }}",
-          "settings": {
-            "collection": "haramoon-korean-skincare"
-          }
-        },
-        "featured_collection_6TMKr3": {
-          "type": "featured_collection",
-          "source": "{{ metaobjects.brand[\"wax-wane\"] }}",
           "settings": {
             "collection": "natural-crystals-gemstones"
           }
         },
-        "featured_collection_MjptQn": {
+        "featured_collection_aagH99": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "haramoon-korean-skincare"
+          }
+        },
+        "featured_collection_TQ6pAa": {
           "type": "featured_collection",
           "settings": {
             "collection": "emf-shielding-faraday-protection"
           }
         },
-        "featured_collection_D8xeTw": {
+        "featured_collection_W3xf4d": {
           "type": "featured_collection",
-          "source": "{{ metaobjects.brand[\"wax-wane\"] }}",
           "settings": {
             "collection": "daily-essentials"
-          }
-        },
-        "featured_collection_kifp7E": {
-          "type": "featured_collection",
-          "source": "{{ metaobjects.brand[\"wax-wane\"] }}",
-          "settings": {
-            "collection": "jewelry-and-accessories"
           }
         }
       },
       "block_order": [
-        "featured_collection_LFekwU",
-        "featured_collection_6TMKr3",
-        "featured_collection_MjptQn",
-        "featured_collection_D8xeTw",
-        "featured_collection_kifp7E"
+        "featured_collection_ViDthp",
+        "featured_collection_aagH99",
+        "featured_collection_TQ6pAa",
+        "featured_collection_W3xf4d"
       ],
       "name": "t:sections.collection-list.presets.name",
       "settings": {
         "title": "Featured Collections",
-        "heading_size": "h1",
-        "image_ratio": "square",
-        "columns_desktop": 5,
+        "heading_size": "h2",
+        "image_ratio": "portrait",
+        "columns_desktop": 4,
         "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
-        "show_view_all": true,
+        "show_view_all": false,
         "columns_mobile": "1",
-        "swipe_on_mobile": true,
+        "swipe_on_mobile": false,
         "padding_top": 36,
         "padding_bottom": 36
       }
@@ -240,7 +226,7 @@
       "name": "t:sections.collage.presets.name",
       "settings": {
         "heading": "<strong>From Seoul 🛬 To  Skin </strong>",
-        "heading_size": "hxl",
+        "heading_size": "h0",
         "desktop_layout": "left",
         "mobile_layout": "column",
         "card_styles": "product-card-wrapper",
@@ -255,8 +241,8 @@
         "heading_zcwkxR": {
           "type": "heading",
           "settings": {
-            "heading": "Why We Love Haramoon ✨",
-            "heading_size": "h2"
+            "heading": "Wax | Wane 🩵 Haramoon",
+            "heading_size": "h1"
           }
         },
         "text_gBWHdp": {
@@ -284,12 +270,35 @@
       ],
       "name": "t:sections.rich-text.presets.name",
       "settings": {
-        "desktop_content_position": "left",
+        "desktop_content_position": "center",
         "content_alignment": "left",
         "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
-        "full_width": true,
+        "full_width": false,
         "padding_top": 68,
         "padding_bottom": 32
+      }
+    },
+    "crystal_announcement_banner_LjTEDW": {
+      "type": "crystal-announcement-banner",
+      "name": "Crystal Banner",
+      "settings": {
+        "text_1": "✨ Shop our Crystal Collection — healing gemstones for every intention",
+        "link_1": "/collections/natural-crystals-gemstones",
+        "text_2": "💎 Become a Crystal Courtesan — explore the complete crystal glossary",
+        "link_2": "/pages/crystal-courtesan",
+        "font_family": "poppins_n4",
+        "font_size": 16,
+        "background_color": "#e0f7ff",
+        "background_gradient": "",
+        "text_color": "#002c60",
+        "icon_color": "#00adff",
+        "icon_stroke_color": "#002c60",
+        "icon_size": 24,
+        "icon_spacing": 16,
+        "icon_stroke_width_int": 15,
+        "banner_height": 80,
+        "padding_vertical": 16,
+        "padding_horizontal": 32
       }
     },
     "multirow_46HGgx": {
@@ -298,21 +307,10 @@
         "row_GNypfg": {
           "type": "row",
           "settings": {
-            "image": "shopify://shop_images/HARAMOON_Cream_Open_Jar_with_Texture_1846ea6d-f2ea-41c2-bc1f-a33a356dc2c9.jpg",
-            "caption": "our Premium korean skincare brand",
-            "heading": "HARAMOON Cosmetics",
-            "text": "<p>Obelisks, spheres, pyramids, and more — each piece chosen for its cultural significance, mineral composition, and visual weight. Sourced from regions known for geological richness and spiritual tradition, these are not decorative afterthoughts — they are objects of meaning. Whether you're drawn to obsidian, quartz, or black tourmaline, every form serves a function. Form and Function.</p>",
-            "button_label": "Shop HARAMOON →",
-            "button_link": "shopify://collections/haramoon-korean-skincare"
-          }
-        },
-        "row_XhfF8N": {
-          "type": "row",
-          "settings": {
-            "image": "shopify://shop_images/Clear_Quartz_Crystal_Pyramids.jpg",
-            "caption": "meaningful decor",
-            "heading": "Crystals & Gemstones",
-            "text": "<p>Obelisks, spheres, pyramids, and more — each piece chosen for its cultural significance, mineral composition, and visual weight. Our crystals are sourced with intention, selected from regions known for their geological richness and spiritual tradition. Symbolic and striking, these are not decorative afterthoughts — they are objects of meaning. Whether you're drawn to the grounding energy of obsidian, the clarity of quartz, or the protective lore of black tourmaline, every form serves a function. Form and Function.</p>",
+            "image": "shopify://shop_images/IMG_6413.jpg",
+            "caption": "Premium Grade + All Natural",
+            "heading": "Crystals",
+            "text": "<p>Obelisks, spheres, pyramids, and more — each piece chosen for its cultural significance, mineral composition, and visual weight. Sourced from regions known for geological richness and spiritual tradition, these are not decorative afterthoughts — they are objects of meaning. Whether you're drawn to obsidian, quartz, or black tourmaline, every form serves a function. </p>",
             "button_label": "Shop Crystals →",
             "button_link": "shopify://collections/natural-crystals-gemstones"
           }
@@ -327,12 +325,23 @@
             "button_label": "Shop EMF →",
             "button_link": "shopify://collections/emf-shielding-faraday-protection"
           }
+        },
+        "row_Jnpicq": {
+          "type": "row",
+          "settings": {
+            "image": "shopify://shop_images/window-light-blonde-hair.png",
+            "caption": "High quality MATERIALS",
+            "heading": "BRUSHES + ACCESSORIES",
+            "text": "<p>Switching from plastic is always the right move, whether starting with your hair brush or the types of metal jewelry you opt for, using natural materials a great way to benefit your body's natural strength and vitality.</p>",
+            "button_label": "SHOP ESSENTIALS →",
+            "button_link": "shopify://collections/daily-essentials"
+          }
         }
       },
       "block_order": [
         "row_GNypfg",
-        "row_XhfF8N",
-        "row_DbtHLB"
+        "row_DbtHLB",
+        "row_Jnpicq"
       ],
       "name": "t:sections.multirow.presets.name",
       "settings": {
@@ -364,7 +373,7 @@
         "text_RLEYji": {
           "type": "text",
           "settings": {
-            "text": "<p>The reward? Products that return the favor — considered, tested, beautiful, and quietly brilliant.</p>"
+            "text": "<p>What can you expect from shopping Wax | Wane? <br/>Products that return the favor — considered, tested, beautiful, and quietly brilliant.</p>"
           }
         }
       },
@@ -373,9 +382,9 @@
         "text_RLEYji"
       ],
       "settings": {
-        "desktop_content_position": "left",
-        "content_alignment": "left",
-        "color_scheme": "scheme-3",
+        "desktop_content_position": "center",
+        "content_alignment": "right",
+        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
         "full_width": true,
         "padding_top": 16,
         "padding_bottom": 16
@@ -427,12 +436,11 @@
     },
     "featured_blog_4mHUQR": {
       "type": "featured-blog",
-      "disabled": true,
       "name": "t:sections.featured-blog.presets.name",
       "settings": {
         "blog": "why-korean-skincare",
         "post_limit": 3,
-        "heading": "<strong>FROM THE BLOG</strong>",
+        "heading": "<strong>VISIT THE BLOG </strong>→",
         "heading_size": "h1",
         "columns_desktop": 3,
         "show_view_all": true,
@@ -446,12 +454,13 @@
     }
   },
   "order": [
-    "1775674849f902f8d2",
+    "177818494650066ef0",
     "image_banner_Ryjafq",
     "rich_text_GrkV8i",
-    "collection_list_zK6tVp",
+    "collection_list_6KJkGj",
     "collage_rjbxCk",
     "rich_text_VJcFyC",
+    "crystal_announcement_banner_LjTEDW",
     "multirow_46HGgx",
     "rich_text",
     "rich_text_e4bEaM",

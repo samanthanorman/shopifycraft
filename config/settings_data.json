@@ -9,8 +9,8 @@
  */
 {
   "current": {
-    "logo": "shopify://shop_images/Illustration_of_hands_holding_a_crescent_moon_and_a_full_moon_against_a_white_background_7a2430bf-d0aa-4b1b-8853-d6cb58d8baa5.png",
-    "logo_width": 130,
+    "logo": "shopify://shop_images/Small_Logo_Wax___Wanesquare.jpg",
+    "logo_width": 90,
     "favicon": "shopify://shop_images/BCB19F48-7EF6-4C3B-A09C-68E93DF8E32F.gif",
     "type_header_font": "raleway_n4",
     "heading_scale": 120,
@@ -124,7 +124,7 @@
     "predictive_search_show_vendor": false,
     "predictive_search_show_price": true,
     "currency_code_enabled": true,
-    "cart_type": "drawer",
+    "cart_type": "page",
     "show_vendor": false,
     "show_cart_note": false,
     "cart_drawer_collection": "current-favorites-recommendations",
