@@ -39,19 +39,16 @@
     "main": {
       "type": "main-product",
       "blocks": {
-        "text": {
-          "type": "text",
-          "settings": {
-            "text": "{{ product.vendor }}",
-            "text_style": "uppercase"
-          }
-        },
         "text_bLk6dX": {
           "type": "text",
           "settings": {
             "text": "<strong>{{ product.title }}</strong>",
             "text_style": "subtitle"
           }
+        },
+        "judge_me_reviews_preview_badge_3hJCiG": {
+          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
         },
         "price": {
           "type": "price",
@@ -179,8 +176,8 @@
         }
       },
       "block_order": [
-        "text",
         "text_bLk6dX",
+        "judge_me_reviews_preview_badge_3hJCiG",
         "price",
         "collapsible_tab_pnHAGF",
         "collapsible_tab_njky8D",

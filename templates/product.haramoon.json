@@ -191,6 +191,10 @@
           "disabled": true,
           "settings": {}
         },
+        "judge_me_reviews_preview_badge_cifqP6": {
+          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
+        },
         "icon_with_text_F7jwf7": {
           "type": "icon-with-text",
           "settings": {
@@ -292,6 +296,7 @@
       "block_order": [
         "tinyseo_heading_one_block_jHV4Vn",
         "title_YnbYiR",
+        "judge_me_reviews_preview_badge_cifqP6",
         "icon_with_text_F7jwf7",
         "variant_picker",
         "description_TKaPMK",

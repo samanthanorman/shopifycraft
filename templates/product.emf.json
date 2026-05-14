@@ -69,6 +69,10 @@
     "17787914150db18488": {
       "type": "apps",
       "blocks": {
+        "judge_me_reviews_preview_badge_rbziW9": {
+          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
+        },
         "judge_me_reviews_review_widget_G6XfUK": {
           "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
           "settings": {
@@ -110,6 +114,7 @@
         }
       },
       "block_order": [
+        "judge_me_reviews_preview_badge_rbziW9",
         "judge_me_reviews_review_widget_G6XfUK",
         "amazon_mcf_and_buy_with_prime_promise_delivery_gpyRM9",
         "barn2_bundles_discounts_barn2_bundles_app_block_pCG6rc"
