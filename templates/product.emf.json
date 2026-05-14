@@ -66,6 +66,48 @@
         "related_heading": "You May Also Need"
       }
     },
+    "17787914150db18488": {
+      "type": "apps",
+      "blocks": {
+        "amazon_mcf_and_buy_with_prime_promise_delivery_gpyRM9": {
+          "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promise_delivery/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
+          "disabled": true,
+          "settings": {
+            "message_variant": "default",
+            "show_exception_message": false,
+            "background_color": "#F9F9F9",
+            "transparent_background": false,
+            "color": "#000000",
+            "font": "assistant_n4",
+            "font_size": 16,
+            "horizontal_alignment": "center",
+            "corner_radius": 0,
+            "top-padding": 40,
+            "bottom-padding": 40,
+            "left-padding": 0,
+            "right-padding": 0,
+            "top-margin": 0,
+            "bottom-margin": 0,
+            "left-margin": 0,
+            "right-margin": 0
+          }
+        },
+        "barn2_bundles_discounts_barn2_bundles_app_block_pCG6rc": {
+          "type": "shopify://apps/barn2-bundles-discounts/blocks/barn2-bundles-app-block/9093802f-ebea-4e54-8d68-a9e2eaad7180",
+          "disabled": true,
+          "settings": {
+            "form_selector": ""
+          }
+        }
+      },
+      "block_order": [
+        "amazon_mcf_and_buy_with_prime_promise_delivery_gpyRM9",
+        "barn2_bundles_discounts_barn2_bundles_app_block_pCG6rc"
+      ],
+      "settings": {
+        "include_margins": true
+      }
+    },
     "featured_blog_nMEGrE": {
       "type": "featured-blog",
       "name": "t:sections.featured-blog.presets.name",
@@ -83,44 +125,11 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
-    },
-    "1775520747fed80b30": {
-      "type": "apps",
-      "blocks": {
-        "amazon_mcf_and_buy_with_prime_promise_delivery_HqY7DE": {
-          "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promise_delivery/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
-          "settings": {
-            "message_variant": "default",
-            "show_exception_message": false,
-            "background_color": "#f9f9f9",
-            "transparent_background": false,
-            "color": "#000000",
-            "font": "assistant_n4",
-            "font_size": 16,
-            "horizontal_alignment": "center",
-            "corner_radius": 0,
-            "top-padding": 40,
-            "bottom-padding": 40,
-            "left-padding": 0,
-            "right-padding": 0,
-            "top-margin": 0,
-            "bottom-margin": 0,
-            "left-margin": 0,
-            "right-margin": 0
-          }
-        }
-      },
-      "block_order": [
-        "amazon_mcf_and_buy_with_prime_promise_delivery_HqY7DE"
-      ],
-      "settings": {
-        "include_margins": true
-      }
     }
   },
   "order": [
     "emf_product_main",
-    "featured_blog_nMEGrE",
-    "1775520747fed80b30"
+    "17787914150db18488",
+    "featured_blog_nMEGrE"
   ]
 }
