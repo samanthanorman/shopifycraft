@@ -89,7 +89,6 @@
       "blocks": {
         "amazon_mcf_and_buy_with_prime_promise_delivery_HqY7DE": {
           "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promise_delivery/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
-          "disabled": true,
           "settings": {
             "message_variant": "default",
             "show_exception_message": false,
@@ -109,18 +108,10 @@
             "left-margin": 0,
             "right-margin": 0
           }
-        },
-        "amazon_mcf_and_buy_with_prime_promotion_banner_container_TmmXwX": {
-          "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promotion-banner-container/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
-          "disabled": true,
-          "settings": {
-            "horizontal_alignment": "center"
-          }
         }
       },
       "block_order": [
-        "amazon_mcf_and_buy_with_prime_promise_delivery_HqY7DE",
-        "amazon_mcf_and_buy_with_prime_promotion_banner_container_TmmXwX"
+        "amazon_mcf_and_buy_with_prime_promise_delivery_HqY7DE"
       ],
       "settings": {
         "include_margins": true
