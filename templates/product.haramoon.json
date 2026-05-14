@@ -271,7 +271,7 @@
           "settings": {
             "message_variant": "default",
             "show_exception_message": false,
-            "background_color": "#F9F9F9",
+            "background_color": "#f9f9f9",
             "transparent_background": false,
             "color": "#000000",
             "font": "assistant_n4",
@@ -286,12 +286,6 @@
             "bottom-margin": 0,
             "left-margin": 0,
             "right-margin": 0
-          }
-        },
-        "amazon_mcf_and_buy_with_prime_promotion_banner_container_kRVVKD": {
-          "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promotion-banner-container/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
-          "settings": {
-            "horizontal_alignment": "center"
           }
         }
       },
@@ -308,8 +302,7 @@
         "price",
         "quantity_selector",
         "inventory_emWWFE",
-        "amazon_mcf_and_buy_with_prime_promise_delivery_9QfkBT",
-        "amazon_mcf_and_buy_with_prime_promotion_banner_container_kRVVKD"
+        "amazon_mcf_and_buy_with_prime_promise_delivery_9QfkBT"
       ],
       "settings": {
         "enable_sticky_info": true,
