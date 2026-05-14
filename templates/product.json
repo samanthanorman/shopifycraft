@@ -127,12 +127,6 @@
             "enable_quick_add": true
           }
         },
-        "amazon_mcf_and_buy_with_prime_promotion_banner_container_KrzdNG": {
-          "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promotion-banner-container/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
-          "settings": {
-            "horizontal_alignment": "center"
-          }
-        },
         "amazon_mcf_and_buy_with_prime_promise_delivery_byYgxQ": {
           "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promise_delivery/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
           "settings": {
@@ -189,7 +183,6 @@
         "share",
         "buy_buttons",
         "complementary_iAXB6M",
-        "amazon_mcf_and_buy_with_prime_promotion_banner_container_KrzdNG",
         "amazon_mcf_and_buy_with_prime_promise_delivery_byYgxQ",
         "collapsible_tab_p7BjTN",
         "collapsible_tab_PYtnDF"
@@ -390,40 +383,6 @@
         "padding_top": 40,
         "padding_bottom": 52
       }
-    },
-    "newsletter_T8U8FN": {
-      "type": "newsletter",
-      "blocks": {
-        "heading_g6db9D": {
-          "type": "heading",
-          "settings": {
-            "heading": "Subscribe to our emails",
-            "heading_size": "h1"
-          }
-        },
-        "paragraph_b7HzDz": {
-          "type": "paragraph",
-          "settings": {
-            "text": "<p>Be the first to know about new collections and exclusive offers.</p>"
-          }
-        },
-        "email_form_F3Bekz": {
-          "type": "email_form",
-          "settings": {}
-        }
-      },
-      "block_order": [
-        "heading_g6db9D",
-        "paragraph_b7HzDz",
-        "email_form_F3Bekz"
-      ],
-      "name": "t:sections.newsletter.presets.name",
-      "settings": {
-        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
-        "full_width": true,
-        "padding_top": 40,
-        "padding_bottom": 52
-      }
     }
   },
   "order": [
@@ -433,7 +392,6 @@
     "featured_blog_PXQetD",
     "multicolumn_cW6eAw",
     "multirow_9kwR94",
-    "rich_text_49tBnU",
-    "newsletter_T8U8FN"
+    "rich_text_49tBnU"
   ]
 }
