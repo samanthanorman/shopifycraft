@@ -170,18 +170,12 @@
             "share_label": "Share"
           }
         },
-        "amazon_mcf_and_buy_with_prime_promotion_banner_container_NPEJaE": {
-          "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promotion-banner-container/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
-          "settings": {
-            "horizontal_alignment": "center"
-          }
-        },
         "amazon_mcf_and_buy_with_prime_promise_delivery_6W3zzT": {
           "type": "shopify://apps/amazon-mcf-and-buy-with-prime/blocks/promise_delivery/cd9463cc-4da0-4f9f-92a6-6e3f345eb3ce",
           "settings": {
             "message_variant": "default",
             "show_exception_message": false,
-            "background_color": "#F9F9F9",
+            "background_color": "#f9f9f9",
             "transparent_background": false,
             "color": "#000000",
             "font": "assistant_n4",
@@ -212,13 +206,12 @@
         "buy_buttons",
         "description",
         "share",
-        "amazon_mcf_and_buy_with_prime_promotion_banner_container_NPEJaE",
         "amazon_mcf_and_buy_with_prime_promise_delivery_6W3zzT"
       ],
       "settings": {
         "enable_sticky_info": true,
         "color_scheme": "scheme-1",
-        "media_size": "large",
+        "media_size": "medium",
         "constrain_to_viewport": true,
         "media_fit": "contain",
         "gallery_layout": "thumbnail_slider",
@@ -358,40 +351,6 @@
       "type": "_blocks",
       "settings": {}
     },
-    "newsletter_6BJFNF": {
-      "type": "newsletter",
-      "blocks": {
-        "heading_DiNNPd": {
-          "type": "heading",
-          "settings": {
-            "heading": "Subscribe to our emails",
-            "heading_size": "h1"
-          }
-        },
-        "paragraph_MyJiqC": {
-          "type": "paragraph",
-          "settings": {
-            "text": "<p>Be the first to know about new collections and exclusive offers.</p>"
-          }
-        },
-        "email_form_G9BUgy": {
-          "type": "email_form",
-          "settings": {}
-        }
-      },
-      "block_order": [
-        "heading_DiNNPd",
-        "paragraph_MyJiqC",
-        "email_form_G9BUgy"
-      ],
-      "name": "t:sections.newsletter.presets.name",
-      "settings": {
-        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
-        "full_width": true,
-        "padding_top": 40,
-        "padding_bottom": 52
-      }
-    },
     "related_crystals": {
       "type": "related-products",
       "settings": {
@@ -400,7 +359,7 @@
         "products_to_show": 4,
         "columns_desktop": 4,
         "columns_mobile": "2",
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-3",
         "image_ratio": "square",
         "image_shape": "default",
         "show_secondary_image": true,
@@ -435,7 +394,6 @@
     "main",
     "177516040783efe939",
     "17751636993a291ea4",
-    "newsletter_6BJFNF",
     "related_crystals",
     "crystal_blog"
   ]
