@@ -320,6 +320,12 @@
         "padding_bottom": 40
       }
     },
+    "177879267860875a5f": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
     "17751206102947ed3d": {
       "type": "_blocks",
       "settings": {}
@@ -368,24 +374,24 @@
             "title_size": 20,
             "title_spacing": 40,
             "title_color": "#2c2c2c",
-            "container_width": 1200,
+            "container_width": 1000,
             "section_padding_top": 60,
             "section_padding_bottom": 60,
             "background_color": "#fafbfc",
-            "desktop_width_percent": 100,
+            "desktop_width_percent": 85,
             "accent_color": "#0066ff",
             "accent_border_thickness": 2,
-            "badge_spacing": 40,
+            "badge_spacing": 32,
             "badge_spacing_mobile": 24,
             "icon_size": 56,
-            "icon_size_mobile": 48,
-            "icon_spacing": 16,
+            "icon_size_mobile": 44,
+            "icon_spacing": 14,
             "label_size": 14,
-            "label_color": "#1a1a1a",
+            "label_color": "#11488b",
             "label_spacing": 8,
             "description_size": 12,
             "description_color": "#6b6b6b",
-            "badge_1_enabled": true,
+            "badge_1_enabled": false,
             "badge_1_icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewbox=\"0 0 24 24\"><path d=\"M22 11.08V12a10 10 0 11-5.93-9.14\"></path><path d=\"M22 4L12 14.01l-3-3\"></path></svg>",
             "badge_1_label": "Vegan",
             "badge_1_description": "100% Plant-Based",
@@ -411,6 +417,15 @@
             "badge_6_description": "0.00 Irritation Index"
           },
           "blocks": {}
+        },
+        "judge_me_reviews_review_widget_kMajdn": {
+          "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "review_data": "sample_data",
+            "max_width": 900,
+            "show_shop_reviews": false,
+            "empty_state": "hide_widget"
+          }
         },
         "ai_gen_block_44f3bc0_H34FhF": {
           "type": "ai_gen_block_44f3bc0",
@@ -465,6 +480,7 @@
       },
       "block_order": [
         "ai_gen_block_95d9cb1_VMF9tG",
+        "judge_me_reviews_review_widget_kMajdn",
         "ai_gen_block_44f3bc0_H34FhF"
       ],
       "settings": {}
@@ -835,6 +851,7 @@
     "17751124487d8adcd6",
     "1775121415754194da",
     "main",
+    "177879267860875a5f",
     "17751206102947ed3d",
     "hm_ingredient_heroes",
     "177511709462da6ba1",
