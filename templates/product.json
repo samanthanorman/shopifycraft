@@ -167,6 +167,15 @@
           "settings": {
             "form_selector": ""
           }
+        },
+        "judge_me_reviews_review_widget_fDafU6": {
+          "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "review_data": "sample_data",
+            "max_width": 1000,
+            "show_shop_reviews": false,
+            "empty_state": "hide_widget"
+          }
         }
       },
       "block_order": [
@@ -184,7 +193,8 @@
         "amazon_mcf_and_buy_with_prime_promise_delivery_byYgxQ",
         "collapsible_tab_p7BjTN",
         "collapsible_tab_PYtnDF",
-        "barn2_bundles_discounts_barn2_bundles_app_block_EjGrfF"
+        "barn2_bundles_discounts_barn2_bundles_app_block_EjGrfF",
+        "judge_me_reviews_review_widget_fDafU6"
       ],
       "settings": {
         "enable_sticky_info": true,

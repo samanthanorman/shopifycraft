@@ -320,12 +320,6 @@
         "padding_bottom": 40
       }
     },
-    "177879267860875a5f": {
-      "type": "apps",
-      "settings": {
-        "include_margins": true
-      }
-    },
     "17751206102947ed3d": {
       "type": "_blocks",
       "settings": {}
@@ -851,7 +845,6 @@
     "17751124487d8adcd6",
     "1775121415754194da",
     "main",
-    "177879267860875a5f",
     "17751206102947ed3d",
     "hm_ingredient_heroes",
     "177511709462da6ba1",
