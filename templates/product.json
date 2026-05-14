@@ -102,20 +102,13 @@
         },
         "share": {
           "type": "share",
-          "disabled": true,
           "settings": {
             "share_label": "Share"
           }
         },
-        "buy_buttons": {
-          "type": "buy_buttons",
-          "settings": {
-            "show_dynamic_checkout": true,
-            "show_gift_card_recipient": true
-          }
-        },
         "complementary_iAXB6M": {
           "type": "complementary",
+          "disabled": true,
           "settings": {
             "block_heading": "Pairs well with",
             "make_collapsible_row": true,
@@ -168,6 +161,12 @@
             "content": "<p></p><p></p>",
             "page": ""
           }
+        },
+        "barn2_bundles_discounts_barn2_bundles_app_block_EjGrfF": {
+          "type": "shopify://apps/barn2-bundles-discounts/blocks/barn2-bundles-app-block/9093802f-ebea-4e54-8d68-a9e2eaad7180",
+          "settings": {
+            "form_selector": ""
+          }
         }
       },
       "block_order": [
@@ -181,11 +180,11 @@
         "quantity_selector",
         "description_TKaPMK",
         "share",
-        "buy_buttons",
         "complementary_iAXB6M",
         "amazon_mcf_and_buy_with_prime_promise_delivery_byYgxQ",
         "collapsible_tab_p7BjTN",
-        "collapsible_tab_PYtnDF"
+        "collapsible_tab_PYtnDF",
+        "barn2_bundles_discounts_barn2_bundles_app_block_EjGrfF"
       ],
       "settings": {
         "enable_sticky_info": true,
@@ -207,11 +206,11 @@
       "type": "related-products",
       "settings": {
         "heading": "You may also like",
-        "heading_size": "h2",
+        "heading_size": "h1",
         "products_to_show": 3,
         "columns_desktop": 3,
         "columns_mobile": "2",
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
         "image_ratio": "portrait",
         "image_shape": "default",
         "show_secondary_image": true,

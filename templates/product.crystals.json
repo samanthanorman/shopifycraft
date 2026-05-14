@@ -152,13 +152,6 @@
           "type": "quantity_selector",
           "settings": {}
         },
-        "buy_buttons": {
-          "type": "buy_buttons",
-          "settings": {
-            "show_dynamic_checkout": true,
-            "show_gift_card_recipient": true
-          }
-        },
         "description": {
           "type": "description",
           "disabled": true,
@@ -191,6 +184,12 @@
             "left-margin": 0,
             "right-margin": 0
           }
+        },
+        "barn2_bundles_discounts_barn2_bundles_app_block_TmQyHJ": {
+          "type": "shopify://apps/barn2-bundles-discounts/blocks/barn2-bundles-app-block/9093802f-ebea-4e54-8d68-a9e2eaad7180",
+          "settings": {
+            "form_selector": ""
+          }
         }
       },
       "block_order": [
@@ -203,10 +202,10 @@
         "collapsible_tab_G6mnxJ",
         "variant_picker",
         "quantity_selector",
-        "buy_buttons",
         "description",
         "share",
-        "amazon_mcf_and_buy_with_prime_promise_delivery_6W3zzT"
+        "amazon_mcf_and_buy_with_prime_promise_delivery_6W3zzT",
+        "barn2_bundles_discounts_barn2_bundles_app_block_TmQyHJ"
       ],
       "settings": {
         "enable_sticky_info": true,
@@ -347,10 +346,6 @@
       ],
       "settings": {}
     },
-    "17751636993a291ea4": {
-      "type": "_blocks",
-      "settings": {}
-    },
     "related_crystals": {
       "type": "related-products",
       "settings": {
@@ -371,7 +366,6 @@
     },
     "crystal_blog": {
       "type": "featured-blog",
-      "disabled": true,
       "settings": {
         "blog": "crystals-science-magic",
         "post_limit": 3,
@@ -393,7 +387,6 @@
     "blocks_JgmYaQ",
     "main",
     "177516040783efe939",
-    "17751636993a291ea4",
     "related_crystals",
     "crystal_blog"
   ]
