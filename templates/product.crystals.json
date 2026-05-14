@@ -337,12 +337,22 @@
             "hover_transition_speed": 0.3
           },
           "blocks": {}
+        },
+        "judge_me_reviews_review_widget_76PkgY": {
+          "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "review_data": "sample_data",
+            "max_width": 850,
+            "show_shop_reviews": false,
+            "empty_state": "hide_widget"
+          }
         }
       },
       "block_order": [
         "ai_gen_block_38e2ec8_FFh6in",
         "ai_gen_block_bf691b8_tXUMCL",
-        "ai_gen_block_ea5878f_pKfhkV"
+        "ai_gen_block_ea5878f_pKfhkV",
+        "judge_me_reviews_review_widget_76PkgY"
       ],
       "settings": {}
     },
