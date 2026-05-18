@@ -159,19 +159,19 @@
             "page": ""
           }
         },
-        "barn2_bundles_discounts_barn2_bundles_app_block_EjGrfF": {
-          "type": "shopify://apps/barn2-bundles-discounts/blocks/barn2-bundles-app-block/9093802f-ebea-4e54-8d68-a9e2eaad7180",
-          "settings": {
-            "form_selector": ""
-          }
-        },
         "judge_me_reviews_review_widget_fDafU6": {
           "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
           "settings": {
-            "review_data": "sample_data",
+            "review_data": "real_data",
             "max_width": 1000,
             "show_shop_reviews": false,
             "empty_state": "hide_widget"
+          }
+        },
+        "barn2_bundles_discounts_barn2_bundles_app_block_HxBJaU": {
+          "type": "shopify://apps/barn2-bundles-discounts/blocks/barn2-bundles-app-block/9093802f-ebea-4e54-8d68-a9e2eaad7180",
+          "settings": {
+            "form_selector": ""
           }
         }
       },
@@ -190,8 +190,8 @@
         "amazon_mcf_and_buy_with_prime_promise_delivery_byYgxQ",
         "collapsible_tab_p7BjTN",
         "collapsible_tab_PYtnDF",
-        "barn2_bundles_discounts_barn2_bundles_app_block_EjGrfF",
-        "judge_me_reviews_review_widget_fDafU6"
+        "judge_me_reviews_review_widget_fDafU6",
+        "barn2_bundles_discounts_barn2_bundles_app_block_HxBJaU"
       ],
       "settings": {
         "enable_sticky_info": true,
