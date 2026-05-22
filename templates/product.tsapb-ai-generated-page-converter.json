@@ -9,12 +9,52 @@
  */
 {
   "sections": {
+    "blocks_Fae9qE": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_3883137_LdDqGW": {
+          "type": "ai_gen_block_3883137",
+          "settings": {
+            "home_text": "Home",
+            "all_products_text": "All Products",
+            "separator": "/",
+            "font_size": 11,
+            "item_spacing": 6,
+            "padding_vertical": 12,
+            "padding_horizontal": 0,
+            "desktop_width_percent": 100,
+            "link_color": "#0d1b3e",
+            "link_hover_color": "#fa9eff",
+            "current_color": "#f103ff",
+            "separator_color": "#999999"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_3883137_LdDqGW"
+      ],
+      "name": "Breadcrumb navigation",
+      "settings": {}
+    },
     "main": {
       "type": "main-product",
       "blocks": {
-        "title": {
-          "type": "title",
-          "settings": {}
+        "tinyseo_heading_one_block_RDADjy": {
+          "type": "shopify://apps/tinyseo/blocks/heading-one-block/0605268f-f7c4-4e95-b560-e43df7d59ae4",
+          "settings": {
+            "heading_one": "{{ product.title }}",
+            "text_align": "left",
+            "font_size": 36,
+            "font_weight": "normal",
+            "line_height": 36,
+            "color": "#000000",
+            "margin_top": 20,
+            "margin_right": 5,
+            "margin_bottom": 20,
+            "margin_left": 5,
+            "custom_css": ""
+          }
         },
         "price": {
           "type": "price",
@@ -48,6 +88,24 @@
             "text_style": "body"
           }
         },
+        "collapsible_tab_J6PMM6": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Benefits",
+            "icon": "heart",
+            "content": "{{ product.metafields.global[\"bullet-point\"] | metafield_tag }}",
+            "page": ""
+          }
+        },
+        "collapsible_tab_8U6a9C": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Care Instructions",
+            "icon": "clipboard",
+            "content": "{{ product.metafields.custom.care_and_cleanse | metafield_tag }}",
+            "page": ""
+          }
+        },
         "variant_picker": {
           "type": "variant_picker",
           "settings": {
@@ -57,42 +115,37 @@
         },
         "quantity_selector": {
           "type": "quantity_selector",
-          "disabled": true,
           "settings": {}
         },
         "buy_buttons": {
           "type": "buy_buttons",
           "settings": {
-            "show_dynamic_checkout": false,
+            "show_dynamic_checkout": true,
             "show_gift_card_recipient": true
           }
         },
         "inventory": {
           "type": "inventory",
-          "disabled": true,
           "settings": {
             "text_style": "uppercase",
             "inventory_threshold": 10,
             "show_inventory_quantity": true
           }
-        },
-        "description": {
-          "type": "description",
-          "settings": {}
         }
       },
       "block_order": [
-        "title",
+        "tinyseo_heading_one_block_RDADjy",
         "price",
         "tagline",
         "top_benefit_1",
         "top_benefit_2",
         "top_benefit_3",
+        "collapsible_tab_J6PMM6",
+        "collapsible_tab_8U6a9C",
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
-        "inventory",
-        "description"
+        "inventory"
       ],
       "custom_css": [
         ".product__info-container .product__text.inline-richtext:nth-of-type(1) {margin-top: 3rem;}",
@@ -102,7 +155,7 @@
       ],
       "settings": {
         "enable_sticky_info": true,
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
         "media_size": "medium",
         "constrain_to_viewport": true,
         "media_fit": "contain",
@@ -114,93 +167,6 @@
         "enable_video_looping": false,
         "padding_top": 36,
         "padding_bottom": 36
-      }
-    },
-    "benefits": {
-      "type": "tsapb-ce7789ea",
-      "blocks": {
-        "icon_EFh33F": {
-          "type": "icon",
-          "settings": {
-            "icon_type": "icon",
-            "icon": "shield_alt",
-            "font_awesome": "",
-            "icon_title": "Secure Checkout",
-            "icon_description": "Safe and easy payments every time"
-          }
-        },
-        "icon_KrwaUg": {
-          "type": "icon",
-          "settings": {
-            "icon_type": "icon",
-            "icon": "shipping_fast",
-            "font_awesome": "",
-            "icon_title": "Fast Shipping",
-            "icon_description": "Get your order delivered quickly"
-          }
-        },
-        "icon_8QqKcB": {
-          "type": "icon",
-          "settings": {
-            "icon_type": "icon",
-            "icon": "headset",
-            "font_awesome": "",
-            "icon_title": "Customer Support",
-            "icon_description": "Friendly help whenever you need it"
-          }
-        },
-        "icon_qgMUAW": {
-          "type": "icon",
-          "settings": {
-            "icon_type": "icon",
-            "icon": "undo_alt",
-            "font_awesome": "",
-            "icon_title": "Easy Returns",
-            "icon_description": "Shop with confidence, hassle-free"
-          }
-        }
-      },
-      "block_order": [
-        "icon_EFh33F",
-        "icon_KrwaUg",
-        "icon_8QqKcB",
-        "icon_qgMUAW"
-      ],
-      "name": "❤️ Square: Value Icons",
-      "settings": {
-        "icon_color": "#222222",
-        "icon_size": 24,
-        "icon_title_size": "16",
-        "icon_title_color": "#222222",
-        "icon_description_size": "14",
-        "icon_description_color": "#222222",
-        "icons_per_row_desktop": 4,
-        "icons_mobile_layout": "2",
-        "space_between_icons": 24,
-        "space_between_rows": 64,
-        "space_between_rows_mobile": 40,
-        "heading": "",
-        "heading_size": "32",
-        "heading_style": "regular",
-        "heading_alignment": "center",
-        "heading_color": "#222222",
-        "section_background_style": "color",
-        "section_background": "#f5f5f5",
-        "section_background_gradient": "linear-gradient(to right, #fed951, #ff46c7)",
-        "section_background_animation": false,
-        "overlay_color": "#222222",
-        "overlay_opacity": 0,
-        "section_width": 70,
-        "section_max_width": "",
-        "spacing_type": "desktop",
-        "padding_top": 24,
-        "padding_bottom": 24,
-        "margin_top": 80,
-        "margin_bottom": 80,
-        "padding_top_mobile": 20,
-        "padding_bottom_mobile": 20,
-        "margin_top_mobile": 40,
-        "margin_bottom_mobile": 40
       }
     },
     "image_with_text_1": {
@@ -243,11 +209,13 @@
         "image_mobile_position": "above",
         "text_alignment": "left",
         "text_box_width": 65,
-        "text_box_background": "#f5f5f5",
+        "text_box_background_style": "color",
+        "text_box_background": "#ffedfc",
+        "text_box_background_gradient": "linear-gradient(to right, #fed951, #ff46c7)",
         "enable_animation": false,
         "border_color": "#222222",
         "text_box_corner_radius": 0,
-        "section_background": "",
+        "section_background": "#d6cdd6",
         "overlay_color": "#222222",
         "overlay_opacity": 0,
         "layout_type": "mobile",
@@ -389,15 +357,18 @@
         "image_position": "right",
         "aspect_ratio": "square",
         "image_source_mobile": "upload",
+        "image_mobile": "shopify://shop_images/sandalwood-paddle-brush-xl-natural-wooden-bristles-for-thick-long-hair-anti-static-scalp-massage-detangling-brushbrush-hair-brush-3070156.png",
         "image_mobile_url": "",
         "image_mobile_position": "above",
         "text_alignment": "left",
         "text_box_width": 65,
-        "text_box_background": "#f4f4f4",
+        "text_box_background_style": "color",
+        "text_box_background": "#ffffff",
+        "text_box_background_gradient": "linear-gradient(to right, #fed951, #ff46c7)",
         "enable_animation": false,
         "border_color": "#222222",
         "text_box_corner_radius": 0,
-        "section_background": "rgba(0,0,0,0)",
+        "section_background": "#d6cdd6",
         "overlay_color": "#222222",
         "overlay_opacity": 0,
         "layout_type": "desktop",
@@ -412,6 +383,93 @@
         "padding_bottom_mobile": 20,
         "margin_top_mobile": 0,
         "margin_bottom_mobile": 0
+      }
+    },
+    "benefits": {
+      "type": "tsapb-ce7789ea",
+      "blocks": {
+        "icon_EFh33F": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "shield_alt",
+            "font_awesome": "",
+            "icon_title": "Secure Checkout",
+            "icon_description": "Safe and easy payments every time"
+          }
+        },
+        "icon_KrwaUg": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "shipping_fast",
+            "font_awesome": "",
+            "icon_title": "Fast Shipping",
+            "icon_description": "Get your order delivered quickly"
+          }
+        },
+        "icon_8QqKcB": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "headset",
+            "font_awesome": "",
+            "icon_title": "Customer Support",
+            "icon_description": "Friendly help whenever you need it"
+          }
+        },
+        "icon_qgMUAW": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "undo_alt",
+            "font_awesome": "",
+            "icon_title": "Easy Returns",
+            "icon_description": "Shop with confidence, hassle-free"
+          }
+        }
+      },
+      "block_order": [
+        "icon_EFh33F",
+        "icon_KrwaUg",
+        "icon_8QqKcB",
+        "icon_qgMUAW"
+      ],
+      "name": "❤️ Square: Value Icons",
+      "settings": {
+        "icon_color": "#0c0c0b",
+        "icon_size": 24,
+        "icon_title_size": "16",
+        "icon_title_color": "#222222",
+        "icon_description_size": "14",
+        "icon_description_color": "#956c8e",
+        "icons_per_row_desktop": 4,
+        "icons_mobile_layout": "2",
+        "space_between_icons": 24,
+        "space_between_rows": 64,
+        "space_between_rows_mobile": 40,
+        "heading": "",
+        "heading_size": "32",
+        "heading_style": "regular",
+        "heading_alignment": "center",
+        "heading_color": "#fdfaf0",
+        "section_background_style": "color",
+        "section_background": "#ffedfc",
+        "section_background_gradient": "linear-gradient(to right, #fed951, #ff46c7)",
+        "section_background_animation": false,
+        "overlay_color": "#222222",
+        "overlay_opacity": 0,
+        "section_width": 70,
+        "section_max_width": "",
+        "spacing_type": "desktop",
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "margin_top": 80,
+        "margin_bottom": 80,
+        "padding_top_mobile": 20,
+        "padding_bottom_mobile": 20,
+        "margin_top_mobile": 40,
+        "margin_bottom_mobile": 40
       }
     },
     "faq": {
@@ -501,7 +559,7 @@
         "answerBackgroundColor": "rgba(0,0,0,0)",
         "answerTextSize": "16",
         "section_background_style": "color",
-        "generalBackgroundColor": "#f5f5f5",
+        "generalBackgroundColor": "#ffedfc",
         "section_background_gradient": "linear-gradient(to right, #fed951, #ff46c7)",
         "section_background_animation": false,
         "overlay_color": "#222222",
@@ -516,14 +574,34 @@
         "margin_top_mobile": 30,
         "margin_bottom_mobile": 30
       }
+    },
+    "featured_blog_jNcLjT": {
+      "type": "featured-blog",
+      "name": "t:sections.featured-blog.presets.name",
+      "settings": {
+        "blog": "wax-wane-blog",
+        "post_limit": 3,
+        "heading": "From The Blog",
+        "heading_size": "h2",
+        "columns_desktop": 3,
+        "show_view_all": true,
+        "show_image": true,
+        "show_date": false,
+        "show_author": false,
+        "color_scheme": "scheme-3",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
     }
   },
   "order": [
+    "blocks_Fae9qE",
     "main",
-    "benefits",
     "image_with_text_1",
     "key_benefit_section",
     "image_with_text_2",
-    "faq"
+    "benefits",
+    "faq",
+    "featured_blog_jNcLjT"
   ]
 }
