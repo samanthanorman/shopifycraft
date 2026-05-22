@@ -115,6 +115,7 @@
         },
         "text_pXf9B3": {
           "type": "text",
+          "disabled": true,
           "settings": {
             "text": "<p>Where Curiosity Outshines Routine ✨</p>"
           }
@@ -147,61 +148,13 @@
         "padding_bottom": 20
       }
     },
-    "collection_list_6KJkGj": {
-      "type": "collection-list",
-      "blocks": {
-        "featured_collection_ViDthp": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "natural-crystals-gemstones"
-          }
-        },
-        "featured_collection_aagH99": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "haramoon-korean-skincare"
-          }
-        },
-        "featured_collection_TQ6pAa": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "emf-shielding-faraday-protection"
-          }
-        },
-        "featured_collection_W3xf4d": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "daily-essentials"
-          }
-        }
-      },
-      "block_order": [
-        "featured_collection_ViDthp",
-        "featured_collection_aagH99",
-        "featured_collection_TQ6pAa",
-        "featured_collection_W3xf4d"
-      ],
-      "name": "t:sections.collection-list.presets.name",
-      "settings": {
-        "title": "Featured Collections",
-        "heading_size": "h2",
-        "image_ratio": "portrait",
-        "columns_desktop": 4,
-        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
-        "show_view_all": false,
-        "columns_mobile": "1",
-        "swipe_on_mobile": false,
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
     "tsapb_3440f77d_zRgAL8": {
       "type": "tsapb-3440f77d",
       "blocks": {
         "heading_8UwbDM": {
           "type": "heading",
           "settings": {
-            "heading": "",
+            "heading": "Where Curiosity Outshines Routine ✨",
             "heading_size": "32",
             "heading_style": "regular",
             "description": "",
@@ -273,12 +226,60 @@
         "arrows_style": "chevron",
         "arrows_color": "#222222",
         "section_width": 100,
-        "section_max_width": "",
+        "section_max_width": "Where Curiosity Outshines Routine ✨",
         "videos_space_between": 20,
         "vertical_padding": 40,
         "vertical_margin": 0,
         "vertical_padding_mobile": 20,
         "vertical_margin_mobile": 0
+      }
+    },
+    "collection_list_6KJkGj": {
+      "type": "collection-list",
+      "blocks": {
+        "featured_collection_ViDthp": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "natural-crystals-gemstones"
+          }
+        },
+        "featured_collection_aagH99": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "haramoon-korean-skincare"
+          }
+        },
+        "featured_collection_TQ6pAa": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "emf-shielding-faraday-protection"
+          }
+        },
+        "featured_collection_W3xf4d": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "daily-essentials"
+          }
+        }
+      },
+      "block_order": [
+        "featured_collection_ViDthp",
+        "featured_collection_aagH99",
+        "featured_collection_TQ6pAa",
+        "featured_collection_W3xf4d"
+      ],
+      "name": "t:sections.collection-list.presets.name",
+      "settings": {
+        "title": "Featured Collections",
+        "heading_size": "h2",
+        "image_ratio": "portrait",
+        "columns_desktop": 4,
+        "color_scheme": "scheme-3b3b8528-7073-4736-835f-f179fe559506",
+        "show_view_all": false,
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 36
       }
     },
     "collage_rjbxCk": {
@@ -583,8 +584,8 @@
     "177818494650066ef0",
     "image_banner_Ryjafq",
     "rich_text_GrkV8i",
-    "collection_list_6KJkGj",
     "tsapb_3440f77d_zRgAL8",
+    "collection_list_6KJkGj",
     "collage_rjbxCk",
     "blocks_jima8j",
     "rich_text_VJcFyC",
