@@ -195,6 +195,92 @@
         "padding_bottom": 36
       }
     },
+    "tsapb_3440f77d_zRgAL8": {
+      "type": "tsapb-3440f77d",
+      "blocks": {
+        "heading_8UwbDM": {
+          "type": "heading",
+          "settings": {
+            "heading": "",
+            "heading_size": "32",
+            "heading_style": "regular",
+            "description": "",
+            "description_size": "16",
+            "text_color": "#222222",
+            "text_alignment": "center"
+          }
+        },
+        "video_jjyrVY": {
+          "type": "video",
+          "settings": {
+            "video_desktop": "shopify://files/videos/wax-wane-haramoon-your-skin-s-strongest-barrier-version-1-2026-01-28.mp4"
+          }
+        },
+        "video_4PFz3A": {
+          "type": "video",
+          "settings": {
+            "video_desktop": "shopify://files/videos/Chunky Thick Clear Tower Ad 2.MOV"
+          }
+        },
+        "video_b7Rj9Q": {
+          "type": "video",
+          "settings": {
+            "video_desktop": "shopify://files/videos/Wooden Brush Collection.mov"
+          }
+        },
+        "video_wMxQY3": {
+          "type": "video",
+          "settings": {
+            "video_desktop": "shopify://files/videos/sm_clear_pyramid2.MOV"
+          }
+        },
+        "video_wYctC3": {
+          "type": "video",
+          "settings": {
+            "video_desktop": "shopify://files/videos/Moonstone heart palm stone .MOV"
+          }
+        },
+        "video_jPCkJD": {
+          "type": "video",
+          "settings": {
+            "video_desktop": "shopify://files/videos/Fluorite obelisk video ad.MOV"
+          }
+        }
+      },
+      "block_order": [
+        "heading_8UwbDM",
+        "video_jjyrVY",
+        "video_4PFz3A",
+        "video_b7Rj9Q",
+        "video_wMxQY3",
+        "video_wYctC3",
+        "video_jPCkJD"
+      ],
+      "name": "❤️ Square: Video Carousel",
+      "settings": {
+        "aspect_ratio": "2/3",
+        "videos_corner_radius": 16,
+        "autoplay": true,
+        "loop": true,
+        "show_video_controls": true,
+        "controls_color": "#ffffff",
+        "controls_background_color": "#222222",
+        "videos_per_row": "3",
+        "section_background_style": "regular",
+        "section_background": "",
+        "section_gradient": "linear-gradient(#72ffb3, #fffa63)",
+        "enable_animation": false,
+        "arrows_style": "chevron",
+        "arrows_color": "#222222",
+        "section_width": 100,
+        "section_max_width": "",
+        "videos_space_between": 20,
+        "vertical_padding": 40,
+        "vertical_margin": 0,
+        "vertical_padding_mobile": 20,
+        "vertical_margin_mobile": 0
+      }
+    },
     "collage_rjbxCk": {
       "type": "collage",
       "blocks": {
@@ -498,6 +584,7 @@
     "image_banner_Ryjafq",
     "rich_text_GrkV8i",
     "collection_list_6KJkGj",
+    "tsapb_3440f77d_zRgAL8",
     "collage_rjbxCk",
     "blocks_jima8j",
     "rich_text_VJcFyC",
