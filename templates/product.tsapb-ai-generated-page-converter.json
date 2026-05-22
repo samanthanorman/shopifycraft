@@ -1,0 +1,529 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "tagline": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.metafields.vitals.tagline.value }}",
+            "text_style": "body"
+          }
+        },
+        "top_benefit_1": {
+          "type": "text",
+          "settings": {
+            "text": "✓ {{ product.metafields.vitals.top_benefit_1.value }}",
+            "text_style": "body"
+          }
+        },
+        "top_benefit_2": {
+          "type": "text",
+          "settings": {
+            "text": "✓ {{ product.metafields.vitals.top_benefit_2.value }}",
+            "text_style": "body"
+          }
+        },
+        "top_benefit_3": {
+          "type": "text",
+          "settings": {
+            "text": "✓ {{ product.metafields.vitals.top_benefit_3.value }}",
+            "text_style": "body"
+          }
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "dropdown",
+            "swatch_shape": "square"
+          }
+        },
+        "quantity_selector": {
+          "type": "quantity_selector",
+          "disabled": true,
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": false,
+            "show_gift_card_recipient": true
+          }
+        },
+        "inventory": {
+          "type": "inventory",
+          "disabled": true,
+          "settings": {
+            "text_style": "uppercase",
+            "inventory_threshold": 10,
+            "show_inventory_quantity": true
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "title",
+        "price",
+        "tagline",
+        "top_benefit_1",
+        "top_benefit_2",
+        "top_benefit_3",
+        "variant_picker",
+        "quantity_selector",
+        "buy_buttons",
+        "inventory",
+        "description"
+      ],
+      "custom_css": [
+        ".product__info-container .product__text.inline-richtext:nth-of-type(1) {margin-top: 3rem;}",
+        ".product__info-container .product__text.inline-richtext:nth-of-type(2) {margin-top: 1rem;}",
+        ".product__info-container .product__text.inline-richtext:nth-of-type(3) {margin: 0.2rem 0;}",
+        ".product__info-container .product__text.inline-richtext:nth-of-type(4) {margin-top: 0.2rem; margin-bottom: 3rem;}"
+      ],
+      "settings": {
+        "enable_sticky_info": true,
+        "color_scheme": "scheme-1",
+        "media_size": "medium",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "gallery_layout": "thumbnail",
+        "mobile_thumbnails": "show",
+        "media_position": "left",
+        "image_zoom": "lightbox",
+        "hide_variants": true,
+        "enable_video_looping": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "benefits": {
+      "type": "tsapb-ce7789ea",
+      "blocks": {
+        "icon_EFh33F": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "shield_alt",
+            "font_awesome": "",
+            "icon_title": "Secure Checkout",
+            "icon_description": "Safe and easy payments every time"
+          }
+        },
+        "icon_KrwaUg": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "shipping_fast",
+            "font_awesome": "",
+            "icon_title": "Fast Shipping",
+            "icon_description": "Get your order delivered quickly"
+          }
+        },
+        "icon_8QqKcB": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "headset",
+            "font_awesome": "",
+            "icon_title": "Customer Support",
+            "icon_description": "Friendly help whenever you need it"
+          }
+        },
+        "icon_qgMUAW": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "undo_alt",
+            "font_awesome": "",
+            "icon_title": "Easy Returns",
+            "icon_description": "Shop with confidence, hassle-free"
+          }
+        }
+      },
+      "block_order": [
+        "icon_EFh33F",
+        "icon_KrwaUg",
+        "icon_8QqKcB",
+        "icon_qgMUAW"
+      ],
+      "name": "❤️ Square: Value Icons",
+      "settings": {
+        "icon_color": "#222222",
+        "icon_size": 24,
+        "icon_title_size": "16",
+        "icon_title_color": "#222222",
+        "icon_description_size": "14",
+        "icon_description_color": "#222222",
+        "icons_per_row_desktop": 4,
+        "icons_mobile_layout": "2",
+        "space_between_icons": 24,
+        "space_between_rows": 64,
+        "space_between_rows_mobile": 40,
+        "heading": "",
+        "heading_size": "32",
+        "heading_style": "regular",
+        "heading_alignment": "center",
+        "heading_color": "#222222",
+        "section_background_style": "color",
+        "section_background": "#f5f5f5",
+        "section_background_gradient": "linear-gradient(to right, #fed951, #ff46c7)",
+        "section_background_animation": false,
+        "overlay_color": "#222222",
+        "overlay_opacity": 0,
+        "section_width": 70,
+        "section_max_width": "",
+        "spacing_type": "desktop",
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "margin_top": 80,
+        "margin_bottom": 80,
+        "padding_top_mobile": 20,
+        "padding_bottom_mobile": 20,
+        "margin_top_mobile": 40,
+        "margin_bottom_mobile": 40
+      }
+    },
+    "image_with_text_1": {
+      "type": "tsapb-664c7c40",
+      "blocks": {
+        "heading_TqgfWj": {
+          "type": "heading",
+          "settings": {
+            "heading": "{{ product.metafields.vitals.image_with_text_1_title.value }}",
+            "heading_size": "32",
+            "heading_color": "#222222",
+            "heading_alternative_font": false,
+            "heading_font": "sans_serif_n4"
+          }
+        },
+        "text_Urj8gc": {
+          "type": "text",
+          "settings": {
+            "description": "<p>{{ product.metafields.vitals.image_with_text_1_description | metafield_tag }}</p>",
+            "description_size": "16",
+            "description_color": "#222222",
+            "description_alternative_font": false,
+            "description_font": "sans_serif_n4"
+          }
+        }
+      },
+      "block_order": [
+        "heading_TqgfWj",
+        "text_Urj8gc"
+      ],
+      "name": "❤️ Square: Image & Text - Simple",
+      "settings": {
+        "image_source_desktop": "upload",
+        "image_desktop": "{{ product.metafields.vitals.image_with_text_1_image.value }}",
+        "image_desktop_url": "",
+        "image_position": "left",
+        "aspect_ratio": "square",
+        "image_source_mobile": "upload",
+        "image_mobile_url": "",
+        "image_mobile_position": "above",
+        "text_alignment": "left",
+        "text_box_width": 65,
+        "text_box_background": "#f5f5f5",
+        "enable_animation": false,
+        "border_color": "#222222",
+        "text_box_corner_radius": 0,
+        "section_background": "",
+        "overlay_color": "#222222",
+        "overlay_opacity": 0,
+        "layout_type": "mobile",
+        "section_width": 100,
+        "section_width_mobile": 100,
+        "section_max_width": "1100",
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "padding_top_mobile": 20,
+        "padding_bottom_mobile": 20,
+        "margin_top_mobile": 0,
+        "margin_bottom_mobile": 0
+      }
+    },
+    "key_benefit_section": {
+      "type": "tsapb-43e1018c",
+      "blocks": {
+        "icon_7FmKJN": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "star",
+            "font_awesome": "<i class=\"fas fa-check\"></i>",
+            "icon_title": "{{ product.metafields.vitals.key_benefit_1_title.value }}",
+            "icon_description": "{{ product.metafields.vitals.key_benefit_1_description.value }}"
+          }
+        },
+        "icon_zYkVdp": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "map_marker_alt",
+            "font_awesome": "<i class=\"fas fa-check\"></i>",
+            "icon_title": "{{ product.metafields.vitals.key_benefit_2_title.value }}",
+            "icon_description": "{{ product.metafields.vitals.key_benefit_2_description.value }}"
+          }
+        },
+        "icon_TWnjnd": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "none",
+            "font_awesome": "<i class=\"fas fa-check\"></i>",
+            "icon_title": "{{ product.metafields.vitals.key_benefit_3_title.value }}",
+            "icon_description": "{{ product.metafields.vitals.key_benefit_3_description.value }}"
+          }
+        },
+        "icon_FtUibb": {
+          "type": "icon",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "none",
+            "font_awesome": "<i class=\"fas fa-check\"></i>",
+            "icon_title": "{{ product.metafields.vitals.key_benefit_4_title.value }}",
+            "icon_description": "{{ product.metafields.vitals.key_benefit_4_description.value }}"
+          }
+        }
+      },
+      "block_order": [
+        "icon_7FmKJN",
+        "icon_zYkVdp",
+        "icon_TWnjnd",
+        "icon_FtUibb"
+      ],
+      "name": "❤️ Square: Value Icons & Image",
+      "settings": {
+        "image": "{{ product.metafields.vitals.key_benefit_section_image.value }}",
+        "image_aspect_ratio": "square",
+        "image_corner_radius": 0,
+        "image_size": "small",
+        "position_on_desktop": "center",
+        "position_on_mobile": "above",
+        "icon_color": "#222222",
+        "icon_size": 24,
+        "icon_title_size": "16",
+        "icon_title_color": "#222222",
+        "icon_description_size": "14",
+        "icon_description_color": "#222222",
+        "icons_mobile_layout": "2",
+        "heading": "",
+        "heading_size": "32",
+        "heading_style": "regular",
+        "heading_alignment": "center",
+        "heading_color": "#222222",
+        "section_background_style": "color",
+        "section_background": "",
+        "section_gradient": "linear-gradient(to right, #fed951, #ff46c7)",
+        "enable_animation": false,
+        "overlay_color": "#222222",
+        "overlay_opacity": 0,
+        "section_width": 90,
+        "section_max_width": "",
+        "spacing_type": "mobile",
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "padding_top_mobile": 20,
+        "padding_bottom_mobile": 20,
+        "margin_top_mobile": 0,
+        "margin_bottom_mobile": 0
+      }
+    },
+    "image_with_text_2": {
+      "type": "tsapb-664c7c40",
+      "blocks": {
+        "heading_Na3bMx": {
+          "type": "heading",
+          "settings": {
+            "heading": "{{ product.metafields.vitals.image_with_text_2_title.value }}",
+            "heading_size": "32",
+            "heading_color": "#222222",
+            "heading_alternative_font": false,
+            "heading_font": "sans_serif_n4"
+          }
+        },
+        "text_cCTRtw": {
+          "type": "text",
+          "settings": {
+            "description": "<p>{{ product.metafields.vitals.image_with_text_2_description | metafield_tag }}</p>",
+            "description_size": "16",
+            "description_color": "#222222",
+            "description_alternative_font": false,
+            "description_font": "sans_serif_n4"
+          }
+        }
+      },
+      "block_order": [
+        "heading_Na3bMx",
+        "text_cCTRtw"
+      ],
+      "name": "❤️ Square: Image & Text - Simple",
+      "settings": {
+        "image_source_desktop": "upload",
+        "image_desktop": "{{ product.metafields.vitals.image_with_text_2_image.value }}",
+        "image_desktop_url": "",
+        "image_position": "right",
+        "aspect_ratio": "square",
+        "image_source_mobile": "upload",
+        "image_mobile_url": "",
+        "image_mobile_position": "above",
+        "text_alignment": "left",
+        "text_box_width": 65,
+        "text_box_background": "#f4f4f4",
+        "enable_animation": false,
+        "border_color": "#222222",
+        "text_box_corner_radius": 0,
+        "section_background": "rgba(0,0,0,0)",
+        "overlay_color": "#222222",
+        "overlay_opacity": 0,
+        "layout_type": "desktop",
+        "section_width": 90,
+        "section_width_mobile": 100,
+        "section_max_width": "1100",
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "padding_top_mobile": 20,
+        "padding_bottom_mobile": 20,
+        "margin_top_mobile": 0,
+        "margin_bottom_mobile": 0
+      }
+    },
+    "faq": {
+      "type": "tsapb-ba22cbbf",
+      "blocks": {
+        "heading_DVdaEi": {
+          "type": "heading",
+          "settings": {
+            "title": "Frequently Asked Questions"
+          }
+        },
+        "question_pQyxJ8": {
+          "type": "question",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "award",
+            "font_awesome": "",
+            "question": "{{ product.metafields.vitals.faq_1_question.value }}",
+            "answer": "<p>{{ product.metafields.vitals.faq_1_answer | metafield_tag }}</p>",
+            "buttonLabel": "",
+            "buttonLink": "",
+            "buttonStyle": "filled",
+            "buttonTextColor": "#ffffff",
+            "buttonColor": "#222222",
+            "buttonBorderColor": "#222222",
+            "buttonSize": "medium",
+            "buttonCornerRadius": 4
+          }
+        },
+        "question_6DrDWA": {
+          "type": "question",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "hand-holding-heart",
+            "font_awesome": "",
+            "question": "{{ product.metafields.vitals.faq_2_question.value }}",
+            "answer": "<p>{{ product.metafields.vitals.faq_2_answer | metafield_tag }}</p>",
+            "buttonLabel": "",
+            "buttonLink": "",
+            "buttonStyle": "filled",
+            "buttonTextColor": "#ffffff",
+            "buttonColor": "#222222",
+            "buttonBorderColor": "#222222",
+            "buttonSize": "medium",
+            "buttonCornerRadius": 4
+          }
+        },
+        "question_GmMt6M": {
+          "type": "question",
+          "settings": {
+            "icon_type": "icon",
+            "icon": "thumbs-up",
+            "font_awesome": "",
+            "question": "{{ product.metafields.vitals.faq_3_question.value }}",
+            "answer": "<p>{{ product.metafields.vitals.faq_3_answer | metafield_tag }}</p>",
+            "buttonLabel": "",
+            "buttonLink": "",
+            "buttonStyle": "filled",
+            "buttonTextColor": "#ffffff",
+            "buttonColor": "#222222",
+            "buttonBorderColor": "#222222",
+            "buttonSize": "medium",
+            "buttonCornerRadius": 4
+          }
+        }
+      },
+      "block_order": [
+        "heading_DVdaEi",
+        "question_pQyxJ8",
+        "question_6DrDWA",
+        "question_GmMt6M"
+      ],
+      "name": "❤️ Square: FAQ & Icons",
+      "settings": {
+        "icon_color": "#222222",
+        "icon_size": 24,
+        "questionSpacing": 12,
+        "border_color": "rgba(0,0,0,0)",
+        "accordion_icon": "default",
+        "headingTextColor": "#222222",
+        "headingAlignment": "center",
+        "headingTextSize": "24",
+        "questionTextColor": "#222222",
+        "questionBackgroundColor": "rgba(0,0,0,0)",
+        "questionTextSize": "16",
+        "answerTextColor": "#222222",
+        "answerBackgroundColor": "rgba(0,0,0,0)",
+        "answerTextSize": "16",
+        "section_background_style": "color",
+        "generalBackgroundColor": "#f5f5f5",
+        "section_background_gradient": "linear-gradient(to right, #fed951, #ff46c7)",
+        "section_background_animation": false,
+        "overlay_color": "#222222",
+        "overlay_opacity": 0,
+        "spacing_type": "mobile",
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "margin_top": 40,
+        "margin_bottom": 40,
+        "padding_top_mobile": 30,
+        "padding_bottom_mobile": 30,
+        "margin_top_mobile": 30,
+        "margin_bottom_mobile": 30
+      }
+    }
+  },
+  "order": [
+    "main",
+    "benefits",
+    "image_with_text_1",
+    "key_benefit_section",
+    "image_with_text_2",
+    "faq"
+  ]
+}

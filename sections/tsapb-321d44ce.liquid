@@ -1,0 +1,998 @@
+<!-- --VERSION-18-- -->
+
+{% style %}
+:root {
+--vtl-neutral-100: #222;
+--vtl-neutral-70: #5e5e5e;
+--vtl-neutral-03: #f8f8f8;
+--vtl-neutral-01: #fff;
+--vtl-size-0: 0px;
+--vtl-size-1: 1px;
+--vtl-size-2: 2px;
+--vtl-size-4: 4px;
+--vtl-size-8: 8px;
+--vtl-size-12: 12px;
+--vtl-size-14: 14px;
+--vtl-size-16: 16px;
+--vtl-size-20: 20px;
+--vtl-size-24: 24px;
+--vtl-size-32: 32px;
+--vtl-size-40: 40px;
+--vtl-size-64: 64px;
+--vtl-font-weight-400: 400;
+--vtl-font-weight-600: 600;
+--vtl-line-height-140: 1.4;
+--vtl-text-decoration-none: none;
+--vtl-text-decoration-underline: underline;
+--vtl-border-width-1: var(--vtl-size-1);
+--vtl-color-bg-fill-default-on-light: var(--vtl-neutral-100);
+--vtl-color-bg-fill-inverse-on-light: var(--vtl-neutral-01);
+--vtl-color-bg-surface-tertiary-on-light: var(--vtl-neutral-03);
+--vtl-color-text-disable-on-light: var(--vtl-neutral-70);
+--vtl-color-text-on-bg-fill-on-light: var(--vtl-neutral-01);
+--vtl-space-0: var(--vtl-size-0);
+--vtl-space-2: var(--vtl-size-2);
+--vtl-space-4: var(--vtl-size-4);
+--vtl-space-8: var(--vtl-size-8);
+--vtl-space-12: var(--vtl-size-12);
+--vtl-space-16: var(--vtl-size-16);
+--vtl-space-20: var(--vtl-size-20);
+--vtl-space-24: var(--vtl-size-24);
+--vtl-space-32: var(--vtl-size-32);
+--vtl-space-40: var(--vtl-size-40);
+--vtl-space-64: var(--vtl-size-64);
+--vtl-font-size-14: var(--vtl-size-14);
+}
+
+
+{% endstyle %}
+
+<!-- --UUID-321d44ce-- -->
+
+<section class="Vtls-{{ section.id | handle }} VtlsTextButtonSection">
+	{%- liquid
+		assign buttons_block = section.blocks | where: "type", "buttons" | first
+	-%}
+	<div
+		class="
+			VtlsTextButtonSectionContainer
+			VtlsTextButtonSectionContainer--backgroundStyle-{{ section.settings.section_background_style }}
+			{% if section.settings.section_background_style == "gradient" and section.settings.enable_animation == true %}VtlsTextButtonSectionContainer--hasAnimation{% endif %}
+			{% if section.settings.section_width == 100 %}VtlsTextButtonSectionContainer--fullWidth{% endif %}
+		"
+	>
+		<div
+			class="
+				VtlsTextButtonContent
+				VtlsTextButtonContent--contentLayout-{{ section.settings.content_layout_desktop }}
+				VtlsTextButton__Content--alignment-{{ section.settings.content_alignment }}
+			"
+		>
+			<div class="VtlsTextBox">
+				{%- for block in section.blocks -%}
+					{%- case block.type -%}
+						{%- when "heading" -%}
+							{%- if block.settings.heading_alternative_font -%}
+								<style>
+									{{- block.settings.heading_font | font_face: font_display: 'swap' -}}
+								</style>
+							{%- endif -%}
+							{%- capture heading_css_variables -%}
+                                    --block-heading-size: {{- block.settings.heading_size -}}px;
+                                    --block-heading-color: {{- block.settings.heading_color -}};
+                                    --block-heading-font: {{- block.settings.heading_font.family -}};
+                                  {%- endcapture -%}
+							<h2
+								style="{{- heading_css_variables | strip_newlines | escape -}}"
+								class="VtlsTextBox__Heading VtlsTextBox__Heading--style-{{ block.settings.heading_style }} {% if block.settings.heading_alternative_font == true %}VtlsTextBox__Heading--alternativeFont{% endif %}"
+								{{ block.shopify_attributes }}
+							>
+								{{- block.settings.heading -}}
+							</h2>
+						{%- when "caption" -%}
+							{%- if block.settings.caption_alternative_font -%}
+								<style>
+									{{- block.settings.caption_font | font_face: font_display: 'swap' -}}
+								</style>
+							{%- endif -%}
+							{%- capture caption_css_variables -%}
+                                    --block-caption-size: {{- block.settings.caption_size -}}px;
+                                    --block-caption-color: {{- block.settings.caption_color -}};
+                                    --block-caption-font: {{- block.settings.caption_font.family -}};
+                                    --block-caption-weight: {{- block.settings.caption_weight -}};
+                                  {%- endcapture -%}
+							<p
+								style="{{- caption_css_variables | strip_newlines | escape -}}"
+								class="VtlsTextBox__Caption {% if block.settings.caption_alternative_font == true %}VtlsTextBox__Caption--alternativeFont{% endif %}"
+								{{ block.shopify_attributes }}
+							>
+								{{- block.settings.caption -}}
+							</p>
+						{%- when "text" -%}
+							{%- if block.settings.description_alternative_font -%}
+								{%- liquid
+									assign body_font_bold = block.settings.description_font | font_modify: 'weight', 'bold'
+									assign body_font_italic = block.settings.description_font | font_modify: 'style', 'italic'
+									assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+								%}
+								<style>
+									{{- block.settings.description_font | font_face: font_display: 'swap' -}}
+									{{ body_font_bold | font_face: font_display: 'swap' }}
+									{{ body_font_italic | font_face: font_display: 'swap' }}
+									{{ body_font_bold_italic | font_face: font_display: 'swap' }}
+								</style>
+							{%- endif -%}
+							{%- capture description_css_variables -%}
+                                    --block-description-size: {{- block.settings.description_size -}}px;
+                                    --block-description-color: {{- block.settings.description_color -}};
+                                    --block-description-font: {{- block.settings.description_font.family -}};
+                                  {%- endcapture -%}
+							<div
+								style="{{- description_css_variables | strip_newlines | escape -}}"
+								class="VtlsTextBox__Description VtlsTextBox__Description--alignment-{{ section.settings.text_alignment }} {% if block.settings.description_alternative_font == true %}VtlsTextBox__Description--alternativeFont{% endif %}"
+								{{ block.shopify_attributes }}
+							>
+								{{- block.settings.description -}}
+							</div>
+					{%- endcase -%}
+				{%- endfor -%}
+			</div>
+			{%- if buttons_block -%}
+				<div class="VtlsButtonsGroup">
+					{%- capture buttons_css_variables -%}
+                            --block-primary-button-text-color: {{- buttons_block.settings.primary_text_color -}};
+                            --block-primary-button-background-color: {{- buttons_block.settings.primary_background_color -}};
+                            --block-primary-button-corner-radius: {{- buttons_block.settings.primary_button_corner -}}px;
+                            --block-primary-button-border-color: {{- buttons_block.settings.primary_border_color -}};
+            
+                            --block-secondary-button-text-color: {{- buttons_block.settings.secondary_text_color -}};
+                            --block-secondary-button-background-color: {{- buttons_block.settings.secondary_background_color -}};
+                            --block-secondary-button-corner-radius: {{- buttons_block.settings.secondary_button_corner -}}px;
+                            --block-secondary-button-border-color: {{- buttons_block.settings.secondary_border_color -}};
+                          {%- endcapture -%}
+					<div
+						style="{{- buttons_css_variables | strip_newlines | escape -}}"
+						class="VtlsTextButtonButtons"
+						{{ buttons_block.shopify_attributes }}
+					>
+						{%- if buttons_block.settings.primary_button_label != blank -%}
+							<vtls-scroll-to-top>
+								<a
+									{% if buttons_block.settings.primary_new_tab == true %}
+										target="_blank"
+									{% endif %}
+									class="VtlsTextButtonButtons__Primary VtlsTextButtonButtons__Primary--{{ buttons_block.settings.primary_button_style }}"
+									{% if buttons_block.settings.primary_button_behaviour == "link" %}
+										href="{{ buttons_block.settings.primary_button_link }}"
+									{% else %}
+										href="javascript:void(0)"
+										data-scroll-to-top
+									{% endif %}
+									aria-label="{{ buttons_block.settings.primary_button_label | escape }}"
+								>
+									{{- buttons_block.settings.primary_button_label | escape -}}
+								</a>
+							</vtls-scroll-to-top>
+						{%- endif -%}
+						{%- if buttons_block.settings.secondary_button_label != blank -%}
+							<a
+								{% if buttons_block.settings.secondary_new_tab == true %}
+									target="_blank"
+								{% endif %}
+								class="VtlsTextButtonButtons__Secondary VtlsTextButtonButtons__Secondary--{{ buttons_block.settings.secondary_button_style }}"
+								href="{{ buttons_block.settings.secondary_button_link }}"
+								aria-label="{{ buttons_block.settings.secondary_button_label | escape }}"
+							>
+								{{- buttons_block.settings.secondary_button_label | escape -}}
+							</a>
+						{%- endif -%}
+					</div>
+				</div>
+			{%- endif -%}
+		</div>
+	</div>
+</section>
+
+{% schema %}
+{
+	"name": "❤️ Text & Button",
+	"disabled_on": {
+		"groups": ["header"]
+	},
+	"settings": [
+		{
+			"type": "header",
+			"content": "General"
+		},
+		{
+			"type": "select",
+			"id": "content_alignment",
+			"label": "Content alignment",
+			"options": [
+				{
+					"value": "left",
+					"label": "Left"
+				},
+				{
+					"value": "center",
+					"label": "Center"
+				},
+				{
+					"value": "right",
+					"label": "Right"
+				}
+			],
+			"default": "center"
+		},
+		{
+			"type": "select",
+			"id": "content_layout_desktop",
+			"label": "Content layout on desktop",
+			"options": [
+				{
+					"value": "vertical",
+					"label": "Vertical"
+				},
+				{
+					"value": "horizontal",
+					"label": "Horizontal"
+				}
+			],
+			"default": "vertical"
+		},
+		{
+			"type": "header",
+			"content": "Design"
+		},
+		{
+			"type": "select",
+			"id": "section_background_style",
+			"label": "Section background",
+			"options": [
+				{
+					"value": "regular",
+					"label": "Color"
+				},
+				{
+					"value": "gradient",
+					"label": "Gradient"
+				}
+			],
+			"default": "regular"
+		},
+		{
+			"type": "color",
+			"id": "section_background",
+			"label": "Color",
+			"default": "#F8F8F8",
+			"visible_if": "{{ section.settings.section_background_style == 'regular' }}"
+		},
+		{
+			"type": "color_background",
+			"id": "section_gradient",
+			"label": "Gradient",
+			"default": "linear-gradient(#72ffb3, #fffa63)",
+			"visible_if": "{{ section.settings.section_background_style == 'gradient' }}"
+		},
+		{
+			"type": "checkbox",
+			"id": "enable_animation",
+			"label": "Add gradient animation",
+			"default": false,
+			"visible_if": "{{ section.settings.section_background_style == 'gradient' }}"
+		},
+		{
+			"type": "range",
+			"id": "block_corner_radius",
+			"min": 0,
+			"max": 100,
+			"step": 2,
+			"unit": "px",
+			"label": "Background corner radius",
+			"default": 0
+		},
+		{
+			"type": "header",
+			"content": "Layout"
+		},
+		{
+			"type": "select",
+			"id": "layout_type",
+			"label": "Layout type",
+			"options": [
+				{
+					"value": "desktop",
+					"label": "Desktop"
+				},
+				{
+					"value": "mobile",
+					"label": "Mobile"
+				}
+			],
+			"default": "desktop"
+		},
+		{
+			"type": "range",
+			"id": "section_width",
+			"min": 70,
+			"max": 100,
+			"step": 1,
+			"unit": "%",
+			"label": "Section width",
+			"visible_if": "{{ section.settings.layout_type == 'desktop' }}",
+			"default": 80
+		},
+		{
+			"type": "range",
+			"id": "section_width_mobile",
+			"min": 70,
+			"max": 100,
+			"step": 1,
+			"unit": "%",
+			"label": "Section width",
+			"visible_if": "{{ section.settings.layout_type == 'mobile' }}",
+			"default": 90
+		},
+		{
+			"type": "text",
+			"id": "section_max_width",
+			"label": "Custom max width (optional)",
+			"info": "Section max width in pixels"
+		},
+		{
+			"type": "range",
+			"id": "padding_top",
+			"min": 0,
+			"max": 100,
+			"step": 2,
+			"unit": "px",
+			"label": "Top padding",
+			"visible_if": "{{ section.settings.layout_type == 'desktop' }}",
+			"default": 60
+		},
+		{
+			"type": "range",
+			"id": "padding_bottom",
+			"min": 0,
+			"max": 100,
+			"step": 2,
+			"unit": "px",
+			"label": "Bottom padding",
+			"visible_if": "{{ section.settings.layout_type == 'desktop' }}",
+			"default": 60
+		},
+		{
+			"type": "range",
+			"id": "margin_top",
+			"min": 0,
+			"max": 100,
+			"step": 2,
+			"unit": "px",
+			"label": "Top margin",
+			"visible_if": "{{ section.settings.layout_type == 'desktop' }}",
+			"default": 40
+		},
+		{
+			"type": "range",
+			"id": "margin_bottom",
+			"min": 0,
+			"max": 100,
+			"step": 2,
+			"unit": "px",
+			"label": "Bottom margin",
+			"visible_if": "{{ section.settings.layout_type == 'desktop' }}",
+			"default": 40
+		},
+		{
+			"type": "range",
+			"id": "padding_top_mobile",
+			"min": 0,
+			"max": 100,
+			"step": 2,
+			"unit": "px",
+			"label": "Top padding",
+			"visible_if": "{{ section.settings.layout_type == 'mobile' }}",
+			"default": 40
+		},
+		{
+			"type": "range",
+			"id": "padding_bottom_mobile",
+			"min": 0,
+			"max": 100,
+			"step": 2,
+			"unit": "px",
+			"label": "Bottom padding",
+			"visible_if": "{{ section.settings.layout_type == 'mobile' }}",
+			"default": 40
+		},
+		{
+			"type": "range",
+			"id": "margin_top_mobile",
+			"min": 0,
+			"max": 100,
+			"step": 2,
+			"unit": "px",
+			"label": "Top margin",
+			"visible_if": "{{ section.settings.layout_type == 'mobile' }}",
+			"default": 20
+		},
+		{
+			"type": "range",
+			"id": "margin_bottom_mobile",
+			"min": 0,
+			"max": 100,
+			"step": 2,
+			"unit": "px",
+			"label": "Bottom margin",
+			"visible_if": "{{ section.settings.layout_type == 'mobile' }}",
+			"default": 20
+		}
+	],
+	"blocks": [
+		{
+			"type": "heading",
+			"name": "Heading",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "text",
+					"id": "heading",
+					"default": "Heading",
+					"label": "Heading"
+				},
+				{
+					"type": "select",
+					"id": "heading_size",
+					"label": "Size",
+					"options": [
+						{
+							"value": "24",
+							"label": "Small"
+						},
+						{
+							"value": "32",
+							"label": "Medium"
+						},
+						{
+							"value": "48",
+							"label": "Large"
+						}
+					],
+					"default": "32"
+				},
+				{
+					"type": "select",
+					"id": "heading_style",
+					"label": "Heading style",
+					"options": [
+						{
+							"value": "regular",
+							"label": "Regular"
+						},
+						{
+							"value": "bold",
+							"label": "Bold"
+						}
+					],
+					"default": "regular"
+				},
+				{
+					"type": "color",
+					"id": "heading_color",
+					"label": "Text color",
+					"default": "#222222"
+				},
+				{
+					"type": "checkbox",
+					"id": "heading_alternative_font",
+					"label": "Apply alternative font",
+					"default": false
+				},
+				{
+					"type": "font_picker",
+					"id": "heading_font",
+					"label": "Font",
+					"default": "sans_serif_n4",
+					"visible_if": "{{ block.settings.heading_alternative_font == true }}"
+				}
+			]
+		},
+		{
+			"type": "caption",
+			"name": "Caption",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "text",
+					"id": "caption",
+					"label": "Caption"
+				},
+				{
+					"type": "select",
+					"id": "caption_size",
+					"label": "Size",
+					"options": [
+						{
+							"value": "12",
+							"label": "Small"
+						},
+						{
+							"value": "16",
+							"label": "Medium"
+						},
+						{
+							"value": "20",
+							"label": "Large"
+						}
+					],
+					"default": "16"
+				},
+				{
+					"type": "select",
+					"id": "caption_weight",
+					"label": "Caption style",
+					"options": [
+						{
+							"value": "400",
+							"label": "Regular"
+						},
+						{
+							"value": "600",
+							"label": "Bold"
+						}
+					],
+					"default": "400"
+				},
+				{
+					"type": "color",
+					"id": "caption_color",
+					"label": "Text color",
+					"default": "#222222"
+				},
+				{
+					"type": "checkbox",
+					"id": "caption_alternative_font",
+					"label": "Apply alternative font",
+					"default": false
+				},
+				{
+					"type": "font_picker",
+					"id": "caption_font",
+					"label": "Font",
+					"default": "sans_serif_n4",
+					"visible_if": "{{ block.settings.caption_alternative_font == true }}"
+				}
+			]
+		},
+		{
+			"type": "text",
+			"name": "Description",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "richtext",
+					"id": "description",
+					"default": "<p>Share details about your exclusive limited-time offer or special promotion.</p>",
+					"label": "Text"
+				},
+				{
+					"type": "select",
+					"id": "description_size",
+					"label": "Size",
+					"options": [
+						{
+							"value": "12",
+							"label": "Small"
+						},
+						{
+							"value": "16",
+							"label": "Medium"
+						},
+						{
+							"value": "20",
+							"label": "Large"
+						}
+					],
+					"default": "16"
+				},
+				{
+					"type": "color",
+					"id": "description_color",
+					"label": "Text color",
+					"default": "#222222"
+				},
+				{
+					"type": "checkbox",
+					"id": "description_alternative_font",
+					"label": "Apply alternative font",
+					"default": false
+				},
+				{
+					"type": "font_picker",
+					"id": "description_font",
+					"label": "Font",
+					"default": "sans_serif_n4",
+					"visible_if": "{{ block.settings.description_alternative_font == true }}"
+				}
+			]
+		},
+		{
+			"type": "buttons",
+			"name": "Buttons",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "header",
+					"content": "Primary button"
+				},
+				{
+					"type": "select",
+					"id": "primary_button_behaviour",
+					"label": "Button behaviour",
+					"options": [
+						{
+							"value": "link",
+							"label": "Link"
+						},
+						{
+							"value": "scroll_to_top",
+							"label": "Scroll to top"
+						}
+					],
+					"default": "link"
+				},
+				{
+					"type": "text",
+					"id": "primary_button_label",
+					"default": "Button Label",
+					"label": "Label"
+				},
+				{
+					"type": "url",
+					"id": "primary_button_link",
+					"label": "URL",
+					"visible_if": "{{ block.settings.primary_button_behaviour == 'link' }}"
+				},
+				{
+					"type": "select",
+					"id": "primary_button_style",
+					"label": "Button style",
+					"options": [
+						{
+							"value": "solid",
+							"label": "Filled"
+						},
+						{
+							"value": "outline",
+							"label": "Outline"
+						},
+						{
+							"value": "link",
+							"label": "Link"
+						}
+					],
+					"default": "solid"
+				},
+				{
+					"type": "color",
+					"id": "primary_text_color",
+					"label": "Text color",
+					"default": "#ffffff"
+				},
+				{
+					"type": "color",
+					"id": "primary_background_color",
+					"label": "Background color",
+					"default": "#222222",
+					"visible_if": "{{ block.settings.primary_button_style == 'solid' }}"
+				},
+				{
+					"type": "color",
+					"id": "primary_border_color",
+					"label": "Border color",
+					"default": "#222222",
+					"visible_if": "{{ block.settings.primary_button_style == 'outline' }}"
+				},
+				{
+					"type": "range",
+					"id": "primary_button_corner",
+					"min": 0,
+					"max": 100,
+					"step": 2,
+					"unit": "px",
+					"label": "Corner radius",
+					"visible_if": "{{ block.settings.primary_button_style != 'link' }}",
+					"default": 0
+				},
+				{
+					"type": "checkbox",
+					"id": "primary_new_tab",
+					"label": "Open link in a new tab",
+					"default": false,
+					"visible_if": "{{ block.settings.primary_button_behaviour == 'link' }}"
+				},
+				{
+					"type": "header",
+					"content": "Secondary button"
+				},
+				{
+					"type": "text",
+					"id": "secondary_button_label",
+					"label": "Label"
+				},
+				{
+					"type": "url",
+					"id": "secondary_button_link",
+					"label": "URL"
+				},
+				{
+					"type": "select",
+					"id": "secondary_button_style",
+					"label": "Button style",
+					"options": [
+						{
+							"value": "solid",
+							"label": "Filled"
+						},
+						{
+							"value": "outline",
+							"label": "Outline"
+						},
+						{
+							"value": "link",
+							"label": "Link"
+						}
+					],
+					"default": "solid"
+				},
+				{
+					"type": "color",
+					"id": "secondary_text_color",
+					"label": "Text color",
+					"default": "#ffffff"
+				},
+				{
+					"type": "color",
+					"id": "secondary_background_color",
+					"label": "Background color",
+					"default": "#222222",
+					"visible_if": "{{ block.settings.secondary_button_style == 'solid' }}"
+				},
+				{
+					"type": "color",
+					"id": "secondary_border_color",
+					"label": "Border color",
+					"default": "#222222",
+					"visible_if": "{{ block.settings.secondary_button_style == 'outline' }}"
+				},
+				{
+					"type": "range",
+					"id": "secondary_button_corner",
+					"min": 0,
+					"max": 100,
+					"step": 2,
+					"unit": "px",
+					"label": "Corner radius",
+					"visible_if": "{{ block.settings.secondary_button_style != 'link' }}",
+					"default": 0
+				},
+				{
+					"type": "checkbox",
+					"id": "secondary_new_tab",
+					"label": "Open link in a new tab",
+					"default": false
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "❤️ Square: Text & Button",
+			"category": "Square sections",
+			"blocks": [
+				{
+					"type": "caption"
+				},
+				{
+					"type": "heading"
+				},
+				{
+					"type": "text"
+				},
+				{
+					"type": "buttons"
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+{% style %}
+	.Vtls-{{ section.id | handle }} {
+	 --section-margin-top: {{- section.settings.margin_top -}}px;
+	 --section-margin-bottom: {{- section.settings.margin_bottom -}}px;
+	 --section-margin-top-mobile: {{- section.settings.margin_top_mobile -}}px;
+	 --section-margin-bottom-mobile: {{- section.settings.margin_bottom_mobile -}}px;
+	 --section-padding-top: {{- section.settings.padding_top -}}px;
+	 --section-padding-bottom: {{- section.settings.padding_bottom -}}px;
+	 --section-padding-top-mobile: {{- section.settings.padding_top_mobile -}}px;
+	 --section-padding-bottom-mobile: {{- section.settings.padding_bottom_mobile -}}px;
+	 --section-background-color: {{- section.settings.section_background -}};
+	 --section-background-gradient: {{- section.settings.section_gradient -}};
+	 --section-text-alignment: {{- section.settings.content_alignment -}};
+	 --section-max-width: {{- section.settings.section_max_width -}}px;
+	 --section-width: {{- section.settings.section_width -}}%;
+	 --section-width-mobile: {{- section.settings.section_width_mobile -}}%;
+	 --section-corner-radius: {{- section.settings.block_corner_radius -}}px;
+	}
+
+	
+
+.Vtls-{{ section.id | handle }}.VtlsTextButtonSection{margin:var(--section-margin-top-mobile) 0 var(--section-margin-bottom-mobile)}@media(min-width: 992px){.Vtls-{{ section.id | handle }}.VtlsTextButtonSection{margin:var(--section-margin-top) 0 var(--section-margin-bottom)}}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonSectionContainer{padding:var(--section-padding-top-mobile) 0 var(--section-padding-bottom-mobile);display:flex;border-radius:var(--section-corner-radius);justify-content:var(--section-text-alignment);width:var(--section-width-mobile);margin:0 auto}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonSectionContainer--fullWidth{margin:0 auto}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonSectionContainer--backgroundStyle-regular{background-color:var(--section-background-color, var(--vtl-color-bg-surface-tertiary-on-light))}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonSectionContainer--backgroundStyle-gradient{background:var(--section-background-gradient)}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonSectionContainer--hasAnimation{background-size:300% 300%;background-position:0% 50%;animation:gradient-flow 10s ease-in-out infinite}@keyframes gradient-flow{0%{background-position:0% 50%}25%{background-position:50% 100%}50%{background-position:100% 50%}75%{background-position:50% 0%}100%{background-position:0% 50%}}@media(min-width: 992px){.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonSectionContainer{display:flex;padding:var(--section-padding-top) 0 var(--section-padding-bottom);max-width:var(--section-max-width);width:var(--section-width);margin:0 auto}}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent{width:fit-content;display:flex;align-items:center;flex-direction:column;gap:var(--vtl-space-16);padding:var(--vtl-space-12) var(--vtl-space-24)}@media(min-width: 992px){.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent{justify-content:var(--section-text-alignment);padding:var(--vtl-space-12) var(--vtl-space-64)}}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent--contentLayout-vertical{flex-direction:column;gap:var(--vtl-space-16)}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent--contentLayout-vertical .VtlsButtonsGroup{width:100%}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent--contentLayout-horizontal .VtlsButtonsGroup{width:100%}@media(min-width: 992px){.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent--contentLayout-horizontal{flex-direction:row;width:100%;gap:var(--vtl-space-20);justify-content:space-between}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent--contentLayout-horizontal .VtlsTextBox{width:50%}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent--contentLayout-horizontal .VtlsButtonsGroup{width:50%}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent--contentLayout-horizontal .VtlsButtonsGroup .VtlsTextButtonButtons{justify-content:flex-end}}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox{display:flex;flex-direction:column;gap:var(--vtl-space-8);text-align:var(--section-text-alignment)}@media(min-width: 992px){.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox{text-align:var(--section-text-alignment)}}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox p:empty,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox div:empty,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox h2:empty{display:none}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Heading{margin:0;font-size:calc(var(--block-heading-size)*.75);color:var(--block-heading-color)}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Heading--style-regular{font-weight:var(--vtl-font-weight-400)}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Heading--style-bold{font-weight:var(--vtl-font-weight-600)}@media(min-width: 992px){.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Heading{font-size:var(--block-heading-size);text-align:var(--section-text-alignment)}}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Heading--alternativeFont{font-family:var(--block-heading-font)}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description p,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description ul,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description ol{margin:0;font-size:calc(var(--block-description-size)*.88);color:var(--block-description-color)}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description h1,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description h2,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description h3,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description h4,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description h5,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description h6{color:var(--block-description-color);margin:0;padding:0}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description a{color:var(--block-description-color);margin:0;padding:0;text-decoration:underline;text-underline-offset:var(--vtl-space-2);transition:opacity .3s ease-in}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description a:hover{opacity:.85}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description ul,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description ol{padding-left:var(--vtl-space-20)}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description--alignment-center ul,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description--alignment-center ol,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description--alignment-right ul,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description--alignment-right ol{list-style-position:inside}@media(min-width: 992px){.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description p,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description ul,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description ol{font-size:var(--block-description-size)}}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description--alternativeFont p,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description--alternativeFont ul,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description--alternativeFont ol,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description--alternativeFont h1,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description--alternativeFont h2,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description--alternativeFont h3,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description--alternativeFont h4,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description--alternativeFont h5,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Description--alternativeFont h6{font-family:var(--block-description-font)}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Caption{margin:0;font-size:var(--block-caption-size);color:var(--block-caption-color);font-weight:var(--block-caption-weight)}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextBox__Caption--alternativeFont{font-family:var(--block-caption-font)}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextButtonButtons{display:flex;gap:var(--vtl-space-16);flex-wrap:wrap;justify-content:var(--section-text-alignment)}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextButtonButtons__Primary,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextButtonButtons__Secondary{display:inline-flex;justify-content:center;align-items:center;cursor:pointer;font:inherit;font-size:var(--vtl-font-size-14);text-decoration:var(--vtl-text-decoration-none);-webkit-appearance:none;appearance:none;width:fit-content;padding:var(--vtl-space-16) var(--vtl-space-20);transition:all .3s ease-in;line-height:1}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextButtonButtons__Primary:hover,.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextButtonButtons__Secondary:hover{opacity:.85}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextButtonButtons__Primary--solid{color:var(--block-primary-button-text-color, var(--vtl-color-text-on-bg-fill-on-light));background:var(--block-primary-button-background-color, var(--vtl-color-bg-fill-default-on-light));border-radius:var(--block-primary-button-corner-radius)}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextButtonButtons__Primary--outline{color:var(--block-primary-button-text-color);background:rgba(0,0,0,0);border:var(--vtl-border-width-1) solid var(--block-primary-button-border-color);border-radius:var(--block-primary-button-corner-radius)}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextButtonButtons__Primary--link{color:var(--block-primary-button-text-color);background:rgba(0,0,0,0);border:var(--vtl-space-0);border-radius:var(--vtl-space-0);text-decoration:var(--vtl-text-decoration-underline);text-underline-offset:var(--vtl-space-4);padding:0}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextButtonButtons__Secondary--solid{color:var(--block-secondary-button-text-color, var(--vtl-color-text-on-bg-fill-on-light));background:var(--block-secondary-button-background-color, var(--vtl-color-bg-fill-default-on-light));border-radius:var(--block-secondary-button-corner-radius)}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextButtonButtons__Secondary--outline{color:var(--block-secondary-button-text-color);background:rgba(0,0,0,0);border:var(--vtl-border-width-1) solid var(--block-secondary-button-border-color);border-radius:var(--block-secondary-button-corner-radius)}.Vtls-{{ section.id | handle }}.VtlsTextButtonSection .VtlsTextButtonContent .VtlsTextButtonButtons__Secondary--link{color:var(--block-secondary-button-text-color);background:rgba(0,0,0,0);border:var(--vtl-space-0);padding:0;border-radius:var(--vtl-space-0);text-decoration:var(--vtl-text-decoration-underline);text-underline-offset:var(--vtl-space-4)}
+
+{% endstyle %}
+<script>
+	(() => {
+		class VtlsScrollToTop extends HTMLElement {
+			constructor() {
+				super();
+			}
+
+			connectedCallback() {
+				this.initScrollHandler();
+			}
+
+			initScrollHandler() {
+				const scrollToButton = this.querySelector('[data-scroll-to-top]');
+
+				if (!scrollToButton) {
+					return;
+				}
+
+				scrollToButton.addEventListener('click', this.handleClick.bind(this));
+			}
+
+			handleClick(event) {
+				event.preventDefault();
+
+				window.scrollTo({
+					top: 0,
+					behavior: 'smooth',
+				});
+			}
+		}
+
+		document.addEventListener('shopify:section:load', () => {
+			if (!customElements.get('vtls-scroll-to-top')) {
+				customElements.define('vtls-scroll-to-top', VtlsScrollToTop);
+			}
+		});
+
+		document.addEventListener('DOMContentLoaded', () => {
+			if (!customElements.get('vtls-scroll-to-top')) {
+				customElements.define('vtls-scroll-to-top', VtlsScrollToTop);
+			}
+		});
+	})();
+</script>
+
+<script>
+	(function () {
+		const uninstallMessage = 'Displaying this section requires an active Square: Theme Sections & AI Pages subscription. Reinstall the <a href="https://apps.shopify.com/theme-sections-ai-page-builder" target="_blank">Square: Theme Sections & AI Pages app</a> to activate it or consider removing the section.';
+		const downgradeMessage = 'You downgraded to a free plan. You need to upgrade your <a href="https://apps.shopify.com/theme-sections-ai-page-builder" target="_blank">Square: Theme Sections & AI Pages app</a> plan to activate it or consider removing the section.';
+		const projectId = '5';
+		const sectionsSelector = '.shopify-section';
+		const apps = {
+			'1': {
+				prefix: 'vitals',
+				hostname: 'https://appsolve.io'
+			},
+			'5': {
+				prefix: 'tsapb',
+				hostname: 'https://theme-sections.sqa-api.com'
+			}
+		};
+
+		const cacheKeysMetaFields = '{{ shop.metafields.vitals.tsck }}';
+		const shopId = '{{ shop.id }}';
+
+		const getHostname = () => {
+			if (apps[projectId].hostname) {
+				return apps[projectId].hostname;
+			}
+
+			console.error(`hostname for appId ${projectId} cannot be determined.`);
+			return undefined;
+		}
+
+		const disableSection = (message, selector) => {
+			const mainContainer = document.querySelector(selector);
+			const contentContainer = document.querySelector(`${selector} > section`);
+
+			if ('{{ request.design_mode }}' === 'true') {
+				contentContainer.innerHTML = `<h2 class="VtlsUninstallBG"><div class="VtlsUninstallBG__Text">${message}</div></h2>`;
+			} else {
+				mainContainer.style.display = 'none';
+				mainContainer.remove();
+			}
+		};
+
+		const getThemeSectionIdsByUUID = (installedThemeSections, uuid, appId) => {
+			const listIds = [];
+
+			installedThemeSections.forEach((installedThemeSection) => {
+				if (installedThemeSection.id.includes(`${apps[appId].prefix}_${uuid}`)) {
+					listIds.push(installedThemeSection.id);
+				}
+			})
+
+			return listIds;
+		}
+
+		const getThemeSectionsStatusList = (url) => fetch(url, {
+			method: 'GET',
+			headers: { 'Content-Type': 'application/json' },
+		}).then((response) => response.json());
+
+		const evaluateThemeSections = (url) => {
+			getThemeSectionsStatusList(url).then(response => {
+				const { data, f, i } = response;
+				const installedThemeSections = document.querySelectorAll(sectionsSelector);
+
+				data.forEach((themeSection) => {
+					const { e, u, a } = themeSection;
+
+					if (!e) {
+						const themeSectionsWithUUID = getThemeSectionIdsByUUID(installedThemeSections, u, a);
+						let message = '';
+
+						if (f) {
+							message = downgradeMessage;
+						}
+
+						if (!i) {
+							message = uninstallMessage;
+						}
+
+						themeSectionsWithUUID.forEach((themeSectionSelector) => {
+							disableSection(message, `#${themeSectionSelector}`);
+						})
+					}
+				});
+			})
+		}
+
+		if (shopId) {
+			if (window.vtlsSecurityCheckStarted === undefined) {
+				window.vtlsSecurityCheckStarted = true;
+
+				let url = '';
+				const hostname = getHostname();
+
+				if (!hostname) {
+					return;
+				}
+
+				const baseUrl = `${hostname}/bundle/api/v2/sf/ts`;
+
+				if (cacheKeysMetaFields) {
+					url = `${baseUrl}/${shopId}/${cacheKeysMetaFields}.json`;
+				} else {
+					const timestamp = Math.round(new Date().getTime() / 1000 / 10000) * 10000;
+					url = `${baseUrl}/${shopId}/${timestamp}.json`;
+				}
+
+				evaluateThemeSections(url);
+			}
+		}
+	})();
+</script>
+
+{% style %}
+	
+
+.VtlsUninstallBG{background-color:var(--vtl-color-bg-fill-inverse-on-light);background-image:url("data:image/avif;base64,iVBORw0KGgoAAAANSUhEUgAABOcAAABkCAQAAABnAJxfAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAACYktHRAD/h4/MvwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB+gLFQgmAgUXFkMAAARaSURBVHja7daxbSRBEATB8ZzvKw0h1dcIlJS4jl25Azlavffn9/3v++e//+vvCwqFQqFQKBRKSklEUCgUCoVCoVAMOgqFQqFQKJSzSiKCQqFQKBQKhWLQUSgUCoVCoZxVEhEUCoVCoVAoFIOOQqFQKBQK5VOURASFQqFQKBQKZVUSERQKhUKhUCiUVUlEUCgUCoVCoVBWZbtOPoVCoVAoFArlovIKERQKhUKhUCiUVXmFCAqFQqFQKBTKqrxCBIVCoVAoFAplVV4hgkKhUCgUCoUyK4kICoVCoVAoFMqqJCIoFAqFQqFQKKuSiKBQKBQKhUKhrEoigkKhUCgUCoVi0FEoFAqFQqGcVRIRFAqFQqFQKBSDjkKhUCgUCuWskoigUCgUCoVCoRh0FAqFQqFQKGeVRASFQqFQKBQKxaCjUCgUCoVCOaskIigUCoVCoVAoBh2FQqFQKBTKWSURQaFQKBQKhUIx6CgUCoVCoVDOKokICoVCoVAoFIpBR6FQKBQKhXJWSURQKBQKhUKhUAw6CoVCoVAolLNKIoJCoVAoFAqFYtBRKBQKhUKhnFUSERQKhUKhUCgUg45CoVAoFArlrJKIoFAoFAqFQqEYdBQKhUKhUChnlUQEhUKhUCgUCsWgo1AoFAqFQvkUJRFBoVAoFAqFQlmVRASFQqFQKBQKZVUSERQKhUKhUCiUVdmuk0+hUCgUCoVCuai8QgSFQqFQKBQKZVVeIYJCoVAoFAqFsiqvEEGhUCgUCoVCWZVXiKBQKBQKhUKhzEoigkKhUCgUCoWyKokICoVCoVAoFMqqJCIoFAqFQqFQKKuSiKBQKBQKhUKhGHQUCoVCoVAoZ5VEBIVCoVAoFArFoKNQKBQKhUI5qyQiKBQKhUKhUCgGHYVCoVAoFMpZJRFBoVAoFAqFQjHoKBQKhUKhUM4qiQgKhUKhUCgUikFHoVAoFAqFclZJRFAoFAqFQqFQDDoKhUKhUCiUs0oigkKhUCgUCoVi0FEoFAqFQqGcVRIRFAqFQqFQKBSDjkKhUCgUCuWskoigUCgUCoVCoRh0FAqFQqFQKGeVRASFQqFQKBQKxaCjUCgUCoVCOaskIigUCoVCoVAoBh2FQqFQKBTKWSURQaFQKBQKhUIx6CgUCoVCoVA+RUlEUCgUCoVCoVBWJRFBoVAoFAqFQlmVRASFQqFQKBQKZVW26+RTKBQKhUKhUC4qrxBBoVAoFAqFQlmVV4igUCgUCoVCoazKK0RQKBQKhUKhUFblFSIoFAqFQqFQKLOSiKBQKBQKhUKhrEoigkKhUCgUCoWyKokICoVCoVAoFMqqJCIoFAqFQqFQKAYdhUKhUCgUylklEUGhUCgUCoVCMegoFAqFQqFQziqJCAqFQqFQKBSKQUehUCgUCoVyVklEUCgUCoVCoVAMOgqFQqFQKJSzSiKCQqFQKBQKhWLQUSgUCoVCoZxVEhEUCoVCoVAoFIOOQqFQKBQK5dOVX5nMB52iezhxAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDI0LTExLTIxVDA4OjM4OjAyKzAwOjAw30WrCwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyNC0xMS0yMVQwODozODowMiswMDowMK4YE7cAAAAodEVYdGRhdGU6dGltZXN0YW1wADIwMjQtMTEtMjFUMDg6Mzg6MDIrMDA6MDD5DTJoAAAAAElFTkSuQmCC");background-position:center;background-size:cover;text-align:center;padding:var(--vtl-space-32);margin:0}.VtlsUninstallBG__Text{color:var(--vtl-color-text-disable-on-light);font-family:Inter,sans-serif;font-size:var(--vtl-font-size-14);font-weight:var(--vtl-font-weight-400);line-height:var(--vtl-line-height-140);padding:var(--vtl-space-16) var(--vtl-space-16) var(--vtl-space-16) var(--vtl-space-40);background-color:var(--vtl-color-bg-fill-inverse-on-light);display:inline-block}.VtlsUninstallBG__Text::before{content:url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%3E%0A%09%09%09%3Cpath%20d%3D%22M9.99994%206.75C10.4142%206.75%2010.7499%207.08579%2010.7499%207.5V11C10.7499%2011.4142%2010.4142%2011.75%209.99994%2011.75C9.58573%2011.75%209.24994%2011.4142%209.24994%2011V7.5C9.24994%207.08579%209.58573%206.75%209.99994%206.75Z%22%20fill%3D%22%23B28400%22%2F%3E%0A%09%09%09%3Cpath%20d%3D%22M11%2013.5C11%2014.0523%2010.5523%2014.5%2010%2014.5C9.44772%2014.5%209%2014.0523%209%2013.5C9%2012.9477%209.44772%2012.5%2010%2012.5C10.5523%2012.5%2011%2012.9477%2011%2013.5Z%22%20fill%3D%22%23B28400%22%2F%3E%0A%09%09%09%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M10%203.5C8.95471%203.5%208.21616%204.20232%207.84762%204.94672C7.65565%205.33448%206.75984%207.0441%205.84305%208.79353L5.81531%208.84646C4.9229%2010.5493%204.01714%2012.2777%203.80716%2012.702C3.4351%2013.4537%203.32931%2014.4519%203.89953%2015.316C4.46911%2016.1791%205.44222%2016.5%206.36356%2016.5L13.6364%2016.5C14.5577%2016.5%2015.5308%2016.1791%2016.1004%2015.316C16.6707%2014.4519%2016.5649%2013.4537%2016.1928%2012.702C15.9832%2012.2784%2015.08%2010.555%2014.1889%208.85476L14.1569%208.79352C13.24%207.044%2012.3443%205.33454%2012.1524%204.94693C11.784%204.20242%2011.0454%203.5%2010%203.5ZM9.1919%205.61225C9.59605%204.79592%2010.4041%204.79592%2010.8081%205.61225C11.0102%206.02061%2011.9201%207.75686%2012.8296%209.49243C13.7383%2011.2262%2014.6466%2012.9594%2014.8485%2013.3673C15.2525%2014.1837%2014.8485%2015%2013.6364%2015L6.36356%2015C5.1515%2015%204.74746%2014.1837%205.1515%2013.3673C5.35376%2012.9587%206.26468%2011.2205%207.1748%209.4838C8.08283%207.75111%208.99005%206.01994%209.1919%205.61225Z%22%20fill%3D%22%23B28400%22%2F%3E%0A%09%09%3C%2Fsvg%3E");position:absolute;width:var(--vtl-space-20);height:var(--vtl-space-20);margin-left:calc(-1*var(--vtl-space-24))}.VtlsUninstallBG__Text a{color:var(--vtl-color-text-disable-on-light)}.VtlsUninstallBG__Text a:hover{text-decoration:none}
+
+{% endstyle %}
+
