@@ -1,0 +1,82 @@
+{
+  "name": "Blog Image Auto-Processor — Wax|Wane & HARAMOON",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 📸 Blog Image Auto-Processor\n### Wax|Wane & HARAMOON\n\n**How it works:**\n1. Drop any image into your `input/` folder on your Desktop\n2. This workflow detects it automatically\n3. Runs the Python script to rotate + crop to 1200×628px\n4. Logs the result to your Google Sheets master log\n5. Pushes to GitHub automatically\n\n**Before activating:**\n- Replace `YOUR_MAC_USERNAME` in the Execute Command node with your actual Mac username\n- Make sure `run_on_mac.py` is in `~/Desktop/blog-image-processor/`\n- Make sure Python 3 is installed: run `python3 --version` in Terminal",
+        "height": 320, "width": 500, "color": 5
+      },
+      "id": "sticky-note-1", "name": "Instructions",
+      "type": "n8n-nodes-base.stickyNote", "typeVersion": 1,
+      "position": [180, 80]
+    },
+    {
+      "parameters": {
+        "path": "=/Users/YOUR_MAC_USERNAME/Desktop/blog-image-processor/input",
+        "events": ["add"],
+        "options": { "awaitWriteFinish": { "stabilityThreshold": 2000, "pollInterval": 100 }, "ignored": "**/.gitkeep" }
+      },
+      "id": "trigger-watch-folder", "name": "Watch Input Folder",
+      "type": "n8n-nodes-base.localFileTrigger", "typeVersion": 1,
+      "position": [240, 440]
+    },
+    {
+      "parameters": {
+        "conditions": { "string": [{ "value1": "={{ $json.name.toLowerCase() }}", "operation": "regex", "value2": "\\.(png|jpg|jpeg|webp)$" }] }
+      },
+      "id": "filter-images-only", "name": "Is It an Image?",
+      "type": "n8n-nodes-base.if", "typeVersion": 1,
+      "position": [460, 440]
+    },
+    {
+      "parameters": {
+        "command": "=cd /Users/YOUR_MAC_USERNAME/Desktop/blog-image-processor && /usr/bin/env python3 run_on_mac.py --image \"{{ $json.name }}\" --blog \"Wax|Wane\" 2>&1"
+      },
+      "id": "run-python-script", "name": "Run Blog Image Script",
+      "type": "n8n-nodes-base.executeCommand", "typeVersion": 1,
+      "position": [700, 360]
+    },
+    {
+      "parameters": {
+        "conditions": { "string": [{ "value1": "={{ $json.stdout }}", "operation": "contains", "value2": "Done!" }] }
+      },
+      "id": "check-success", "name": "Did It Succeed?",
+      "type": "n8n-nodes-base.if", "typeVersion": 1,
+      "position": [920, 360]
+    },
+    {
+      "parameters": {
+        "content": "## ✅ SUCCESS PATH\nImage processed, logged to Google Sheets, pushed to GitHub.\n\nOptional: Add an email or Slack notification node here.",
+        "height": 160, "width": 320, "color": 3
+      },
+      "id": "sticky-success", "name": "Success Note",
+      "type": "n8n-nodes-base.stickyNote", "typeVersion": 1,
+      "position": [1140, 280]
+    },
+    {
+      "parameters": {
+        "content": "## ❌ ERROR PATH\nCheck the stdout output in the execution log.\n\nCommon fixes:\n- Python not found → install Python 3\n- Script not found → check the path\n- GitHub push failed → open GitHub Desktop and sign in",
+        "height": 200, "width": 320, "color": 2
+      },
+      "id": "sticky-error", "name": "Error Note",
+      "type": "n8n-nodes-base.stickyNote", "typeVersion": 1,
+      "position": [1140, 480]
+    },
+    {
+      "parameters": {
+        "content": "## ⚠️ DOCKER USERS\n\nIf n8n runs inside Docker, add this to your docker-compose.yml:\n\n```yaml\nvolumes:\n  - /Users/YOUR_MAC_USERNAME/Desktop/blog-image-processor:/data/blog-images\n```\n\nThen change the trigger path to:\n`/data/blog-images/input`\n\nAsk Manus to write your full docker-compose.yml.",
+        "height": 260, "width": 400, "color": 4
+      },
+      "id": "sticky-docker", "name": "Docker Note",
+      "type": "n8n-nodes-base.stickyNote", "typeVersion": 1,
+      "position": [180, 600]
+    }
+  ],
+  "connections": {
+    "Watch Input Folder": { "main": [[{ "node": "Is It an Image?", "type": "main", "index": 0 }]] },
+    "Is It an Image?": { "main": [[{ "node": "Run Blog Image Script", "type": "main", "index": 0 }], []] },
+    "Run Blog Image Script": { "main": [[{ "node": "Did It Succeed?", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "Blog Automation" }, { "name": "Wax|Wane" }, { "name": "HARAMOON" }]
+}
