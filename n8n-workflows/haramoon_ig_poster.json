@@ -1,0 +1,198 @@
+{
+  "name": "HARAMOON — Instagram + Facebook Queue Poster",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger-manual",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "notes": "Click 'Execute Workflow' in n8n to post the next item in the queue. Safe to run anytime — it only posts one item per run and skips already-posted items."
+    },
+    {
+      "parameters": {
+        "jsCode": "// ═══════════════════════════════════════════════════════════════\n// HARAMOON BRAND CONTEXT — permanently baked in\n// Never needs to be re-explained to Manus or any AI\n// ═══════════════════════════════════════════════════════════════\nconst BRAND = {\n  name: 'HARAMOON',\n  tagline: 'Korean Skin Barrier Science',\n  store_url: 'https://www.waxandwane.store',\n  amazon_url: 'https://www.amazon.com/stores/HaramoonUSA/page/4D229D57-2C46-409B-8ECB-ABECAA03B46D',\n  instagram_handle: '@haramoon.us',\n  ig_user_id: '17841458399612807',\n  fb_page_id: '203171376205580',\n  // Color palette: bright blue, black, white\n  // Font: Poppins / clean modern sans-serif\n  // Aspect ratio: vertical preferred, square for cross-platform\n  // Tone: editorial, science-backed, premium K-beauty\n  // Always: EWG Verified, pH 5.5, vegan, no alcohol/parabens/fragrance\n  // Hashtag sets:\n  core_hashtags: '#HARAMOON #KoreanSkincare #SkinBarrier #KBeauty #GlassSkin',\n  product_hashtags: '#EWGVerified #VeganSkincare #CleanBeauty #PHBalanced #BarrierRepair',\n  shop_cta: 'Shop at https://www.waxandwane.store | Also on Amazon'\n};\n\n// ═══════════════════════════════════════════════════════════════\n// CREDENTIALS\n// ═══════════════════════════════════════════════════════════════\nconst CREDS = {\n  ig_token: 'EAASgzu1LdvABRJPUrCLFfT6SBuUyeJu3QV2PQexpOE7Xfvlo0rvdbIQVzdZCEp7eqDo7vxegIn8y52cnLYCntTHKE3mlx4fhoECAyp0SanD0Ju9XCdRFEBzCKdSUE0nB5SHuAndO6dNJEz0VVjTvvscTVTaffV8twSu1gLBk0ZCt0DYtkG0gSE1sZBcJQZDZD',\n  fb_token: 'EAASgzu1LdvABRFou790AZAdQdTlernJZACPM0dRcDgP12LiNhHFND1ztu01Hr8CnkW4sH9zvivJqRi5rQryscOio5KFXO2xRZCPYonnZBFVfO4lJZB9LUq8NdGjtT9dHHDTv8woZAEYUFoaDz6FmBSRlKdfP20HZBsZBEq1MH4w4uWIMJTRzKZB1fso3ZB7xOKZCFNzBq502jMZD'\n};\n\n// ═══════════════════════════════════════════════════════════════\n// POST QUEUE — add new posts here anytime\n// type: 'single' or 'carousel'\n// images: array of CDN URLs (must be publicly accessible)\n// ═══════════════════════════════════════════════════════════════\nconst QUEUE = [\n  {\n    id: 'haramoon_dam_cream_2026',\n    label: \"Your Skin's Strongest Barrier — Dam Cream\",\n    type: 'single',\n    images: ['https://files.manuscdn.com/user_upload_by_module/session_file/310419663029718527/fMuEElMChJZZDQlv.jpg'],\n    caption: `Modern stressors — pollution, blue light, stress — are quietly wrecking your skin barrier every day.\\n\\nThe HARAMOON Derma Limpide Dam Cream was formulated for exactly that. Science-backed hydration that protects, repairs, and holds.\\n\\n#SkinBarrier #BarrierRepair #HARAMOON #KoreanMoisturizer #CentellaCream #KBeauty #SensitiveSkin #CleanBeauty #VeganSkincare #KoreanSkincare\\n\\nShop at https://www.waxandwane.store | Also on Amazon: https://www.amazon.com/stores/HaramoonUSA/page/4D229D57-2C46-409B-8ECB-ABECAA03B46D`\n  },\n  {\n    id: 'haramoon_full_routine_2026',\n    label: 'The Full HARAMOON Routine (Carousel)',\n    type: 'carousel',\n    images: [\n      'https://files.manuscdn.com/user_upload_by_module/session_file/310419663029718527/qpqyYSnbgcXeSFPZ.jpg',\n      'https://files.manuscdn.com/user_upload_by_module/session_file/310419663029718527/eVyogaJCsbEYktVq.jpg'\n    ],\n    caption: `Cleanse without stripping. Hydrate without heaviness. Protect without clogging.\\n\\nThe complete HARAMOON skin barrier routine — 4 steps, all EWG Verified, all pH 5.5 balanced. Swipe for the full lineup.\\n\\n#KoreanSkincareRoutine #SkinBarrierSolution #HARAMOON #4StepSkincare #KBeautyRoutine #PHBalanced #EWGVerified #VeganSkincare #KoreanSkincare #CleanBeauty\\n\\nShop at https://www.waxandwane.store | Also on Amazon: https://www.amazon.com/stores/HaramoonUSA/page/4D229D57-2C46-409B-8ECB-ABECAA03B46D`\n  },\n  {\n    id: 'haramoon_ph55_toner_2026',\n    label: 'The pH 5.5 Reset — Super Dam Toner',\n    type: 'single',\n    images: ['https://files.manuscdn.com/user_upload_by_module/session_file/310419663029718527/XvvtWNEipNjqUPvr.jpg'],\n    caption: `Jeju mineral water meets 7-layer hyaluronic acid. Swipe to refresh. Pat to hydrate.\\n\\nThe HARAMOON Super Dam Toner resets your skin's pH to 5.5 — the sweet spot for barrier health — while flooding every layer with moisture.\\n\\n#pH55Toner #JejuWater #HyaluronicAcid #HARAMOON #KoreanToner #SkinReset #KBeauty #BarrierCare #VeganSkincare #KoreanSkincare\\n\\nShop at https://www.waxandwane.store | Also on Amazon: https://www.amazon.com/stores/HaramoonUSA/page/4D229D57-2C46-409B-8ECB-ABECAA03B46D`\n  }\n];\n\n// ═══════════════════════════════════════════════════════════════\n// STATE — tracks what's been posted (stored in n8n static data)\n// ═══════════════════════════════════════════════════════════════\nconst workflowStaticData = $getWorkflowStaticData('global');\nif (!workflowStaticData.posted) workflowStaticData.posted = {};\n\n// Find next unposted item\nconst nextPost = QUEUE.find(p => !workflowStaticData.posted[p.id]);\n\nif (!nextPost) {\n  return [{ json: { status: 'QUEUE_EMPTY', message: 'All posts have been published! Add new posts to the QUEUE array in the Code node to continue.', brand: BRAND.name, total_posted: Object.keys(workflowStaticData.posted).length } }];\n}\n\nconst remaining = QUEUE.filter(p => !workflowStaticData.posted[p.id]).length - 1;\n\nreturn [{\n  json: {\n    status: 'READY',\n    post: nextPost,\n    creds: CREDS,\n    brand: BRAND,\n    remaining_after_this: remaining,\n    ig_user_id: BRAND.ig_user_id,\n    fb_page_id: BRAND.fb_page_id\n  }\n}];\n"
+      },
+      "id": "code-load-queue",
+      "name": "Load Queue & Brand Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "check-ready",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "READY",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-has-post",
+      "name": "Has Post to Send?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "check-carousel",
+              "leftValue": "={{ $json.post.type }}",
+              "rightValue": "carousel",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-carousel",
+      "name": "Carousel or Single?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// POST SINGLE IMAGE TO INSTAGRAM\nconst post = $input.first().json.post;\nconst creds = $input.first().json.creds;\nconst ig_user_id = $input.first().json.ig_user_id;\n\nconst BASE = 'https://graph.facebook.com/v19.0';\n\nasync function sleep(ms) {\n  return new Promise(resolve => setTimeout(resolve, ms));\n}\n\nasync function apiPost(url, body, retries = 4) {\n  for (let attempt = 1; attempt <= retries; attempt++) {\n    try {\n      const response = await $http.request({\n        method: 'POST',\n        url: url,\n        body: body,\n        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }\n      });\n      return response;\n    } catch (err) {\n      if (attempt === retries) throw err;\n      const wait = 10000 * attempt;\n      console.log(`Network hiccup (attempt ${attempt}/${retries}). Retrying in ${wait/1000}s...`);\n      await sleep(wait);\n    }\n  }\n}\n\n// Step 1: Create media container\nconst containerRes = await apiPost(\n  `${BASE}/${ig_user_id}/media`,\n  `image_url=${encodeURIComponent(post.images[0])}&caption=${encodeURIComponent(post.caption)}&access_token=${creds.ig_token}`\n);\n\nconst containerId = containerRes.id;\nawait sleep(3000);\n\n// Step 2: Publish\nconst publishRes = await apiPost(\n  `${BASE}/${ig_user_id}/media_publish`,\n  `creation_id=${containerId}&access_token=${creds.ig_token}`\n);\n\nreturn [{\n  json: {\n    ...($input.first().json),\n    ig_post_id: publishRes.id,\n    ig_url: `https://www.instagram.com/p/${publishRes.id}/`,\n    post_type: 'single'\n  }\n}];\n"
+      },
+      "id": "code-post-single",
+      "name": "Post Single to Instagram",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 120]
+    },
+    {
+      "parameters": {
+        "jsCode": "// POST CAROUSEL TO INSTAGRAM\nconst post = $input.first().json.post;\nconst creds = $input.first().json.creds;\nconst ig_user_id = $input.first().json.ig_user_id;\n\nconst BASE = 'https://graph.facebook.com/v19.0';\n\nasync function sleep(ms) {\n  return new Promise(resolve => setTimeout(resolve, ms));\n}\n\nasync function apiPost(url, body, retries = 4) {\n  for (let attempt = 1; attempt <= retries; attempt++) {\n    try {\n      const response = await $http.request({\n        method: 'POST',\n        url: url,\n        body: body,\n        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }\n      });\n      return response;\n    } catch (err) {\n      if (attempt === retries) throw err;\n      await sleep(10000 * attempt);\n    }\n  }\n}\n\n// Step 1: Upload each image as carousel child\nconst childIds = [];\nfor (const imageUrl of post.images) {\n  const res = await apiPost(\n    `${BASE}/${ig_user_id}/media`,\n    `image_url=${encodeURIComponent(imageUrl)}&is_carousel_item=true&access_token=${creds.ig_token}`\n  );\n  childIds.push(res.id);\n  await sleep(2000);\n}\n\n// Step 2: Create carousel container\nconst containerRes = await apiPost(\n  `${BASE}/${ig_user_id}/media`,\n  `media_type=CAROUSEL&children=${childIds.join(',')}&caption=${encodeURIComponent(post.caption)}&access_token=${creds.ig_token}`\n);\n\nawait sleep(3000);\n\n// Step 3: Publish\nconst publishRes = await apiPost(\n  `${BASE}/${ig_user_id}/media_publish`,\n  `creation_id=${containerRes.id}&access_token=${creds.ig_token}`\n);\n\nreturn [{\n  json: {\n    ...($input.first().json),\n    ig_post_id: publishRes.id,\n    ig_url: `https://www.instagram.com/p/${publishRes.id}/`,\n    post_type: 'carousel'\n  }\n}];\n"
+      },
+      "id": "code-post-carousel",
+      "name": "Post Carousel to Instagram",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 320]
+    },
+    {
+      "parameters": {
+        "jsCode": "// MERGE SINGLE + CAROUSEL RESULTS\n// This node receives output from whichever branch ran\nconst data = $input.first().json;\nreturn [{ json: data }];\n"
+      },
+      "id": "code-merge",
+      "name": "Merge IG Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 220]
+    },
+    {
+      "parameters": {
+        "jsCode": "// CROSS-POST TO FACEBOOK PAGE\nconst data = $input.first().json;\nconst creds = data.creds;\nconst post = data.post;\nconst fb_page_id = data.fb_page_id;\n\nconst BASE = 'https://graph.facebook.com/v19.0';\n\ntry {\n  const res = await $http.request({\n    method: 'POST',\n    url: `${BASE}/${fb_page_id}/photos`,\n    body: `url=${encodeURIComponent(post.images[0])}&caption=${encodeURIComponent(post.caption)}&access_token=${creds.fb_token}`,\n    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }\n  });\n\n  const fbId = res.post_id || res.id || '';\n  const fbUrl = `https://www.facebook.com/${fb_page_id}/posts/${fbId.includes('_') ? fbId.split('_').pop() : fbId}`;\n\n  return [{\n    json: {\n      ...data,\n      fb_post_id: fbId,\n      fb_url: fbUrl,\n      fb_status: 'posted'\n    }\n  }];\n} catch (err) {\n  // Facebook failure is non-fatal — Instagram already posted\n  return [{\n    json: {\n      ...data,\n      fb_status: 'skipped',\n      fb_error: err.message\n    }\n  }];\n}\n"
+      },
+      "id": "code-fb-post",
+      "name": "Cross-Post to Facebook",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 220]
+    },
+    {
+      "parameters": {
+        "jsCode": "// MARK AS POSTED — save to workflow static data so it's never re-posted\nconst data = $input.first().json;\nconst workflowStaticData = $getWorkflowStaticData('global');\n\nworkflowStaticData.posted[data.post.id] = {\n  posted_at: new Date().toISOString(),\n  ig_post_id: data.ig_post_id,\n  ig_url: data.ig_url,\n  fb_url: data.fb_url || null,\n  fb_status: data.fb_status\n};\n\nconst summary = {\n  brand: 'HARAMOON',\n  label: data.post.label,\n  type: data.post_type,\n  ig_url: data.ig_url,\n  fb_url: data.fb_url || 'skipped',\n  fb_status: data.fb_status,\n  remaining_in_queue: data.remaining_after_this,\n  posted_at: new Date().toISOString(),\n  next_action: data.remaining_after_this > 0\n    ? `${data.remaining_after_this} post(s) remaining — click Execute again to post the next one`\n    : 'Queue is empty! Ask Manus to build a new batch.'\n};\n\nreturn [{ json: summary }];\n"
+      },
+      "id": "code-mark-posted",
+      "name": "Mark as Posted",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1780, 220]
+    },
+    {
+      "parameters": {
+        "jsCode": "// QUEUE EMPTY — friendly message\nconst data = $input.first().json;\nreturn [{\n  json: {\n    status: 'QUEUE_EMPTY',\n    message: data.message,\n    total_posted: data.total_posted,\n    next_action: 'Open a new Manus chat and say: \"Build me a new HARAMOON post batch for n8n\" — it will generate a new QUEUE array to paste into the Code node.'\n  }\n}];\n"
+      },
+      "id": "code-queue-empty",
+      "name": "Queue Empty Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 420]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [{ "node": "Load Queue & Brand Context", "type": "main", "index": 0 }]
+      ]
+    },
+    "Load Queue & Brand Context": {
+      "main": [
+        [{ "node": "Has Post to Send?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Has Post to Send?": {
+      "main": [
+        [{ "node": "Carousel or Single?", "type": "main", "index": 0 }],
+        [{ "node": "Queue Empty Message", "type": "main", "index": 0 }]
+      ]
+    },
+    "Carousel or Single?": {
+      "main": [
+        [{ "node": "Post Carousel to Instagram", "type": "main", "index": 0 }],
+        [{ "node": "Post Single to Instagram", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post Single to Instagram": {
+      "main": [
+        [{ "node": "Merge IG Results", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post Carousel to Instagram": {
+      "main": [
+        [{ "node": "Merge IG Results", "type": "main", "index": 0 }]
+      ]
+    },
+    "Merge IG Results": {
+      "main": [
+        [{ "node": "Cross-Post to Facebook", "type": "main", "index": 0 }]
+      ]
+    },
+    "Cross-Post to Facebook": {
+      "main": [
+        [{ "node": "Mark as Posted", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "tags": ["HARAMOON", "Instagram", "Facebook", "Wax|Wane", "Social Media"],
+  "triggerCount": 0,
+  "updatedAt": "2026-04-20T00:00:00.000Z",
+  "versionId": "haramoon-ig-poster-v1"
+}
