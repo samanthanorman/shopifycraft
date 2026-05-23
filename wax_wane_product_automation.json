@@ -1,0 +1,657 @@
+{
+  "name": "Wax | Wane — Product Launch Automation Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "shopify-product-published",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "node_shopify_webhook",
+      "name": "🛍️ Shopify: Product Published",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "wax-wane-product-published",
+      "notes": "Register this webhook URL in Shopify Admin → Settings → Notifications → Webhooks. Event: Product creation. Format: JSON."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "check_active",
+              "leftValue": "={{ $json.body.status }}",
+              "rightValue": "active",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "node_check_active",
+      "name": "✅ Is Product Active?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [480, 300],
+      "notes": "Only process products that are published/active. Drafts are skipped."
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://6f97d0.myshopify.com/admin/api/2024-01/products/{{ $json.body.id }}.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "node_get_product",
+      "name": "📦 Get Full Product Details",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 240],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "shopify_header_auth",
+          "name": "Shopify Admin API"
+        }
+      },
+      "notes": "Fetches the complete product object including all variants, images, and existing fields."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract and normalize product data for AI prompt\nconst product = $input.first().json.product;\n\nconst title = product.title || '';\nconst productType = product.product_type || 'Crystal';\nconst vendor = product.vendor || 'Wax | Wane';\nconst tags = (product.tags || '').split(',').map(t => t.trim()).filter(Boolean);\nconst variants = product.variants || [];\nconst images = product.images || [];\nconst existingDesc = product.body_html || '';\n\n// Build variant summary\nconst variantSummary = variants.map(v => {\n  const opts = [v.option1, v.option2, v.option3].filter(Boolean).join(' / ');\n  return `${opts} — SKU: ${v.sku || 'N/A'} — $${v.price}`;\n}).join('\\n');\n\n// Detect crystal type from title\nconst titleLower = title.toLowerCase();\nlet crystalType = 'crystal';\nif (titleLower.includes('fluorite')) crystalType = 'fluorite';\nelse if (titleLower.includes('quartz')) crystalType = 'quartz';\nelse if (titleLower.includes('amethyst')) crystalType = 'amethyst';\nelse if (titleLower.includes('moonstone')) crystalType = 'moonstone';\nelse if (titleLower.includes('lapis')) crystalType = 'lapis lazuli';\nelse if (titleLower.includes('shungite')) crystalType = 'shungite';\nelse if (titleLower.includes('jasper')) crystalType = 'jasper';\nelse if (titleLower.includes('hematite')) crystalType = 'hematite';\nelse if (titleLower.includes('terahertz')) crystalType = 'terahertz';\nelse if (titleLower.includes('citrine')) crystalType = 'citrine';\nelse if (titleLower.includes('jade')) crystalType = 'jade';\nelse if (titleLower.includes('tiger')) crystalType = \"tiger's eye\";\nelse if (titleLower.includes('bracelet')) crystalType = 'gemstone bracelet';\n\n// Detect product form\nlet productForm = 'tower';\nif (titleLower.includes('sphere') || titleLower.includes('ball')) productForm = 'sphere';\nelse if (titleLower.includes('bracelet')) productForm = 'bracelet';\nelse if (titleLower.includes('keychain')) productForm = 'keychain';\nelse if (titleLower.includes('pyramid')) productForm = 'pyramid';\nelse if (titleLower.includes('cube')) productForm = 'cube';\nelse if (titleLower.includes('cup') || titleLower.includes('mug')) productForm = 'cup';\nelse if (titleLower.includes('palm')) productForm = 'palm stone';\nelse if (titleLower.includes('flame')) productForm = 'flame sculpture';\n\nreturn [{\n  json: {\n    product_id: product.id,\n    title,\n    product_type: productType,\n    vendor,\n    tags,\n    variant_summary: variantSummary,\n    variant_count: variants.length,\n    image_count: images.length,\n    existing_description: existingDesc.replace(/<[^>]*>/g, '').substring(0, 500),\n    crystal_type: crystalType,\n    product_form: productForm,\n    handle: product.handle,\n    shopify_url: `https://waxandwane.store/products/${product.handle}`\n  }\n}];"
+      },
+      "id": "node_extract_data",
+      "name": "🔍 Extract & Normalize Product Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [960, 240]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are the content engine for Wax | Wane (waxandwane.store), a crystal and wellness boutique. Your job is to generate complete, channel-ready product content in Samantha's voice — direct, knowledgeable, slightly mystical but never fluffy. She uses Gemini-style naming conventions: grade names like 'Collector Grade', 'Prism Grade', 'Rare Grade', 'Museum Quality'. She emphasizes natural variation as a feature, not a flaw. She avoids medical/healing claims. She writes for crystal collectors who know what they're looking for.\n\nYou MUST return a valid JSON object with EXACTLY these fields — no extra text, no markdown, just the JSON:\n{\n  \"shopify_seo_title\": \"string — max 70 chars, keyword-rich, includes crystal type + form + key differentiator\",\n  \"shopify_meta_description\": \"string — max 160 chars, compelling, includes primary keyword, ends with soft CTA\",\n  \"shopify_description_html\": \"string — full HTML product description, 300-500 words, uses <p> and <ul><li> tags, Gemini grade callouts in <strong>, natural variation disclaimer at end\",\n  \"alt_text\": \"string — max 125 chars, descriptive for accessibility and image SEO, no keyword stuffing\",\n  \"care_instructions\": \"string — plain text, 2-3 sentences, crystal-appropriate care (avoid water/chemicals, cleanse with selenite/moonlight, etc.)\",\n  \"amazon_title\": \"string — max 200 chars, front-loaded with primary keyword, includes brand, size/grade, key benefit\",\n  \"amazon_bullet_1\": \"string — ALL CAPS LABEL: description format, 200 chars max\",\n  \"amazon_bullet_2\": \"string — ALL CAPS LABEL: description format, 200 chars max\",\n  \"amazon_bullet_3\": \"string — ALL CAPS LABEL: description format, 200 chars max\",\n  \"amazon_bullet_4\": \"string — ALL CAPS LABEL: description format, 200 chars max\",\n  \"amazon_bullet_5\": \"string — ALL CAPS LABEL: description format, 200 chars max\",\n  \"walmart_short_description\": \"string — max 255 chars, plain text, SEO-friendly, no HTML\",\n  \"tiktok_caption\": \"string — 150-200 chars, casual/fun, crystal community tone, ends with 2-3 hashtags including #Crystal\",\n  \"blog_post_title\": \"string — SEO blog title, 60-70 chars, includes crystal type\",\n  \"blog_post_intro\": \"string — 150-200 word blog intro paragraph, educational + engaging, links to product\",\n  \"instagram_caption\": \"string — 200-300 chars, aesthetic/aspirational, crystal community tone, 5-8 hashtags including #Crystal\",\n  \"facebook_caption\": \"string — 100-150 chars, warm/community tone, includes product URL placeholder [URL]\",\n  \"seo_keywords\": \"array of 8-10 strings — primary and long-tail keywords for this product\",\n  \"product_tags\": \"array of 12-15 strings — Shopify tags for this product\"\n}"
+            },
+            {
+              "role": "user",
+              "content": "=Generate complete product content for this Wax | Wane product:\n\nProduct Title: {{ $json.title }}\nCrystal Type: {{ $json.crystal_type }}\nProduct Form: {{ $json.product_form }}\nProduct Type: {{ $json.product_type }}\nVariants:\n{{ $json.variant_summary }}\n\nExisting Description (if any):\n{{ $json.existing_description }}\n\nShopify URL: {{ $json.shopify_url }}\n\nGenerate all fields in the JSON schema. Make it crispy, clean, and on-brand for Wax | Wane."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 2000
+        }
+      },
+      "id": "node_ai_generate",
+      "name": "🤖 AI: Generate All Content",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [1200, 240],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai_api",
+          "name": "OpenAI API"
+        }
+      },
+      "notes": "Uses GPT-4o to generate all content fields in one shot. Returns structured JSON."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse the AI response JSON\nconst aiResponse = $input.first().json.message?.content || $input.first().json.choices?.[0]?.message?.content || '';\n\nlet content;\ntry {\n  // Strip any markdown code fences if present\n  const cleaned = aiResponse.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n  content = JSON.parse(cleaned);\n} catch(e) {\n  // Fallback: return error state\n  return [{ json: { parse_error: true, raw: aiResponse.substring(0, 500) } }];\n}\n\n// Merge with product context from previous node\nconst productData = $('🔍 Extract & Normalize Product Data').first().json;\n\nreturn [{\n  json: {\n    ...productData,\n    ...content,\n    generated_at: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "node_parse_ai",
+      "name": "🔧 Parse AI Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1440, 240]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://6f97d0.myshopify.com/admin/api/2024-01/products/{{ $json.product_id }}.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"product\": {\n    \"id\": {{ $json.product_id }},\n    \"body_html\": {{ JSON.stringify($json.shopify_description_html) }},\n    \"tags\": {{ JSON.stringify(($json.product_tags || []).join(',')) }}\n  }\n}",
+        "options": {}
+      },
+      "id": "node_update_description",
+      "name": "📝 Shopify: Update Description + Tags",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1680, 120],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "shopify_header_auth",
+          "name": "Shopify Admin API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://6f97d0.myshopify.com/admin/api/2024-01/products/{{ $json.product_id }}/metafields.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"metafield\": {\n    \"namespace\": \"global\",\n    \"key\": \"title_tag\",\n    \"value\": {{ JSON.stringify($json.shopify_seo_title) }},\n    \"type\": \"single_line_text_field\"\n  }\n}",
+        "options": {}
+      },
+      "id": "node_seo_title",
+      "name": "🔍 Shopify: Set SEO Title",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1680, 260],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "shopify_header_auth",
+          "name": "Shopify Admin API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://6f97d0.myshopify.com/admin/api/2024-01/products/{{ $json.product_id }}/metafields.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"metafield\": {\n    \"namespace\": \"global\",\n    \"key\": \"description_tag\",\n    \"value\": {{ JSON.stringify($json.shopify_meta_description) }},\n    \"type\": \"single_line_text_field\"\n  }\n}",
+        "options": {}
+      },
+      "id": "node_meta_desc",
+      "name": "🔍 Shopify: Set Meta Description",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1680, 400],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "shopify_header_auth",
+          "name": "Shopify Admin API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://6f97d0.myshopify.com/admin/api/2024-01/products/{{ $json.product_id }}/metafields.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"metafield\": {\n    \"namespace\": \"custom\",\n    \"key\": \"care_instructions\",\n    \"value\": {{ JSON.stringify($json.care_instructions) }},\n    \"type\": \"multi_line_text_field\"\n  }\n}",
+        "options": {}
+      },
+      "id": "node_care_instructions",
+      "name": "💎 Shopify: Set Care Instructions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1680, 540],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "shopify_header_auth",
+          "name": "Shopify Admin API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://6f97d0.myshopify.com/admin/api/2024-01/products/{{ $json.product_id }}/metafields.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"metafield\": {\n    \"namespace\": \"custom\",\n    \"key\": \"amazon_title\",\n    \"value\": {{ JSON.stringify($json.amazon_title) }},\n    \"type\": \"single_line_text_field\"\n  }\n}",
+        "options": {}
+      },
+      "id": "node_amazon_title_meta",
+      "name": "📦 Shopify: Store Amazon Title",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1920, 120],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "shopify_header_auth",
+          "name": "Shopify Admin API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://6f97d0.myshopify.com/admin/api/2024-01/products/{{ $json.product_id }}/metafields.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"metafield\": {\n    \"namespace\": \"custom\",\n    \"key\": \"amazon_bullets\",\n    \"value\": {{ JSON.stringify([$json.amazon_bullet_1, $json.amazon_bullet_2, $json.amazon_bullet_3, $json.amazon_bullet_4, $json.amazon_bullet_5].join('\\n---\\n')) }},\n    \"type\": \"multi_line_text_field\"\n  }\n}",
+        "options": {}
+      },
+      "id": "node_amazon_bullets_meta",
+      "name": "📦 Shopify: Store Amazon Bullets",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1920, 260],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "shopify_header_auth",
+          "name": "Shopify Admin API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://6f97d0.myshopify.com/admin/api/2024-01/products/{{ $json.product_id }}/metafields.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"metafield\": {\n    \"namespace\": \"custom\",\n    \"key\": \"social_captions\",\n    \"value\": {{ JSON.stringify(JSON.stringify({tiktok: $json.tiktok_caption, instagram: $json.instagram_caption, facebook: $json.facebook_caption})) }},\n    \"type\": \"multi_line_text_field\"\n  }\n}",
+        "options": {}
+      },
+      "id": "node_social_meta",
+      "name": "📱 Shopify: Store Social Captions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1920, 400],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "shopify_header_auth",
+          "name": "Shopify Admin API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.veeqo.com/products?sku={{ $json.handle }}&page_size=5",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "node_veeqo_find",
+      "name": "🔗 Veeqo: Find Product",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2160, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "veeqo_header_auth",
+          "name": "Veeqo API"
+        }
+      },
+      "notes": "Looks up the product in Veeqo by handle/SKU. Veeqo syncs from Shopify automatically — this confirms the product is in Veeqo before pushing to channels."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build Veeqo channel push payload\n// Veeqo channel IDs: Walmart=1009103, TikTok=1044457, Amazon=1049861, Etsy=1049903\nconst veeqoProducts = $input.first().json;\nconst aiData = $('🔧 Parse AI Response').first().json;\n\n// Find the Veeqo product ID from the search results\nlet veeqoProductId = null;\nif (Array.isArray(veeqoProducts) && veeqoProducts.length > 0) {\n  veeqoProductId = veeqoProducts[0].id;\n}\n\nreturn [{\n  json: {\n    veeqo_product_id: veeqoProductId,\n    product_id: aiData.product_id,\n    title: aiData.title,\n    walmart_description: aiData.walmart_short_description,\n    amazon_title: aiData.amazon_title,\n    amazon_bullets: [aiData.amazon_bullet_1, aiData.amazon_bullet_2, aiData.amazon_bullet_3, aiData.amazon_bullet_4, aiData.amazon_bullet_5],\n    tiktok_caption: aiData.tiktok_caption,\n    instagram_caption: aiData.instagram_caption,\n    facebook_caption: aiData.facebook_caption,\n    blog_post_title: aiData.blog_post_title,\n    blog_post_intro: aiData.blog_post_intro,\n    shopify_url: aiData.shopify_url,\n    handle: aiData.handle,\n    generated_at: aiData.generated_at,\n    channel_ids: {\n      walmart: 1009103,\n      tiktok: 1044457,\n      amazon: 1049861,\n      etsy: 1049903\n    }\n  }\n}];"
+      },
+      "id": "node_prep_channels",
+      "name": "🔧 Prep Channel Push Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2400, 300]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://api.veeqo.com/products/{{ $json.veeqo_product_id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"product\": {\n    \"title\": {{ JSON.stringify($json.title) }},\n    \"description\": {{ JSON.stringify($json.walmart_description) }}\n  }\n}",
+        "options": {}
+      },
+      "id": "node_veeqo_update",
+      "name": "🔗 Veeqo: Update Product Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2640, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "veeqo_header_auth",
+          "name": "Veeqo API"
+        }
+      },
+      "notes": "Updates product title and description in Veeqo. With update_product_attributes enabled on Walmart channel, this pushes to Walmart automatically."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Wait 24 hours before creating blog post\n// n8n handles this via the Wait node - this code just passes data through\nconst data = $input.first().json;\nreturn [{ json: data }];"
+      },
+      "id": "node_prep_blog",
+      "name": "📅 Prep Blog Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2880, 300]
+    },
+    {
+      "parameters": {
+        "unit": "hours",
+        "amount": 24
+      },
+      "id": "node_wait_24h",
+      "name": "⏰ Wait 24 Hours",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [3120, 300],
+      "notes": "Pauses the workflow for 24 hours before creating the blog post. n8n persists this state — your MacBook doesn't need to stay on continuously (n8n handles the timer)."
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are writing a blog post for Wax | Wane (waxandwane.store), a crystal and wellness boutique. The blog is educational, slightly mystical but grounded, and written in Samantha's voice — direct, knowledgeable, never fluffy. Blog posts are 400-600 words, include crystal lore, practical usage tips, and a natural CTA to shop the product. Format as clean HTML with <h2> subheadings, <p> paragraphs, and one <a> link to the product. Return ONLY the HTML content, no extra text."
+            },
+            {
+              "role": "user",
+              "content": "=Write a complete blog post for this product:\n\nTitle: {{ $json.blog_post_title }}\nProduct: {{ $json.title }}\nProduct URL: {{ $json.shopify_url }}\nIntro (expand on this): {{ $json.blog_post_intro }}\n\nWrite 400-600 words. Include: what the crystal is, where it comes from, what collectors look for, how to use/display it, care tips, and a CTA to shop at waxandwane.store. Return clean HTML only."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.75,
+          "maxTokens": 1500
+        }
+      },
+      "id": "node_blog_generate",
+      "name": "✍️ AI: Write Blog Post",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [3360, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai_api",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse blog post HTML from AI response\nconst aiResponse = $input.first().json.message?.content || $input.first().json.choices?.[0]?.message?.content || '';\nconst productData = $('🔧 Prep Channel Push Data').first().json;\n\n// Clean up any markdown fences\nconst blogHtml = aiResponse.replace(/```html\\n?/g, '').replace(/```\\n?/g, '').trim();\n\nreturn [{\n  json: {\n    ...productData,\n    blog_html: blogHtml,\n    blog_title: productData.blog_post_title\n  }\n}];"
+      },
+      "id": "node_parse_blog",
+      "name": "🔧 Parse Blog HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3600, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://6f97d0.myshopify.com/admin/api/2024-01/blogs/find.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "node_get_blog_id",
+      "name": "📚 Get Shopify Blog ID",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3840, 180],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "shopify_header_auth",
+          "name": "Shopify Admin API"
+        }
+      },
+      "notes": "Gets the list of blogs to find the correct blog ID. Replace this with a Set node containing your blog ID once you know it (run once to find it)."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://6f97d0.myshopify.com/admin/api/2024-01/blogs/{{ $('📚 Get Shopify Blog ID').first().json.blogs[0].id }}/articles.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"article\": {\n    \"title\": {{ JSON.stringify($json.blog_title) }},\n    \"body_html\": {{ JSON.stringify($json.blog_html) }},\n    \"published\": true,\n    \"tags\": {{ JSON.stringify(($json.title + ', crystal, wax and wane, ' + $json.crystal_type).toLowerCase()) }},\n    \"metafields\": [\n      {\n        \"key\": \"title_tag\",\n        \"value\": {{ JSON.stringify($json.blog_title) }},\n        \"type\": \"single_line_text_field\",\n        \"namespace\": \"global\"\n      }\n    ]\n  }\n}",
+        "options": {}
+      },
+      "id": "node_create_blog_post",
+      "name": "📝 Shopify: Publish Blog Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3840, 340],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "shopify_header_auth",
+          "name": "Shopify Admin API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build social media posts with URL validation\nconst blogData = $input.first().json;\nconst blogArticle = $('📝 Shopify: Publish Blog Post').first().json.article;\n\n// Build the blog URL\nconst blogHandle = blogArticle?.handle || '';\nconst blogId = blogArticle?.blog_id || '';\nconst blogUrl = `https://waxandwane.store/blogs/news/${blogHandle}`;\nconst productUrl = blogData.shopify_url;\n\n// Replace [URL] placeholder in captions\nconst tiktokPost = (blogData.tiktok_caption || '').replace('[URL]', productUrl);\nconst instagramPost = (blogData.instagram_caption || '').replace('[URL]', productUrl);\nconst facebookPost = (blogData.facebook_caption || '').replace('[URL]', productUrl);\n\nreturn [{\n  json: {\n    ...blogData,\n    blog_url: blogUrl,\n    product_url: productUrl,\n    tiktok_post: tiktokPost,\n    instagram_post: instagramPost,\n    facebook_post: facebookPost + ' ' + productUrl,\n    blog_article_id: blogArticle?.id\n  }\n}];"
+      },
+      "id": "node_prep_social",
+      "name": "📱 Prep Social Posts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [4080, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v19.0/203171376205580/feed",
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"message\": {{ JSON.stringify($json.facebook_post) }},\n  \"link\": {{ JSON.stringify($json.product_url) }},\n  \"access_token\": \"YOUR_FACEBOOK_PAGE_ACCESS_TOKEN\"\n}",
+        "options": {}
+      },
+      "id": "node_facebook_post",
+      "name": "📘 Post to Facebook Page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [4320, 180],
+      "notes": "Replace YOUR_FACEBOOK_PAGE_ACCESS_TOKEN with your Facebook Page long-lived access token. Page ID: 203171376205580"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Log the completed automation run to Google Sheets (optional)\nconst data = $input.first().json;\n\nreturn [{\n  json: {\n    timestamp: new Date().toISOString(),\n    product_id: data.product_id,\n    product_title: data.title,\n    shopify_url: data.product_url,\n    blog_url: data.blog_url,\n    blog_article_id: data.blog_article_id,\n    status: 'completed',\n    channels_pushed: ['shopify', 'veeqo', 'walmart', 'blog', 'facebook']\n  }\n}];"
+      },
+      "id": "node_log_run",
+      "name": "📊 Log Completed Run",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [4560, 300],
+      "notes": "Connect this to a Google Sheets node to maintain a product launch log. Or leave as-is to just track in n8n execution history."
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"success\", \"message\": \"Product automation pipeline triggered\", \"product_id\": {{ $('🔍 Extract & Normalize Product Data').first().json.product_id }} }"
+      },
+      "id": "node_webhook_response",
+      "name": "✅ Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [720, 480],
+      "notes": "Sends immediate 200 response to Shopify webhook so it doesn't timeout. The actual processing continues asynchronously."
+    }
+  ],
+  "connections": {
+    "🛍️ Shopify: Product Published": {
+      "main": [
+        [
+          { "node": "✅ Is Product Active?", "type": "main", "index": 0 },
+          { "node": "✅ Webhook Response", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "✅ Is Product Active?": {
+      "main": [
+        [
+          { "node": "📦 Get Full Product Details", "type": "main", "index": 0 }
+        ],
+        []
+      ]
+    },
+    "📦 Get Full Product Details": {
+      "main": [
+        [
+          { "node": "🔍 Extract & Normalize Product Data", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "🔍 Extract & Normalize Product Data": {
+      "main": [
+        [
+          { "node": "🤖 AI: Generate All Content", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "🤖 AI: Generate All Content": {
+      "main": [
+        [
+          { "node": "🔧 Parse AI Response", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "🔧 Parse AI Response": {
+      "main": [
+        [
+          { "node": "📝 Shopify: Update Description + Tags", "type": "main", "index": 0 },
+          { "node": "🔍 Shopify: Set SEO Title", "type": "main", "index": 0 },
+          { "node": "🔍 Shopify: Set Meta Description", "type": "main", "index": 0 },
+          { "node": "💎 Shopify: Set Care Instructions", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "📝 Shopify: Update Description + Tags": {
+      "main": [
+        [
+          { "node": "📦 Shopify: Store Amazon Title", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "📦 Shopify: Store Amazon Title": {
+      "main": [
+        [
+          { "node": "📦 Shopify: Store Amazon Bullets", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "📦 Shopify: Store Amazon Bullets": {
+      "main": [
+        [
+          { "node": "📱 Shopify: Store Social Captions", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "📱 Shopify: Store Social Captions": {
+      "main": [
+        [
+          { "node": "🔗 Veeqo: Find Product", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "🔗 Veeqo: Find Product": {
+      "main": [
+        [
+          { "node": "🔧 Prep Channel Push Data", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "🔧 Prep Channel Push Data": {
+      "main": [
+        [
+          { "node": "🔗 Veeqo: Update Product Content", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "🔗 Veeqo: Update Product Content": {
+      "main": [
+        [
+          { "node": "📅 Prep Blog Data", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "📅 Prep Blog Data": {
+      "main": [
+        [
+          { "node": "⏰ Wait 24 Hours", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "⏰ Wait 24 Hours": {
+      "main": [
+        [
+          { "node": "✍️ AI: Write Blog Post", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "✍️ AI: Write Blog Post": {
+      "main": [
+        [
+          { "node": "🔧 Parse Blog HTML", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "🔧 Parse Blog HTML": {
+      "main": [
+        [
+          { "node": "📝 Shopify: Publish Blog Post", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "📝 Shopify: Publish Blog Post": {
+      "main": [
+        [
+          { "node": "📱 Prep Social Posts", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "📱 Prep Social Posts": {
+      "main": [
+        [
+          { "node": "📘 Post to Facebook Page", "type": "main", "index": 0 },
+          { "node": "📊 Log Completed Run", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "📘 Post to Facebook Page": {
+      "main": [
+        [
+          { "node": "📊 Log Completed Run", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "",
+    "timezone": "America/Chicago"
+  },
+  "staticData": null,
+  "tags": ["wax-wane", "product-automation", "shopify", "multi-channel"],
+  "triggerCount": 1,
+  "updatedAt": "2026-05-23T00:00:00.000Z",
+  "versionId": "1"
+}
